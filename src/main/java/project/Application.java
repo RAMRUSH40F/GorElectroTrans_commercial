@@ -3,7 +3,7 @@ package project;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
-import project.repository.temp.LessonPopulator;
+import project.repository.populators.LessonPopulator;
 
 @SpringBootApplication
 public class Application {
