@@ -13,11 +13,11 @@ public class WorkersRepository {
 @Autowired
     NamedParameterJdbcTemplate namedParameterJdbcTemplate;
  public void addNewWorker(Worker worker){
-     if(worker.getId().length>5)
+     String id= worker.getId();
+     if(id.length()>5)
          throw new IndexOutOfBoundsException("Too many symbols in ID!!");
-     for (char x:worker.getId()
-          ) {
-         if(x<48||x>57) // Смотрим кодировку сиволов id
+     for(int i=0;i<5;i++){
+         if(id.charAt(i)<48||id.charAt(i)>57) // Смотрим кодировку сиволов id
              throw new RuntimeException("Incorrect id symbol!!!!");
      }
      Map<String,Object> workerData=new HashMap<>();
