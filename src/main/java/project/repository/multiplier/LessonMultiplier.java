@@ -1,4 +1,4 @@
-package project.repository.populators;
+package project.repository.multiplier;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -7,8 +7,8 @@ import project.repository.LessonRepository;
 
 import java.sql.Date;
 
-@Service("LessonPopulatorBean")
-public class LessonPopulator {
+@Service("LessonMultiplierBean")
+public class LessonMultiplier {
 
     @Autowired
     LessonRepository lessonRepository;
