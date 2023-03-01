@@ -13,7 +13,7 @@ public class Application {
         ConfigurableApplicationContext context = SpringApplication.run(Application.class, args);
 
         context.getBean("LessonMultiplierBean", LessonMultiplier.class).addOneLesson();
-context.getBean("WorkersMultiplierBean", WorkersMultiplier.class).addOneWorker();
+context.getBean("WorkersMultiplierBean", WorkersMultiplier.class).addAllWorkers();
 
     }
 
