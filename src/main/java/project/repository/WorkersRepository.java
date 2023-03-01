@@ -23,7 +23,7 @@ public class WorkersRepository {
      Map<String,Object> workerData=new HashMap<>();
      workerData.put("id", worker.getId());
      workerData.put("name",worker.getName());
-     namedParameterJdbcTemplate.update("INSERT INTO WORKERS(id,name)"
+     namedParameterJdbcTemplate.update("INSERT INTO WORKERS.workers(id,name)"
              +"VALUES(:id,:name)",workerData);
 
  }
