@@ -8,6 +8,6 @@ import lombok.Data;
 @Builder
 @AllArgsConstructor
 public class Worker {
-     private int id;
+     private char[] id;
     private String name;
 }
