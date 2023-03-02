@@ -11,7 +11,7 @@ import javax.sql.DataSource;
 import java.sql.SQLException;
 
 @Configuration
-@PropertySource("classpath:stringRes.properties")
+@PropertySource("classpath:stringWorkerNamesRes.properties")
 public class AppContext {
 
     @Bean("mariaDB")
