@@ -14,7 +14,7 @@ public class Application {
 
         context.getBean("LessonMultiplierBean", LessonMultiplier.class).addOneLesson();
 context.getBean("WorkersMultiplierBean", WorkersMultiplier.class).addAllWorkers();
-
+context.close();
     }
 
 }
