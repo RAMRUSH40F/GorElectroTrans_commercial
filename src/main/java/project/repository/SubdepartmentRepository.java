@@ -14,12 +14,12 @@ public class SubdepartmentRepository {
     @Autowired
     NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    public void addNewSubdepartment(int departmentId, Subdepartment subdepartment){
-        Map<String, Object> subdepartmentData=new HashMap<>();
+    public void addNewSubdepartment(int departmentId, Subdepartment subdepartment) {
+        Map<String, Object> subdepartmentData = new HashMap<>();
         subdepartmentData.put("id", subdepartment.getId());
-        subdepartmentData.put("name",subdepartment.getName());
-        namedParameterJdbcTemplate.update("INSERT INTO DEP_"+departmentId+".subdepartment(id,name)"
-                +"VALUES(:id,:name)",subdepartmentData);
+        subdepartmentData.put("name", subdepartment.getName());
+        namedParameterJdbcTemplate.update("INSERT INTO DEP_" + departmentId + ".subdepartment(id,name)"
+                + "VALUES(:id,:name)", subdepartmentData);
 
 
     }

@@ -18,8 +18,8 @@ public class StudentRepository {
             throw new RuntimeException("Invalid department id, it has to be in [1,15] interval");
         }
         Map<String, Object> studentData = new HashMap<>();
-        studentData.put("student_id", student.getStudent_id());
-        studentData.put("subdepartment_id", student.getDepartment_id());
+        studentData.put("student_id", student.getStudentId());
+        studentData.put("subdepartment_id", student.getSubDepartmentId());
         namedParameterJdbcTemplate.update("INSERT INTO DEP_" + departmentID + ".student(student_id,subdepartment_id)"
                 + "VALUE(:student_id,:subdepartment_id)", studentData);
 
