@@ -8,6 +8,6 @@ import lombok.Data;
 @AllArgsConstructor
 @Builder
 public class Student {
-   private String student_id;
-   private short department_id;
+   private String studentId;
+   private short subDepartmentId;
 }
