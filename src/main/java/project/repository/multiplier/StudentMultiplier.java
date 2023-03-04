@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import project.model.Student;
 import project.repository.StudentRepository;
 
+import java.sql.SQLOutput;
 import java.util.Random;
 
 @Service("StudentMultiplierBean")
@@ -12,19 +13,24 @@ public class StudentMultiplier {
     @Autowired
     StudentRepository studentRepository;
 
-    public void addNewStudent(int DatabaseId) {
+    public void addAllStudents() {
         Random random = new Random();
         StringBuilder idBuilder = new StringBuilder();
-        idBuilder.append(0);
-        idBuilder.append(random.nextInt(5));
-        for (int i = 0; i < 3; i++){
-            idBuilder.append(random.nextInt(10));
+        short departmentId;
+        Student student;
+        for (int i = 1; i < 16; i++) {
+            for (int j = 0; j < 333; j++) {
+                departmentId = (short) ((random.nextInt(6) + 1) * 100 + i);
+                idBuilder.delete(0, 6);
+                idBuilder.append(100000 + j + 333 * (i - 1))
+                        .deleteCharAt(0);
+                student = Student.builder()
+                        .studentId(idBuilder.toString())
+                        .subDepartmentId(departmentId)
+                        .build();
+                studentRepository.addNewStudent(i, student);
+            }
         }
-        short departmentId = (short) ((random.nextInt(6) + 1) * 100 + 1);
-        Student student = Student.builder()
-                .studentId(idBuilder.toString())
-                .subDepartmentId(departmentId)
-                .build();
-        studentRepository.addNewStudent(DatabaseId, student);
+        System.out.println("Student Multiplier ended its work!!!");
     }
 }

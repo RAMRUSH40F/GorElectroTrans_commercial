@@ -20,6 +20,8 @@ public class StudentRepository {
         Map<String, Object> studentData = new HashMap<>();
         studentData.put("student_id", student.getStudentId());
         studentData.put("subdepartment_id", student.getSubDepartmentId());
+      /*  System.out.println(studentData.get("student_id"));
+        System.out.println(studentData.get("subdepartment_id"));*/
         namedParameterJdbcTemplate.update("INSERT INTO DEP_" + departmentID + ".student(student_id,subdepartment_id)"
                 + "VALUE(:student_id,:subdepartment_id)", studentData);
 

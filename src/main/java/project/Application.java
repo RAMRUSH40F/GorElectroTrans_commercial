@@ -3,7 +3,6 @@ package project;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
-import project.repository.multiplier.LessonMultiplier;
 import project.repository.multiplier.StudentMultiplier;
 import project.repository.multiplier.SubDepartmentMultiplier;
 import project.repository.multiplier.WorkersMultiplier;
@@ -17,12 +16,11 @@ public class Application {
 
         // Заполняем при запуске таблицы студентов тестовыми данными.
         //context.getBean("WorkersMultiplierBean", WorkersMultiplier.class).addAllWorkers();
-
-        StudentMultiplier studentMultiplier = context.getBean("StudentMultiplierBean", StudentMultiplier.class);
+        //заполняем подразделения
+        context.getBean("SubDepartmentBean", SubDepartmentMultiplier.class).addAllSubDepartments();
+      context.getBean("StudentMultiplierBean", StudentMultiplier.class).addAllStudents();
         //Заполняем при запуске таблицы студентов тестовыми данными.
-        for (int i = 1; i < 16; i++) {
-            studentMultiplier.addNewStudent(i);
-        }
+
 
         context.close();
     }
