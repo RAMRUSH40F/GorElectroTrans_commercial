@@ -23,9 +23,13 @@ public class LessonRepository {
             throw new RuntimeException("Invalid department id, it has to be in [1,15] interval");
         }
         String databaseName = "DEP_" + departmentId;
+
         Map<String, Object> parameters = new HashMap<String, Object>();
+
         parameters.put("topic", lesson.getTopic());
+        System.out.println(lesson.getTopic());
         parameters.put("duration", lesson.getDuration());
+        System.out.println(lesson.getDuration());
         parameters.put("date", lesson.getDate());
         parameters.put("teacher", lesson.getTeacher());
         parameters.put("peoplePlanned", lesson.getPeoplePlanned());
@@ -35,7 +39,16 @@ public class LessonRepository {
                         "VALUES (:topic,:duration,:date," +
                         " :teacher, :peoplePlanned);",
                 parameters);
+    }
 
+    public void deleteLessons(int departmentId) {
+        if (departmentId > 15 || departmentId < 1) {
+            throw new RuntimeException("Invalid department id, it has to be in [1,15] interval");
+        }
+        String databaseName = "DEP_" + departmentId;
+
+        jdbcTemplate.update(
+                "DELETE FROM " + databaseName + ".lesson ;");
     }
 
 }
