@@ -18,8 +18,8 @@ public class Application {
         // Заполняем при запуске таблицы студентов тестовыми данными.
         //context.getBean("WorkersMultiplierBean", WorkersMultiplier.class).addAllWorkers();
         //заполняем подразделения
-        context.getBean("SubDepartmentBean", SubDepartmentMultiplier.class).addAllSubDepartments();
-      context.getBean("StudentMultiplierBean", StudentMultiplier.class).addAllStudents();
+//        context.getBean("SubDepartmentBean", SubDepartmentMultiplier.class).addAllSubDepartments();
+//      context.getBean("StudentMultiplierBean", StudentMultiplier.class).addAllStudents();
         context.getBean("LessonMultiplierBean", LessonMultiplier.class).addAllLessons();
         //Заполняем при запуске таблицы студентов тестовыми данными.
 
