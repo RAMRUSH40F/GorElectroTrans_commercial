@@ -9,6 +9,7 @@ import project.model.Subdepartment;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 
 @Repository(value = "SubdepartmentRepositoryBean")
 public class SubdepartmentRepository {
@@ -36,7 +37,14 @@ public class SubdepartmentRepository {
                 .append(subDepartment_name)
                 .append("'")
                 .toString();
-        return jdbcTemplate.queryForObject(query, Subdepartment.class);
+        System.out.println(query);
+        List<Subdepartment> resultList = jdbcTemplate.query(query, (rs, rowNum) ->
+                Subdepartment.builder()
+                        .name(rs.getString("name"))
+                        .id(rs.getShort("id"))
+                        .build());
+        if (resultList.size() == 0) return null;
+        return resultList.get(0);
 
     }
 }
