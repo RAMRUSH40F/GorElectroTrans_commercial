@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service("SubDepartmentBean")
-public class SubDepartmentMultiplier {
+public class SubdepartmentMultiplier {
 
     @Autowired
     SubdepartmentRepository subdepartmentRepository;
@@ -35,7 +35,7 @@ public class SubDepartmentMultiplier {
                 subdepartmentRepository.addNewSubdepartment(i, subdepartment);
             }
         }
-        System.out.println("SubDepartmentMultiplier ended its work!");
+        System.out.println("SubdepartmentMultiplier ended its work!");
 
     }
 }
