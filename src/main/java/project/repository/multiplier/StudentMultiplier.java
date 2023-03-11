@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import project.model.Student;
 import project.repository.StudentRepository;
 
-import java.sql.SQLOutput;
 import java.util.Random;
 
 @Service("StudentMultiplierBean")
@@ -28,7 +27,7 @@ public class StudentMultiplier {
                         .studentId(idBuilder.toString())
                         .subDepartmentId(departmentId)
                         .build();
-                studentRepository.addNewStudent(i, student);
+                studentRepository.addNewStudentByDepId(i, student);
             }
         }
         System.out.println("Student Multiplier ended its work!!!");
