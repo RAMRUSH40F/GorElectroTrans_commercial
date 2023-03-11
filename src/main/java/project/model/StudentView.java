@@ -1,5 +1,6 @@
 package project.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,7 +9,9 @@ import lombok.Data;
 @AllArgsConstructor
 @Builder
 public class StudentView {
+    @JsonProperty("student_id")
     private String studentId;
+    @JsonProperty("subdepartment_name")
     private String subDepartment;
     private String fullName;
 }
