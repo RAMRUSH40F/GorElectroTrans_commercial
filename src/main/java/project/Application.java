@@ -13,8 +13,11 @@ public class Application {
 
 //        context.getBean("StudentMultiplierBean", StudentMultiplier.class).addAllStudents();
 //        context.getBean("LessonMultiplierBean", LessonMultiplier.class).addAllLessons();
-        context.getBean("AttendanceMultiplierBean", AttendanceMultiplier.class).addAllAttendance();
-
+        AttendanceMultiplier attendanceMultiplier =
+                context.getBean("AttendanceMultiplierBean", AttendanceMultiplier.class);
+        for (int i = 1; i <= 15; i++) {
+            attendanceMultiplier.addAllAttendance(i);
+        }
         context.close();
     }
 
