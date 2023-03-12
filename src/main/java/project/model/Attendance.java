@@ -7,7 +7,9 @@ import lombok.Data;
 @Data
 @Builder
 @AllArgsConstructor
-public class Student {
-   private String studentId;
-   private short subDepartmentId;
+public class Attendance {
+    private Integer lessonId;
+    private String studentId;
+    private int success;
+
 }
