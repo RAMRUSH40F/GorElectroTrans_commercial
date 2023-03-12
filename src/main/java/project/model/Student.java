@@ -7,8 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 
 @Data
-@AllArgsConstructor
 @Builder
+@AllArgsConstructor
 public class Student {
    @JsonProperty("student_id")
    private String studentId;

@@ -2,12 +2,16 @@ package project.repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import project.exceptions.InvalidDepartmentException;
 import project.model.Student;
 import project.model.StudentView;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -172,6 +176,24 @@ public class StudentRepository {
         namedParameterJdbcTemplate.update("INSERT INTO DEP_" + departmentId + ".student(student_id,subdepartment_id)"
                 + "VALUE(:student_id,:subdepartment_id)", studentData);
 
+    }
+
+    // Метод для внутреннего использование другой БД.
+    public List<Student> getStudentsIdList(int departmentId) {
+        if (departmentId > 15 || departmentId < 1) {
+            throw new RuntimeException("Invalid department id, it has to be in [1,15] interval");
+        }
+        String databaseName = "DEP_" + departmentId;
+        List<Student> studentIdList = jdbcTemplate.query("SELECT student_id FROM " +
+                databaseName + ".student", new RowMapper<Student>() {
+            @Override
+            public Student mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return Student.builder()
+                        .studentId(rs.getString("student_id"))
+                        .build();
+            }
+        });
+        return studentIdList;
     }
 
 }
