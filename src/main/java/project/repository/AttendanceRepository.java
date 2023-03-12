@@ -8,6 +8,7 @@ import project.model.Attendance;
 
 import java.util.HashMap;
 import java.util.Map;
+
 @Repository
 public class AttendanceRepository {
 
@@ -16,13 +17,15 @@ public class AttendanceRepository {
 
     @Autowired
     NamedParameterJdbcTemplate namedJdbcTemplate;
-    public void addNewRecords(int departmentId, Attendance attendance) {
+
+    // Метод добавляет запись о результатах посещения какого-то занятия учеником.
+    public void addNewRecord(int departmentId, Attendance attendance) {
         if (departmentId > 15 || departmentId < 1) {
             throw new RuntimeException("Invalid department id, it has to be in [1,15] interval");
         }
 
         String databaseName = "DEP_" + departmentId;
-        Map<String, Object> parameters = new HashMap<String, Object>();
+        Map<String, Object> parameters = new HashMap<>();
         parameters.put("lesson_id", attendance.getLessonId());
         parameters.put("student_id", attendance.getStudentId());
         parameters.put("success", attendance.getSuccess());

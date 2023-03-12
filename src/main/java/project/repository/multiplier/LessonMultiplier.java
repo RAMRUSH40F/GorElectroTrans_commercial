@@ -26,7 +26,7 @@ public class LessonMultiplier {
                 {"Тех.обслуживание на новых моделях трамваев", 2.6f, new Date(1677508698105L), "Высоцкий П.К.", 34}
         };
 
-        lessonRepository.deleteLessons(departmentId);
+        lessonRepository.deleteAllLessons(departmentId);
 
         for (int i = 0; i < 6; i++) {
             Lesson lesson = Lesson.builder()

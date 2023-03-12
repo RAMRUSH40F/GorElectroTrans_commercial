@@ -17,8 +17,6 @@ import java.util.stream.Collectors;
 @Service("AttendanceMultiplierBean")
 public class AttendanceMultiplier {
 
-    int departmentId = 1;
-
     @Autowired
     AttendanceRepository attendanceRepository;
     @Autowired
@@ -27,12 +25,12 @@ public class AttendanceMultiplier {
     StudentRepository studentRepository;
 
 
-    public void addAllAttendance(){
-
-        List<Lesson> lessons = lessonRepository.getLessonsId(departmentId);
+    public void addAllAttendance(int departmentId) {
+        // Достаем из БД все записи об уроках и об учениках.
+        List<Lesson> lessons = lessonRepository.getLessonsIdList(departmentId);
         List<Integer> lessIds = lessons.stream().map(Lesson::getId).collect(Collectors.toList());
 
-        List<Student> students = studentRepository.getStudentsId(departmentId);
+        List<Student> students = studentRepository.getStudentsIdList(departmentId);
         List<String> studIds = students.stream().map(Student::getStudentId).collect(Collectors.toList());
 
         Random random = new Random();
@@ -44,14 +42,11 @@ public class AttendanceMultiplier {
                         .studentId(studIds.get(j))
                         .success(random.nextInt(2))
                         .build();
-                attendanceRepository.addNewRecords(departmentId, attendance);
+                attendanceRepository.addNewRecord(departmentId, attendance);
             }
         }
 
     }
-
-
-
 
 
 }

@@ -45,7 +45,7 @@ public class LessonRepository {
                 parameters);
     }
 
-    public void deleteLessons(int departmentId) {
+    public void deleteAllLessons(int departmentId) {
         if (departmentId > 15 || departmentId < 1) {
             throw new RuntimeException("Invalid department id, it has to be in [1,15] interval");
         }
@@ -55,12 +55,13 @@ public class LessonRepository {
                 "DELETE FROM " + databaseName + ".lesson ;");
     }
 
-    public List<Lesson> getLessonsId(int departmentId) {
+    public List<Lesson> getLessonsIdList(int departmentId) {
         if (departmentId > 15 || departmentId < 1) {
             throw new RuntimeException("Invalid department id, it has to be in [1,15] interval");
         }
         String databaseName = "DEP_" + departmentId;
-        List<Lesson> ListLessonsId = jdbcTemplate.query("SELECT id FROM " + databaseName + ".lesson", new RowMapper<Lesson>() {
+        List<Lesson> lessonsIdList = jdbcTemplate.query("SELECT id FROM " +
+                databaseName + ".lesson", new RowMapper<Lesson>() {
             @Override
             public Lesson mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return Lesson.builder()
@@ -68,7 +69,7 @@ public class LessonRepository {
                         .build();
             }
         });
-        return ListLessonsId;
+        return lessonsIdList;
     }
 
 }

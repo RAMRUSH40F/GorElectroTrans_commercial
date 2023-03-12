@@ -35,12 +35,14 @@ public class StudentRepository {
 
     }
 
-    public List<Student> getStudentsId(int departmentId) {
+    // Метод для внутреннего использование другой БД.
+    public List<Student> getStudentsIdList(int departmentId) {
         if (departmentId > 15 || departmentId < 1) {
             throw new RuntimeException("Invalid department id, it has to be in [1,15] interval");
         }
         String databaseName = "DEP_" + departmentId;
-        List<Student> ListStudentId = jdbcTemplate.query("SELECT student_id FROM " + databaseName + ".student", new RowMapper<Student>() {
+        List<Student> studentIdList = jdbcTemplate.query("SELECT student_id FROM " +
+                databaseName + ".student", new RowMapper<Student>() {
             @Override
             public Student mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return Student.builder()
@@ -48,6 +50,6 @@ public class StudentRepository {
                         .build();
             }
         });
-        return ListStudentId;
+        return studentIdList;
     }
 }
