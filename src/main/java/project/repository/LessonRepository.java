@@ -31,9 +31,7 @@ public class LessonRepository {
         Map<String, Object> parameters = new HashMap<String, Object>();
 
         parameters.put("topic", lesson.getTopic());
-        System.out.println(lesson.getTopic());
         parameters.put("duration", lesson.getDuration());
-        System.out.println(lesson.getDuration());
         parameters.put("date", lesson.getDate());
         parameters.put("teacher", lesson.getTeacher());
         parameters.put("peoplePlanned", lesson.getPeoplePlanned());

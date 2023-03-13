@@ -10,20 +10,18 @@ import java.sql.Date;
 @Service("LessonMultiplierBean")
 public class LessonMultiplier {
 
-    int departmentId = 1;
-
     @Autowired
     LessonRepository lessonRepository;
 
-    public void addAllLessons(){
+    public void addAllLessons(int departmentId){
 
         Object [] [] lessons = {
-                {"Тех.обслуживание на новых моделях трамваев", 2.6f, new Date(1677508698105L), "Высоцкий П.К.", 34},
-                {"Тех.обслуживание на новых моделях трамваев", 2.6f, new Date(1677508698105L), "Высоцкий П.К.", 34},
-                {"Тех.обслуживание на новых моделях трамваев", 2.6f, new Date(1677508698105L), "Высоцкий П.К.", 34},
-                {"Тех.обслуживание на новых моделях трамваев", 2.6f, new Date(1677508698105L), "Высоцкий П.К.", 34},
-                {"Тех.обслуживание на новых моделях трамваев", 2.6f, new Date(1677508698105L), "Высоцкий П.К.", 34},
-                {"Тех.обслуживание на новых моделях трамваев", 2.6f, new Date(1677508698105L), "Высоцкий П.К.", 34}
+                {"Тех.обслуживание на новых моделях трамваев", 2.0f, new Date(1647748285L), "Джмун Ф.К.", 34},
+                {"Как вкручивать лампочки правильно", 1.6f, new Date(1677508698105L), "Высоцкий П.К.", 10},
+                {"Здоровый образ жизни у водителей трамваев", 2.6f, new Date(1647754134L), "Капылов П.К.", 112},
+                {"Разговоры о важном", 1f, new Date(1649562685L), "Высоцкий П.К.", 34},
+                {"Ремонт нового подвижного состава трамваев", 2.6f, new Date(1650772285L), "Левицкий Л.К.", 52},
+                {"Ремонт усиков троллейбуса", 2.4f, new Date(1677508698105L), "Яшин А.С.", 40}
         };
 
         lessonRepository.deleteAllLessons(departmentId);
@@ -38,5 +36,7 @@ public class LessonMultiplier {
                     .build();
             lessonRepository.addNewLesson(departmentId, lesson);
         }
+        System.out.printf("Lesson Multiplier ended work on %d department \n ", departmentId);
+
     }
 }

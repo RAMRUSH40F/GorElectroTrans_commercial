@@ -13,21 +13,24 @@ public class Application {
     public static void main(String[] args) {
         ConfigurableApplicationContext context = SpringApplication.run(Application.class, args);
 
+        //success
+        //context.getBean("SubDepartmentBean", SubdepartmentMultiplier.class).addAllSubDepartments();
 
-
-        // Заполняем при запуске таблицы студентов тестовыми данными.
-        //context.getBean("WorkersMultiplierBean", WorkersMultiplier.class).addAllWorkers();
-        //заполняем подразделения
-        //context.getBean("SubDepartmentBean", SubDepartmentMultiplier.class).addAllSubDepartments();
-        //context.getBean("StudentMultiplierBean", StudentMultiplier.class).addAllStudents();
-        //Заполняем при запуске таблицы студентов тестовыми данными.
-        
-        context.getBean("StudentMultiplierBean", StudentMultiplier.class).addAllStudents();
-        context.getBean("LessonMultiplierBean", LessonMultiplier.class).addAllLessons();
         AttendanceMultiplier attendanceMultiplier =
                 context.getBean("AttendanceMultiplierBean", AttendanceMultiplier.class);
-        for (int i = 1; i <= 15; i++) {
-            attendanceMultiplier.addAllAttendance(i);
+        StudentMultiplier studentMultiplier = context.getBean("StudentMultiplierBean", StudentMultiplier.class);
+
+
+        for (int i = 2; i <= 15; i++) {
+            //success
+            //context.getBean("LessonMultiplierBean", LessonMultiplier.class).addAllLessons(i);
+
+            //success
+            //studentMultiplier.addAllStudents(i);
+
+            //success
+            //attendanceMultiplier.addAllAttendance(i);
+
         }
         context.close();
 
