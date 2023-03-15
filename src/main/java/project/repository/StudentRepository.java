@@ -116,7 +116,7 @@ public class StudentRepository {
         String query = new StringBuilder()
                 .append("SELECT * FROM DEP_")
                 .append(departmentId)
-                .append(".Student_view WHERE student_id=")
+                .append(".Student_admin_view WHERE student_id=")
                 .append(studentId)
                 .toString();
         return jdbcTemplate.query(query, (rs, rowNum) ->
