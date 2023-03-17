@@ -22,14 +22,14 @@ public class Application {
         //context.getBean("StudentMultiplierBean", StudentMultiplier.class).addAllStudents();
         //Заполняем при запуске таблицы студентов тестовыми данными.
         
-//        context.getBean("StudentMultiplierBean", StudentMultiplier.class).addAllStudents();
-//        context.getBean("LessonMultiplierBean", LessonMultiplier.class).addAllLessons();
-//        AttendanceMultiplier attendanceMultiplier =
-//                context.getBean("AttendanceMultiplierBean", AttendanceMultiplier.class);
-//        for (int i = 1; i <= 15; i++) {
-//            attendanceMultiplier.addAllAttendance(i);
-//        }
-//        context.close();
+        context.getBean("StudentMultiplierBean", StudentMultiplier.class).addAllStudents();
+        context.getBean("LessonMultiplierBean", LessonMultiplier.class).addAllLessons();
+        AttendanceMultiplier attendanceMultiplier =
+                context.getBean("AttendanceMultiplierBean", AttendanceMultiplier.class);
+        for (int i = 1; i <= 15; i++) {
+            attendanceMultiplier.addAllAttendance(i);
+        }
+        context.close();
 
     }
 
