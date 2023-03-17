@@ -20,13 +20,13 @@ import java.util.Map;
 public class StudentRepository {
 
     @Autowired
-    JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Autowired
-    SubdepartmentRepository subdepartmentRepository;
+    private SubdepartmentRepository subdepartmentRepository;
 
     public void addNewStudent(int departmentId, StudentView studentView) {
         if (departmentId > 15 || departmentId < 1) {
@@ -50,14 +50,14 @@ public class StudentRepository {
 
     }
 
-    public List<StudentView> getStudentsAdminView(int departmentID) {
+    public List<StudentView> getStudentsView(int departmentID) {
         if (departmentID > 15 || departmentID < 1) {
             throw new InvalidDepartmentException("Invalid department id, it has to be in [1,15] interval");
         }
         String query = new StringBuilder()
                 .append("SELECT student_id, subdepartment, name FROM DEP_")
                 .append(departmentID)
-                .append(".Student_admin_view")
+                .append(".Student_view")
                 .toString();
         // rs = возвращаемый из .query объект типа ResultSet
         return jdbcTemplate.query(query, (rs, rowNum) ->
@@ -69,28 +69,6 @@ public class StudentRepository {
 
     }
 
-
-    // *К ФИО должны иметь доступ лишь супер-админы. Возращает StudentView без ФИО.
-    public List<StudentView> getStudentsView(int departmentId) {
-        if (departmentId > 15 || departmentId < 1) {
-            throw new InvalidDepartmentException("Invalid department id, it has to be in [1,15] interval");
-        }
-        String query = new StringBuilder()
-                .append("SELECT student_id, subdepartment, name FROM DEP_")
-                .append(departmentId)
-                .append(".Student_admin_view")
-                .toString();
-
-        // rs = возвращаемый из .query объект типа ResultSet
-        return jdbcTemplate.query(query, (rs, rowNum) ->
-                StudentView.builder()
-                        .studentId(rs.getString("student_id"))
-                        .subDepartment(rs.getString("subdepartment"))
-                        .fullName(rs.getString(null))
-                        .build());
-    }
-
-
     public StudentView getStudentById(int departmentId, String studentId) {
         if (departmentId > 15 || departmentId < 1) {
             throw new InvalidDepartmentException("Invalid department id, it has to be in [1,15] interval");
@@ -99,24 +77,6 @@ public class StudentRepository {
                 .append("SELECT * FROM DEP_")
                 .append(departmentId)
                 .append(".Student_view WHERE student_id=")
-                .append(studentId)
-                .toString();
-        return jdbcTemplate.query(query, (rs, rowNum) ->
-                StudentView.builder()
-                        .studentId(rs.getString("student_id"))
-                        .subDepartment(rs.getString("subdepartment"))
-                        .fullName(null)
-                        .build()).get(0);
-    }
-
-    public StudentView getStudentByIdAdmin(int departmentId, String studentId) {
-        if (departmentId > 15 || departmentId < 1) {
-            throw new InvalidDepartmentException("Invalid department id, it has to be in [1,15] interval");
-        }
-        String query = new StringBuilder()
-                .append("SELECT * FROM DEP_")
-                .append(departmentId)
-                .append(".Student_admin_view WHERE student_id=")
                 .append(studentId)
                 .toString();
         return jdbcTemplate.query(query, (rs, rowNum) ->
@@ -141,7 +101,9 @@ public class StudentRepository {
 
     }
 
-    // Метод для смены отдела какого-то студента.
+    /**
+     * Метод для смены отдела какого-то студента.
+     */
     public void updateStudent(int departmentId, StudentView studentView) {
         if (departmentId > 15 || departmentId < 1) {
             throw new InvalidDepartmentException("Invalid department id, it has to be in [1,15] interval");
@@ -163,7 +125,6 @@ public class StudentRepository {
         jdbcTemplate.execute(query);
     }
 
-    // Этот метод добавляет студента, используя номер департамента.
     public void addNewStudentByDepId(int departmentId, Student student) {
         if (departmentId > 15 || departmentId < 1) {
             throw new RuntimeException("Invalid department id, it has to be in [1,15] interval");
@@ -178,7 +139,9 @@ public class StudentRepository {
 
     }
 
-    // Метод для внутреннего использование другой БД.
+    /**
+     * Метод для внутреннего использование другой БД.
+     */
     public List<Student> getStudentsIdList(int departmentId) {
         if (departmentId > 15 || departmentId < 1) {
             throw new RuntimeException("Invalid department id, it has to be in [1,15] interval");

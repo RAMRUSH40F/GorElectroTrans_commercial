@@ -12,36 +12,19 @@ import java.util.List;
 public class StudentController {
 
     @Autowired
-    StudentRepository studentRepository;
+    private StudentRepository studentRepository;
 
     @GetMapping("/dep_{N}/students/data")
     public List<StudentView> getAllStudents(@PathVariable("N") int departmentId) {
-        // Проверка на роль.
-        boolean isSuperAdmin = true;
-
-        if (isSuperAdmin) {
-            return studentRepository.getStudentsAdminView(departmentId);
-        } else {
-            return studentRepository.getStudentsView(departmentId);
-        }
-
+        return studentRepository.getStudentsView(departmentId);
     }
 
     @GetMapping("/dep_{N}/students/{id}")
     public StudentView findStudentById(@PathVariable("N") int departmentId, @PathVariable("id") String studentId) {
-
         if (studentId.length() != 5) {
             throw new InvalidStudentIdException();
         }
-        // Проверка на роль.
-        boolean isSuperAdmin = true;
-
-        if (isSuperAdmin) {
-            return studentRepository.getStudentByIdAdmin(departmentId, studentId);
-        } else {
-            return studentRepository.getStudentById(departmentId, studentId);
-        }
-
+        return studentRepository.getStudentById(departmentId, studentId);
     }
 
     @PostMapping("/dep_{N}/students/data")
@@ -59,15 +42,6 @@ public class StudentController {
         if (studentId.length() != 5) {
             throw new InvalidStudentIdException();
         }
-        // Проверка на роль.
-        boolean isSuperAdmin = true;
-
-        // Удалять студентов могут лишь супер-админы.
-        if (isSuperAdmin) {
-            studentRepository.deleteStudentById(departmentId, studentId);
-        } else {
-            throw new RuntimeException("Unauthorised person!");
-        }
-
+        studentRepository.deleteStudentById(departmentId, studentId);
     }
 }
