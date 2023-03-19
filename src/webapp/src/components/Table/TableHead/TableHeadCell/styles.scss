@@ -1,0 +1,9 @@
+@import "../../../../assets/styles/vars.scss";
+
+.table-head-cell {
+    font-size: 0.6875rem;
+    line-height: 1.45;
+    padding: 0.5rem;
+    font-weight: 700;
+    border: 1px solid $grey;
+}

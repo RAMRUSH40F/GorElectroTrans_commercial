@@ -1,0 +1,15 @@
+@import "../../assets/styles/mixins.scss";
+
+.students-page {
+    width: 100%;
+    // .students-page__info
+    &__info {
+        margin-bottom: 40px;
+    }
+    // .students-page__wrapper
+    &__wrapper {
+        @include flex-center(12px, space-between);
+        margin: 20px 0 30px;
+        flex-wrap: wrap;
+    }
+}

@@ -1,0 +1,16 @@
+@import "../../assets/styles/mixins.scss";
+
+.login-page {
+    height: 100%;
+    @include flex-center;
+    // .login-page__body
+    &__body {
+        max-width: 20rem;
+        width: 100%;
+    }
+    // .login-page__title
+    &__title {
+        text-align: center;
+        margin-bottom: 1.2rem;
+    }
+}
