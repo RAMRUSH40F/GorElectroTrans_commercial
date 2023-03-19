@@ -1,0 +1,10 @@
+@import "../../../../assets/styles/vars.scss";
+
+.table-body-cell {
+    font-size: 0.6875rem;
+    line-height: 1.45;
+    padding: 0.5rem;
+    font-weight: 400;
+    border: 1px solid $grey;
+    text-align: center;
+}

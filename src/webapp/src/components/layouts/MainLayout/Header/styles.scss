@@ -1,0 +1,25 @@
+@import "../../../../assets/styles/vars.scss";
+@import "../../../../assets/styles/mixins.scss";
+
+.header {
+    background-color: $white;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid rgba($grey, 0.5);
+    // .header__wrapper
+    &__wrapper {
+        @include flex-center(1rem, space-between);
+    }
+    // .header__logo
+    &__logo {
+        height: 41px;
+    }
+    // .header__button
+    &__button {
+        @include flex-center(5px);
+    }
+    // .header__button-icon
+    &__button-icon {
+        height: 15px;
+        width: 15px;
+    }
+}

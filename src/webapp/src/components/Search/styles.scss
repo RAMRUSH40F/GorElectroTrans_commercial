@@ -1,0 +1,23 @@
+@import "../../assets/styles/mixins.scss";
+@import "../../assets/styles/vars.scss";
+
+.search {
+    display: block;
+    position: relative;
+    // .search__input
+    &__input {
+        width: 100%;
+        padding-left: 34px;
+        &:focus ~ .search__icon {
+            fill: $black;
+        }
+    }
+    // .search__icon
+    &__icon {
+        height: 18px;
+        width: 18px;
+        @include position(50%, 10px);
+        transform: translateY(-50%);
+        fill: darken($grey, 30%);
+    }
+}

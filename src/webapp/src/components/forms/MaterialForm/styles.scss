@@ -1,0 +1,14 @@
+.material-form {
+    // .material-form__label
+    &__label {
+        margin-bottom: 10px;
+    }
+    // .material-form__input
+    &__input {
+        width: 100%;
+    }
+    // .material-form__select
+    &__select {
+        font-size: 0.8rem;
+    }
+}

@@ -1,0 +1,14 @@
+.attendance-form {
+    // .attendance-form__label
+    &__label {
+        margin-bottom: 10px;
+    }
+    // .attendance-form__input
+    &__input {
+        width: 100%;
+    }
+    // .attendance-form__select
+    &__select {
+        font-size: 0.8rem;
+    }
+}

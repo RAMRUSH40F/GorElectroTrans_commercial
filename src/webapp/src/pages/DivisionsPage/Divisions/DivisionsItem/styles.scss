@@ -1,0 +1,25 @@
+@import "../../../../assets/styles/vars.scss";
+
+.divisions-item {
+    border: 1px solid $grey;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+    &:hover {
+        background-color: rgba($grey, 0.5);
+        color: $blue;
+    }
+    // .divisions-item__link
+    &__link {
+        display: block;
+        padding: 1rem 1.2rem;
+        width: 100%;
+        color: inherit;
+    }
+    // .divisions-item__title
+    &__title {
+        font-size: 0.8rem;
+        line-height: 1.3;
+    }
+}
