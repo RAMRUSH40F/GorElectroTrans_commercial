@@ -14,14 +14,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Repository
+@Repository("LessonRepositoryBean")
 public class LessonRepository {
 
     @Autowired
-    JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    NamedParameterJdbcTemplate namedJdbcTemplate;
+    private NamedParameterJdbcTemplate namedJdbcTemplate;
 
     public void addNewLesson(int departmentId, Lesson lesson) {
         if (departmentId > 15 || departmentId < 1) {
@@ -77,8 +77,21 @@ public class LessonRepository {
         return null;
     }
 
-    public List<Lesson> getAllLesson(int departmentN) {
-        return namedJdbcTemplate.query("SELECT * FROM DEP_" + departmentN + ".lesson", (rs, rowNum) -> Lesson.builder().
+    public List<Lesson> getAllLessons(int departmentId) {
+
+
+
+        return namedJdbcTemplate.query("SELECT * FROM DEP_" + departmentId + ".lesson", (rs, rowNum) -> Lesson.builder().
+                id(rs.getInt("id")).
+                topic(rs.getString("topic")).
+                duration(rs.getFloat("duration")).
+                date(rs.getDate("date")).
+                teacher(rs.getString("teacher")).
+                peoplePlanned(rs.getInt("people_planned")).build());
+    }
+
+    public List<Lesson> getLessonById(int departmentN, int id) {
+        return namedJdbcTemplate.query("SELECT * FROM DEP_" + departmentN + ".lesson WHERE id=" + id, (rs, rowNum) -> Lesson.builder().
                 id(rs.getInt("id")).
                 topic(rs.getString("topic")).
                 duration(rs.getFloat("duration")).
@@ -87,18 +100,8 @@ public class LessonRepository {
                 peoplePlanned(rs.getInt("people_planned")).build());
 
     }
-    public List<Lesson> getOneLesson(int departmentN, int id){
-        return namedJdbcTemplate.query("SELECT FROM DEP_" + departmentN + ".lesson WHERE id="+id, (rs, rowNum) -> Lesson.builder().
-                id(rs.getInt("id")).
-                topic(rs.getString("topic")).
-                duration(rs.getFloat("duration")).
-                date(rs.getDate("date")).
-                teacher(rs.getString("teacher")).
-                peoplePlanned(rs.getInt("people_planned")).build());
 
-    }
-    public void  changeLesson(int department, int id, Lesson changed_lesson){
-//Map<String, Object> lessonMap=new HashMap<>();
+    public void changeLesson(int department, int id, Lesson changed_lesson) {
 
         String query = new StringBuilder()
                 .append("UPDATE DEP_")
@@ -120,7 +123,8 @@ public class LessonRepository {
 
         jdbcTemplate.execute(query);
     }
-    public void deleteLesson(int department,int id){
+
+    public void deleteLessonById(int department, int id) {
         if (department > 15 || department < 1) {
             throw new InvalidDepartmentException("Invalid department id, it has to be in [1,15] interval");
         }
