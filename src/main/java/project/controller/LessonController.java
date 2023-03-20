@@ -1,46 +1,47 @@
 package project.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import project.exceptions.InvalidIdException;
-import project.exceptions.InvalidStudentIdException;
 import project.model.Lesson;
 import project.repository.LessonRepository;
 
 import java.util.List;
 
-@RestController
+@RestController("LessonControllerBean")
 public class LessonController {
-    LessonRepository lessonRepository;
+
+    @Autowired
+    private LessonRepository lessonRepository;
+
     @GetMapping("/dep_{N}/workplan/data")
     public List<Lesson> getAllLessons(@PathVariable("N") int department) {
-        return lessonRepository.getAllLesson(department);
+        return lessonRepository.getAllLessons(department);
     }
+
     @PostMapping("/dep_{N}/workplan/data")
-        public void addLesson(@PathVariable("N") int department, @RequestBody Lesson lesson){
-        lessonRepository.addNewLesson(department,lesson);
+    public void addLesson(@PathVariable("N") int department, @RequestBody Lesson lesson) {
+        lessonRepository.addNewLesson(department, lesson);
 
     }
+
     @GetMapping("/dep_{N}/workplan/{id}")
-    public List<Lesson> findLesson(@PathVariable("N") int department, @PathVariable("id") int id){
-        return lessonRepository.getOneLesson(department,id);
+    public List<Lesson> findLessonById(@PathVariable("N") int department, @PathVariable("id") int id) {
+        return lessonRepository.getLessonById(department, id);
     }
+
     @PutMapping("/dep_{N}/workplan/{id}")
-    public void changeLesson (@PathVariable("N") int department,@PathVariable("id") int id, @RequestBody Lesson lesson){
-lessonRepository.changeLesson(department,id,lesson);
+    public void changeLesson(@PathVariable("N") int department, @PathVariable("id") int id, @RequestBody Lesson lesson) {
+        lessonRepository.changeLesson(department, id, lesson);
     }
-    @DeleteMapping ("/dep_{N}/workplan/{id}")
-    public void deleteLesson(@PathVariable("N") int department, @PathVariable("id") String id){
+
+    @DeleteMapping("/dep_{N}/workplan/{id}")
+    public void deleteLessonById(@PathVariable("N") int department, @PathVariable("id") String id) {
         if (id.length() != 5) {
             throw new InvalidIdException();
         }
-        boolean isSuperAdmin = true;
+        lessonRepository.deleteLessonById(department, Integer.valueOf(id).intValue());
 
-        // Удалять студентов могут лишь супер-админы.
-        if (isSuperAdmin) {
-            lessonRepository.deleteLesson(department,Integer.valueOf(id).intValue());
-        } else {
-            throw new RuntimeException("Unauthorised person!");
-        }
     }
 
 
