@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Repository
+@Repository("AttendanceRepositoryBean")
 public class AttendanceRepository {
 
     @Autowired
@@ -31,22 +31,22 @@ public class AttendanceRepository {
     StudentRepository studentRepository;
 
     // Метод добавляет запись о результатах посещения какого-то занятия учеником.
-//    public void addNewRecord(int departmentId, Attendance attendance) {
-//        if (departmentId > 15 || departmentId < 1) {
-//            throw new RuntimeException("Invalid department id, it has to be in [1,15] interval");
-//        }
-//
-//        String databaseName = "DEP_" + departmentId;
-//        Map<String, Object> parameters = new HashMap<>();
-//        parameters.put("lesson_id", attendance.getLessonId());
-//        parameters.put("student_id", attendance.getStudentId());
-//        parameters.put("success", attendance.getSuccess());
-//
-//        namedJdbcTemplate.update(
-//                "INSERT INTO " + databaseName + ".attendance (lesson_id,student_id,success)" +
-//                        "VALUES (:lesson_id,:student_id,:success);",
-//                parameters);
-//    }
+    public void addNewRecord(int departmentId, Attendance attendance) {
+        if (departmentId > 15 || departmentId < 1) {
+            throw new RuntimeException("Invalid department id, it has to be in [1,15] interval");
+        }
+
+        String databaseName = "DEP_" + departmentId;
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("lesson_id", attendance.getLessonId());
+        parameters.put("student_id", attendance.getStudentId());
+        parameters.put("success", attendance.getSuccess());
+
+        namedJdbcTemplate.update(
+                "INSERT INTO " + databaseName + ".attendance (lesson_id,student_id,success)" +
+                        "VALUES (:lesson_id,:student_id,:success);",
+                parameters);
+    }
 
     public List<AttendanceView> getAllAttendances(int departmentId) {
         if (departmentId > 15 || departmentId < 1) {

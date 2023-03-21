@@ -20,7 +20,7 @@ public class AttendanceController {
         return attendanceRepository.getAllAttendances(departmentId);
     }
 
-    @GetMapping("/dep_{N}/attendance/{id}}")
+    @GetMapping("/dep_{N}/attendance/{id}")
     public AttendanceView getRecordAttendanceById(@PathVariable("N") int departmentId, @PathVariable String id) {
         return attendanceRepository.getRecordAttendanceById(departmentId, id);
     }
