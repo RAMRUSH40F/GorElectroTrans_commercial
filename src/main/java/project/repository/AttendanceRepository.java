@@ -1,5 +1,6 @@
 package project.repository;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -10,13 +11,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Repository
+@RequiredArgsConstructor
 public class AttendanceRepository {
 
-    @Autowired
-    JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
-    @Autowired
-    NamedParameterJdbcTemplate namedJdbcTemplate;
+    private final NamedParameterJdbcTemplate namedJdbcTemplate;
 
     // Метод добавляет запись о результатах посещения какого-то занятия учеником.
     public void addNewRecord(int departmentId, Attendance attendance) {

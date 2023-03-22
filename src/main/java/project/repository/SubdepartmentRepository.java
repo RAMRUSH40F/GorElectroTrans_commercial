@@ -1,7 +1,7 @@
 package project.repository;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -12,13 +12,11 @@ import java.util.Map;
 import java.util.List;
 
 @Repository(value = "SubdepartmentRepositoryBean")
+@RequiredArgsConstructor
 public class SubdepartmentRepository {
 
-    @Autowired
-    JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     public void addNewSubdepartment(int departmentId, Subdepartment subdepartment) {
         Map<String, Object> subdepartmentData = new HashMap<>();

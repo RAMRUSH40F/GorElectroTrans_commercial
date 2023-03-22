@@ -1,6 +1,6 @@
 package project.repository;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -15,16 +15,13 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
+@RequiredArgsConstructor
 public class StudentRepository {
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final SubdepartmentRepository subdepartmentRepository;
 
-    @Autowired
-    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
-    @Autowired
-    private SubdepartmentRepository subdepartmentRepository;
 
     public void addNewStudent(int departmentId, StudentView studentView) {
         // Для добавления нужен SubDepartmentId, а с фронта приходит SubDepartmentName

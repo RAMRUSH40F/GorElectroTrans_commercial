@@ -1,6 +1,6 @@
 package project.repository;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -14,13 +14,11 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
+@RequiredArgsConstructor
 public class LessonRepository {
 
-    @Autowired
-    JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    NamedParameterJdbcTemplate namedJdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedJdbcTemplate;
 
     public void addNewLesson(int departmentId, Lesson lesson) {
         if (departmentId > 15 || departmentId < 1) {
