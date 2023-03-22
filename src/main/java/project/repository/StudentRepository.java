@@ -61,7 +61,6 @@ public class StudentRepository {
                         .build());
 
     }
-
     public StudentView getStudentById(int departmentId, String studentId) {
         String query = new StringBuilder()
                 .append("SELECT * FROM DEP_")

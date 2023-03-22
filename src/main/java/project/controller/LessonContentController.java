@@ -47,8 +47,4 @@ public class LessonContentController {
         return repository.deleteById(lessonId, departmentId);
     }
 
-    @ExceptionHandler({InvalidDepartmentException.class})
-    private ResponseEntity<String> invalidDepartmentId(InvalidDepartmentException exception){
-        return ResponseEntity.badRequest().body(exception.getMessage());
-    }
 }

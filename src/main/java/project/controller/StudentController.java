@@ -17,12 +17,12 @@ public class StudentController {
 
     @GetMapping("/dep_{N}/students/data")
     public List<StudentView> getAllStudents(@PathVariable("N") int departmentId,
-                                            @RequestParam(value = "page", required = true) Integer page,
-                                            @RequestParam(value = "size", required = true) Integer pageSize) {
+                                            @RequestParam(value = "page", required = true) String page,
+                                            @RequestParam(value = "size", required = true) String pageSize) {
 
         validateDepartmentId(departmentId);
         validatePaginationParams(page, pageSize);
-        return studentRepository.getStudentsView(departmentId, page, pageSize);
+        return studentRepository.getStudentsView(departmentId, Integer.valueOf(page), Integer.valueOf(pageSize));
     }
 
     @GetMapping("/dep_{N}/students/{id}")
