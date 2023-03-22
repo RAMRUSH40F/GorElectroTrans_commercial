@@ -52,84 +52,88 @@ public class AttendanceRepository {
         if (departmentId > 15 || departmentId < 1) {
             throw new RuntimeException("Invalid department id, it has to be in [1,15] interval");
         }
-        String databaseName = "DEP_" + departmentId;
-        List<AttendanceView> listAttendance = jdbcTemplate.query("SELECT * FROM " + databaseName + ".attendance", new RowMapper<AttendanceView>() {
-            @Override
-            public AttendanceView mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return AttendanceView.builder()
+
+        String query = new StringBuilder()
+                .append("SELECT * FROM DEP_")
+                .append(departmentId)
+                .append(".attendance")
+                .toString();
+        // rs = возвращаемый из .query объект типа ResultSet
+        return jdbcTemplate.query(query, (rs, rowNum) ->
+                AttendanceView.builder()
                         .lessonId(rs.getInt("lesson_id"))
                         .studentId(rs.getString("student_id"))
                         .success(rs.getInt("success"))
-                        .build();
-            }
-        });
-        return listAttendance;
+                        .build());
     }
 
-    public AttendanceView getRecordAttendanceById(int departmentId, String id) {
+    public AttendanceView getRecordAttendanceById(int departmentId, String studentId) {
         if (departmentId > 15 || departmentId < 1) {
             throw new RuntimeException("Invalid department id, it has to be in [1,15] interval");
         }
-        String databaseName = "DEP_" + departmentId;
 
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("student_id", id);
-        return namedJdbcTemplate.queryForObject("SELECT * FROM " + databaseName + ".attendance WHERE id = :id", parameters, new RowMapper<AttendanceView>() {
-            @Override
-            public AttendanceView mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return AttendanceView.builder()
+        String query = new StringBuilder()
+                .append("SELECT * FROM DEP_")
+                .append(departmentId)
+                .append(".attendance WHERE student_id=")
+                .append(studentId)
+                .toString();
+        return jdbcTemplate.query(query, (rs, rowNum) ->
+                AttendanceView.builder()
                         .lessonId(rs.getInt("lesson_id"))
                         .studentId(rs.getString("student_id"))
                         .success(rs.getInt("success"))
-                        .build();
-            }
-        });
+                        .build()).get(0);
     }
 
-//    public void addNewRecordAttendance(int departmentId, AttendanceView attendanceView) {
-//        if (departmentId > 15 || departmentId < 1) {
-//            throw new RuntimeException("Invalid department id, it has to be in [1,15] interval");
-//        }
-//
-//        String databaseName = "DEP_" + departmentId;
-//
-//        List<Lesson> lessons = lessonRepository.getLessonsIdList(departmentId);
-//        List<Integer> lessIds = lessons.stream().map(Lesson::getId).collect(Collectors.toList());
-//
-//        List<Student> students = studentRepository.getStudentsIdList(departmentId);
-//        List<String> studIds = students.stream().map(Student::getStudentId).collect(Collectors.toList());
-//
-//
-//        Map<String, Object> parameters = new HashMap<>();
-//        for (int i = 0; i < lessIds.size(); i++) {
-//            for (int j = 0; j < studIds.size(); j++) {
-//                parameters.put("lesson_id", lessIds.get(i));
-//                parameters.put("student_id", studIds.get(j));
-//                parameters.put("success", attendanceView.getSuccess());
-//            }
-//
-//            namedJdbcTemplate.update(
-//                    "INSERT INTO " + databaseName + ".attendance (lesson_id,student_id,success)" +
-//                            "VALUES (:lesson_id,:student_id,:success);",
-//                    parameters);
-//        }
-//    }
+    public void addNewRecordAttendance(int departmentId, Attendance attendance) {
+        if (departmentId > 15 || departmentId < 1) {
+            throw new RuntimeException("Invalid department id, it has to be in [1,15] interval");
+        }
+
+        String databaseName = "DEP_" + departmentId;
+
+        Map<String, Object> parameters = new HashMap<>();
+                parameters.put("lesson_id", attendance.getLessonId());
+                parameters.put("student_id", attendance.getStudentId());
+                parameters.put("success", attendance.getSuccess());
+
+            namedJdbcTemplate.update(
+                    "INSERT INTO " + databaseName + ".attendance (lesson_id,student_id,success)" +
+                            "VALUES (:lesson_id,:student_id,:success);",
+                    parameters);
+        }
+
+    public void updateRecordAttendance(int departmentId, Attendance attendance) {
+        if (departmentId > 15 || departmentId < 1) {
+            throw new InvalidDepartmentException("Invalid department id, it has to be in [1,15] interval");
+        }
+
+        String query = new StringBuilder()
+                .append("UPDATE DEP_")
+                .append(departmentId)
+                .append(".attendance SET success=")
+                .append(attendance.getSuccess())
+                .append(" WHERE lesson_id='")
+                .append(attendance.getLessonId())
+                .append("'")
+                .toString();
+
+        jdbcTemplate.execute(query);
+    }
 
     public void deleteRecordById(int departmentId, String studentId) {
         if (departmentId > 15 || departmentId < 1) {
             throw new InvalidDepartmentException("Invalid department id, it has to be in [1,15] interval");
         }
 
-        String databaseName = "DEP_" + departmentId;
-
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("student_id", studentId);
-
-        jdbcTemplate.update(
-                "DELETE FROM " + databaseName + ".attendance WHERE student_id = :student_id ;");
+        String query = new StringBuilder()
+                .append("DELETE FROM DEP_")
+                .append(departmentId)
+                .append(".attendance WHERE student_id=")
+                .append(studentId)
+                .toString();
+        jdbcTemplate.execute(query);
     }
 
-    public void updateRecordAttendance(int departmentId, AttendanceView attendanceView) {
-
-    }
 }
