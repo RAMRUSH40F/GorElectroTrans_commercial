@@ -3,10 +3,8 @@ package project.repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
-import project.exceptions.InvalidDepartmentException;
 import project.model.Student;
 import project.model.StudentView;
 
@@ -29,9 +27,6 @@ public class StudentRepository {
     private SubdepartmentRepository subdepartmentRepository;
 
     public void addNewStudent(int departmentId, StudentView studentView) {
-        if (departmentId > 15 || departmentId < 1) {
-            throw new RuntimeException("Invalid department id, it has to be in [1,15] interval");
-        }
         // Для добавления нужен SubDepartmentId, а с фронта приходит SubDepartmentName
         Short newSubDepartmentId = subdepartmentRepository
                 .getSubdepartmentByName(departmentId, studentView.getSubDepartment())
@@ -51,9 +46,6 @@ public class StudentRepository {
     }
 
     public List<StudentView> getStudentsView(int departmentID) {
-        if (departmentID > 15 || departmentID < 1) {
-            throw new InvalidDepartmentException("Invalid department id, it has to be in [1,15] interval");
-        }
         String query = new StringBuilder()
                 .append("SELECT student_id, subdepartment, name FROM DEP_")
                 .append(departmentID)
@@ -70,9 +62,6 @@ public class StudentRepository {
     }
 
     public StudentView getStudentById(int departmentId, String studentId) {
-        if (departmentId > 15 || departmentId < 1) {
-            throw new InvalidDepartmentException("Invalid department id, it has to be in [1,15] interval");
-        }
         String query = new StringBuilder()
                 .append("SELECT * FROM DEP_")
                 .append(departmentId)
@@ -88,9 +77,6 @@ public class StudentRepository {
     }
 
     public void deleteStudentById(int departmentId, String studentId) {
-        if (departmentId > 15 || departmentId < 1) {
-            throw new InvalidDepartmentException("Invalid department id, it has to be in [1,15] interval");
-        }
         String query = new StringBuilder()
                 .append("DELETE FROM DEP_")
                 .append(departmentId)
@@ -105,9 +91,6 @@ public class StudentRepository {
      * Метод для смены отдела какого-то студента.
      */
     public void updateStudent(int departmentId, StudentView studentView) {
-        if (departmentId > 15 || departmentId < 1) {
-            throw new InvalidDepartmentException("Invalid department id, it has to be in [1,15] interval");
-        }
         Short newSubDepartmentId = subdepartmentRepository
                 .getSubdepartmentByName(departmentId, studentView.getSubDepartment())
                 .getId();
@@ -126,10 +109,6 @@ public class StudentRepository {
     }
 
     public void addNewStudentByDepId(int departmentId, Student student) {
-        if (departmentId > 15 || departmentId < 1) {
-            throw new RuntimeException("Invalid department id, it has to be in [1,15] interval");
-        }
-
         Map<String, Object> studentData = new HashMap<>();
         studentData.put("student_id", student.getStudentId());
         studentData.put("subdepartment_id", student.getSubDepartmentId());
@@ -143,9 +122,6 @@ public class StudentRepository {
      * Метод для внутреннего использование другой БД.
      */
     public List<Student> getStudentsIdList(int departmentId) {
-        if (departmentId > 15 || departmentId < 1) {
-            throw new RuntimeException("Invalid department id, it has to be in [1,15] interval");
-        }
         String databaseName = "DEP_" + departmentId;
         List<Student> studentIdList = jdbcTemplate.query("SELECT student_id FROM " +
                 databaseName + ".student", new RowMapper<Student>() {
