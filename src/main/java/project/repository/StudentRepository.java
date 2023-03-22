@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Repository
+@Repository("StudentRepositoryBean")
 @RequiredArgsConstructor
 public class StudentRepository {
 
@@ -42,11 +42,15 @@ public class StudentRepository {
 
     }
 
-    public List<StudentView> getStudentsView(int departmentID) {
+    public List<StudentView> getStudentsView(int departmentID, Integer page, Integer pageSize) {
         String query = new StringBuilder()
                 .append("SELECT student_id, subdepartment, name FROM DEP_")
                 .append(departmentID)
                 .append(".Student_view")
+                .append(" ORDER BY student_id ASC LIMIT ")
+                .append((page-1)*pageSize)
+                .append(",")
+                .append(pageSize)
                 .toString();
         // rs = возвращаемый из .query объект типа ResultSet
         return jdbcTemplate.query(query, (rs, rowNum) ->

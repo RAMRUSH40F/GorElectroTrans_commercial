@@ -7,8 +7,7 @@ import project.repository.StudentRepository;
 
 import java.util.List;
 
-import static project.repository.Validator.validateDepartmentId;
-import static project.repository.Validator.validateStudentId;
+import static project.repository.Validator.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,9 +16,13 @@ public class StudentController {
     private final StudentRepository studentRepository;
 
     @GetMapping("/dep_{N}/students/data")
-    public List<StudentView> getAllStudents(@PathVariable("N") int departmentId) {
+    public List<StudentView> getAllStudents(@PathVariable("N") int departmentId,
+                                            @RequestParam(value = "page", required = true) Integer page,
+                                            @RequestParam(value = "size", required = true) Integer pageSize) {
+
         validateDepartmentId(departmentId);
-        return studentRepository.getStudentsView(departmentId);
+        validatePaginationParams(page, pageSize);
+        return studentRepository.getStudentsView(departmentId, page, pageSize);
     }
 
     @GetMapping("/dep_{N}/students/{id}")
