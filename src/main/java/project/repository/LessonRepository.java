@@ -76,9 +76,6 @@ public class LessonRepository {
     }
 
     public List<Lesson> getAllLessons(int departmentId) {
-
-
-
         return namedJdbcTemplate.query("SELECT * FROM DEP_" + departmentId + ".lesson", (rs, rowNum) -> Lesson.builder().
                 id(rs.getInt("id")).
                 topic(rs.getString("topic")).
@@ -100,7 +97,6 @@ public class LessonRepository {
     }
 
     public void changeLesson(int department, int id, Lesson changed_lesson) {
-
         String query = new StringBuilder()
                 .append("UPDATE DEP_")
                 .append(department)
