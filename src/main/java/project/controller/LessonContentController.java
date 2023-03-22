@@ -33,12 +33,12 @@ public class LessonContentController {
     public boolean create(
             @PathVariable("N") Integer departmentId,
             @PathVariable("id") Integer lessonId,
-            @RequestBody byte[] file) {
-        if (file == null ) {
+            @RequestBody LessonContent content) {
+        if (content.getFile() == null ) {
             return false;
         }
         validateDepartmentId(departmentId);
-        return repository.create(new LessonContent(file, lessonId), departmentId);
+        return repository.create(new LessonContent(content.getFile(), lessonId), departmentId);
     }
 
     @DeleteMapping("/dep_{N}/content/{id}")
