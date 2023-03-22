@@ -1,22 +1,17 @@
 package project.exceptions;
 
-public class InvalidStudentIdException extends RuntimeException{
-    public InvalidStudentIdException() {
+public class InvalidStudentIdException extends RuntimeException {
+
+    private final Object receivedId;
+    private final String messageTemplate = "Вы ввели неправильны id обучающегося." +
+            " id - набор из 5 цифр 00000-99999. Вы ввели: ";
+
+    public InvalidStudentIdException(Object receivedId) {
+        this.receivedId = receivedId;
     }
 
-    public InvalidStudentIdException(String message) {
-        super(message);
-    }
-
-    public InvalidStudentIdException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public InvalidStudentIdException(Throwable cause) {
-        super(cause);
-    }
-
-    public InvalidStudentIdException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+    @Override
+    public String getMessage() {
+        return messageTemplate + receivedId;
     }
 }
