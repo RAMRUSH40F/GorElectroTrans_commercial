@@ -7,7 +7,7 @@ import project.repository.StudentRepository;
 
 import java.util.List;
 
-import static project.repository.Validator.*;
+import static project.exceptions.Validator.*;
 
 @RestController
 @RequiredArgsConstructor

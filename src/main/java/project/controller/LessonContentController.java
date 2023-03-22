@@ -9,7 +9,7 @@ import project.repository.LessonContentRepository;
 
 import java.util.List;
 
-import static project.repository.Validator.validateDepartmentId;
+import static project.exceptions.Validator.validateDepartmentId;
 
 @RestController
 @RequiredArgsConstructor

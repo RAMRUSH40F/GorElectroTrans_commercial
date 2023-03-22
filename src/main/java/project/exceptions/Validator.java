@@ -1,8 +1,4 @@
-package project.repository;
-
-import project.exceptions.InvalidDepartmentException;
-import project.exceptions.InvalidPagination;
-import project.exceptions.InvalidStudentIdException;
+package project.exceptions;
 
 public class Validator {
 
