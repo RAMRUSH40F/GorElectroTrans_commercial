@@ -14,8 +14,8 @@ public class LessonController {
     private LessonRepository lessonRepository;
 
     @GetMapping("/dep_{N}/work_plan/data")
-    public List<Lesson> getAllLessons(@PathVariable("N") int department) {
-        return lessonRepository.getAllLessons(department);
+    public List<Lesson> getPagedLessons(@PathVariable("N") int department, @RequestParam int page, @RequestParam int size) {
+        return lessonRepository.getPagedLessons(department, page, size);
     }
 
     @PostMapping("/dep_{N}/work_plan/data")

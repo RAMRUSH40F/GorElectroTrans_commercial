@@ -23,11 +23,10 @@ public class LessonRepository {
     @Autowired
     private NamedParameterJdbcTemplate namedJdbcTemplate;
 
-    public void addNewLesson(int departmentId, Lesson lesson) {
-        if (departmentId > 15 || departmentId < 1) {
-            throw new RuntimeException("Invalid department id, it has to be in [1,15] interval");
-        }
-        String databaseName = "DEP_" + departmentId;
+    public void addNewLesson(int department, Lesson lesson) {
+        Validator.validateDepartmentId(department);
+
+        String databaseName = "DEP_" + department;
 
         Map<String, Object> parameters = new HashMap<String, Object>();
 
@@ -44,21 +43,18 @@ public class LessonRepository {
                 parameters);
     }
 
-    public void deleteAllLessons(int departmentId) {
-        if (departmentId > 15 || departmentId < 1) {
-            throw new RuntimeException("Invalid department id, it has to be in [1,15] interval");
-        }
-        String databaseName = "DEP_" + departmentId;
+    public void deleteAllLessons(int department) {
+        Validator.validateDepartmentId(department);
+        String databaseName = "DEP_" + department;
 
         jdbcTemplate.update(
                 "DELETE FROM " + databaseName + ".lesson ;");
     }
 
-    public List<Lesson> getLessonsIdList(int departmentId) {
-        if (departmentId > 15 || departmentId < 1) {
-            throw new RuntimeException("Invalid department id, it has to be in [1,15] interval");
-        }
-        String databaseName = "DEP_" + departmentId;
+    public List<Lesson> getLessonsIdList(int department) {
+        Validator.validateDepartmentId(department);
+
+        String databaseName = "DEP_" + department;
         List<Lesson> lessonsIdList = jdbcTemplate.query("SELECT id FROM " +
                 databaseName + ".lesson", new RowMapper<Lesson>() {
             @Override
@@ -75,8 +71,9 @@ public class LessonRepository {
         return null;
     }
 
-    public List<Lesson> getAllLessons(int departmentId) {
-        return namedJdbcTemplate.query("SELECT * FROM DEP_" + departmentId + ".lesson", (rs, rowNum) -> Lesson.builder().
+    public List<Lesson> getPagedLessons(int department, int page, int size) {
+        Validator.validateDepartmentId(department);
+        return namedJdbcTemplate.query("SELECT * FROM DEP_" + department + ".lesson" + "ORDER BY id ASK LIMIT" + ((page - 1) * size) + "," + size, (rs, rowNum) -> Lesson.builder().
                 id(rs.getInt("id")).
                 topic(rs.getString("topic")).
                 duration(rs.getFloat("duration")).
@@ -85,8 +82,9 @@ public class LessonRepository {
                 peoplePlanned(rs.getInt("people_planned")).build());
     }
 
-    public List<Lesson> getLessonById(int departmentN, int id) {
-        return namedJdbcTemplate.query("SELECT * FROM DEP_" + departmentN + ".lesson WHERE id=" + id, (rs, rowNum) -> Lesson.builder().
+    public List<Lesson> getLessonById(int department, int id) {
+        Validator.validateDepartmentId(department);
+        return namedJdbcTemplate.query("SELECT * FROM DEP_" + department + ".lesson WHERE id=" + id, (rs, rowNum) -> Lesson.builder().
                 id(rs.getInt("id")).
                 topic(rs.getString("topic")).
                 duration(rs.getFloat("duration")).
@@ -97,6 +95,7 @@ public class LessonRepository {
     }
 
     public void changeLesson(int department, int id, Lesson changed_lesson) {
+        Validator.validateDepartmentId(department);
         String query = new StringBuilder()
                 .append("UPDATE DEP_")
                 .append(department)
@@ -119,9 +118,7 @@ public class LessonRepository {
     }
 
     public void deleteLessonById(int department, int id) {
-        if (department > 15 || department < 1) {
-            throw new InvalidDepartmentException("Invalid department id, it has to be in [1,15] interval");
-        }
+        Validator.validateDepartmentId(department);
         String query = new StringBuilder()
                 .append("DELETE FROM DEP_")
                 .append(department)
