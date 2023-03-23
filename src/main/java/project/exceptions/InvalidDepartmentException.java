@@ -1,22 +1,17 @@
 package project.exceptions;
 
-public class InvalidDepartmentException extends RuntimeException{
-    public InvalidDepartmentException() {
+public class InvalidDepartmentException extends RuntimeException {
+    private final Object receivedId;
+    private final String messageTemplate = "Неправильный департамент в ссылке. " +
+            "Департаментов всего 15, а вы в качестве департамента ввели: ";
+
+    public InvalidDepartmentException(Object receivedId) {
+        this.receivedId = receivedId;
     }
 
-    public InvalidDepartmentException(String message) {
-        super(message);
+    @Override
+    public String getMessage() {
+        return messageTemplate+receivedId;
     }
 
-    public InvalidDepartmentException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public InvalidDepartmentException(Throwable cause) {
-        super(cause);
-    }
-
-    public InvalidDepartmentException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
 }

@@ -9,7 +9,7 @@ import project.repository.LessonContentRepository;
 
 import java.util.List;
 
-import static project.repository.Validator.validateDepartmentId;
+import static project.exceptions.Validator.validateDepartmentId;
 
 @RestController
 @RequiredArgsConstructor
@@ -47,8 +47,4 @@ public class LessonContentController {
         return repository.deleteById(lessonId, departmentId);
     }
 
-    @ExceptionHandler({InvalidDepartmentException.class})
-    private ResponseEntity<String> invalidDepartmentId(InvalidDepartmentException exception){
-        return ResponseEntity.badRequest().body(exception.getMessage());
-    }
 }
