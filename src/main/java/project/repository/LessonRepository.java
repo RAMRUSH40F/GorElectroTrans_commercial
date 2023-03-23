@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
+import project.exceptions.InvalidDepartmentException;
 import project.model.Lesson;
 
 import java.sql.ResultSet;
@@ -13,18 +14,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Repository
+@Repository("LessonRepositoryBean")
 @RequiredArgsConstructor
 public class LessonRepository {
 
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedJdbcTemplate;
 
-    public void addNewLesson(int departmentId, Lesson lesson) {
-        if (departmentId > 15 || departmentId < 1) {
-            throw new RuntimeException("Invalid department id, it has to be in [1,15] interval");
-        }
-        String databaseName = "DEP_" + departmentId;
+
+    public void addNewLesson(int department, Lesson lesson) {
+        Validator.validateDepartmentId(department);
+
+        String databaseName = "DEP_" + department;
 
         Map<String, Object> parameters = new HashMap<String, Object>();
 
@@ -41,21 +42,18 @@ public class LessonRepository {
                 parameters);
     }
 
-    public void deleteAllLessons(int departmentId) {
-        if (departmentId > 15 || departmentId < 1) {
-            throw new RuntimeException("Invalid department id, it has to be in [1,15] interval");
-        }
-        String databaseName = "DEP_" + departmentId;
+    public void deleteAllLessons(int department) {
+        Validator.validateDepartmentId(department);
+        String databaseName = "DEP_" + department;
 
         jdbcTemplate.update(
                 "DELETE FROM " + databaseName + ".lesson ;");
     }
 
-    public List<Lesson> getLessonsIdList(int departmentId) {
-        if (departmentId > 15 || departmentId < 1) {
-            throw new RuntimeException("Invalid department id, it has to be in [1,15] interval");
-        }
-        String databaseName = "DEP_" + departmentId;
+    public List<Lesson> getLessonsIdList(int department) {
+        Validator.validateDepartmentId(department);
+
+        String databaseName = "DEP_" + department;
         List<Lesson> lessonsIdList = jdbcTemplate.query("SELECT id FROM " +
                 databaseName + ".lesson", new RowMapper<Lesson>() {
             @Override
@@ -68,4 +66,64 @@ public class LessonRepository {
         return lessonsIdList;
     }
 
+    public List<Lesson> getAllLessonAdmin() {
+        return null;
+    }
+
+    public List<Lesson> getPagedLessons(int department, int page, int size) {
+        Validator.validateDepartmentId(department);
+        return namedJdbcTemplate.query("SELECT * FROM DEP_" + department + ".lesson" + " ORDER BY id ASC LIMIT " + ((page - 1) * size) + "," + size, (rs, rowNum) -> Lesson.builder().
+                id(rs.getInt("id")).
+                topic(rs.getString("topic")).
+                duration(rs.getFloat("duration")).
+                date(rs.getDate("date")).
+                teacher(rs.getString("teacher")).
+                peoplePlanned(rs.getInt("people_planned")).build());
+    }
+
+    public List<Lesson> getLessonById(int department, int id) {
+        Validator.validateDepartmentId(department);
+        return namedJdbcTemplate.query("SELECT * FROM DEP_" + department + ".lesson WHERE id=" + id, (rs, rowNum) -> Lesson.builder().
+                id(rs.getInt("id")).
+                topic(rs.getString("topic")).
+                duration(rs.getFloat("duration")).
+                date(rs.getDate("date")).
+                teacher(rs.getString("teacher")).
+                peoplePlanned(rs.getInt("people_planned")).build());
+
+    }
+
+    public void changeLesson(int department, int id, Lesson changed_lesson) {
+        Validator.validateDepartmentId(department);
+        String query = new StringBuilder()
+                .append("UPDATE DEP_")
+                .append(department)
+                .append(".lesson SET topic=")
+                .append(changed_lesson.getTopic())
+                .append(", duration=")
+                .append(changed_lesson.getDuration())
+                .append(", date")
+                .append(changed_lesson.getDate())
+                .append(", teacher=")
+                .append(changed_lesson.getTeacher())
+                .append(", people_planned=")
+                .append(changed_lesson.getPeoplePlanned())
+                .append(" WHERE id='")
+                .append(changed_lesson.getId())
+                .append("'")
+                .toString();
+
+        jdbcTemplate.execute(query);
+    }
+
+    public void deleteLessonById(int department, int id) {
+        Validator.validateDepartmentId(department);
+        String query = new StringBuilder()
+                .append("DELETE FROM DEP_")
+                .append(department)
+                .append(".lesson WHERE id=")
+                .append(id)
+                .toString();
+        jdbcTemplate.execute(query);
+    }
 }
