@@ -73,7 +73,7 @@ public class LessonRepository {
 
     public List<Lesson> getPagedLessons(int department, int page, int size) {
         Validator.validateDepartmentId(department);
-        return namedJdbcTemplate.query("SELECT * FROM DEP_" + department + ".lesson" + "ORDER BY id ASK LIMIT" + ((page - 1) * size) + "," + size, (rs, rowNum) -> Lesson.builder().
+        return namedJdbcTemplate.query("SELECT * FROM DEP_" + department + ".lesson" + " ORDER BY id ASC LIMIT " + ((page - 1) * size) + "," + size, (rs, rowNum) -> Lesson.builder().
                 id(rs.getInt("id")).
                 topic(rs.getString("topic")).
                 duration(rs.getFloat("duration")).
