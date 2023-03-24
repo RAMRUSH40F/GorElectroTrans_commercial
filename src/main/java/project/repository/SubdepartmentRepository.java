@@ -8,8 +8,8 @@ import org.springframework.stereotype.Repository;
 import project.model.Subdepartment;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 @Repository(value = "SubdepartmentRepositoryBean")
 @RequiredArgsConstructor
@@ -44,5 +44,18 @@ public class SubdepartmentRepository {
         if (resultList.size() == 0) return null;
         return resultList.get(0);
 
+    }
+
+    public List<Subdepartment> getAll(Integer departmentId) {
+        String query = new StringBuilder()
+                .append("SELECT id, name, name FROM DEP_")
+                .append(departmentId)
+                .append(".subdepartment")
+                .toString();
+        return jdbcTemplate.query(query, (rs, rowNum) ->
+                Subdepartment.builder()
+                        .id(rs.getShort("id"))
+                        .name(rs.getString("name"))
+                        .build());
     }
 }
