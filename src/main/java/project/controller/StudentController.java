@@ -25,7 +25,7 @@ public class StudentController {
         validateDepartmentId(departmentId);
         validatePaginationParams(page, pageSize);
         HttpHeaders headers = new HttpHeaders();
-        headers.add("studentsCount", String.valueOf(studentRepository.getStudentsCount(departmentId)));
+        headers.add("students_count", String.valueOf(studentRepository.getStudentsCount(departmentId)));
         return ResponseEntity
                 .ok()
                 .headers(headers)

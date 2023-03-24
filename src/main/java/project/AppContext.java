@@ -28,7 +28,13 @@ public class AppContext {
                 registry.addMapping("/**")
                         .allowedMethods("GET", "POST", "PUT", "DELETE")
                         .allowedOrigins("*")
-                        .allowedHeaders("*");;
+                        .allowedHeaders("*")
+                        .exposedHeaders("Access-Control-Allow-Origin",
+                                "Access-Control-Allow-Credentials",
+                                "Access-Control-Expose-Headers",
+                                "students_count",
+                                "lessons_count");
+
             }
         };
     }

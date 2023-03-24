@@ -18,7 +18,7 @@ public class LessonController {
     @GetMapping("/dep_{N}/work_plan/data")
     public ResponseEntity<List<Lesson>> getPagedLessons(@PathVariable("N") int department, @RequestParam int page, @RequestParam int size) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("lessonCount", String.valueOf(lessonRepository.getLessonsCount(department)));
+        headers.add("lessons_count", String.valueOf(lessonRepository.getLessonsCount(department)));
         return ResponseEntity
                 .ok()
                 .headers(headers)
