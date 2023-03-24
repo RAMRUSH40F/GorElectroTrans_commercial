@@ -48,7 +48,7 @@ public class StudentRepository {
                 .append(departmentID)
                 .append(".Student_view")
                 .append(" ORDER BY student_id ASC LIMIT ")
-                .append((page-1)*pageSize)
+                .append((page - 1) * pageSize)
                 .append(",")
                 .append(pageSize)
                 .toString();
@@ -61,6 +61,7 @@ public class StudentRepository {
                         .build());
 
     }
+
     public StudentView getStudentById(int departmentId, String studentId) {
         String query = new StringBuilder()
                 .append("SELECT * FROM DEP_")
@@ -133,6 +134,13 @@ public class StudentRepository {
             }
         });
         return studentIdList;
+    }
+
+    public Integer getStudentsCount(int departmentId) {
+        String databaseName = "DEP_" + departmentId;
+        return jdbcTemplate.queryForObject("SELECT COUNT(student_id) FROM " +
+                databaseName + ".student AS COUNT", Integer.class);
+
     }
 
 }

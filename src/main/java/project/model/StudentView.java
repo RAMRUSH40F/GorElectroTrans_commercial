@@ -13,5 +13,6 @@ public class StudentView {
     private String studentId;
     @JsonProperty("subdepartment_name")
     private String subDepartment;
+    @JsonProperty("full_name")
     private String fullName;
 }
