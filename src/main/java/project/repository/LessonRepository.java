@@ -138,7 +138,7 @@ public class LessonRepository {
         StringBuilder query = new StringBuilder().append("SELECT id FROM DEP_")
                 .append(department)
                 .append(".lesson ORDER BY id DESC LIMIT 0, 1");
-        id = jdbcTemplate.query(query.toString(), (rs, rowNum) -> rs.getInt("id")).get(0);
+        id = jdbcTemplate.query(query.toString(), (rs, rowNum) -> rs.getInt("id")).get(1);
         return id;
     }
 }
