@@ -11,9 +11,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Attendance {
-    @JsonProperty("lesson_id")
+    @JsonProperty("lessonId")
     private Integer lessonId;
-    @JsonProperty("student_id")
+    @JsonProperty("studentId")
     private String studentId;
     @JsonProperty("success")
     private int success;
