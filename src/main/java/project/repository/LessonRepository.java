@@ -66,6 +66,7 @@ public class LessonRepository {
         });
         return lessonsIdList;
     }
+
     public Integer getLessonsCount(int department) {
         validateDepartmentId(department);
         String databaseName = "DEP_" + department;
@@ -75,7 +76,9 @@ public class LessonRepository {
 
     public List<Lesson> getPagedLessons(int department, int page, int size) {
         validateDepartmentId(department);
-        return namedJdbcTemplate.query("SELECT * FROM DEP_" + department + ".lesson" + " ORDER BY id ASC LIMIT " + ((page - 1) * size) + "," + size, (rs, rowNum) -> Lesson.builder().
+        String sqlQuery = "SELECT * FROM DEP_" + department + ".lesson" +
+                " ORDER BY date DESC LIMIT " + ((page - 1) * size) + "," + size;
+        return namedJdbcTemplate.query(sqlQuery, (rs, rowNum) -> Lesson.builder().
                 id(rs.getInt("id")).
                 topic(rs.getString("topic")).
                 duration(rs.getFloat("duration")).
