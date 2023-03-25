@@ -28,7 +28,7 @@ public class AppContext {
                 registry.addMapping("/**")
                         .allowedMethods("GET", "POST", "PUT", "DELETE")
                         .allowedOrigins("*")
-                        .allowedHeaders("*");;
+                        .allowedHeaders("*");
             }
         };
     }
