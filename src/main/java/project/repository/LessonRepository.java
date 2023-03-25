@@ -131,17 +131,4 @@ public class LessonRepository {
         jdbcTemplate.execute(query);
     }
 
-    public Lesson getTeacher(int department, int id) {
-        validateDepartmentId(department);
-        String query = new StringBuilder()
-                .append("SELECT teacher FROM DEP_")
-                .append(department)
-                .append(".lesson WHERE id=")
-                .append(id)
-                .toString();
-        return jdbcTemplate.query(query, (rs, rowNum) ->
-                Lesson.builder()
-                        .teacher(rs.getString("teacher"))
-                        .build()).get(0);
-    }
 }
