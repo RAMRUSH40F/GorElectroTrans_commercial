@@ -1,6 +1,8 @@
 package project.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.exceptions.InvalidStudentIdException;
 import project.model.Attendance;
@@ -10,6 +12,9 @@ import project.repository.AttendanceRepository;
 
 import java.util.List;
 
+import static project.exceptions.Validator.validateDepartmentId;
+import static project.exceptions.Validator.validatePaginationParams;
+
 @RestController("AttendanceControllerBean")
 public class AttendanceController {
 
@@ -17,27 +22,41 @@ public class AttendanceController {
     AttendanceRepository attendanceRepository;
 
     @GetMapping("/dep_{N}/attendance/data")
-    public List<AttendanceView> getAllAttendances(@PathVariable("N") int departmentId) {
-        return attendanceRepository.getAllAttendances(departmentId);
+    public ResponseEntity<List<AttendanceView>> getAllAttendances(@PathVariable("N") int departmentId,
+                                                  @RequestParam(value = "page", required = true) String page,
+                                                  @RequestParam(value = "size", required = true) String pageSize) {
+
+        validateDepartmentId(departmentId);
+        validatePaginationParams(page, pageSize);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("students_count", String.valueOf(attendanceRepository.getRecordsAttendanceCount(departmentId)));
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .body(attendanceRepository.getAllAttendances(departmentId, Integer.valueOf(page), Integer.valueOf(pageSize)));
     }
 
     @GetMapping("/dep_{N}/attendance/{id}")
-    public AttendanceView getRecordAttendanceById(@PathVariable("N") int departmentId, @PathVariable("id") String studentId) {
-        return attendanceRepository.getRecordAttendanceById(departmentId, studentId);
+    public AttendanceView getRecordAttendanceById(@PathVariable("N") int departmentId, @PathVariable("id") String studentId, @RequestBody AttendanceView attendanceView) {
+        validateDepartmentId(departmentId);
+        return attendanceRepository.getRecordAttendanceById(departmentId, studentId, attendanceView);
     }
 
     @PostMapping("/dep_{N}/attendance/data")
-    public void addNewRecordAttendance(@PathVariable("N") int departmentId, @RequestBody Attendance attendance) {
-        attendanceRepository.addNewRecordAttendance(departmentId, attendance);
+    public void addNewRecordAttendance(@PathVariable("N") int departmentId, @RequestBody AttendanceView attendanceView) {
+        validateDepartmentId(departmentId);
+        attendanceRepository.addNewRecordAttendance(departmentId, attendanceView);
     }
 
     @PutMapping("/dep_{N}/attendance/data")
-    public void updateRecordAttendance(@PathVariable("N") int departmentId, @RequestBody Attendance attendance) {
-        attendanceRepository.updateRecordAttendance(departmentId, attendance);
+    public void updateRecordAttendance(@PathVariable("N") int departmentId, @RequestBody AttendanceView attendanceView) {
+        validateDepartmentId(departmentId);
+        attendanceRepository.updateRecordAttendance(departmentId, attendanceView);
     }
 
     @DeleteMapping("/dep_{N}/attendance/{id}")
     public void deleteRecordById(@PathVariable("N") int departmentId, @PathVariable("id") String studentId) {
+        validateDepartmentId(departmentId);
         attendanceRepository.deleteRecordById(departmentId, studentId);
     }
 
