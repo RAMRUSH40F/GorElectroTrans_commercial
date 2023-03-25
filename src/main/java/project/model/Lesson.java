@@ -22,6 +22,6 @@ public class Lesson {
     private Date date;
     @JsonProperty("teacher")
     private String teacher;
-    @JsonProperty("people_planned")
+    @JsonProperty("peoplePlanned")
     private int peoplePlanned;
 }

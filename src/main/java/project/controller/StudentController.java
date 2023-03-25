@@ -1,6 +1,8 @@
 package project.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.model.StudentView;
 import project.repository.StudentRepository;
@@ -16,13 +18,18 @@ public class StudentController {
     private final StudentRepository studentRepository;
 
     @GetMapping("/dep_{N}/students/data")
-    public List<StudentView> getAllStudents(@PathVariable("N") int departmentId,
-                                            @RequestParam(value = "page", required = true) String page,
-                                            @RequestParam(value = "size", required = true) String pageSize) {
+    public ResponseEntity<List<StudentView>> getStudentPage(@PathVariable("N") int departmentId,
+                                                            @RequestParam(value = "page", required = true) String page,
+                                                            @RequestParam(value = "size", required = true) String pageSize) {
 
         validateDepartmentId(departmentId);
         validatePaginationParams(page, pageSize);
-        return studentRepository.getStudentsView(departmentId, Integer.valueOf(page), Integer.valueOf(pageSize));
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("students_count", String.valueOf(studentRepository.getStudentsCount(departmentId)));
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .body(studentRepository.getStudentsView(departmentId, Integer.valueOf(page), Integer.valueOf(pageSize)));
     }
 
     @GetMapping("/dep_{N}/students/{id}/size")

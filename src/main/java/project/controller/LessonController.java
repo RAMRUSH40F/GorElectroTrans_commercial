@@ -1,6 +1,8 @@
 package project.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.model.Lesson;
 import project.repository.LessonRepository;
@@ -14,8 +16,13 @@ public class LessonController {
     private LessonRepository lessonRepository;
 
     @GetMapping("/dep_{N}/work_plan/data")
-    public List<Lesson> getPagedLessons(@PathVariable("N") int department, @RequestParam int page, @RequestParam int size) {
-        return lessonRepository.getPagedLessons(department, page, size);
+    public ResponseEntity<List<Lesson>> getPagedLessons(@PathVariable("N") int department, @RequestParam int page, @RequestParam int size) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("lessons_count", String.valueOf(lessonRepository.getLessonsCount(department)));
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .body(lessonRepository.getPagedLessons(department, page, size));
     }
 
     @PostMapping("/dep_{N}/work_plan/data")

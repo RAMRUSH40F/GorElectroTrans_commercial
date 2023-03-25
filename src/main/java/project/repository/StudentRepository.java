@@ -29,14 +29,14 @@ public class StudentRepository {
                 .getSubdepartmentByName(departmentId, studentView.getSubDepartment())
                 .getId();
         Map<String, Object> studentData = new HashMap<>();
-        studentData.put("student_id", studentView.getStudentId());
-        studentData.put("subdepartment_id", newSubDepartmentId);
+        studentData.put("studentId", studentView.getStudentId());
+        studentData.put("subdepartmentId", newSubDepartmentId);
 
         String insertQueryWithParameters = new StringBuilder()
                 .append("INSERT INTO DEP_")
                 .append(departmentId)
                 .append(".student(student_id,subdepartment_id)")
-                .append("VALUE(:student_id,:subdepartment_id)")
+                .append("VALUE(:studentId,:subdepartmentId)")
                 .toString();
         namedParameterJdbcTemplate.update(insertQueryWithParameters, studentData);
 
@@ -48,7 +48,7 @@ public class StudentRepository {
                 .append(departmentID)
                 .append(".Student_view")
                 .append(" ORDER BY student_id ASC LIMIT ")
-                .append((page-1)*pageSize)
+                .append((page - 1) * pageSize)
                 .append(",")
                 .append(pageSize)
                 .toString();
@@ -61,6 +61,7 @@ public class StudentRepository {
                         .build());
 
     }
+
     public StudentView getStudentById(int departmentId, String studentId) {
         String query = new StringBuilder()
                 .append("SELECT * FROM DEP_")
@@ -110,11 +111,11 @@ public class StudentRepository {
 
     public void addNewStudentByDepId(int departmentId, Student student) {
         Map<String, Object> studentData = new HashMap<>();
-        studentData.put("student_id", student.getStudentId());
+        studentData.put("studentId", student.getStudentId());
         studentData.put("subdepartment_id", student.getSubDepartmentId());
 
         namedParameterJdbcTemplate.update("INSERT INTO DEP_" + departmentId + ".student(student_id,subdepartment_id)"
-                + "VALUE(:student_id,:subdepartment_id)", studentData);
+                + "VALUE(:studentId,:subdepartment_id)", studentData);
 
     }
 
@@ -128,11 +129,18 @@ public class StudentRepository {
             @Override
             public Student mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return Student.builder()
-                        .studentId(rs.getString("student_id"))
+                        .studentId(rs.getString("student_Id"))
                         .build();
             }
         });
         return studentIdList;
+    }
+
+    public Integer getStudentsCount(int departmentId) {
+        String databaseName = "DEP_" + departmentId;
+        return jdbcTemplate.queryForObject("SELECT COUNT(student_id) FROM " +
+                databaseName + ".student AS COUNT", Integer.class);
+
     }
 
 }
