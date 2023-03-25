@@ -84,7 +84,7 @@ public class LessonRepository {
                 duration(rs.getFloat("duration")).
                 date(rs.getDate("date")).
                 teacher(rs.getString("teacher")).
-                peoplePlanned(rs.getInt("people_planned")).build());
+                peoplePlanned(rs.getInt("peoplePlanned")).build());
     }
 
     public List<Lesson> getLessonById(int department, int id) {
