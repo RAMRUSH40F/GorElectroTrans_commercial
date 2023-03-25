@@ -11,10 +11,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AttendanceView {
-    @JsonProperty("lesson_id")
+    @JsonProperty("lessonId")
     private Integer lessonId;
-    @JsonProperty("student_id")
+    @JsonProperty("studentId")
     private String studentId;
     @JsonProperty("success")
     private int success;
+    @JsonProperty("teacher")
+    private String teacher;
 }
