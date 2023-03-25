@@ -2,19 +2,13 @@ package project.repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.RequestBody;
-import project.exceptions.InvalidDepartmentException;
 import project.model.*;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Repository("AttendanceRepositoryBean")
 public class AttendanceRepository {
@@ -48,7 +42,7 @@ public class AttendanceRepository {
                 parameters);
     }
 
-    public List<AttendanceView> getAllAttendances(int departmentId, Integer page, Integer pageSize) {
+    public List<AttendanceView> getAllRecordsAttendance(int departmentId, Integer page, Integer pageSize) {
 
         String query = new StringBuilder()
                 .append("SELECT * FROM DEP_")
@@ -65,16 +59,11 @@ public class AttendanceRepository {
                         .lessonId(rs.getInt("lesson_id"))
                         .studentId(rs.getString("student_id"))
                         .success(rs.getInt("success"))
+                        .teacher(rs.getString("teacher"))
                         .build());
     }
 
-    public AttendanceView getRecordAttendanceById(int departmentId, String studentId, AttendanceView attendanceView) {
-
-        String teacher = lessonRepository.getTeacher
-                (departmentId, 7).getTeacher();
-
-        System.out.println(teacher);
-
+    public AttendanceView getRecordAttendanceById(int departmentId, String studentId) {
 
         String query = new StringBuilder()
                 .append("SELECT * FROM DEP_")
@@ -88,21 +77,21 @@ public class AttendanceRepository {
                         .lessonId(rs.getInt("lesson_id"))
                         .studentId(rs.getString("student_id"))
                         .success(rs.getInt("success"))
-                        .teacher(teacher)
+                        .teacher(rs.getString("teacher"))
                         .build()).get(0);
     }
 
-    public void addNewRecordAttendance(int departmentId, AttendanceView attendanceView) {
+    public void addNewRecordAttendance(int departmentId, Attendance attendance) {
 
         String databaseName = "DEP_" + departmentId;
 
         Map<String, Object> parameters = new HashMap<>();
-                parameters.put("lesson_id", attendanceView.getLessonId());
-                parameters.put("student_id", attendanceView.getStudentId());
-                parameters.put("success", attendanceView.getSuccess());
+                parameters.put("lesson_id", attendance.getLessonId());
+                parameters.put("student_id", attendance.getStudentId());
+                parameters.put("success", attendance.getSuccess());
 
             namedJdbcTemplate.update(
-                    "INSERT INTO " + databaseName + ".Attendence_view (lesson_id,student_id,success)" +
+                    "INSERT INTO " + databaseName + ".attendance (lesson_id,student_id,success)" +
                             "VALUES (:lesson_id,:student_id,:success);",
                     parameters);
         }
@@ -123,9 +112,6 @@ public class AttendanceRepository {
     }
 
     public void deleteRecordById(int departmentId, String studentId) {
-        if (departmentId > 15 || departmentId < 1) {
-            throw new InvalidDepartmentException("Invalid department id, it has to be in [1,15] interval");
-        }
 
         String query = new StringBuilder()
                 .append("DELETE FROM DEP_")
