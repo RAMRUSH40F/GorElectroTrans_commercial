@@ -32,7 +32,7 @@ public class StudentController {
                 .body(studentRepository.getStudentsView(departmentId, Integer.valueOf(page), Integer.valueOf(pageSize)));
     }
 
-    @GetMapping("/dep_{N}/students/{id}/size")
+    @GetMapping("/dep_{N}/students/{id} ")
     public StudentView findStudentById(@PathVariable("N") int departmentId, @PathVariable("id") String studentId) {
         validateDepartmentId(departmentId);
         validateStudentId(studentId);
