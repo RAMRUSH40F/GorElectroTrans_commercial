@@ -27,10 +27,8 @@ public class LessonController {
 
     @PostMapping("/dep_{N}/work_plan/data")
     public int addLesson(@PathVariable("N") int department, @RequestBody Lesson lesson) {
-        int lessonId;
         lessonRepository.addNewLesson(department, lesson);
-        lessonId=lessonRepository.getLastId(department);
-return lessonId;
+        return lessonRepository.getMaxId(department);
     }
 
     @GetMapping("/dep_{N}/work_plan/{id}")
