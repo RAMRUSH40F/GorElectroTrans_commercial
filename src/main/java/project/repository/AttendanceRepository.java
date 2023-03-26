@@ -62,7 +62,7 @@ public class AttendanceRepository {
                         .build());
     }
 
-    public AttendanceView getRecordAttendanceById(int departmentId, String studentId) {
+    public AttendanceView getAttendanceByStudent(int departmentId, String studentId) {
 
         String query = new StringBuilder()
                 .append("SELECT * FROM DEP_")
@@ -71,37 +71,41 @@ public class AttendanceRepository {
                 .append(studentId)
                 .toString();
 
-        return jdbcTemplate.query(query, (rs, rowNum) ->
-                AttendanceView.builder()
-                        .name(rs.getString("name"))
-                        .lessonId(rs.getInt("lesson_id"))
-                        .date(rs.getDate("date"))
-                        .studentId(rs.getString("student_id"))
-                        .success(rs.getInt("success"))
-                        .topic(rs.getString("topic"))
-                        .duration(rs.getFloat("duration"))
-                        .teacher(rs.getString("teacher"))
-                        .subDepartment(rs.getString("subdepartment"))
-                        .build()).get(0);
+        try {
+            return jdbcTemplate.query(query, (rs, rowNum) ->
+                    AttendanceView.builder()
+                            .name(rs.getString("name"))
+                            .lessonId(rs.getInt("lesson_id"))
+                            .date(rs.getDate("date"))
+                            .studentId(rs.getString("student_id"))
+                            .success(rs.getInt("success"))
+                            .topic(rs.getString("topic"))
+                            .duration(rs.getFloat("duration"))
+                            .teacher(rs.getString("teacher"))
+                            .subDepartment(rs.getString("subdepartment"))
+                            .build()).get(0);
+        } catch (IndexOutOfBoundsException e) {
+            return null;
+        }
     }
 
 
     public void updateRecordAttendance(int departmentId, Attendance attendance) {
         Map<String, Object> requestParams = new HashMap<>();
-        requestParams.put("department_id", departmentId);
+        String databaseName = "DEP_" + departmentId;
         requestParams.put("success", attendance.getSuccess());
         requestParams.put("lesson_id", attendance.getLessonId());
         requestParams.put("student_id", attendance.getStudentId());
-        String SQL_UPDATE_TEMPLATE = "UPDATE DEP_:department_id.attendance SET success=:success WHERE lesson_id=:lesson_id AND student_id=:student_id";
+        String SQL_UPDATE_TEMPLATE = "UPDATE " + databaseName + ".attendance SET success=:success WHERE lesson_id=:lesson_id AND student_id=:student_id";
         namedJdbcTemplate.update(SQL_UPDATE_TEMPLATE, requestParams);
     }
 
     public void deleteRecordById(int departmentId, Attendance attendance) {
         Map<String, Object> requestParams = new HashMap<>();
-        requestParams.put("department_id", departmentId);
+        String databaseName = "DEP_" + departmentId;
         requestParams.put("lesson_id", attendance.getLessonId());
         requestParams.put("student_id", attendance.getStudentId());
-        String SQL_DELETE_TEMPLATE ="DELETE FROM DEP_:department_id.attendance WHERE lesson_id=:lesson_id AND student_id=:student_id";
+        String SQL_DELETE_TEMPLATE = "DELETE FROM " + databaseName + ".attendance WHERE lesson_id=:lesson_id AND student_id=:student_id";
         namedJdbcTemplate.update(SQL_DELETE_TEMPLATE, requestParams);
     }
 

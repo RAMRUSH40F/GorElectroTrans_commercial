@@ -35,9 +35,9 @@ public class AttendanceController {
     }
 
     @GetMapping("/dep_{N}/attendance/{id}")
-    public AttendanceView getRecordAttendanceById(@PathVariable("N") int departmentId, @PathVariable("id") String studentId) {
+    public AttendanceView getRecordAttendanceByStudentId(@PathVariable("N") int departmentId, @PathVariable("id") String studentId) {
         validateDepartmentId(departmentId);
-        return attendanceRepository.getRecordAttendanceById(departmentId, studentId);
+        return attendanceRepository.getAttendanceByStudent(departmentId, studentId);
     }
 
     @PostMapping("/dep_{N}/attendance/data")
