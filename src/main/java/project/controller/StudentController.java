@@ -29,10 +29,10 @@ public class StudentController {
         return ResponseEntity
                 .ok()
                 .headers(headers)
-                .body(studentRepository.getStudentsView(departmentId, Integer.valueOf(page), Integer.valueOf(pageSize)));
+                .body(studentRepository.getStudentsView(departmentId, Integer.parseInt(page), Integer.parseInt(pageSize)));
     }
 
-    @GetMapping("/dep_{N}/students/{id} ")
+    @GetMapping("/dep_{N}/students/{id}")
     public StudentView findStudentById(@PathVariable("N") int departmentId, @PathVariable("id") String studentId) {
         validateDepartmentId(departmentId);
         validateStudentId(studentId);
