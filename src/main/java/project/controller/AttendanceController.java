@@ -27,23 +27,23 @@ public class AttendanceController {
         validateDepartmentId(departmentId);
         validatePaginationParams(page, pageSize);
         HttpHeaders headers = new HttpHeaders();
-        headers.add("students_count", String.valueOf(attendanceRepository.getRecordsAttendanceCount(departmentId)));
+        headers.add("attendance_count", String.valueOf(attendanceRepository.getRecordsAttendanceCount(departmentId)));
         return ResponseEntity
                 .ok()
                 .headers(headers)
                 .body(attendanceRepository.getAllRecords(departmentId, Integer.valueOf(page), Integer.valueOf(pageSize)));
     }
 
-    @GetMapping("/dep_{N}/attendance/{id}")
-    public AttendanceView getRecordAttendanceByStudentId(@PathVariable("N") int departmentId, @PathVariable("id") String studentId) {
+    @GetMapping("/dep_{N}/attendance/")
+    public AttendanceView getRecordAttendanceByStudentId(@PathVariable("N") int departmentId, @RequestBody Attendance attendance) {
         validateDepartmentId(departmentId);
-        return attendanceRepository.getAttendanceByStudent(departmentId, studentId);
+        return attendanceRepository.getAttendenceView(departmentId, attendance);
     }
 
     @PostMapping("/dep_{N}/attendance/data")
-    public void addNewRecordAttendance(@PathVariable("N") int departmentId, @RequestBody Attendance attendance) {
+    public AttendanceView addNewRecordAttendance(@PathVariable("N") int departmentId, @RequestBody Attendance attendance) {
         validateDepartmentId(departmentId);
-        attendanceRepository.addNewRecord(departmentId, attendance);
+        return attendanceRepository.addNewRecord(departmentId, attendance);
     }
 
     @PutMapping("/dep_{N}/attendance/data")
