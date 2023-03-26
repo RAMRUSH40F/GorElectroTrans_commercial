@@ -35,7 +35,6 @@ public class SubdepartmentRepository {
                 .append(subDepartment_name)
                 .append("'")
                 .toString();
-        System.out.println(query);
         List<Subdepartment> resultList = jdbcTemplate.query(query, (rs, rowNum) ->
                 Subdepartment.builder()
                         .name(rs.getString("name"))
