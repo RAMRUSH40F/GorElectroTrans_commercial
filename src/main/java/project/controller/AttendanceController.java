@@ -20,9 +20,9 @@ public class AttendanceController {
     AttendanceRepository attendanceRepository;
 
     @GetMapping("/dep_{N}/attendance/data")
-    public ResponseEntity<List<AttendanceView>> getAllRecordsAttendance(@PathVariable("N") int departmentId,
-                                                  @RequestParam(value = "page", required = true) String page,
-                                                  @RequestParam(value = "size", required = true) String pageSize) {
+    public ResponseEntity<List<AttendanceView>> getAllRecords(@PathVariable("N") int departmentId,
+                                                              @RequestParam(value = "page", required = true) String page,
+                                                              @RequestParam(value = "size", required = true) String pageSize) {
 
         validateDepartmentId(departmentId);
         validatePaginationParams(page, pageSize);
@@ -31,7 +31,7 @@ public class AttendanceController {
         return ResponseEntity
                 .ok()
                 .headers(headers)
-                .body(attendanceRepository.getAllRecordsAttendance(departmentId, Integer.valueOf(page), Integer.valueOf(pageSize)));
+                .body(attendanceRepository.getAllRecords(departmentId, Integer.valueOf(page), Integer.valueOf(pageSize)));
     }
 
     @GetMapping("/dep_{N}/attendance/{id}")
@@ -43,7 +43,7 @@ public class AttendanceController {
     @PostMapping("/dep_{N}/attendance/data")
     public void addNewRecordAttendance(@PathVariable("N") int departmentId, @RequestBody Attendance attendance) {
         validateDepartmentId(departmentId);
-        attendanceRepository.addNewRecordAttendance(departmentId, attendance);
+        attendanceRepository.addNewRecord(departmentId, attendance);
     }
 
     @PutMapping("/dep_{N}/attendance/data")

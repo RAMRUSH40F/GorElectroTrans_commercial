@@ -1,9 +1,10 @@
 package project.repository;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
+import project.exceptions.Validator;
 import project.model.*;
 
 import java.util.HashMap;
@@ -11,24 +12,15 @@ import java.util.List;
 import java.util.Map;
 
 @Repository("AttendanceRepositoryBean")
+@RequiredArgsConstructor
 public class AttendanceRepository {
 
-    @Autowired
-    JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    NamedParameterJdbcTemplate namedJdbcTemplate;
-
-    @Autowired
-    LessonRepository lessonRepository;
-    @Autowired
-    StudentRepository studentRepository;
+    private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedJdbcTemplate;
 
     // Метод добавляет запись о результатах посещения какого-то занятия учеником.
     public void addNewRecord(int departmentId, Attendance attendance) {
-        if (departmentId > 15 || departmentId < 1) {
-            throw new RuntimeException("Invalid department id, it has to be in [1,15] interval");
-        }
+        Validator.validateDepartmentId(departmentId);
 
         String databaseName = "DEP_" + departmentId;
         Map<String, Object> parameters = new HashMap<>();
@@ -40,14 +32,15 @@ public class AttendanceRepository {
                 "INSERT INTO " + databaseName + ".attendance (lesson_id,student_id,success)" +
                         "VALUES (:lesson_id,:student_id,:success);",
                 parameters);
+
     }
 
-    public List<AttendanceView> getAllRecordsAttendance(int departmentId, Integer page, Integer pageSize) {
 
+    public List<AttendanceView> getAllRecords(int departmentId, Integer page, Integer pageSize) {
         String query = new StringBuilder()
                 .append("SELECT * FROM DEP_")
                 .append(departmentId)
-                .append(".Attendence_view")
+                .append(".Attendance_view")
                 .append(" ORDER BY lesson_id ASC LIMIT ")
                 .append((page - 1) * pageSize)
                 .append(",")
@@ -68,7 +61,7 @@ public class AttendanceRepository {
         String query = new StringBuilder()
                 .append("SELECT * FROM DEP_")
                 .append(departmentId)
-                .append(".Attendence_view WHERE student_id=")
+                .append(".Attendance_view WHERE student_id=")
                 .append(studentId)
                 .toString();
 
@@ -81,20 +74,6 @@ public class AttendanceRepository {
                         .build()).get(0);
     }
 
-    public void addNewRecordAttendance(int departmentId, Attendance attendance) {
-
-        String databaseName = "DEP_" + departmentId;
-
-        Map<String, Object> parameters = new HashMap<>();
-                parameters.put("lesson_id", attendance.getLessonId());
-                parameters.put("student_id", attendance.getStudentId());
-                parameters.put("success", attendance.getSuccess());
-
-            namedJdbcTemplate.update(
-                    "INSERT INTO " + databaseName + ".attendance (lesson_id,student_id,success)" +
-                            "VALUES (:lesson_id,:student_id,:success);",
-                    parameters);
-        }
 
     public void updateRecordAttendance(int departmentId, AttendanceView attendanceView) {
 
