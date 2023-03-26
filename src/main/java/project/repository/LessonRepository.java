@@ -5,7 +5,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
-import project.model.AttendanceView;
 import project.model.Lesson;
 
 import java.sql.ResultSet;
@@ -67,6 +66,7 @@ public class LessonRepository {
         });
         return lessonsIdList;
     }
+
     public Integer getLessonsCount(int department) {
         validateDepartmentId(department);
         String databaseName = "DEP_" + department;
@@ -76,7 +76,9 @@ public class LessonRepository {
 
     public List<Lesson> getPagedLessons(int department, int page, int size) {
         validateDepartmentId(department);
-        return namedJdbcTemplate.query("SELECT * FROM DEP_" + department + ".lesson" + " ORDER BY id ASC LIMIT " + ((page - 1) * size) + "," + size, (rs, rowNum) -> Lesson.builder().
+        String sqlQuery = "SELECT * FROM DEP_" + department + ".lesson" +
+                " ORDER BY date DESC LIMIT " + ((page - 1) * size) + "," + size;
+        return namedJdbcTemplate.query(sqlQuery, (rs, rowNum) -> Lesson.builder().
                 id(rs.getInt("id")).
                 topic(rs.getString("topic")).
                 duration(rs.getFloat("duration")).
@@ -102,15 +104,15 @@ public class LessonRepository {
         String query = new StringBuilder()
                 .append("UPDATE DEP_")
                 .append(department)
-                .append(".lesson SET topic=")
+                .append(".lesson SET topic='")
                 .append(changed_lesson.getTopic())
-                .append(", duration=")
+                .append("', duration=")
                 .append(changed_lesson.getDuration())
-                .append(", date")
+                .append(", date='")
                 .append(changed_lesson.getDate())
-                .append(", teacher=")
+                .append("', teacher='")
                 .append(changed_lesson.getTeacher())
-                .append(", people_planned=")
+                .append("', people_planned=")
                 .append(changed_lesson.getPeoplePlanned())
                 .append(" WHERE id='")
                 .append(changed_lesson.getId())
@@ -131,4 +133,12 @@ public class LessonRepository {
         jdbcTemplate.execute(query);
     }
 
+    public int getMaxId(int department) {
+        String query = new StringBuilder().append("SELECT MAX(id) AS id FROM DEP_")
+                .append(department)
+                .append(".lesson")
+                .toString();
+        int id = jdbcTemplate.query(query, (rs, rowNum) -> rs.getInt("id")).get(0);
+        return id;
+    }
 }

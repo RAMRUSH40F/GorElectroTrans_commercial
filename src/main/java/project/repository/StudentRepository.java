@@ -5,8 +5,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
+import project.exceptions.InvalidStudentIdException;
+import project.exceptions.Validator;
 import project.model.Student;
 import project.model.StudentView;
+import project.model.Worker;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,25 +24,53 @@ public class StudentRepository {
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final SubdepartmentRepository subdepartmentRepository;
+    private final WorkersRepository workersRepository;
 
 
-    public void addNewStudent(int departmentId, StudentView studentView) {
+    /**
+     * @param studentView: studentId, studentName, departmentId
+     * @logic: if studentName is null supposing that studentName
+     *         already exists in DB(WorkerRepository), then
+     *                     if StudentName really exists we add successfully,
+     *                     if not - we throw back an exception
+     *         if studentName is not null we add with editing current
+     *                     data.
+     */
+    public StudentView addNewStudent(int departmentId, StudentView studentView) {
+        Validator.validateStudentId(studentView.getStudentId());
+        if (studentView.getFullName() == null) {
+            Worker worker = workersRepository.getWorkerById(studentView.getStudentId());
+            if (worker == null) {
+                throw new InvalidStudentIdException("",
+                        "Информации о работнике с таким табельным номером еще нет в системе. " +
+                                "Повторите запрос, введя Фамилию и инициалы рабочего");
+            }
+            studentView.setFullName(worker.getName());
+        } else {
+            workersRepository.addNewWorker(
+                    Worker.builder()
+                            .id(studentView.getStudentId())
+                            .name(studentView.getFullName())
+                            .build());
+        }
         // Для добавления нужен SubDepartmentId, а с фронта приходит SubDepartmentName
         Short newSubDepartmentId = subdepartmentRepository
                 .getSubdepartmentByName(departmentId, studentView.getSubDepartment())
                 .getId();
         Map<String, Object> studentData = new HashMap<>();
-        studentData.put("student_id", studentView.getStudentId());
-        studentData.put("subdepartment_id", newSubDepartmentId);
+        studentData.put("studentId", studentView.getStudentId());
+        studentData.put("subdepartmentId", newSubDepartmentId);
 
-        String insertQueryWithParameters = new StringBuilder()
+        String INSERT_STUDENT_TEMPLATE = new StringBuilder()
                 .append("INSERT INTO DEP_")
                 .append(departmentId)
                 .append(".student(student_id,subdepartment_id)")
-                .append("VALUE(:student_id,:subdepartment_id)")
+                .append("VALUE(:studentId,:subdepartmentId)")
                 .toString();
-        namedParameterJdbcTemplate.update(insertQueryWithParameters, studentData);
+        namedParameterJdbcTemplate.update(INSERT_STUDENT_TEMPLATE, studentData);
 
+
+        return studentView;
     }
 
     public List<StudentView> getStudentsView(int departmentID, Integer page, Integer pageSize) {
@@ -69,12 +100,17 @@ public class StudentRepository {
                 .append(".Student_view WHERE student_id=")
                 .append(studentId)
                 .toString();
-        return jdbcTemplate.query(query, (rs, rowNum) ->
-                StudentView.builder()
-                        .studentId(rs.getString("student_id"))
-                        .subDepartment(rs.getString("subdepartment"))
-                        .fullName(rs.getString("name"))
-                        .build()).get(0);
+        try {
+            return jdbcTemplate.query(query, (rs, rowNum) ->
+                    StudentView.builder()
+                            .studentId(rs.getString("student_id"))
+                            .subDepartment(rs.getString("subdepartment"))
+                            .fullName(rs.getString("name"))
+                            .build()).get(0);
+        } catch (IndexOutOfBoundsException e) {
+            return null;
+        }
+
     }
 
     public void deleteStudentById(int departmentId, String studentId) {
@@ -111,11 +147,11 @@ public class StudentRepository {
 
     public void addNewStudentByDepId(int departmentId, Student student) {
         Map<String, Object> studentData = new HashMap<>();
-        studentData.put("student_id", student.getStudentId());
+        studentData.put("studentId", student.getStudentId());
         studentData.put("subdepartment_id", student.getSubDepartmentId());
 
         namedParameterJdbcTemplate.update("INSERT INTO DEP_" + departmentId + ".student(student_id,subdepartment_id)"
-                + "VALUE(:student_id,:subdepartment_id)", studentData);
+                + "VALUE(:studentId,:subdepartment_id)", studentData);
 
     }
 
@@ -129,7 +165,7 @@ public class StudentRepository {
             @Override
             public Student mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return Student.builder()
-                        .studentId(rs.getString("student_id"))
+                        .studentId(rs.getString("student_Id"))
                         .build();
             }
         });
