@@ -50,10 +50,15 @@ public class AttendanceRepository {
         // rs = возвращаемый из .query объект типа ResultSet
         return jdbcTemplate.query(query, (rs, rowNum) ->
                 AttendanceView.builder()
+                        .name(rs.getString("name"))
                         .lessonId(rs.getInt("lesson_id"))
+                        .date(rs.getDate("date"))
                         .studentId(rs.getString("student_id"))
                         .success(rs.getInt("success"))
+                        .topic(rs.getString("topic"))
+                        .duration(rs.getFloat("duration"))
                         .teacher(rs.getString("teacher"))
+                        .subDepartment(rs.getString("subdepartment"))
                         .build());
     }
 
@@ -68,10 +73,15 @@ public class AttendanceRepository {
 
         return jdbcTemplate.query(query, (rs, rowNum) ->
                 AttendanceView.builder()
+                        .name(rs.getString("name"))
                         .lessonId(rs.getInt("lesson_id"))
+                        .date(rs.getDate("date"))
                         .studentId(rs.getString("student_id"))
                         .success(rs.getInt("success"))
+                        .topic(rs.getString("topic"))
+                        .duration(rs.getFloat("duration"))
                         .teacher(rs.getString("teacher"))
+                        .subDepartment(rs.getString("subdepartment"))
                         .build()).get(0);
     }
 
