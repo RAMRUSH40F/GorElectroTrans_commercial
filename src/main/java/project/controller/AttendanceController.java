@@ -47,15 +47,15 @@ public class AttendanceController {
     }
 
     @PutMapping("/dep_{N}/attendance/data")
-    public void updateRecordAttendance(@PathVariable("N") int departmentId, @RequestBody AttendanceView attendanceView) {
+    public void updateRecordAttendance(@PathVariable("N") int departmentId, @RequestBody Attendance attendance) {
         validateDepartmentId(departmentId);
-        attendanceRepository.updateRecordAttendance(departmentId, attendanceView);
+        attendanceRepository.updateRecordAttendance(departmentId, attendance);
     }
 
-    @DeleteMapping("/dep_{N}/attendance/{id}")
-    public void deleteRecordById(@PathVariable("N") int departmentId, @PathVariable("id") String studentId) {
+    @DeleteMapping("/dep_{N}/attendance/data")
+    public void deleteRecordById(@PathVariable("N") int departmentId, @RequestBody Attendance attendance) {
         validateDepartmentId(departmentId);
-        attendanceRepository.deleteRecordById(departmentId, studentId);
+        attendanceRepository.deleteRecordById(departmentId, attendance);
     }
 
 }

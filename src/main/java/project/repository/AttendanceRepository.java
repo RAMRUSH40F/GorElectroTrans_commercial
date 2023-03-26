@@ -5,7 +5,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import project.exceptions.Validator;
-import project.model.*;
+import project.model.Attendance;
+import project.model.AttendanceView;
 
 import java.util.HashMap;
 import java.util.List;
@@ -75,30 +76,23 @@ public class AttendanceRepository {
     }
 
 
-    public void updateRecordAttendance(int departmentId, AttendanceView attendanceView) {
-
-        String query = new StringBuilder()
-                .append("UPDATE DEP_")
-                .append(departmentId)
-                .append(".Attendence_view SET success=")
-                .append(attendanceView.getSuccess())
-                .append(" WHERE lesson_id='")
-                .append(attendanceView.getLessonId())
-                .append("'")
-                .toString();
-
-        jdbcTemplate.execute(query);
+    public void updateRecordAttendance(int departmentId, Attendance attendance) {
+        Map<String, Object> requestParams = new HashMap<>();
+        requestParams.put("department_id", departmentId);
+        requestParams.put("success", attendance.getSuccess());
+        requestParams.put("lesson_id", attendance.getLessonId());
+        requestParams.put("student_id", attendance.getStudentId());
+        String SQL_UPDATE_TEMPLATE = "UPDATE DEP_:department_id.attendance SET success=:success WHERE lesson_id=:lesson_id AND student_id=:student_id";
+        namedJdbcTemplate.update(SQL_UPDATE_TEMPLATE, requestParams);
     }
 
-    public void deleteRecordById(int departmentId, String studentId) {
-
-        String query = new StringBuilder()
-                .append("DELETE FROM DEP_")
-                .append(departmentId)
-                .append(".attendance WHERE student_id=")
-                .append(studentId)
-                .toString();
-        jdbcTemplate.execute(query);
+    public void deleteRecordById(int departmentId, Attendance attendance) {
+        Map<String, Object> requestParams = new HashMap<>();
+        requestParams.put("department_id", departmentId);
+        requestParams.put("lesson_id", attendance.getLessonId());
+        requestParams.put("student_id", attendance.getStudentId());
+        String SQL_DELETE_TEMPLATE ="DELETE FROM DEP_:department_id.attendance WHERE lesson_id=:lesson_id AND student_id=:student_id";
+        namedJdbcTemplate.update(SQL_DELETE_TEMPLATE, requestParams);
     }
 
     public Integer getRecordsAttendanceCount(int departmentId) {
