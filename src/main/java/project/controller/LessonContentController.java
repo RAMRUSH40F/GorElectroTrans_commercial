@@ -1,15 +1,19 @@
 package project.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import project.exceptions.InvalidDepartmentException;
+import org.springframework.web.multipart.MultipartFile;
 import project.model.LessonContent;
 import project.repository.LessonContentRepository;
 
 import java.util.List;
 
 import static project.exceptions.Validator.validateDepartmentId;
+import static project.exceptions.Validator.validatePaginationParams;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,33 +22,67 @@ public class LessonContentController {
     private final LessonContentRepository repository;
 
     @GetMapping("/dep_{N}/content/data")
-    public List<LessonContent> getAll(@PathVariable("N") Integer departmentId) {
-        validateDepartmentId(departmentId);
-        return repository.getAll(departmentId);
+    public ResponseEntity<List<LessonContent>> getPagedLessons(@PathVariable("N") Integer department,
+                                                               @RequestParam String page,
+                                                               @RequestParam String size) {
+        validateDepartmentId(department);
+        validatePaginationParams(page, size);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("content_count", String.valueOf(repository.getLessonContentCount(department)));
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .body(repository.getAllContentInfo(department, Integer.parseInt(page), Integer.parseInt(size)));
     }
 
-    @GetMapping("/dep_{N}/content/{id}")
-    public byte[] getById(@PathVariable("N") Integer departmentId, @PathVariable("id") Integer lessonId) {
+    @GetMapping("/dep_{N}/content/data/{file_name}")
+    public ResponseEntity<ByteArrayResource> getFileByName(@PathVariable("N") Integer departmentId, @PathVariable("file_name") String fileName) {
         validateDepartmentId(departmentId);
-        return repository.getById(lessonId, departmentId).getFile();
+        byte[] file = repository.getFileByName(fileName, departmentId);
+
+        ByteArrayResource resource = new ByteArrayResource(file);
+
+        // Set response headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentLength(file.length);
+        headers.setContentDispositionFormData("attachment", fileName);
+
+        // Return ResponseEntity with file data and headers
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentLength(file.length)
+                .body(resource);
     }
 
-    @PostMapping("/dep_{N}/content/{id}")
-    public boolean create(
+    @PostMapping("/dep_{N}/content/data")
+    public boolean addNewContent(
             @PathVariable("N") Integer departmentId,
-            @PathVariable("id") Integer lessonId,
+            @RequestParam("fileName") String fileName,
+            @RequestParam("lessonId") String lessonId,
             @RequestBody byte[] content) {
-            if (content == null ) {
-                return false;
-            }
+        if (content == null) {
+            return false;
+        }
         validateDepartmentId(departmentId);
-        return repository.create(new LessonContent(content, lessonId), departmentId);
+        return repository.create(LessonContent.builder()
+                .lessonId(Integer.valueOf(lessonId))
+                .fileName(fileName)
+                .file(content)
+                .build(), departmentId);
+    }
+    @PostMapping("/uploadFile")
+    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
+        // Здесь можно обработать полученный файл
+
+        return ResponseEntity.ok("Файл успешно загружен.");
     }
 
-    @DeleteMapping("/dep_{N}/content/{id}")
-    public boolean deleteById(@PathVariable("N") Integer departmentId, @PathVariable("id") Integer lessonId) {
+    @DeleteMapping("/dep_{N}/content/data/{file_name}")
+    public boolean deleteFileByName(@PathVariable("N") Integer departmentId, @PathVariable("file_name") String fileName) {
         validateDepartmentId(departmentId);
-        return repository.deleteById(lessonId, departmentId);
+        return repository.deleteFileByName(departmentId, fileName);
     }
 
 }

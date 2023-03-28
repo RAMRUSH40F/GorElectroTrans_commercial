@@ -3,68 +3,66 @@ package project.repository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import project.model.LessonContent;
-import project.repository.mapper.LessonContentMapper;
+import project.repository.mapper.LessonContentInfoMapper;
 
 import java.util.List;
 
+import static project.exceptions.Validator.validateDepartmentId;
+
 @Repository
 @RequiredArgsConstructor
-public class LessonContentRepository implements CRUD<LessonContent> {
+public class LessonContentRepository {
 
-    private final NamedParameterJdbcTemplate template;
-    private final LessonContentMapper mapper = new LessonContentMapper();
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
+    private final LessonContentInfoMapper mapper = new LessonContentInfoMapper();
 
-    @Override
-    public LessonContent getById(Integer lessonId, Integer departmentId) {
+    public byte[] getFileByName(String fileName, Integer departmentId) {
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("departmentId", departmentId);
-        parameters.addValue("lessonId", lessonId);
+        parameters.addValue("fileName", fileName);
         try {
-            String SQL_GET_BY_ID = "SELECT * FROM DEP_:departmentId .lesson_content WHERE lesson_id = :lessonId";
-            return template.queryForObject(SQL_GET_BY_ID, parameters, mapper);
+            String SQL_GET_BY_ID = "SELECT file FROM DEP_:departmentId .lesson_content WHERE file_name = :fileName";
+            return namedParameterJdbcTemplate.queryForObject(SQL_GET_BY_ID, parameters, byte[].class);
         } catch (EmptyResultDataAccessException e) {
-            return new LessonContent();
+            return null;
         }
     }
 
-    @Override
-    public List<LessonContent> getAll(Integer departmentId) {
-        MapSqlParameterSource parameters = new MapSqlParameterSource();
-        parameters.addValue("departmentId", departmentId);
-        String SQL_GET_ALL = "SELECT * FROM DEP_:departmentId .lesson_content";
-        return template.query(SQL_GET_ALL, parameters, mapper);
+    public List<LessonContent> getAllContentInfo(int department, int page, int size) {
+        String sqlQuery = "SELECT * FROM DEP_" + department + ".Materials_view" +
+                " ORDER BY date DESC LIMIT " + ((page - 1) * size) + "," + size;
+        return namedParameterJdbcTemplate.query(sqlQuery, mapper);
+
     }
 
-    @Override
     public boolean create(LessonContent content, Integer departmentId) {
-        LessonContent fromDB = getById(content.getLessonId(), departmentId);
-        if (LessonContent.isEmpty(fromDB)) {
-            return false;
-        }
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("departmentId", departmentId);
-        parameters.addValue("file", content.getFile());
+        parameters.addValue("file_name", content.getFileName());
         parameters.addValue("lessonId", content.getLessonId());
+        parameters.addValue("file", content.getFile());
         try {
-            String SQL_CREATE = "INSERT INTO DEP_:departmentId .lesson_content (file, lesson_id) VALUES(:file, :lessonId)";
-            return template.update(SQL_CREATE, parameters) == 1;
+            String SQL_CREATE = "INSERT INTO DEP_:departmentId .lesson_content (file_name,file, lesson_id) VALUES(:file_name,:file, :lessonId)";
+            return namedParameterJdbcTemplate.update(SQL_CREATE, parameters) == 1;
         } catch (DataAccessException e) {
             return false;
         }
     }
 
-    @Override
-    public boolean deleteById(Integer lessonId, Integer departmentId) {
+
+    public boolean deleteFileByName(Integer departmentId, String fileName) {
         MapSqlParameterSource parameters = new MapSqlParameterSource()
-                .addValue("lessonId", lessonId)
-                .addValue("departmentId", departmentId);
+                .addValue("departmentId", departmentId)
+                .addValue("fileName", fileName);
         try {
-            String SQL_DELETE_BY_ID = "DELETE FROM DEP_:departmentId .lesson_content WHERE lesson_id = :lessonId";
-            return template.update(
+            String SQL_DELETE_BY_ID = "DELETE FROM DEP_:departmentId .lesson_content WHERE file_name = :fileName";
+            return namedParameterJdbcTemplate.update(
                     SQL_DELETE_BY_ID,
                     parameters
             ) == 1;
@@ -73,4 +71,11 @@ public class LessonContentRepository implements CRUD<LessonContent> {
         }
 
     }
+    public Integer getLessonContentCount(int department) {
+        validateDepartmentId(department);
+        String databaseName = "DEP_" + department;
+        return jdbcTemplate.queryForObject("SELECT COUNT(file_name) FROM " +
+                databaseName + ".lesson_content AS COUNT", Integer.class);
+    }
+
 }
