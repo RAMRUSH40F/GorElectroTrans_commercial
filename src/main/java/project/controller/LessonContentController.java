@@ -57,27 +57,21 @@ public class LessonContentController {
     }
 
     @PostMapping("/dep_{N}/content/data")
-    public boolean addNewContent(
+    public LessonContent addNewContent(
             @PathVariable("N") Integer departmentId,
             @RequestParam("fileName") String fileName,
             @RequestParam("lessonId") String lessonId,
             @RequestBody byte[] content) {
-        if (content == null) {
-            return false;
-        }
+
         validateDepartmentId(departmentId);
-        return repository.create(LessonContent.builder()
+        repository.create(LessonContent.builder()
                 .lessonId(Integer.valueOf(lessonId))
                 .fileName(fileName)
                 .file(content)
                 .build(), departmentId);
+        return repository.getContentInfoByFileName(departmentId, fileName);
     }
-    @PostMapping("/uploadFile")
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
-        // Здесь можно обработать полученный файл
 
-        return ResponseEntity.ok("Файл успешно загружен.");
-    }
 
     @DeleteMapping("/dep_{N}/content/data/{file_name}")
     public boolean deleteFileByName(@PathVariable("N") Integer departmentId, @PathVariable("file_name") String fileName) {
