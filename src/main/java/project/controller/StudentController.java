@@ -29,10 +29,10 @@ public class StudentController {
         return ResponseEntity
                 .ok()
                 .headers(headers)
-                .body(studentRepository.getStudentsView(departmentId, Integer.valueOf(page), Integer.valueOf(pageSize)));
+                .body(studentRepository.getStudentsView(departmentId, Integer.parseInt(page), Integer.parseInt(pageSize)));
     }
 
-    @GetMapping("/dep_{N}/students/{id} ")
+    @GetMapping("/dep_{N}/students/{id}")
     public StudentView findStudentById(@PathVariable("N") int departmentId, @PathVariable("id") String studentId) {
         validateDepartmentId(departmentId);
         validateStudentId(studentId);
@@ -40,9 +40,9 @@ public class StudentController {
     }
 
     @PostMapping("/dep_{N}/students/data")
-    public void addNewStudent(@RequestBody StudentView student, @PathVariable("N") int departmentId) {
+    public StudentView addNewStudent(@RequestBody StudentView student, @PathVariable("N") int departmentId) {
         validateDepartmentId(departmentId);
-        studentRepository.addNewStudent(departmentId, student);
+        return studentRepository.addNewStudent(departmentId, student);
     }
 
     @PutMapping("/dep_{N}/students/data")

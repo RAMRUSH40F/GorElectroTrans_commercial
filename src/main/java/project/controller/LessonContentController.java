@@ -24,21 +24,21 @@ public class LessonContentController {
     }
 
     @GetMapping("/dep_{N}/content/{id}")
-    public LessonContent getById(@PathVariable("N") Integer departmentId, @PathVariable("id") Integer lessonId) {
+    public byte[] getById(@PathVariable("N") Integer departmentId, @PathVariable("id") Integer lessonId) {
         validateDepartmentId(departmentId);
-        return repository.getById(lessonId, departmentId);
+        return repository.getById(lessonId, departmentId).getFile();
     }
 
     @PostMapping("/dep_{N}/content/{id}")
     public boolean create(
             @PathVariable("N") Integer departmentId,
             @PathVariable("id") Integer lessonId,
-            @RequestBody LessonContent content) {
-        if (content.getFile() == null ) {
-            return false;
-        }
+            @RequestBody byte[] content) {
+            if (content == null ) {
+                return false;
+            }
         validateDepartmentId(departmentId);
-        return repository.create(new LessonContent(content.getFile(), lessonId), departmentId);
+        return repository.create(new LessonContent(content, lessonId), departmentId);
     }
 
     @DeleteMapping("/dep_{N}/content/{id}")

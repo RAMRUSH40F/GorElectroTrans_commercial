@@ -133,12 +133,12 @@ public class LessonRepository {
         jdbcTemplate.execute(query);
     }
 
-    public int getLastId(int department) {
-        int id;
-        StringBuilder query = new StringBuilder().append("SELECT id FROM DEP_")
+    public int getMaxId(int department) {
+        String query = new StringBuilder().append("SELECT MAX(id) AS id FROM DEP_")
                 .append(department)
-                .append(".lesson ORDER BY id DESC LIMIT 0, 1");
-        id = jdbcTemplate.query(query.toString(), (rs, rowNum) -> rs.getInt("id")).get(1);
+                .append(".lesson")
+                .toString();
+        int id = jdbcTemplate.query(query, (rs, rowNum) -> rs.getInt("id")).get(0);
         return id;
     }
 }
