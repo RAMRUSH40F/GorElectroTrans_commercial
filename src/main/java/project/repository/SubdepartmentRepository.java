@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
+import project.model.Attendance;
 import project.model.Subdepartment;
 
 import java.util.HashMap;
@@ -57,4 +58,19 @@ public class SubdepartmentRepository {
                         .name(rs.getString("name"))
                         .build());
     }
+    public void updateRecordSubdepartmentById(int departmentId, Subdepartment subdepartment) {
+        Map<String, Object> requestParams = new HashMap<>();
+        requestParams.put("id", subdepartment.getId());
+        requestParams.put("name", subdepartment.getName());
+        String SQL_UPDATE_TEMPLATE = "UPDATE DEP_" + departmentId + ".subdepartment SET id =:id WHERE name=:name";
+        namedParameterJdbcTemplate.update(SQL_UPDATE_TEMPLATE, requestParams);
+    }
+
+    public void deleteSubdepartmentById(Integer departmentId, short id) {
+        Map<String, Object> requestParams = new HashMap<>();
+        requestParams.put("id", id);
+        String SQL_DELETE_TEMPLATE = "DELETE FROM DEP_" + departmentId + ".subdepartment WHERE id =:id";
+        namedParameterJdbcTemplate.update(SQL_DELETE_TEMPLATE, requestParams);
+    }
+
 }
