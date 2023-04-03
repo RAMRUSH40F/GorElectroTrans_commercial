@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import project.model.LessonContent;
 import project.repository.LessonContentRepository;
 
+import java.io.IOException;
 import java.util.List;
 
 import static project.exceptions.Validator.validateDepartmentId;
@@ -46,7 +47,6 @@ public class LessonContentController {
         // Set response headers
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-        headers.setContentLength(file.length);
         headers.setContentDispositionFormData("attachment", fileName);
 
         // Return ResponseEntity with file data and headers
@@ -70,6 +70,25 @@ public class LessonContentController {
                 .file(content)
                 .build(), departmentId);
         return repository.getContentInfoByFileName(departmentId, fileName);
+    }
+
+    @PostMapping("/dep_{N}/content/data")
+    public LessonContent addNewContent(@RequestParam("file") MultipartFile file,
+                                       @RequestParam("lessonId") String lessonId,
+                                       @PathVariable("N") Integer departmentId) {
+        validateDepartmentId(departmentId);
+        try {
+            repository.create(LessonContent.builder()
+                    .lessonId(Integer.valueOf(lessonId))
+                    .fileName(file.getOriginalFilename())
+                    .file(file.getBytes())
+                    .build(), departmentId);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return repository.getContentInfoByFileName(departmentId, file.getOriginalFilename());
+
+
     }
 
 
