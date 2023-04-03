@@ -29,7 +29,7 @@ public class RequestExceptionHandler {
     public ResponseEntity<ResponseException> handleSqlExceptions(RuntimeException e){
         ResponseException responseException = ResponseException.builder()
                 .message("Такие данные не могут быть добавлены. " +
-                        "Возможно, они уже дублируют существующие данные.")
+                        "Возможно, они уже дублируют существующие данные. Если вы загружаете файл, то он должен весить до 14 МБ")
                 .timeStamp(ZonedDateTime.now(ZoneId.of("UTC+3")))
                 .httpStatus(HttpStatus.BAD_REQUEST)
                 .build();

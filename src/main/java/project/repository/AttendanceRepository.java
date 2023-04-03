@@ -20,7 +20,7 @@ public class AttendanceRepository {
     private final NamedParameterJdbcTemplate namedJdbcTemplate;
 
     // Метод добавляет запись о результатах посещения какого-то занятия учеником.
-    public void addNewRecord(int departmentId, Attendance attendance) {
+    public AttendanceView addNewRecord(int departmentId, Attendance attendance) {
         Validator.validateDepartmentId(departmentId);
 
         String databaseName = "DEP_" + departmentId;
@@ -33,6 +33,7 @@ public class AttendanceRepository {
                 "INSERT INTO " + databaseName + ".attendance (lesson_id,student_id,success)" +
                         "VALUES (:lesson_id,:student_id,:success);",
                 parameters);
+        return getAttendenceView(departmentId, attendance);
 
     }
 
@@ -62,13 +63,15 @@ public class AttendanceRepository {
                         .build());
     }
 
-    public AttendanceView getAttendanceByStudent(int departmentId, String studentId) {
+    public AttendanceView getAttendenceView(int departmentId, Attendance attendance) {
 
         String query = new StringBuilder()
                 .append("SELECT * FROM DEP_")
                 .append(departmentId)
                 .append(".Attendance_view WHERE student_id=")
-                .append(studentId)
+                .append(attendance.getStudentId())
+                .append(" AND lesson_id=")
+                .append(attendance.getLessonId())
                 .toString();
 
         try {
