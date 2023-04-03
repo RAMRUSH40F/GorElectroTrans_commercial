@@ -10,7 +10,7 @@ import lombok.Data;
 @Builder
 public class Subdepartment {
     @JsonProperty("id")
-    private short id;
+    private Short id;
     @JsonProperty("name")
     private String name;
 

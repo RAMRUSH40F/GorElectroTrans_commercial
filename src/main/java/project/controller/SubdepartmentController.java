@@ -2,7 +2,6 @@ package project.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import project.model.Attendance;
 import project.model.Subdepartment;
 import project.repository.SubdepartmentRepository;
 
@@ -22,17 +21,18 @@ public class SubdepartmentController {
         validateDepartmentId(departmentId);
         return subdepartmentRepository.getAll(departmentId);
     }
+
     @PostMapping("/dep_{N}/subdep/data")
-    public void addNewSubdepartment(@PathVariable("N") int departmentId, @RequestBody Subdepartment subdepartment) {
+    public Subdepartment addNewSubdepartment(@PathVariable("N") int departmentId, @RequestBody Subdepartment subdepartment) {
         validateDepartmentId(departmentId);
-        subdepartmentRepository.addNewSubdepartment(departmentId, subdepartment);
+        return subdepartmentRepository.addNewSubdepartment(departmentId, subdepartment);
 
     }
 
     @PutMapping("/dep_{N}/subdep/data")
-    public void updateRecordSubdepartmentById(@PathVariable("N") int departmentId, @RequestBody Subdepartment subdepartment) {
+    public Subdepartment updateSubdepartmentName(@PathVariable("N") int departmentId, @RequestBody Subdepartment subdepartment) {
         validateDepartmentId(departmentId);
-        subdepartmentRepository.updateRecordSubdepartmentById(departmentId, subdepartment);
+        return subdepartmentRepository.updateSubdepartmentName(departmentId, subdepartment);
     }
 
     @DeleteMapping("/dep_{N}/subdep/{id}")
