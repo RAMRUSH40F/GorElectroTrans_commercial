@@ -57,22 +57,6 @@ public class LessonContentController {
     }
 
     @PostMapping("/dep_{N}/content/data")
-    public LessonContent addNewContent(
-            @PathVariable("N") Integer departmentId,
-            @RequestParam("fileName") String fileName,
-            @RequestParam("lessonId") String lessonId,
-            @RequestBody byte[] content) {
-
-        validateDepartmentId(departmentId);
-        repository.create(LessonContent.builder()
-                .lessonId(Integer.valueOf(lessonId))
-                .fileName(fileName)
-                .file(content)
-                .build(), departmentId);
-        return repository.getContentInfoByFileName(departmentId, fileName);
-    }
-
-    @PostMapping("/dep_{N}/content/data")
     public LessonContent addNewContent(@RequestParam("file") MultipartFile file,
                                        @RequestParam("lessonId") String lessonId,
                                        @PathVariable("N") Integer departmentId) {
