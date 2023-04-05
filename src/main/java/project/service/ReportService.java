@@ -1,53 +1,60 @@
-package project.repository;
+package project.service;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-import org.springframework.context.annotation.ComponentScan;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.stereotype.Repository;
-import project.exceptions.Validator;
+import org.springframework.stereotype.Service;
+import project.repository.Professions;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.time.Year;
 
-@Repository("ReportRepositoryBean")
+@Service
 @RequiredArgsConstructor
-@ComponentScan("")
-public class ReportRepository {
-    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+public class ReportService {
+
     private final JdbcTemplate jdbcTemplate;
 
-    public HSSFWorkbook readWorkbook(String filename) {
+    public XSSFWorkbook readWorkbook(String filePath) {
         try {
-            POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(filename));
-            return new HSSFWorkbook(fs);
-        } catch (Exception e) {
-            return null;
+            XSSFWorkbook excelFile = new XSSFWorkbook(new FileInputStream(filePath));
+            return excelFile;
+        } catch (IOException e) {
+            throw new RuntimeException("Файл шаблона не был загружен в корневую папку проекта или " +
+                    "произошла другая ошибка связанная с чтением шаблонной таблицы");
         }
+
     }
 
-    public void writeWorkbook(HSSFWorkbook wb, String fileName) {
+    public void writeWorkbook(XSSFWorkbook wb, String fileName) {
+
+        FileOutputStream fileOut = null;
         try {
-            FileOutputStream fileOut = new FileOutputStream(fileName);
+            fileOut = new FileOutputStream(fileName);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        try {
             wb.write(fileOut);
-            fileOut.close();
-        } catch (Exception e) {
-            //Обработка ошибки
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+
         }
     }
 
-    public void formLessonReport(HSSFWorkbook wb, String fileName, int interval) {
+    public void formLessonReport(XSSFWorkbook wb, String fileName, int interval) {
 
-        HSSFSheet sheet = wb.getSheet("Лист1");
-        HSSFRow row1 = sheet.getRow(2);
-        HSSFRow row2 = sheet.getRow(3);
-        HSSFCell cell1, cell2;
+        XSSFSheet sheet = wb.getSheet("mainList");
+        XSSFRow row1 = sheet.getRow(2);
+        XSSFRow row2 = sheet.getRow(3);
+        XSSFCell cell1;
+        XSSFCell cell2;
         int firstCell = 1;
         int lastCell = 31;
         int year = Year.now().getValue();
@@ -76,10 +83,10 @@ public class ReportRepository {
         writeWorkbook(wb, fileName);
     }
 
-    public void formWorkerReport(HSSFWorkbook wb, String filename) {
-        HSSFSheet sheet = wb.getSheet("Лист1");
-        HSSFRow row1 = sheet.getRow(7);
-        HSSFCell cell1;
+    public void formWorkerReport(XSSFWorkbook wb, String filename) {
+        XSSFSheet sheet = wb.getSheet("mainList");
+        XSSFRow row1 = sheet.getRow(7);
+        XSSFCell cell1;
         int firstCell = 1;
         int lastCell = 31;
         int total = 0;
@@ -97,12 +104,12 @@ public class ReportRepository {
         writeWorkbook(wb, filename);
     }
 
-    private void formSpecificWorkersReport(int profession, HSSFRow row) {
+    private void formSpecificWorkersReport(int profession, XSSFRow row) {
         int firstCell = 1;
         int lastCell = 31;
         int total = 0;
         int result = 0;
-        HSSFCell cell;
+        XSSFCell cell;
         for (int i = firstCell; i < lastCell; i += 2) {
             cell = row.getCell(i);
             result = jdbcTemplate.query("SELECT COUNT(1) FROM DEP_" + (i / 2 + 1) + ".student WHERE subdepartment_id=" + (profession * 100 + (i / 2 + 1)), (rs, rowNum) -> rs.getInt("COUNT(1)")).get(0);
