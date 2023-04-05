@@ -1,0 +1,12 @@
+@import "../../../assets/styles/vars.scss";
+
+.plan-report-btn {
+    background-color: $darkyellow;
+    &:hover {
+        background-color: darken($darkyellow, 5%);
+    }
+    @media (max-width: $mobileSmall) {
+        width: 100%;
+        color: $white;
+    }
+}

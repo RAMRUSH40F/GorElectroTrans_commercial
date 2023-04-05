@@ -1,0 +1,29 @@
+.alert {
+    position: relative;
+    padding: 0.75rem 1.25rem;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+    width: 100%;
+    text-align: center;
+    // .alert--error
+    &--error {
+        color: #721c24;
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+    }
+    &--warning {
+        color: #856404;
+        background-color: #fff3cd;
+        border-color: #ffeeba;
+    }
+    &--success {
+        color: #155724;
+        background-color: #d4edda;
+        border-color: #c3e6cb;
+    }
+    &--info {
+        color: #052c65;
+        background-color: #cfe2ff;
+        border-color: #9ec5fe;
+    }
+}

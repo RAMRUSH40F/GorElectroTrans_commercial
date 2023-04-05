@@ -1,0 +1,14 @@
+@import "../../../assets/styles/mixins.scss";
+
+.plan-report-form {
+    @include flex-center(1rem);
+    flex-wrap: wrap;
+    // .plan-report-form__label
+    &__label {
+        text-align: center;
+    }
+    // .plan-report-form__input
+    &__input {
+        width: 100%;
+    }
+}

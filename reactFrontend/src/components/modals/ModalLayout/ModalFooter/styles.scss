@@ -1,8 +1,7 @@
-@import "../../../../assets/styles/vars.scss";
 @import "../../../../assets/styles/mixins.scss";
 
 .modal-footer {
-    border-top: 1px solid $grey;
-    padding: 1.2rem 2rem;
     @include flex-center(0.6rem, flex-end);
+    padding: 1.2rem 1.3rem 1.2rem;
+    border-top: 1px solid $grey;
 }

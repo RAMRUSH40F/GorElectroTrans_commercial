@@ -1,13 +1,31 @@
 .attendance {
+    // .attendance__loader
+    &__loader {
+        margin: 2rem auto 0;
+    }
     // .attendance__table-wrapper
     &__table-wrapper {
-        margin-bottom: 1rem;
+        margin-bottom: 1.5rem;
         overflow-x: auto;
     }
     // .attendance__table
     &__table {
         width: 100%;
-        min-width: 40.625rem;
+    }
+    // .attendance__table-body
+    &__table-body {
+        &--opacity {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+    }
+    // .attendance__table-topic-cell
+    &__table-topic-cell {
+        min-width: 13.75rem;
+    }
+    // .attendance__table-subdepartment-cell
+    &__table-subdepartment-cell {
+        min-width: 12.5rem;
     }
     // .attendance__pagination
     &__pagination {

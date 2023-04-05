@@ -9,6 +9,11 @@ import {
     STUDENTS_ROUTE,
     WORK_PLAN_ROUTE,
 } from "../constants/routesPathnames";
+import AttendanceContextProvider from "../context/attendanceContext/AttendanceContextProvider";
+import DepartmentsContextProvider from "../context/departmentsContext/DepartmentsContextProvider";
+import MaterialsContextProvider from "../context/materialsContext/MaterialsContextProvider";
+import PlansContextProvider from "../context/plansContext/PlansContextProvider";
+import StudentsContextProvider from "../context/studentsContext/StudentsContextProvider";
 import AttendancePage from "../pages/AttendancePage";
 import DepartmentsPage from "../pages/DepartmentsPage";
 import DivisionsPage from "../pages/DivisionsPage";
@@ -26,11 +31,46 @@ const Router: React.FC = () => {
                 <Route index element={<LoginPage />} />
                 <Route path={DIVISIONS_ROUTE.PATH} element={<DivisionsPage />} />
                 <Route element={<MenuLayout />}>
-                    <Route path={WORK_PLAN_ROUTE.PATH} element={<WorkPlanPage />} />
-                    <Route path={STUDENTS_ROUTE.PATH} element={<StudentsPage />} />
-                    <Route path={DEPARTMENTS_ROUTE.PATH} element={<DepartmentsPage />} />
-                    <Route path={ATTENDANCE_ROUTE.PATH} element={<AttendancePage />} />
-                    <Route path={MATERIALS_ROUTE.PATH} element={<MaterialsPage />} />
+                    <Route
+                        path={WORK_PLAN_ROUTE.PATH}
+                        element={
+                            <PlansContextProvider>
+                                <WorkPlanPage />
+                            </PlansContextProvider>
+                        }
+                    />
+                    <Route
+                        path={STUDENTS_ROUTE.PATH}
+                        element={
+                            <StudentsContextProvider>
+                                <StudentsPage />
+                            </StudentsContextProvider>
+                        }
+                    />
+                    <Route
+                        path={DEPARTMENTS_ROUTE.PATH}
+                        element={
+                            <DepartmentsContextProvider>
+                                <DepartmentsPage />
+                            </DepartmentsContextProvider>
+                        }
+                    />
+                    <Route
+                        path={ATTENDANCE_ROUTE.PATH}
+                        element={
+                            <AttendanceContextProvider>
+                                <AttendancePage />
+                            </AttendanceContextProvider>
+                        }
+                    />
+                    <Route
+                        path={MATERIALS_ROUTE.PATH}
+                        element={
+                            <MaterialsContextProvider>
+                                <MaterialsPage />
+                            </MaterialsContextProvider>
+                        }
+                    />
                 </Route>
             </Route>
         </Routes>
