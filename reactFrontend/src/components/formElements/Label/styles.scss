@@ -1,0 +1,9 @@
+.label {
+    cursor: pointer;
+    display: block;
+    // .label__text
+    &__text {
+        font-size: 0.8rem;
+        margin-bottom: 0.4rem;
+    }
+}

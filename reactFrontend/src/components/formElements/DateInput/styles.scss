@@ -1,0 +1,6 @@
+@import "../../../assets/styles/mixins.scss";
+
+.date-input {
+    @include control;
+    height: 40px;
+}

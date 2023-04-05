@@ -1,0 +1,23 @@
+.departments {
+    // .departments__loader
+    &__loader {
+        margin: 2rem auto 0;
+    }
+    // .departments__table-wrapper
+    &__table-wrapper {
+        overflow-x: auto;
+        margin-bottom: 1rem;
+    }
+    // .departments__table
+    &__table {
+        width: 100%;
+    }
+    // .departments__table-dep-cell
+    &__table-dep-cell {
+        min-width: 13.75rem;
+    }
+    // .departments__pagination
+    &__pagination {
+        justify-content: flex-end;
+    }
+}

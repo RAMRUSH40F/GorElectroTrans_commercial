@@ -1,0 +1,41 @@
+@import "../../../assets/styles/mixins.scss";
+
+.input-file {
+    // .input-file__label-text
+    &__label-text {
+        font-size: 0.8rem;
+        margin-bottom: 0.4rem;
+    }
+    // .input-file__wrapper
+    &__wrapper {
+        @include flex-center(0, space-between);
+        @include control;
+        padding: 0 0 0 1rem;
+        height: 40px;
+    }
+    // .input-file__field
+    &__field {
+        font-size: 14px;
+        color: grey;
+        &--active {
+            color: $green;
+        }
+    }
+    // .input-file__btn
+    &__btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 80px;
+        height: 100%;
+        font-size: 14px;
+        text-align: center;
+        color: #2e2e2e;
+        background-color: #e2e2e2;
+        transition: background-color 0.15s ease;
+        cursor: pointer;
+        &:hover {
+            background-color: darken(#e2e2e2, 10%);
+        }
+    }
+}

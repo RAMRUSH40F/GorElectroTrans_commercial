@@ -1,0 +1,6 @@
+@import "../../../assets/styles/mixins.scss";
+
+.textarea {
+    @include control;
+    resize: none;
+}

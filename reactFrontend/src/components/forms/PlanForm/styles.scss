@@ -1,0 +1,45 @@
+@import "../../../assets/styles/mixins.scss";
+
+.plan-form {
+    // .plan-form__label
+    &__label {
+        &--mb {
+            margin-bottom: 0.6rem;
+        }
+        @media (max-width: $mobileMiddle) {
+            width: 100%;
+        }
+    }
+    // .plan-form__textarea
+    &__textarea {
+        width: 100%;
+        min-height: 100px;
+        margin-bottom: 2.5px;
+    }
+    // .plan-form__input
+    &__input {
+        width: 100%;
+        margin-bottom: 2.5px;
+    }
+    // .plan-form__row
+    &__row {
+        display: flex;
+        gap: 0.6rem;
+        margin-bottom: 10px;
+        @media (max-width: $mobileMiddle) {
+            flex-wrap: wrap;
+        }
+    }
+    // .plan-form__btn
+    &__btn {
+        display: block;
+        margin: 1.3rem 0 0 auto;
+    }
+    // .plan-form__footer
+    &__actions {
+        @include flex-center(0.6rem, flex-end);
+        margin-top: 1.5rem;
+        padding-top: 1.3rem;
+        border-top: 1px solid $grey;
+    }
+}
