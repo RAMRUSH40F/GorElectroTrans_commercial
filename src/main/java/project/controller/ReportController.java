@@ -19,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReportController {
     @Autowired
-    ReportRepository reportRepository;
+    private ReportRepository reportRepository;
 
     @GetMapping("/dep_{N}/report")
     public byte[] getReport(@RequestParam int interval) {
