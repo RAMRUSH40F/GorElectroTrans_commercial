@@ -1,0 +1,10 @@
+@import "../../../assets/styles/vars.scss";
+
+.table-head {
+    // .table-head__row
+    &__row {
+        background-color: $darkblue;
+        color: $white;
+        height: 3.125rem;
+    }
+}

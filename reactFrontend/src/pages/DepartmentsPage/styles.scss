@@ -1,0 +1,15 @@
+@import "../../assets/styles/mixins.scss";
+
+.departments-page {
+    width: 100%;
+    // .departments-page__info
+    &__info {
+        margin-bottom: 40px;
+    }
+    // .departments-page__wrapper
+    &__wrapper {
+        @include flex-center(12px, space-between);
+        margin: 20px 0 30px;
+        flex-wrap: wrap;
+    }
+}

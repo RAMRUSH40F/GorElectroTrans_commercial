@@ -1,0 +1,14 @@
+.login-form {
+    // .login-form__label
+    &__label {
+        margin-bottom: 10px;
+    }
+    // .login-form__input 
+    &__input {
+        width: 100%;
+    }
+    // .login-form__button
+    &__button {
+        width: 100%;
+    }
+}

@@ -1,0 +1,7 @@
+@import "../../../assets/styles/vars.scss";
+
+.new-attendance-btn {
+    @media (max-width: $mobileSmall) {
+        width: 100%;
+    }
+}

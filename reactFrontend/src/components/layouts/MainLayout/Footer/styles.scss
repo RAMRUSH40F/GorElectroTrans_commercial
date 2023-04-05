@@ -1,0 +1,13 @@
+@import "../../../../assets/styles/vars.scss";
+
+.footer {
+    background-color: $darkblue;
+    padding: 0.8rem 0;
+    // .footer__logo
+    &__logo {
+        height: 41px;
+        @media (max-width: $mobile) {
+            width: 160px;
+        }
+    }
+}

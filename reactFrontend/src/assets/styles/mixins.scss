@@ -1,0 +1,35 @@
+@import "./vars.scss";
+
+@mixin position($top, $left, $position: absolute) {
+    position: $position;
+    top: $top;
+    left: $left;
+}
+
+@mixin position-center($position: absolute) {
+    position: $position;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+@mixin flex-center($gap: 0, $justify: center) {
+    display: flex;
+    align-items: center;
+    justify-content: $justify;
+    gap: $gap;
+}
+
+@mixin control {
+    border: 1px solid $grey;
+    padding: 0.7rem;
+    color: $black;
+    background-color: $white;
+    outline: none;
+    &:focus {
+        border-color: $blue;
+    }
+    &:disabled {
+        opacity: 0.5;
+    }
+}

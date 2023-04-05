@@ -1,0 +1,20 @@
+@import "../../../assets/styles/mixins.scss";
+
+.department-form {
+    // .department-form__label
+    &__label {
+        margin-bottom: 10px;
+    }
+    // .department-form__input
+    &__input {
+        width: 100%;
+        margin-bottom: 2.5px;
+    }
+    // .department-form__actions
+    &__actions {
+        @include flex-center(0.6rem, flex-end);
+        margin-top: 1.5rem;
+        padding-top: 1.3rem;
+        border-top: 1px solid $grey;
+    }
+}

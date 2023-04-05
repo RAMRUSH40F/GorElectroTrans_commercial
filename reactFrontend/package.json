@@ -1,0 +1,65 @@
+{
+    "name": "gor-electro-trans",
+    "homepage": "https://KDarenskii.github.io",
+    "version": "0.1.0",
+    "private": true,
+    "dependencies": {
+        "@testing-library/jest-dom": "^5.16.5",
+        "@testing-library/react": "^13.4.0",
+        "@testing-library/user-event": "^13.5.0",
+        "@types/jest": "^27.5.2",
+        "@types/node": "^16.18.14",
+        "@types/react": "^18.0.28",
+        "@types/react-dom": "^18.0.11",
+        "axios": "^1.3.4",
+        "classnames": "^2.3.2",
+        "date-fns": "^2.29.3",
+        "formik": "^2.2.9",
+        "react": "^18.2.0",
+        "react-datepicker": "^4.10.0",
+        "react-dom": "^18.2.0",
+        "react-dropdown": "^1.11.0",
+        "react-number-format": "^5.1.4",
+        "react-paginate": "^8.1.4",
+        "react-router-dom": "^6.9.0",
+        "react-toastify": "^9.1.2",
+        "typescript": "^4.9.5",
+        "web-vitals": "^2.1.4",
+        "yup": "^1.0.2"
+    },
+    "scripts": {
+        "predeploy": "npm run build",
+        "deploy": "gh-pages -d build",
+        "start": "react-scripts start",
+        "build": "react-scripts build",
+        "test": "react-scripts test --env=jsdom",
+        "eject": "react-scripts eject",
+        "move-build": "XCOPY /Y /E build ..\\src\\main\\resources\\",
+        "clean-old-build": "rmdir /s /q ..\\src\\main\\resources\\static ",
+        "postbuild": "npm run clean-old-build && npm run move-build"
+    },
+    "eslintConfig": {
+        "extends": [
+            "react-app",
+            "react-app/jest"
+        ]
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    },
+    "devDependencies": {
+        "@types/react-datepicker": "^4.10.0",
+        "gh-pages": "^5.0.0",
+        "react-scripts": "^5.0.1",
+        "sass": "^1.59.2"
+    }
+}
