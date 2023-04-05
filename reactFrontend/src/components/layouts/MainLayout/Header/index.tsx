@@ -21,7 +21,7 @@ const Header: React.FC = () => {
                 <div className="header__wrapper">
                     <img className="header__logo" src={logoSrc} alt="Logo" />
                     {location.pathname !== LOGIN_ROUTE.PATH && (
-                        <ActionButton onClick={handleLogout} colorType="add">
+                        <ActionButton className="header__button" onClick={handleLogout} colorType="info">
                             Выйти
                         </ActionButton>
                     )}

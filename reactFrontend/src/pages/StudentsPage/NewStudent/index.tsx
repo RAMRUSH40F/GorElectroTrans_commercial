@@ -1,6 +1,6 @@
 import React from "react";
 import ActionButton from "../../../components/buttons/ActionButton";
-import AddStudentModal from "../../../components/modals/AddStudentModal";
+import AddStudentModal from "../../../components/modals/students/AddStudentModal";
 import useLockedBody from "../../../hooks/useLockedBody";
 
 import "./styles.scss";
@@ -17,8 +17,8 @@ const NewStudent: React.FC = () => {
 
     return (
         <>
-            {isAdding && <AddStudentModal setIsActive={setIsAdding} />}
-            <ActionButton className="new-student-btn" colorType="add" onClick={handleOpenEditing}>
+            {isAdding && <AddStudentModal closeModal={() => setIsAdding(false)} />}
+            <ActionButton className="new-student-btn" colorType="info" onClick={handleOpenEditing}>
                 Добавить +
             </ActionButton>
         </>

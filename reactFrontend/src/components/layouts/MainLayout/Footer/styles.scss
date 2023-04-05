@@ -6,5 +6,8 @@
     // .footer__logo
     &__logo {
         height: 41px;
+        @media (max-width: $mobile) {
+            width: 160px;
+        }
     }
 }
