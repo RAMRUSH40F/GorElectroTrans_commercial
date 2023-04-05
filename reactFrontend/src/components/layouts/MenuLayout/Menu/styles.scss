@@ -1,3 +1,4 @@
+@import "../../../../assets/styles/vars.scss";
 @import "../../../../assets/styles/mixins.scss";
 
 .menu {
@@ -5,11 +6,8 @@
     &__list {
         display: flex;
         flex-direction: column;
-        width: 20rem;
-        @media (max-width: $pcBig) {
-            width: 17.125rem;
-        }
-        @media (max-width: 1260px) {
+        width: 17.125rem;
+        @media (max-width: $tablet) {
             flex-direction: row;
             flex-wrap: wrap;
             width: 100%;
@@ -19,11 +17,13 @@
     &__item {
         border-bottom: 1px solid $grey;
         cursor: pointer;
+        max-width: 274px;
         width: 100%;
-        @media (min-width: $tablet) {
-            &:hover {
-                background-color: rgba($grey, 0.4);
-            }
+        &:hover {
+            background-color: rgba($grey, 0.4);
+        }
+        @media (max-width: $tablet) {
+            max-width: none;
         }
     }
     // .menu__link-icons-wrapper
@@ -32,7 +32,7 @@
         margin-right: 5px;
     }
     // .menu__link-icon
-    &__link-arrow-icon {
+    &__link-icon {
         &:first-child {
             rect {
                 fill: red;
@@ -44,9 +44,9 @@
     }
     // .menu__link
     &__link {
-        @include flex-center(9px, flex-start);
-        font-size: 1.15rem;
-        padding: 1.1rem 0.65rem 1.1rem 1rem;
+        display: block;
+        padding: 0.95rem 0.5rem 0.95rem 1rem;
+        font-size: 0.888rem;
         line-height: 1.35;
         color: inherit;
         position: relative;
@@ -66,14 +66,5 @@
         &--back {
             @include flex-center(0, flex-start);
         }
-        @media (max-width: $pcBig) {
-            padding: 0.95rem 0.5rem 0.95rem 1rem;
-            font-size: 0.95rem;
-        }
-    }
-    // .menu__link-icon
-    &__link-icon {
-        height: 1.2rem;
-        width: 1.2rem;
     }
 }

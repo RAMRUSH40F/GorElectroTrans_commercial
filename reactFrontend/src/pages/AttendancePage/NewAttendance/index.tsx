@@ -1,12 +1,13 @@
 import React from "react";
 import ActionButton from "../../../components/buttons/ActionButton";
-import AddAttendanceModal from "../../../components/modals/attendance/AddAttendanceModal";
+import AddAttendanceModal from "../../../components/modals/AddAttendanceModal";
 import useLockedBody from "../../../hooks/useLockedBody";
 
 import "./styles.scss";
 
 const NewAttendance: React.FC = () => {
     const [isAdding, setIsAdding] = React.useState(false);
+
     useLockedBody(isAdding);
 
     const handleOpenEditing = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -16,8 +17,8 @@ const NewAttendance: React.FC = () => {
 
     return (
         <>
-            {isAdding && <AddAttendanceModal closeModal={() => setIsAdding(false)} />}
-            <ActionButton className="new-attendance-btn" colorType="info" onClick={handleOpenEditing}>
+            {isAdding && <AddAttendanceModal setIsActive={setIsAdding} />}
+            <ActionButton className="new-attendance-btn" colorType="add" onClick={handleOpenEditing}>
                 Добавить +
             </ActionButton>
         </>

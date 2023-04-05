@@ -1,23 +1,23 @@
 @import "../../assets/styles/mixins.scss";
 @import "../../assets/styles/vars.scss";
 
-.plan-page {
+.work-plan-page {
     width: 100%;
-    // .plan-page__info
+    // .work-plan-page__info
     &__info {
         margin-bottom: 40px;
     }
-    // .plan-page__search
+    // .work-plan-page__search
     &__search {
         width: 280px;
     }
-    // .plan-page__wrapper
+    // .work-plan-page__wrapper
     &__wrapper {
         @include flex-center(12px, space-between);
         margin: 20px 0 30px;
         flex-wrap: wrap;
     }
-    // .plan-page__actions
+    // .work-plan-page__actions
     &__actions {
         display: flex;
         gap: 0.7rem;

@@ -1,17 +1,15 @@
 import React from "react";
-import cn from "classnames";
 
 import "./styles.scss";
 
 type Props = {
     children: React.ReactNode;
     onClick: (event: React.MouseEvent<HTMLTableRowElement>) => void;
-    className?: string;
 };
 
-const TableBodyRow: React.FC<Props> = ({ children, onClick, className }) => {
+const TableBodyRow: React.FC<Props> = ({ children, onClick }) => {
     return (
-        <tr onClick={onClick} className={cn("table-body-row", className)}>
+        <tr onClick={onClick} className="table-body-row">
             {children}
         </tr>
     );

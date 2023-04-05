@@ -3,13 +3,15 @@ import cn from "classnames";
 
 import "./styles.scss";
 
-interface Props extends React.LabelHTMLAttributes<HTMLLabelElement> {
+type Props = {
+    children: React.ReactNode;
     text?: string;
-}
+    className?: string;
+};
 
-const Label: React.FC<Props> = ({ children, text, className, ...rest }) => {
+const Label: React.FC<Props> = ({ children, text, className }) => {
     return (
-        <label {...rest} className={cn("label", className)}>
+        <label className={cn("label", className)}>
             {text && <p className="label__text">{text}</p>}
             {children}
         </label>

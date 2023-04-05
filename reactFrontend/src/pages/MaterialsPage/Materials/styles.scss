@@ -1,10 +1,4 @@
-@import "../../../assets/styles/mixins.scss";
-
 .materials {
-    // .materials__loader
-    &__loader {
-        margin: 2rem auto 0;
-    }
     // .materials__table-wrapper
     &__table-wrapper {
         overflow-x: auto;
@@ -13,39 +7,7 @@
     // .materials__table
     &__table {
         width: 100%;
-    }
-    // .materials__table-body
-    &__table-body {
-        &--opacity {
-            opacity: 0.5;
-            pointer-events: none;
-        }
-    }
-    // .materials__table-topic-cell
-    &__table-topic-cell {
-        min-width: 13rem;
-    }
-    // .materials__table-file-cell
-    &__table-file-cell {
-        &:hover {
-            text-decoration: underline;
-        }
-    }
-    // .materials__table-filename
-    &__table-filename {
-        max-width: 120px;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        overflow: hidden;
-    }
-    // .materials__table-download-icon
-    &__table-download-icon {
-        height: 20px;
-        width: 20px;
-    }
-    // .materials__download-wrapper
-    &__download-wrapper {
-        @include flex-center(0.2rem);
+        min-width: 26.25rem;
     }
     // .materials__pagination
     &__pagination {

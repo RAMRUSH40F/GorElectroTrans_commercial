@@ -1,27 +1,14 @@
-@import "../../../assets/styles/mixins.scss";
-
 .material-form {
     // .material-form__label
     &__label {
         margin-bottom: 10px;
-        &--nopointer {
-            cursor: default;
-        }
     }
     // .material-form__input
     &__input {
         width: 100%;
-        margin-bottom: 2.5px;
     }
     // .material-form__select
     &__select {
         font-size: 0.8rem;
-    }
-    // .material-form__actions
-    &__actions {
-        @include flex-center(0.6rem, flex-end);
-        margin-top: 1.5rem;
-        padding-top: 1.3rem;
-        border-top: 1px solid $grey;
     }
 }
