@@ -18,12 +18,14 @@ public class SubdepartmentRepository {
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    public void addNewSubdepartment(int departmentId, Subdepartment subdepartment) {
+    public Subdepartment addNewSubdepartment(int departmentId, Subdepartment subdepartment) {
         Map<String, Object> subdepartmentData = new HashMap<>();
         subdepartmentData.put("id", subdepartment.getId());
         subdepartmentData.put("name", subdepartment.getName());
         namedParameterJdbcTemplate.update("INSERT INTO DEP_" + departmentId + ".subdepartment(id,name)"
                 + "VALUES(:id,:name)", subdepartmentData);
+        subdepartment.setId(getNextSubdepartmentAutoConfiguredId(departmentId));
+        return subdepartment;
     }
 
     public Subdepartment getSubdepartmentByName(int departmentId, String subDepartment_name) {
@@ -40,7 +42,7 @@ public class SubdepartmentRepository {
                         .name(rs.getString("name"))
                         .id(rs.getShort("id"))
                         .build());
-        if (resultList.size() == 0) return null;
+        if (resultList.size() == 0) return new Subdepartment(null, null);
         return resultList.get(0);
 
     }
@@ -57,4 +59,30 @@ public class SubdepartmentRepository {
                         .name(rs.getString("name"))
                         .build());
     }
+
+    public Subdepartment updateSubdepartmentName(int departmentId, Subdepartment subdepartment) {
+        Map<String, Object> requestParams = new HashMap<>();
+        requestParams.put("id", subdepartment.getId());
+        requestParams.put("name", subdepartment.getName());
+        String SQL_UPDATE_TEMPLATE = "UPDATE DEP_" + departmentId + ".subdepartment SET name =:name WHERE id=:id";
+        namedParameterJdbcTemplate.update(SQL_UPDATE_TEMPLATE, requestParams);
+        return subdepartment;
+    }
+
+    public void deleteSubdepartmentById(Integer departmentId, short id) {
+        Map<String, Object> requestParams = new HashMap<>();
+        requestParams.put("id", id);
+        String SQL_DELETE_TEMPLATE = "DELETE FROM DEP_" + departmentId + ".subdepartment WHERE id =:id";
+        namedParameterJdbcTemplate.update(SQL_DELETE_TEMPLATE, requestParams);
+    }
+
+    public Short getNextSubdepartmentAutoConfiguredId(int department) {
+        String query = new StringBuilder()
+                .append("SELECT MAX(id) AS id FROM DEP_")
+                .append(department)
+                .append(".subdepartment")
+                .toString();
+        return jdbcTemplate.query(query, (rs, rowNum) -> rs.getShort("id")).get(0);
+    }
+
 }

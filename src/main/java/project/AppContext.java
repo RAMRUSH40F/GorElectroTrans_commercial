@@ -29,7 +29,7 @@ public class AppContext {
                         .allowedMethods("GET", "POST", "PUT", "DELETE")
                         .allowedOrigins("*")
                         .allowedHeaders("*")
-                        .exposedHeaders("students_count","lessons_count","attendance_count");
+                        .exposedHeaders("students_count","lessons_count","attendance_count","content_count");
             }
         };
     }
