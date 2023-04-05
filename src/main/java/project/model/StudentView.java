@@ -9,9 +9,10 @@ import lombok.Data;
 @AllArgsConstructor
 @Builder
 public class StudentView {
-    @JsonProperty("student_id")
+    @JsonProperty("studentId")
     private String studentId;
-    @JsonProperty("subdepartment_name")
+    @JsonProperty("subdepartmentName")
     private String subDepartment;
+    @JsonProperty("fullName")
     private String fullName;
 }

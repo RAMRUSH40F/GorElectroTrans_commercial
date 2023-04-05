@@ -28,7 +28,8 @@ public class AppContext {
                 registry.addMapping("/**")
                         .allowedMethods("GET", "POST", "PUT", "DELETE")
                         .allowedOrigins("*")
-                        .allowedHeaders("*");;
+                        .allowedHeaders("*")
+                        .exposedHeaders("students_count","lessons_count","attendance_count","content_count");
             }
         };
     }

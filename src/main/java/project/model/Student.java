@@ -10,8 +10,8 @@ import lombok.Data;
 @Builder
 @AllArgsConstructor
 public class Student {
-   @JsonProperty("student_id")
+   @JsonProperty("studentId")
    private String studentId;
-   @JsonProperty("subdepartment_id")
+   @JsonProperty("subdepartmentId")
    private short subDepartmentId;
 }

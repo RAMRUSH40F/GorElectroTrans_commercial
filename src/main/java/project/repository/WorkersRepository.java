@@ -1,32 +1,51 @@
 package project.repository;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
+import project.exceptions.Validator;
 import project.model.Worker;
+import project.repository.mapper.WorkerMapper;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Repository
+@Repository("WorkersRepositoryBean")
+@RequiredArgsConstructor
 public class WorkersRepository {
-    @Autowired
-    NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final WorkerMapper mapper = new WorkerMapper();
 
     public void addNewWorker(Worker worker) {
-        String id = worker.getId();
-        if (id.length() > 5)
-            throw new IndexOutOfBoundsException("Too many symbols in ID!!");
-        for (int i = 0; i < 5; i++) {
-            if (id.charAt(i) < 48 || id.charAt(i) > 57) // Смотрим кодировку сиволов id
-                throw new RuntimeException("Incorrect id symbol!!!!");
-        }
+        Validator.validateStudentId(worker.getId());
         Map<String, Object> workerData = new HashMap<>();
         workerData.put("id", worker.getId());
         workerData.put("name", worker.getName());
-        namedParameterJdbcTemplate.update(
-                "INSERT INTO WORKERS.workers(id,name) VALUES(:id,:name)",
-                    workerData);
+        String INSERT_WORKER_TEMPLATE =
+                "INSERT INTO WORKERS.workers(id,name) VALUES(:id,:name) ON DUPLICATE KEY UPDATE name = VALUES(name)";
+
+        namedParameterJdbcTemplate.update(INSERT_WORKER_TEMPLATE, workerData);
+
+    }
+
+    /**
+     * @return null if Worker does not exi
+     */
+    public Worker getWorkerById(String workerId) {
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("workerId", workerId);
+
+        String SQL_GET_BY_ID = "SELECT * FROM WORKERS.workers WHERE id = :workerId";
+        Worker worker;
+        try {
+            worker = namedParameterJdbcTemplate.query(SQL_GET_BY_ID, parameters, mapper).get(0);
+        } catch (IndexOutOfBoundsException e) {
+            return null;
+
+        }
+        return worker;
+
 
     }
 
