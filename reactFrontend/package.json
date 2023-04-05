@@ -26,8 +26,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "move-build": "XCOPY /Y /E build  ..\\main\\resources\\",
-    "clean-old-build": "rmdir /s /q ..\\main\\resources\\static ",
+    "move-build": "XCOPY /Y /E build .\\src\\main\\resources\\",
+    "clean-old-build": "rmdir /s /q .\\src\\main\\resources\\static ",
     "clean-new-build": "rmdir /s /q build",
     "postbuild": "npm run clean-old-build && npm run move-build"
   },
