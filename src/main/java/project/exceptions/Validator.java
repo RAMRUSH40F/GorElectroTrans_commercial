@@ -1,5 +1,6 @@
 package project.exceptions;
 
+
 public class Validator {
 
     public static void validateDepartmentId(Integer id) {
@@ -28,5 +29,11 @@ public class Validator {
         }
 
 
+    }
+
+    public static void validateInterval(int interval) {
+        if (interval > 4 || interval < 1) {
+            throw new InvalidIntervalException(interval);
+        }
     }
 }
