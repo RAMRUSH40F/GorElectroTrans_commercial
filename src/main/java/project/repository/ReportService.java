@@ -6,29 +6,26 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
-import project.exceptions.Validator;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.time.Year;
 
-@Repository("ReportRepositoryBean")
+@Repository("ReportServiceBean")
 @RequiredArgsConstructor
-@ComponentScan("")
-public class ReportRepository {
-    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+public class ReportService {
     private final JdbcTemplate jdbcTemplate;
 
     public HSSFWorkbook readWorkbook(String filename) {
         try {
-            POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(filename));
-            return new HSSFWorkbook(fs);
-        } catch (Exception e) {
-            return null;
+            HSSFWorkbook excelFile = new HSSFWorkbook(new POIFSFileSystem(new FileInputStream(filename)));
+            return excelFile;
+        } catch (IOException e) {
+            throw new RuntimeException("Файл шаблона не был загружен в корневую папку проекта или " +
+                    "произошла другая ошибка связанная с чтением шаблонной таблицы");
         }
     }
 

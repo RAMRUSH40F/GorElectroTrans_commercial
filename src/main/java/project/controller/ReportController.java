@@ -2,33 +2,45 @@ package project.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import project.exceptions.Validator;
 import project.model.IntervalModel;
-import project.repository.ReportRepository;
+import project.repository.ReportService;
 
 import java.io.File;
 import java.time.Year;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 public class ReportController {
-    @Autowired
-    private ReportRepository reportRepository;
+    private final ReportService reportService;
 
     @GetMapping("/dep_{N}/report")
-    public byte[] getReport(@RequestParam int interval) {
-        Validator.validateInterval(interval);
-        final String filename = "src"+ File.separator+"main"+File.separator+"resources"+File.separator+"report_template.xls";
-        HSSFWorkbook workbook = reportRepository.readWorkbook(filename);
-        reportRepository.formLessonReport(workbook, filename, interval);
-        reportRepository.formWorkerReport(workbook, filename);
-        return workbook.getBytes();
+    public ResponseEntity<ByteArrayResource> getReport(@RequestParam int quoter) {
+        Validator.validateInterval(quoter);
+        final String filename = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "report_template.xls";
+        HSSFWorkbook workbook = reportService.readWorkbook(filename);
+        reportService.formLessonReport(workbook, filename, quoter);
+        reportService.formWorkerReport(workbook, filename);
+        String today = new Date().toString().substring(4, 10);
+        // Set response headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", today + " OTCHET.xls");
+
+        // Return ResponseEntity with file data and headers
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(new ByteArrayResource(workbook.getBytes()));
     }
 
     @GetMapping("/dep_{N}/report/date")
