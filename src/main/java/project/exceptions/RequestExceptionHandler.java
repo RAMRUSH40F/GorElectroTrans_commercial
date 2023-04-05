@@ -14,7 +14,8 @@ public class RequestExceptionHandler {
     @ExceptionHandler(value = {
             InvalidDepartmentException.class,
             InvalidStudentIdException.class,
-            PaginationException.class})
+            PaginationException.class,
+            InvalidIntervalException.class})
     public ResponseEntity<ResponseException> handleInvalidRequestException(RuntimeException e) {
 
         ResponseException responseException = ResponseException.builder()

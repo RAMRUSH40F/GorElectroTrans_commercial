@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import project.exceptions.Validator;
 import project.model.IntervalModel;
 import project.repository.ReportRepository;
 
@@ -22,9 +23,8 @@ public class ReportController {
 
     @GetMapping("/dep_{N}/report")
     public byte[] getReport(@RequestParam int interval) {
-        String filename = "C:\\Users\\artem\\Downloads\\1.xls";
-        // раскомитить, когда будет готов шаблон
-        // String filename="\\resources\\1.xls";
+        Validator.validateInterval(interval);
+        final String filename = "src/main/resources/report_template.xlsx";
         HSSFWorkbook workbook = reportRepository.readWorkbook(filename);
         reportRepository.formLessonReport(workbook, filename, interval);
         reportRepository.formWorkerReport(workbook, filename);

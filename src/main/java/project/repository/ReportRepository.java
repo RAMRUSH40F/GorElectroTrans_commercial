@@ -20,7 +20,7 @@ import java.time.Year;
 @RequiredArgsConstructor
 @ComponentScan("")
 public class ReportRepository {
-   private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final JdbcTemplate jdbcTemplate;
 
     public HSSFWorkbook readWorkbook(String filename) {
@@ -43,7 +43,6 @@ public class ReportRepository {
     }
 
     public void formLessonReport(HSSFWorkbook wb, String fileName, int interval) {
-        Validator.validateInterval(interval);
 
         HSSFSheet sheet = wb.getSheet("Лист1");
         HSSFRow row1 = sheet.getRow(2);

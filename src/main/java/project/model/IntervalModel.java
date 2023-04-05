@@ -11,21 +11,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class IntervalModel {
     private int year;
-    private int itnterval;
-
-    public int getYear() {
-        return year;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
-    }
-
-    public int getItnterval() {
-        return itnterval;
-    }
-
-    public void setItnterval(int itnterval) {
-        this.itnterval = itnterval;
-    }
+    private int intervalNumber;
 }
