@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import project.exceptions.Validator;
-import project.model.IntervalModel;
-import project.repository.ReportService;
+import project.model.QuarterDateModel;
+import project.service.ReportService;
 
-import java.io.File;
+import java.nio.file.Paths;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,12 +25,12 @@ public class ReportController {
     private final ReportService reportService;
 
     @GetMapping("/dep_{N}/report")
-    public ResponseEntity<ByteArrayResource> getReport(@RequestParam int quoter) {
-        Validator.validateInterval(quoter);
-        final String filename = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "report_template.xls";
-        HSSFWorkbook workbook = reportService.readWorkbook(filename);
-        reportService.formLessonReport(workbook, filename, quoter);
-        reportService.formWorkerReport(workbook, filename);
+    public ResponseEntity<ByteArrayResource> getReport(@RequestParam int quarter) {
+        Validator.validateInterval(quarter);
+        final String fileName = Paths.get("src", "main", "resources", "report_template.xls").toString();
+        HSSFWorkbook workbook = reportService.readWorkbook(fileName);
+        reportService.formLessonReport(workbook, fileName, quarter);
+        reportService.formWorkerReport(workbook, fileName);
         String today = new Date().toString().substring(4, 10);
         // Set response headers
         HttpHeaders headers = new HttpHeaders();
@@ -44,11 +44,11 @@ public class ReportController {
     }
 
     @GetMapping("/dep_{N}/report/date")
-    public List<IntervalModel> getYear() {
+    public List<QuarterDateModel> getYear() {
         int year = Year.now().getValue();
-        List<IntervalModel> intervals = new ArrayList<>();
+        List<QuarterDateModel> intervals = new ArrayList<>();
         for (int i = 1; i <= 4; i++) {
-            intervals.add(new IntervalModel(year, i));
+            intervals.add(new QuarterDateModel(year, i));
         }
         return intervals;
     }

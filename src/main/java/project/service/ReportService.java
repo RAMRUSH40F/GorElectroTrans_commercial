@@ -1,4 +1,4 @@
-package project.repository;
+package project.service;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -19,13 +19,13 @@ import java.time.Year;
 public class ReportService {
     private final JdbcTemplate jdbcTemplate;
 
-    public HSSFWorkbook readWorkbook(String filename) {
+    public HSSFWorkbook readWorkbook(String filename){
         try {
             HSSFWorkbook excelFile = new HSSFWorkbook(new POIFSFileSystem(new FileInputStream(filename)));
             return excelFile;
         } catch (IOException e) {
             throw new RuntimeException("Файл шаблона не был загружен в корневую папку проекта или " +
-                    "произошла другая ошибка связанная с чтением шаблонной таблицы");
+                    "произошла другая ошибка связанная с чтением шаблонной таблицы", e);
         }
     }
 
@@ -34,12 +34,13 @@ public class ReportService {
             FileOutputStream fileOut = new FileOutputStream(fileName);
             wb.write(fileOut);
             fileOut.close();
-        } catch (Exception e) {
-            //Обработка ошибки
-        }
+        } catch (IOException e) {
+        throw new RuntimeException(
+                "Произошла другая ошибка связанная с записью в таблицу", e);
+    }
     }
 
-    public void formLessonReport(HSSFWorkbook wb, String fileName, int interval) {
+    public void formLessonReport(HSSFWorkbook wb, String fileName, int quarter) {
 
         HSSFSheet sheet = wb.getSheet("Лист1");
         HSSFRow row1 = sheet.getRow(2);
@@ -54,10 +55,10 @@ public class ReportService {
         for (int i = firstCell; i < lastCell; i += 2) {
             cell1 = row1.getCell(i);
             cell2 = row2.getCell(i);
-            if (interval < 4) {
-                result = jdbcTemplate.query("SELECT COUNT(1) FROM DEP_" + (i / 2 + 1) + ".lesson WHERE `date` BETWEEN '" + year + "-0" + (1 + 3 * interval) + "-01' AND '" + year + "-0" + (4 + 3 * interval) + "-01'", (rs, rowNum) -> rs.getInt("COUNT(1)")).get(0);
+            if (quarter < 4) {
+                result = jdbcTemplate.query("SELECT COUNT(1) FROM DEP_" + (i / 2 + 1) + ".lesson WHERE `date` BETWEEN '" + year + "-0" + (1 + 3 * quarter) + "-01' AND '" + year + "-0" + (4 + 3 * quarter) + "-01'", (rs, rowNum) -> rs.getInt("COUNT(1)")).get(0);
             } else {
-                result = jdbcTemplate.query("SELECT COUNT(1) FROM DEP_" + (i / 2 + 1) + ".lesson WHERE `date` BETWEEN '" + year + "-0" + (1 + 3 * interval) + "-01' AND '" + (year + 1) + "-01-01'", (rs, rowNum) -> rs.getInt("COUNT(1)")).get(0);
+                result = jdbcTemplate.query("SELECT COUNT(1) FROM DEP_" + (i / 2 + 1) + ".lesson WHERE `date` BETWEEN '" + year + "-0" + (1 + 3 * quarter) + "-01' AND '" + (year + 1) + "-01-01'", (rs, rowNum) -> rs.getInt("COUNT(1)")).get(0);
             }
             total += result;
             cell1.setCellValue(result);
