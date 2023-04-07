@@ -67,7 +67,7 @@ const Departments: React.FC = () => {
             {!error && !isLoading && departments.length < 1 && (
                 <Alert type={ALERT.INFO}>На текущий момент нет ни одной записи.</Alert>
             )}
-            {!error && !isLoading && departments.length > 1 && (
+            {!error && !isLoading && departments.length > 0 && (
                 <div className="departments__table-wrapper">
                     <Table className="departments__table">
                         <TableHead>

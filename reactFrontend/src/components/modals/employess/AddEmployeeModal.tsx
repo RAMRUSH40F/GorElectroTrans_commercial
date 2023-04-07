@@ -1,62 +1,56 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { NOTION } from "../../../constants/notion";
-import { useStudentsContext } from "../../../context/studentsContext";
+import { useEmployeesContext } from "../../../context/employeesContext";
 import { showNotion } from "../../../helpers/showNotion";
 import useClickOutside from "../../../hooks/useClickOutside";
 import useEscape from "../../../hooks/useEscape";
-import { INewStudent } from "../../../models/Student";
-import StudentsService from "../../../services/StudentService";
-import StudentForm, { StudentFormState } from "../../forms/StudentForm";
+import { IEmployee } from "../../../models/Employee";
+import EmployeeService from "../../../services/EmployeeService";
 import ModalLayout from "../ModalLayout";
 import ModalContent from "../ModalLayout/ModalContent";
 import ModalHeader from "../ModalLayout/ModalHeader";
 import ModalMessage from "../ModalLayout/ModalMessage";
+import EmployeeForm, { EmployeeFormState } from "../../forms/EmployeeForm";
 
 type Props = {
     closeModal: () => void;
 };
 
-const AddStudentModal: React.FC<Props> = ({ closeModal }) => {
+const AddEmployeeModal: React.FC<Props> = ({ closeModal }) => {
     const modalRef = React.useRef<HTMLDivElement | null>(null);
     useClickOutside(modalRef, closeModal);
     useEscape(closeModal);
 
     const { divisionId = "" } = useParams();
-    const { departments, addStudent } = useStudentsContext();
+    const { departments, addEmployee } = useEmployeesContext();
     const [error, setError] = useState<string | null>(null);
 
-    const handleSubmit = async (values: StudentFormState) => {
+    const handleSubmit = async (values: EmployeeFormState) => {
         console.log(values);
 
-        const newStudent: INewStudent = {
-            ...values,
-            fullName: values.fullName?.length ? values.fullName : null,
-        };
-        console.log(newStudent);
-
         try {
-            const response = await StudentsService.post({ depId: divisionId, student: newStudent });
+            const response = await EmployeeService.post({ depId: divisionId, employee: values });
             console.log(response);
-            addStudent(response.data);
+            addEmployee(response.data);
             showNotion(NOTION.SUCCESS, "Изменения успешно сохранены");
             closeModal();
         } catch (error) {
             console.log(error);
             const err = error as any;
-            setError(err?.response?.data?.message ?? "Не удалось добавить запись");
+            setError(err?.response?.data?.message ?? "Не удалось добавить работника");
         }
     };
 
     return (
         <ModalLayout ref={modalRef}>
-            <ModalHeader closeModal={closeModal}>Добавление студента</ModalHeader>
+            <ModalHeader closeModal={closeModal}>Добавление работника</ModalHeader>
             {error && <ModalMessage>{error}</ModalMessage>}
             <ModalContent>
-                <StudentForm departments={departments} onSubmit={handleSubmit} />
+                <EmployeeForm departments={departments} onSubmit={handleSubmit} />
             </ModalContent>
         </ModalLayout>
     );
 };
 
-export default AddStudentModal;
+export default AddEmployeeModal;

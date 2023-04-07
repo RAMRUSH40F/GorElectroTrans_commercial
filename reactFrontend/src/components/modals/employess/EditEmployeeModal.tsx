@@ -1,42 +1,42 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { NOTION } from "../../../constants/notion";
-import { useStudentsContext } from "../../../context/studentsContext";
+import { useEmployeesContext } from "../../../context/employeesContext";
 import { showNotion } from "../../../helpers/showNotion";
 import useClickOutside from "../../../hooks/useClickOutside";
 import useEscape from "../../../hooks/useEscape";
-import { IStudent, INewStudent } from "../../../models/Student";
-import StudentsService from "../../../services/StudentService";
+import { IEmployee } from "../../../models/Employee";
 import Confirm from "../../Comfirm";
-import StudentForm, { StudentFormState } from "../../forms/StudentForm";
+import EmployeeForm, { EmployeeFormState } from "../../forms/EmployeeForm";
 import ModalLayout from "../ModalLayout";
 import ModalContent from "../ModalLayout/ModalContent";
 import ModalHeader from "../ModalLayout/ModalHeader";
 import ModalMessage from "../ModalLayout/ModalMessage";
+import EmployeeService from "../../../services/EmployeeService";
 
 type Props = {
     closeModal: () => void;
-    student: IStudent;
+    employee: IEmployee;
 };
 
-const EditStudentModal: React.FC<Props> = ({ closeModal, student }) => {
+const EditEmployeeModal: React.FC<Props> = ({ closeModal, employee }) => {
     const modalRef = React.useRef<HTMLDivElement | null>(null);
     useClickOutside(modalRef, closeModal);
     useEscape(closeModal);
 
     const { divisionId = "" } = useParams();
 
-    const { departments, deleteStudent, updateStudents } = useStudentsContext();
+    const { departments, deleteEmployee, updateEmployee } = useEmployeesContext();
     const [error, setError] = useState<string | null>(null);
     const [isConfirming, setIsConfirming] = useState(false);
     const [isDisabled, setIsDisabled] = useState(false);
 
-    const handleSubmit = async (values: StudentFormState) => {
+    const handleSubmit = async (values: EmployeeFormState) => {
         setError(null);
         console.log(values);
         try {
-            await StudentsService.put({ depId: divisionId, student: { ...values } });
-            updateStudents({ ...values, fullName: student.fullName });
+            await EmployeeService.put({ depId: divisionId, employee: values });
+            updateEmployee({ ...values, fullName: employee.fullName });
             showNotion(NOTION.SUCCESS, "Изменения успешно сохранены");
             closeModal();
         } catch (error) {
@@ -53,8 +53,8 @@ const EditStudentModal: React.FC<Props> = ({ closeModal, student }) => {
 
         setError(null);
         try {
-            const response = await StudentsService.delete({ depId: divisionId, studentId: student.studentId });
-            deleteStudent(student.studentId);
+            await EmployeeService.delete({ depId: divisionId, studentId: employee.studentId });
+            deleteEmployee(employee.studentId);
             showNotion(NOTION.SUCCESS, "Запись успешно удалена");
             closeModal();
         } catch (error) {
@@ -83,15 +83,15 @@ const EditStudentModal: React.FC<Props> = ({ closeModal, student }) => {
             <ModalContent>
                 {isConfirming ? (
                     <Confirm
-                        title="Вы уверены, что хотите удалить студента?"
+                        title="Вы уверены, что хотите удалить работника?"
                         handleConfirm={handleDelete}
                         handleDecline={handleDecline}
                     />
                 ) : (
-                    <StudentForm
+                    <EmployeeForm
                         onSubmit={handleSubmit}
                         departments={departments}
-                        student={student}
+                        employee={employee}
                         moveToConfrim={moveToConfirm}
                         isDisabled={isDisabled}
                         isEditing={true}
@@ -102,4 +102,4 @@ const EditStudentModal: React.FC<Props> = ({ closeModal, student }) => {
     );
 };
 
-export default EditStudentModal;
+export default EditEmployeeModal;

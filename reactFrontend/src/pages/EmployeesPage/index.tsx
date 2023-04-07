@@ -3,13 +3,13 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Search from "../../components/Search";
 import SectionHeader from "../../components/SectionHeader";
-import { useStudentsContext } from "../../context/studentsContext";
+import { useEmployeesContext } from "../../context/employeesContext";
 import { getDivisionName } from "../../helpers/getDivisionName";
 import DepartmentService from "../../services/DepartmentService";
-import NewStudent from "./NewStudent";
-import StudentsComponent from "./StudentsComponent";
 
 import "./styles.scss";
+import NewEmployee from "./NewEmployee";
+import Employees from "./Employees";
 
 const StudentsPage: React.FC = () => {
     const { divisionId = "" } = useParams();
@@ -18,7 +18,7 @@ const StudentsPage: React.FC = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    const { setDepartments } = useStudentsContext();
+    const { setDepartments } = useEmployeesContext();
 
     useEffect(() => {
         const cancelToken = axios.CancelToken.source();
@@ -47,12 +47,12 @@ const StudentsPage: React.FC = () => {
     return (
         <div className="students-page">
             <section className="students-page__info">
-                <SectionHeader title="Студенты" subtitle={divisionName ?? "Подразделение"} />
+                <SectionHeader title="Работники" subtitle={divisionName ?? "Подразделение"} />
                 <div className="students-page__wrapper">
                     <Search />
-                    <NewStudent />
+                    <NewEmployee />
                 </div>
-                <StudentsComponent />
+                <Employees />
             </section>
         </div>
     );

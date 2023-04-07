@@ -92,7 +92,7 @@ const Attendance: React.FC = () => {
             {!error && !isLoading && attendances.length < 1 && (
                 <Alert type={ALERT.INFO}>На текущий момент нет ни одной записи.</Alert>
             )}
-            {!error && !isLoading && attendances.length > 1 && (
+            {!error && !isLoading && attendances.length > 0 && (
                 <>
                     <div className="attendance__table-wrapper">
                         <Table className="attendance__table">
