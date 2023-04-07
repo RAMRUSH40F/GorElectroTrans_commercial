@@ -42,7 +42,6 @@ const Materials: React.FC = () => {
         const cancelToken = axios.CancelToken.source();
         setIsFetching(true);
         setError(null);
-        setMaterials([]);
 
         const fetchMaterials = async () => {
             try {
@@ -61,8 +60,8 @@ const Materials: React.FC = () => {
                     fileName,
                 }));
                 console.log(materials);
-                const totalPlans = response.headers["content_count"];
-                const totalPages = totalPlans ? Math.ceil(totalPlans / LIMIT) : 1;
+                const totalMaterials = response.headers["content_count"];
+                const totalPages = totalMaterials ? Math.ceil(totalMaterials / LIMIT) : 1;
                 setMaterials(materials);
                 setTotalPages(totalPages);
             } catch (error) {
@@ -112,7 +111,7 @@ const Materials: React.FC = () => {
             {!error && !isLoading && materials.length < 1 && (
                 <Alert type={ALERT.INFO}>На текущий момент нет ни одной записи.</Alert>
             )}
-            {!error && !isLoading && materials.length > 1 && (
+            {!error && !isLoading && materials.length > 0 && (
                 <>
                     <div className="materials__table-wrapper">
                         <Table className="materials__table">

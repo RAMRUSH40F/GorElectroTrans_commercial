@@ -5,7 +5,7 @@ import {
     DEPARTMENTS_ROUTE,
     DIVISIONS_ROUTE,
     MATERIALS_ROUTE,
-    STUDENTS_ROUTE,
+    EMPLOYEES_ROUTE,
     WORK_PLAN_ROUTE,
 } from "../../../../constants/routesPathnames";
 import cn from "classnames";
@@ -31,7 +31,7 @@ const Menu: React.FC<Props> = ({ className }) => {
         { title: "Рабочий план", path: `/${divisionId}/` + WORK_PLAN_ROUTE.NAME, src: scheduleIconSrc },
         { title: "Журнал посещаемости", path: `/${divisionId}/` + ATTENDANCE_ROUTE.NAME, src: checklistIconSrc },
         { title: "Учебные материалы", path: `/${divisionId}/` + MATERIALS_ROUTE.NAME, src: workbookIconSrc },
-        { title: "Студенты", path: `/${divisionId}/` + STUDENTS_ROUTE.NAME, src: studentIconSrc },
+        { title: "Работники", path: `/${divisionId}/` + EMPLOYEES_ROUTE.NAME, src: studentIconSrc },
         { title: "Отделы", path: `/${divisionId}/` + DEPARTMENTS_ROUTE.NAME, src: buildingIconSrc },
     ];
 

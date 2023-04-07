@@ -1,6 +1,7 @@
 import * as yup from "yup";
 
-export const studentFormScheme = yup.object().shape({
+export const employeeFormScheme = yup.object().shape({
     studentId: yup.string().required("Обязательное поле").length(5, "Введите 5-значное значение"),
+    fullName: yup.string().required("Обязательно поле"),
     subdepartmentName: yup.string().required("Обязательное поле"),
 });

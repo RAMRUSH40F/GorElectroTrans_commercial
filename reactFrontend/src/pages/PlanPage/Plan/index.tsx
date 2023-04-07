@@ -89,7 +89,7 @@ const Plan: React.FC = () => {
             {!error && !isLoading && plans.length < 1 && (
                 <Alert type={ALERT.INFO}>На текущий момент нет ни одной записи.</Alert>
             )}
-            {!error && !isLoading && plans.length > 1 && (
+            {!error && !isLoading && plans.length > 0 && (
                 <>
                     <div className="plan__table-wrapper">
                         <Table className="plan__table">

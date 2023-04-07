@@ -6,21 +6,21 @@ import {
     DIVISIONS_ROUTE,
     ROOT_ROUTE,
     MATERIALS_ROUTE,
-    STUDENTS_ROUTE,
+    EMPLOYEES_ROUTE,
     WORK_PLAN_ROUTE,
 } from "../constants/routesPathnames";
 import AttendanceContextProvider from "../context/attendanceContext/AttendanceContextProvider";
 import DepartmentsContextProvider from "../context/departmentsContext/DepartmentsContextProvider";
 import MaterialsContextProvider from "../context/materialsContext/MaterialsContextProvider";
 import PlansContextProvider from "../context/plansContext/PlansContextProvider";
-import StudentsContextProvider from "../context/studentsContext/StudentsContextProvider";
+import EmployeesContextProvider from "../context/employeesContext/EmployeesContextProvider";
 import AttendancePage from "../pages/AttendancePage";
 import DepartmentsPage from "../pages/DepartmentsPage";
 import DivisionsPage from "../pages/DivisionsPage";
 import LoginPage from "../pages/LoginPage";
 import MaterialsPage from "../pages/MaterialsPage";
-import StudentsPage from "../pages/StudentsPage";
-import WorkPlanPage from "../pages/WorkPlanPage";
+import EmployeesPage from "../pages/EmployeesPage";
+import PlanPage from "../pages/PlanPage";
 import MainLayout from "./layouts/MainLayout";
 import MenuLayout from "./layouts/MenuLayout";
 
@@ -35,16 +35,16 @@ const Router: React.FC = () => {
                         path={WORK_PLAN_ROUTE.PATH}
                         element={
                             <PlansContextProvider>
-                                <WorkPlanPage />
+                                <PlanPage />
                             </PlansContextProvider>
                         }
                     />
                     <Route
-                        path={STUDENTS_ROUTE.PATH}
+                        path={EMPLOYEES_ROUTE.PATH}
                         element={
-                            <StudentsContextProvider>
-                                <StudentsPage />
-                            </StudentsContextProvider>
+                            <EmployeesContextProvider>
+                                <EmployeesPage />
+                            </EmployeesContextProvider>
                         }
                     />
                     <Route
