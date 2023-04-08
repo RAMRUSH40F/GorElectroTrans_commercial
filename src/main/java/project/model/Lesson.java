@@ -30,7 +30,7 @@ public class Lesson {
     @JsonProperty("isHeld")
     private boolean isHeld;
     @JsonProperty("lessonContent")
-    private List<String> lessonContents;
+    private List<String> lessonContent;
 
 
 

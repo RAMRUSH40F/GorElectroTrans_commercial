@@ -35,16 +35,23 @@ public class LessonContentRepository {
         }
     }
 
-    public List<LessonContent> getAllContentInfo(int department, int page, int size) {
+    public List<LessonContent> getAllContentInfoPaged(int department, int page, int size) {
         String sqlQuery = "SELECT * FROM DEP_" + department + ".Materials_view" +
                 " ORDER BY date DESC LIMIT " + ((page - 1) * size) + "," + size;
         return namedParameterJdbcTemplate.query(sqlQuery, mapper);
 
     }
 
+    public List<String> getFileNamesByLessonId(int department, int id) {
+        return namedParameterJdbcTemplate.query(
+                "SELECT file_name FROM DEP_" + department + ".lesson_content WHERE lesson_id=" + id,
+                (rs, rowNum) -> rs.getString("file_name"));
+
+    }
+
     public LessonContent getContentInfoByFileName(int department, String fileName) {
         String sqlQuery = "SELECT * FROM DEP_" + department + ".Materials_view" +
-                " WHERE file_name='" + fileName+"' ORDER BY date DESC";
+                " WHERE file_name='" + fileName + "' ORDER BY date DESC";
         try {
             return namedParameterJdbcTemplate.query(sqlQuery, mapper).get(0);
         } catch (IndexOutOfBoundsException e) {

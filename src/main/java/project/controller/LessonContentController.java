@@ -34,7 +34,7 @@ public class LessonContentController {
         return ResponseEntity
                 .ok()
                 .headers(headers)
-                .body(repository.getAllContentInfo(department, Integer.parseInt(page), Integer.parseInt(size)));
+                .body(repository.getAllContentInfoPaged(department, Integer.parseInt(page), Integer.parseInt(size)));
     }
 
     @GetMapping("/dep_{N}/content/data/{file_name}")

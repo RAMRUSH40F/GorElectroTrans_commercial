@@ -1,6 +1,6 @@
 package project.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,10 +13,10 @@ import static project.exceptions.Validator.validateDepartmentId;
 import static project.exceptions.Validator.validatePaginationParams;
 
 @RestController("LessonControllerBean")
+@RequiredArgsConstructor
 public class LessonController {
 
-    @Autowired
-    private LessonRepository lessonRepository;
+    private final LessonRepository lessonRepository;
 
     @GetMapping("/dep_{N}/work_plan/data")
     public ResponseEntity<List<Lesson>> getPagedLessons(@PathVariable("N") int department,
