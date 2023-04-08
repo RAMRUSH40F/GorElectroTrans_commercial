@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.sql.Date;
+import java.util.List;
 
 @Data
 @Builder
@@ -24,4 +25,10 @@ public class Lesson {
     private String teacher;
     @JsonProperty("peoplePlanned")
     private int peoplePlanned;
+    @JsonProperty("isHeld")
+    private boolean isHeld;
+    @JsonProperty("lessonContent")
+    private List<String> lessonContents;
+
+
 }

@@ -35,11 +35,12 @@ public class LessonRepository {
         parameters.put("date", lesson.getDate());
         parameters.put("teacher", lesson.getTeacher());
         parameters.put("peoplePlanned", lesson.getPeoplePlanned());
+        parameters.put("isHeld",lesson.isHeld());
 
         namedJdbcTemplate.update(
-                "INSERT INTO " + databaseName + ".lesson (topic,duration,date,teacher,people_planned)" +
+                "INSERT INTO " + databaseName + ".lesson (topic,duration,date,teacher,people_planned,isHeld)" +
                         "VALUES (:topic,:duration,:date," +
-                        " :teacher, :peoplePlanned);",
+                        " :teacher, :peoplePlanned,:isHeld);",
                 parameters);
     }
 
@@ -78,25 +79,32 @@ public class LessonRepository {
         validateDepartmentId(department);
         String sqlQuery = "SELECT * FROM DEP_" + department + ".lesson" +
                 " ORDER BY date DESC LIMIT " + ((page - 1) * size) + "," + size;
-        return namedJdbcTemplate.query(sqlQuery, (rs, rowNum) -> Lesson.builder().
+        List<Lesson> lessonList= namedJdbcTemplate.query(sqlQuery, (rs, rowNum) -> Lesson.builder().
                 id(rs.getInt("id")).
                 topic(rs.getString("topic")).
                 duration(rs.getFloat("duration")).
                 date(rs.getDate("date")).
                 teacher(rs.getString("teacher")).
-                peoplePlanned(rs.getInt("people_planned")).build());
+                peoplePlanned(rs.getInt("people_planned")).isHeld(rs.getBoolean("isHeld")).build());
+        for (Lesson x:lessonList) {
+            x.setLessonContents(namedJdbcTemplate.query("SELECT * FROM DEP_"+department+".lesson_content WHERE lesson_id="+x.getId(), (rs,rowNum)->rs.getString("file_name")));
+        }
+        return lessonList;
     }
 
     public List<Lesson> getLessonById(int department, int id) {
         validateDepartmentId(department);
-        return namedJdbcTemplate.query("SELECT * FROM DEP_" + department + ".lesson WHERE id=" + id, (rs, rowNum) -> Lesson.builder().
+        List<Lesson> lessonList= namedJdbcTemplate.query("SELECT * FROM DEP_" + department + ".lesson WHERE id=" + id, (rs, rowNum) -> Lesson.builder().
                 id(rs.getInt("id")).
                 topic(rs.getString("topic")).
                 duration(rs.getFloat("duration")).
                 date(rs.getDate("date")).
                 teacher(rs.getString("teacher")).
-                peoplePlanned(rs.getInt("people_planned")).build());
-
+                peoplePlanned(rs.getInt("people_planned")).isHeld(rs.getBoolean("isHeld")).build());
+        for (Lesson x:lessonList) {
+            x.setLessonContents(namedJdbcTemplate.query("SELECT * FROM DEP_"+department+".lesson_content WHERE lesson_id="+x.getId(), (rs,rowNum)->rs.getString("file_name")));
+        }
+        return lessonList;
     }
 
     public void changeLesson(int department, int id, Lesson changed_lesson) {
@@ -114,6 +122,8 @@ public class LessonRepository {
                 .append(changed_lesson.getTeacher())
                 .append("', people_planned=")
                 .append(changed_lesson.getPeoplePlanned())
+                .append(" , isHeld=")
+                .append(changed_lesson.isHeld())
                 .append(" WHERE id='")
                 .append(changed_lesson.getId())
                 .append("'")
