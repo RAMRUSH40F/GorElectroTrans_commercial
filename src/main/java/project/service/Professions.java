@@ -1,4 +1,4 @@
-package project.repository;
+package project.service;
 
 
 public enum Professions {

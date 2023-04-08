@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class IntervalModel {
+public class QuarterDateModel {
     private int year;
-    private int intervalNumber;
+    private int quoter;
 }
