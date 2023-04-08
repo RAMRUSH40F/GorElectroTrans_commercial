@@ -72,6 +72,7 @@ const PlanForm: React.FC<Props> = ({ onSubmit, plan, moveToConfrim, isDisabled }
                                 }}
                                 selected={date}
                                 disabled={isSubmitting || isDisabled}
+                                autoComplete="none"
                             />
                             {errors.date && touched.date && <FormErrorMessage>{errors.date}</FormErrorMessage>}
                         </Label>

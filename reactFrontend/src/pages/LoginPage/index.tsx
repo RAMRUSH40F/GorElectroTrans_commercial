@@ -10,6 +10,14 @@ const LoginPage: React.FC = () => {
 
     const handleSubmit = async (values: LoginFormState) => {
         console.log(values);
+        const { email, password } = values;
+
+        const credentials: { username: string; password: string } = {
+            username: email.trim(),
+            password,
+        };
+        console.log(credentials);
+        
         navigate(DIVISIONS_ROUTE.PATH);
     };
 

@@ -27,7 +27,7 @@ const DepartmentForm: React.FC<Props> = ({ onSubmit, department, moveToConfrim, 
 
     return (
         <Formik initialValues={initialState} onSubmit={onSubmit} validationSchema={departmentFormScheme}>
-            {({ handleSubmit, handleChange, handleBlur, values, errors, touched, isSubmitting, setFieldValue }) => (
+            {({ handleSubmit, handleChange, handleBlur, values, errors, touched, isSubmitting }) => (
                 <form className="department-form" onSubmit={handleSubmit}>
                     <Label className="department-form__label" text="Название отдела">
                         <Input

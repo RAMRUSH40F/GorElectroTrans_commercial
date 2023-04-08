@@ -27,10 +27,14 @@ const AddDepartmentModal: React.FC<Props> = ({ closeModal }) => {
     const [error, setError] = useState<string | null>(null);
 
     const handleSubmit = async (values: TNewDepartment) => {
+        setError(null);
         console.log(values);
 
         try {
-            const response = await DepartmentService.post({ depId: divisionId, department: { ...values } });
+            const response = await DepartmentService.post({
+                depId: divisionId,
+                department: { name: values.name.trim() },
+            });
             console.log(response);
             addDepartment(response.data);
             showNotion(NOTION.SUCCESS, "Запись успешно добавлена");

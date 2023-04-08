@@ -27,6 +27,7 @@ const AddAttendanceModal: React.FC<Props> = ({ closeModal }) => {
     const { addAttendance } = useAttendanceContext();
 
     const handleSubmit = async (values: AttendanceFormState) => {
+        setError(null);
         console.log(values);
 
         try {

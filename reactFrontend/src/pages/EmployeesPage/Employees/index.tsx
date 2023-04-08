@@ -14,9 +14,9 @@ import { useEmployeesContext } from "../../../context/employeesContext";
 import Alert from "../../../components/Alert";
 import { ALERT } from "../../../constants/alertTypes";
 import Loader from "../../../components/Loader";
+import EditEmployeeModal from "../../../components/modals/employess/EditEmployeeModal";
 
 import "./styles.scss";
-import EditEmployeeModal from "../../../components/modals/employess/EditEmployeeModal";
 
 const LIMIT = 20;
 
@@ -80,25 +80,25 @@ const Employees: FC = () => {
     };
 
     return (
-        <div className="students">
+        <div className="employees">
             {editingEmployee && (
                 <EditEmployeeModal closeModal={() => setEditingEmployee(null)} employee={editingEmployee} />
             )}
             {error && <Alert type={ALERT.ERROR}>{error}</Alert>}
-            {isLoading && <Loader className="students__loader" />}
+            {isLoading && <Loader className="employees__loader" />}
             {!error && !isLoading && employees.length < 1 && (
                 <Alert type={ALERT.INFO}>На текущий момент нет ни одной записи.</Alert>
             )}
             {!error && !isLoading && employees.length > 0 && (
                 <>
-                    <div className="students__table-wrapper">
-                        <Table className="students__table">
+                    <div className="employees__table-wrapper">
+                        <Table className="employees__table">
                             <TableHead>
                                 <TableHeadCell>Табельный номер</TableHeadCell>
                                 <TableHeadCell>Фамилия И.О</TableHeadCell>
                                 <TableHeadCell>Отдел</TableHeadCell>
                             </TableHead>
-                            <tbody className={`students__table-body ${isFetching && "students__table-body--opacity"}`}>
+                            <tbody className={`employees__table-body ${isFetching && "employees__table-body--opacity"}`}>
                                 {!error &&
                                     !isLoading &&
                                     employees.map((employee) => (
@@ -116,7 +116,7 @@ const Employees: FC = () => {
                     </div>
                     {totalPages > 1 && (
                         <Pagination
-                            className="students__pagination"
+                            className="employees__pagination"
                             pageCount={totalPages}
                             onPageChange={handlePageChange}
                             renderOnZeroPageCount={() => null}

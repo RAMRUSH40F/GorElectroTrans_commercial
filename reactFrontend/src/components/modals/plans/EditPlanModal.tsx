@@ -34,16 +34,16 @@ const EditPlanModal: React.FC<Props> = ({ closeEditing, plan }) => {
 
     const handleSubmit = async (values: PlanFormValues) => {
         setError(null);
-
-        const { day } = parseISO(values.date);
+        const { date, duration, peoplePlanned, teacher, topic } = values;
+        const { day } = parseISO(date);
 
         const changedPlan: IPlan = {
             date: day,
             id: plan.id,
-            duration: Number(values.duration),
-            peoplePlanned: Number(values.peoplePlanned),
-            teacher: values.teacher,
-            topic: values.topic,
+            duration: Number(duration),
+            peoplePlanned: Number(peoplePlanned),
+            teacher: teacher.trim(),
+            topic: topic.trim(),
         };
 
         try {
@@ -62,8 +62,8 @@ const EditPlanModal: React.FC<Props> = ({ closeEditing, plan }) => {
         event.stopPropagation();
         setIsConfirming(false);
         setIsDisabled(true);
-
         setError(null);
+
         try {
             await PlanService.delete({ depId: divisionId, planId: plan.id });
             deletePlan(plan.id);
