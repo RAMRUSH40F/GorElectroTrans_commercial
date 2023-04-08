@@ -56,8 +56,8 @@ const EditAttendanceModal: React.FC<Props> = ({ closeEditing, attendance }) => {
         event.stopPropagation();
         setIsConfirming(false);
         setIsDisabled(true);
-
         setError(null);
+
         try {
             await AttendanceService.delete({
                 depId: divisionId,

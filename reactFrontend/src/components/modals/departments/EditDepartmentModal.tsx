@@ -34,9 +34,15 @@ const EditDepartmentModal: React.FC<Props> = ({ closeModal, department }) => {
     const handleSubmit = async (values: TNewDepartment) => {
         setError(null);
         console.log(values);
+
+        const newDepartment: IDepartment = {
+            id: department.id,
+            name: values.name.trim(),
+        };
+
         try {
-            await DepartmentService.put({ depId: divisionId, department: { ...values, id: department.id } });
-            updateDepartment({ ...values, id: department.id });
+            await DepartmentService.put({ depId: divisionId, department: newDepartment });
+            updateDepartment(newDepartment);
             showNotion(NOTION.SUCCESS, "Изменения успешно сохранены");
             closeModal();
         } catch (error) {

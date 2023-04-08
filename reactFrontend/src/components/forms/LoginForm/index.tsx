@@ -19,8 +19,8 @@ export interface LoginFormState {
 
 const LoginForm: React.FC<Props> = ({ onSubmit }) => {
     const initialState: LoginFormState = {
-        email: "admin@mail.com",
-        password: "12345",
+        email: "",
+        password: "",
     };
 
     return (

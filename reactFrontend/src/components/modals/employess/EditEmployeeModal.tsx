@@ -50,8 +50,8 @@ const EditEmployeeModal: React.FC<Props> = ({ closeModal, employee }) => {
         event.stopPropagation();
         setIsConfirming(false);
         setIsDisabled(true);
-
         setError(null);
+
         try {
             await EmployeeService.delete({ depId: divisionId, studentId: employee.studentId });
             deleteEmployee(employee.studentId);

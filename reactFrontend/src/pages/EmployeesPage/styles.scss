@@ -1,12 +1,12 @@
 @import "../../assets/styles/mixins.scss";
 
-.students-page {
+.employees-page {
     width: 100%;
-    // .students-page__info
+    // .employees-page__info
     &__info {
         margin-bottom: 40px;
     }
-    // .students-page__wrapper
+    // .employees-page__wrapper
     &__wrapper {
         @include flex-center(12px, space-between);
         margin: 20px 0 30px;

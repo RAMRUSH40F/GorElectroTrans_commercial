@@ -28,6 +28,7 @@ const AddMaterialModal: React.FC<Props> = ({ closeModal }) => {
     const [error, setError] = useState<string | null>(null);
 
     const handleSubmit = async (values: MaterialsFormState) => {
+        setError(null);
         console.log(values);
         const { file, lessonId } = values;
 

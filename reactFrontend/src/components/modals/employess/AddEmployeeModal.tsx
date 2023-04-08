@@ -5,7 +5,6 @@ import { useEmployeesContext } from "../../../context/employeesContext";
 import { showNotion } from "../../../helpers/showNotion";
 import useClickOutside from "../../../hooks/useClickOutside";
 import useEscape from "../../../hooks/useEscape";
-import { IEmployee } from "../../../models/Employee";
 import EmployeeService from "../../../services/EmployeeService";
 import ModalLayout from "../ModalLayout";
 import ModalContent from "../ModalLayout/ModalContent";
@@ -27,10 +26,14 @@ const AddEmployeeModal: React.FC<Props> = ({ closeModal }) => {
     const [error, setError] = useState<string | null>(null);
 
     const handleSubmit = async (values: EmployeeFormState) => {
+        setError(null);
         console.log(values);
 
         try {
-            const response = await EmployeeService.post({ depId: divisionId, employee: values });
+            const response = await EmployeeService.post({
+                depId: divisionId,
+                employee: { ...values, fullName: values.fullName.trim() },
+            });
             console.log(response);
             addEmployee(response.data);
             showNotion(NOTION.SUCCESS, "Изменения успешно сохранены");

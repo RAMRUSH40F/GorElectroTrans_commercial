@@ -1,26 +1,26 @@
-.students {
-    // .students__loader
+.employees {
+    // .employees__loader
     &__loader {
         margin: 2rem auto 0;
     }
-    // .students__table-wrapper
+    // .employees__table-wrapper
     &__table-wrapper {
         overflow-x: auto;
         margin-bottom: 2.2rem;
     }
-    // .students__table
+    // .employees__table
     &__table {
         width: 100%;
         min-width: 26.875rem;
     }
-    // .students__table-body
+    // .employees__table-body
     &__table-body {
         &--opacity {
             opacity: 0.5;
             pointer-events: none;
         }
     }
-    // .students__pagination
+    // .employees__pagination
     &__pagination {
         justify-content: flex-end;
     }

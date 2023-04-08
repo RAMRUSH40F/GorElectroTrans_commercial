@@ -29,14 +29,16 @@ const AddPlanModal: React.FC<Props> = ({ closeModal }) => {
     const { addPlan } = usePlansContext();
 
     const handleSubmit = async (values: PlanFormValues) => {
-        const { day } = parseISO(values.date);
+        setError(null);
+        const { date, duration, peoplePlanned, teacher, topic } = values;
+        const { day } = parseISO(date);
 
         const newPlan: TNewPlan = {
             date: day,
-            duration: Number(values.duration),
-            peoplePlanned: Number(values.peoplePlanned),
-            teacher: values.teacher,
-            topic: values.topic,
+            duration: Number(duration),
+            peoplePlanned: Number(peoplePlanned),
+            teacher: teacher.trim(),
+            topic: topic.trim(),
         };
 
         try {

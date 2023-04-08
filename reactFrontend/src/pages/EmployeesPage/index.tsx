@@ -6,12 +6,12 @@ import SectionHeader from "../../components/SectionHeader";
 import { useEmployeesContext } from "../../context/employeesContext";
 import { getDivisionName } from "../../helpers/getDivisionName";
 import DepartmentService from "../../services/DepartmentService";
-
-import "./styles.scss";
 import NewEmployee from "./NewEmployee";
 import Employees from "./Employees";
 
-const StudentsPage: React.FC = () => {
+import "./styles.scss";
+
+const EmployeesPage: React.FC = () => {
     const { divisionId = "" } = useParams();
     const divisionName = getDivisionName(divisionId);
 
@@ -45,10 +45,10 @@ const StudentsPage: React.FC = () => {
     }, [divisionId, setDepartments]);
 
     return (
-        <div className="students-page">
-            <section className="students-page__info">
+        <div className="employees-page">
+            <section className="employees-page__info">
                 <SectionHeader title="Работники" subtitle={divisionName ?? "Подразделение"} />
-                <div className="students-page__wrapper">
+                <div className="employees-page__wrapper">
                     <Search />
                     <NewEmployee />
                 </div>
@@ -58,4 +58,4 @@ const StudentsPage: React.FC = () => {
     );
 };
 
-export default StudentsPage;
+export default EmployeesPage;

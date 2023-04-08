@@ -100,6 +100,7 @@ const Plan: React.FC = () => {
                                 <TableHeadCell>Кол-во обучающихся</TableHeadCell>
                                 <TableHeadCell className="plan__table-topic-column">Тема занятия</TableHeadCell>
                                 <TableHeadCell>Преподаватель</TableHeadCell>
+                                <TableHeadCell>Статус</TableHeadCell>
                             </TableHead>
                             <tbody className={`plan__table-body ${isFetching && "plan__table-body--opacity"}`}>
                                 {!error &&
@@ -113,6 +114,7 @@ const Plan: React.FC = () => {
                                             <TableBodyCell>{plan.peoplePlanned}</TableBodyCell>
                                             <TableBodyCell>{plan.topic}</TableBodyCell>
                                             <TableBodyCell>{plan.teacher}</TableBodyCell>
+                                            <TableBodyCell>Проведено</TableBodyCell>
                                         </TableBodyRow>
                                     ))}
                             </tbody>
