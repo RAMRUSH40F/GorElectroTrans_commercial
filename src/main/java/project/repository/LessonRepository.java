@@ -34,6 +34,7 @@ public class LessonRepository {
         parameters.put("duration", lesson.getDuration());
         parameters.put("date", lesson.getDate());
         parameters.put("teacher", lesson.getTeacher());
+        parameters.put("teacherPost",lesson.getTeacherPost());
         parameters.put("peoplePlanned", lesson.getPeoplePlanned());
         parameters.put("isHeld",lesson.isHeld());
 
@@ -85,6 +86,7 @@ public class LessonRepository {
                 duration(rs.getFloat("duration")).
                 date(rs.getDate("date")).
                 teacher(rs.getString("teacher")).
+                teacherPost(rs.getString("teacherPost")).
                 peoplePlanned(rs.getInt("people_planned")).isHeld(rs.getBoolean("isHeld")).build());
         for (Lesson x:lessonList) {
             x.setLessonContents(namedJdbcTemplate.query("SELECT * FROM DEP_"+department+".lesson_content WHERE lesson_id="+x.getId(), (rs,rowNum)->rs.getString("file_name")));
@@ -100,6 +102,7 @@ public class LessonRepository {
                 duration(rs.getFloat("duration")).
                 date(rs.getDate("date")).
                 teacher(rs.getString("teacher")).
+                teacherPost(rs.getString("teacherPost")).
                 peoplePlanned(rs.getInt("people_planned")).isHeld(rs.getBoolean("isHeld")).build());
         for (Lesson x:lessonList) {
             x.setLessonContents(namedJdbcTemplate.query("SELECT * FROM DEP_"+department+".lesson_content WHERE lesson_id="+x.getId(), (rs,rowNum)->rs.getString("file_name")));
@@ -120,6 +123,8 @@ public class LessonRepository {
                 .append(changed_lesson.getDate())
                 .append("', teacher='")
                 .append(changed_lesson.getTeacher())
+                .append("', teacherPost='")
+                .append(changed_lesson.getTeacherPost())
                 .append("', people_planned=")
                 .append(changed_lesson.getPeoplePlanned())
                 .append(" , isHeld=")

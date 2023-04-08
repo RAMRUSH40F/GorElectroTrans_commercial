@@ -23,12 +23,15 @@ public class Lesson {
     private Date date;
     @JsonProperty("teacher")
     private String teacher;
+    @JsonProperty("teacherPost")
+    private String teacherPost;
     @JsonProperty("peoplePlanned")
     private int peoplePlanned;
     @JsonProperty("isHeld")
     private boolean isHeld;
     @JsonProperty("lessonContent")
     private List<String> lessonContents;
+
 
 
 }
