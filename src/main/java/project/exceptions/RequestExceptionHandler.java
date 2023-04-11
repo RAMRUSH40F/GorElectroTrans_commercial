@@ -36,4 +36,14 @@ public class RequestExceptionHandler {
                 .build();
         return new ResponseEntity<>(responseException, responseException.httpStatus);
     }
+
+    @ExceptionHandler(value = {AuthenticationException.class})
+    public ResponseEntity<ResponseException> authException(RuntimeException e){
+        ResponseException responseException = ResponseException.builder()
+                .message(e.getMessage())
+                .timeStamp(ZonedDateTime.now(ZoneId.of("UTC+3")))
+                .httpStatus(HttpStatus.UNAUTHORIZED)
+                .build();
+        return new ResponseEntity<>(responseException, responseException.httpStatus);
+    }
 }
