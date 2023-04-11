@@ -1,0 +1,12 @@
+- name: Deploy to Staging server
+    uses: easingthemes/ssh-deploy@main
+    env:
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      SOURCE: "/"
+      REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+      REMOTE_USER: ${{ secrets.REMOTE_USER }}
+      TARGET: ${{ secrets.REMOTE_TARGET }}
+      EXCLUDE: "/reactFrontend/"
+      SCRIPT_AFTER: |
+        docker build -t gortrans .
+        docker run -itd -p 8888:8082 gortrans
