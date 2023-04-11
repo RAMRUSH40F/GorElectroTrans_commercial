@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import project.model.Lesson;
 import project.repository.LessonRepository;
 
@@ -18,7 +17,6 @@ import static project.exceptions.Validator.validatePaginationParams;
 public class LessonController {
 
     private final LessonRepository lessonRepository;
-    private final LessonContentController lessonContentController;
 
     @GetMapping("/dep_{N}/work_plan/data")
     public ResponseEntity<List<Lesson>> getPagedLessons(@PathVariable("N") int department,
@@ -35,9 +33,8 @@ public class LessonController {
     }
 
     @PostMapping("/dep_{N}/work_plan/data")
-    public int addLesson(@PathVariable("N") int department, @RequestBody Lesson lesson, @RequestParam("file") MultipartFile file) {
+    public int addLesson(@PathVariable("N") int department, @RequestBody Lesson lesson) {
         lessonRepository.addNewLesson(department, lesson);
-        lessonContentController.addNewContent(file, lesson.getId().toString(), department);
         return lessonRepository.getMaxId(department);
     }
 
@@ -47,11 +44,8 @@ public class LessonController {
     }
 
     @PutMapping("/dep_{N}/work_plan/{id}")
-    public void changeLesson(@PathVariable("N") int department, @PathVariable("id") int id, @RequestBody Lesson lesson, @RequestParam("file") MultipartFile file) {
+    public void changeLesson(@PathVariable("N") int department, @PathVariable("id") int id, @RequestBody Lesson lesson) {
         lessonRepository.changeLesson(department, id, lesson);
-        if (!file.isEmpty()) {
-            lessonContentController.addNewContent(file, lesson.getId().toString(), department);
-        }
     }
 
     @DeleteMapping("/dep_{N}/work_plan/{id}")
