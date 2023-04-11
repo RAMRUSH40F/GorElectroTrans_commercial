@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.model.Attendance;
 import project.model.AttendanceView;
+import project.model.Lesson;
 import project.repository.AttendanceRepository;
 
 import java.util.List;
@@ -56,6 +57,21 @@ public class AttendanceController {
     public void deleteRecordById(@PathVariable("N") int departmentId, @RequestBody Attendance attendance) {
         validateDepartmentId(departmentId);
         attendanceRepository.deleteRecordById(departmentId, attendance);
+    }
+
+    @GetMapping("/dep_{N}/attendance/{key}")
+    public ResponseEntity<List<AttendanceView>> getPagedLessons(@PathVariable("N") int department,
+                                                                @PathVariable String key,
+                                                                @RequestParam String page,
+                                                                @RequestParam String size) {
+        validateDepartmentId(department);
+        validatePaginationParams(page, size);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("attendance_count", String.valueOf(attendanceRepository.getRecordsAttendanceCount(department)));
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .body(attendanceRepository.getRecordsByChars(department, key, Integer.parseInt(page), Integer.parseInt(size)));
     }
 
 }

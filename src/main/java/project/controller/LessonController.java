@@ -51,8 +51,21 @@ public class LessonController {
     @DeleteMapping("/dep_{N}/work_plan/{id}")
     public void deleteLessonById(@PathVariable("N") int department, @PathVariable("id") int id) {
         lessonRepository.deleteLessonById(department, Integer.valueOf(id));
-
     }
 
+    @GetMapping("/dep_{N}/work_plan/search/{key}")
+    public ResponseEntity<List<Lesson>> getPagedLessons(@PathVariable("N") int department,
+                                                        @PathVariable String key,
+                                                        @RequestParam String page,
+                                                        @RequestParam String size) {
+        validateDepartmentId(department);
+        validatePaginationParams(page, size);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("lessons_count", String.valueOf(lessonRepository.getLessonsCount(department)));
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .body(lessonRepository.getRecordsByChars(department, key, Integer.parseInt(page), Integer.parseInt(size)));
+    }
 
 }
