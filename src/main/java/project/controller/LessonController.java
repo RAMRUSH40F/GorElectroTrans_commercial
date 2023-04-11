@@ -19,9 +19,9 @@ public class LessonController {
     private final LessonRepository lessonRepository;
 
     @GetMapping("/dep_{N}/work_plan/data")
-    public ResponseEntity<List<Lesson>> getPagedLessons(@PathVariable("N") int department,
-                                                        @RequestParam String page,
-                                                        @RequestParam String size) {
+    public ResponseEntity<List<Lesson>> getLessonsPaginated(@PathVariable("N") int department,
+                                                            @RequestParam String page,
+                                                            @RequestParam String size) {
         validateDepartmentId(department);
         validatePaginationParams(page, size);
         HttpHeaders headers = new HttpHeaders();
@@ -50,9 +50,22 @@ public class LessonController {
 
     @DeleteMapping("/dep_{N}/work_plan/{id}")
     public void deleteLessonById(@PathVariable("N") int department, @PathVariable("id") int id) {
-        lessonRepository.deleteLessonById(department, Integer.valueOf(id));
-
+        lessonRepository.deleteLessonById(department, id);
     }
 
+    @GetMapping("/dep_{N}/work_plan/search/{key}")
+    public ResponseEntity<List<Lesson>> getLessonsByKeyword(@PathVariable("N") int department,
+                                                            @PathVariable String key,
+                                                            @RequestParam String page,
+                                                            @RequestParam String size) {
+        validateDepartmentId(department);
+        validatePaginationParams(page, size);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("lessons_count", String.valueOf(lessonRepository.getLessonsCount(department)));
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .body(lessonRepository.getLessonByKeyword(department, key, Integer.parseInt(page), Integer.parseInt(size)));
+    }
 
 }

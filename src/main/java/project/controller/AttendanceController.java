@@ -37,7 +37,7 @@ public class AttendanceController {
     @GetMapping("/dep_{N}/attendance/")
     public AttendanceView getRecordAttendanceByStudentId(@PathVariable("N") int departmentId, @RequestBody Attendance attendance) {
         validateDepartmentId(departmentId);
-        return attendanceRepository.getAttendenceView(departmentId, attendance);
+        return attendanceRepository.getAttendanceView(departmentId, attendance);
     }
 
     @PostMapping("/dep_{N}/attendance/data")
@@ -56,6 +56,21 @@ public class AttendanceController {
     public void deleteRecordById(@PathVariable("N") int departmentId, @RequestBody Attendance attendance) {
         validateDepartmentId(departmentId);
         attendanceRepository.deleteRecordById(departmentId, attendance);
+    }
+
+    @GetMapping("/dep_{N}/attendance/search/{key}")
+    public ResponseEntity<List<AttendanceView>> getAttendanceByKeyword(@PathVariable("N") int department,
+                                                                       @PathVariable String key,
+                                                                       @RequestParam String page,
+                                                                       @RequestParam String size) {
+        validateDepartmentId(department);
+        validatePaginationParams(page, size);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("attendance_count", String.valueOf(attendanceRepository.getRecordsAttendanceCount(department)));
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .body(attendanceRepository.getAttendanceByKeyword(department, key, Integer.parseInt(page), Integer.parseInt(size)));
     }
 
 }

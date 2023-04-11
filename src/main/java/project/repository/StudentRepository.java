@@ -30,11 +30,11 @@ public class StudentRepository {
     /**
      * @param studentView: studentId, studentName, departmentId
      * @logic: if studentName is null supposing that studentName
-     *         already exists in DB(WorkerRepository), then
-     *                     if StudentName really exists we add successfully,
-     *                     if not - we throw back an exception
-     *         if studentName is not null we add with editing current
-     *                     data.
+     * already exists in DB(WorkerRepository), then
+     * if StudentName really exists we add successfully,
+     * if not - we throw back an exception
+     * if studentName is not null we add with editing current
+     * data.
      */
     public StudentView addNewStudent(int departmentId, StudentView studentView) {
         Validator.validateStudentId(studentView.getStudentId());
@@ -68,8 +68,6 @@ public class StudentRepository {
                 .append("VALUE(:studentId,:subdepartmentId)")
                 .toString();
         namedParameterJdbcTemplate.update(INSERT_STUDENT_TEMPLATE, studentData);
-
-
         return studentView;
     }
 
@@ -83,7 +81,6 @@ public class StudentRepository {
                 .append(",")
                 .append(pageSize)
                 .toString();
-        // rs = возвращаемый из .query объект типа ResultSet
         return jdbcTemplate.query(query, (rs, rowNum) ->
                 StudentView.builder()
                         .studentId(rs.getString("student_id"))

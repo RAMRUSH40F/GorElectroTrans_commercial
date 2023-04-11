@@ -2,15 +2,19 @@ package project.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import project.exceptions.Validator;
 import project.model.Attendance;
 import project.model.AttendanceView;
+import project.repository.mapper.AttendanceMapper;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static project.exceptions.Validator.validateDepartmentId;
 
 @Repository("AttendanceRepositoryBean")
 @RequiredArgsConstructor
@@ -18,6 +22,7 @@ public class AttendanceRepository {
 
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedJdbcTemplate;
+    private final RowMapper<AttendanceView> mapper = new AttendanceMapper();
 
     // Метод добавляет запись о результатах посещения какого-то занятия учеником.
     public AttendanceView addNewRecord(int departmentId, Attendance attendance) {
@@ -33,7 +38,7 @@ public class AttendanceRepository {
                 "INSERT INTO " + databaseName + ".attendance (lesson_id,student_id,success)" +
                         "VALUES (:lesson_id,:student_id,:success);",
                 parameters);
-        return getAttendenceView(departmentId, attendance);
+        return getAttendanceView(departmentId, attendance);
 
     }
 
@@ -49,21 +54,10 @@ public class AttendanceRepository {
                 .append(pageSize)
                 .toString();
         // rs = возвращаемый из .query объект типа ResultSet
-        return jdbcTemplate.query(query, (rs, rowNum) ->
-                AttendanceView.builder()
-                        .name(rs.getString("name"))
-                        .lessonId(rs.getInt("lesson_id"))
-                        .date(rs.getDate("date"))
-                        .studentId(rs.getString("student_id"))
-                        .success(rs.getInt("success"))
-                        .topic(rs.getString("topic"))
-                        .duration(rs.getFloat("duration"))
-                        .teacher(rs.getString("teacher"))
-                        .subDepartment(rs.getString("subdepartment"))
-                        .build());
+        return jdbcTemplate.query(query, mapper);
     }
 
-    public AttendanceView getAttendenceView(int departmentId, Attendance attendance) {
+    public AttendanceView getAttendanceView(int departmentId, Attendance attendance) {
 
         String query = new StringBuilder()
                 .append("SELECT * FROM DEP_")
@@ -75,18 +69,7 @@ public class AttendanceRepository {
                 .toString();
 
         try {
-            return jdbcTemplate.query(query, (rs, rowNum) ->
-                    AttendanceView.builder()
-                            .name(rs.getString("name"))
-                            .lessonId(rs.getInt("lesson_id"))
-                            .date(rs.getDate("date"))
-                            .studentId(rs.getString("student_id"))
-                            .success(rs.getInt("success"))
-                            .topic(rs.getString("topic"))
-                            .duration(rs.getFloat("duration"))
-                            .teacher(rs.getString("teacher"))
-                            .subDepartment(rs.getString("subdepartment"))
-                            .build()).get(0);
+            return jdbcTemplate.query(query, mapper).get(0);
         } catch (IndexOutOfBoundsException e) {
             return null;
         }
@@ -117,6 +100,21 @@ public class AttendanceRepository {
         return jdbcTemplate.queryForObject("SELECT COUNT(student_id) FROM " +
                 databaseName + ".attendance AS COUNT", Integer.class);
 
+    }
+
+    public List<AttendanceView> getAttendanceByKeyword(int departmentId, String key, int page, int size) {
+        validateDepartmentId(departmentId);
+        Map<String, String> parametrs = new HashMap<>();
+        parametrs.put("key", "%" + key + "%");
+
+        return namedJdbcTemplate.query(
+                "SELECT * FROM DEP_" + departmentId + ".Attendance_view WHERE name LIKE :key " +
+                        "OR date LIKE :key " +
+                        "OR topic LIKE :key " +
+                        "OR teacher LIKE :key " +
+                        "OR subdepartment LIKE :key " +
+                        "ORDER BY name DESC LIMIT " + ((page - 1) * size) + "," + size,
+                parametrs, mapper);
     }
 
 }
