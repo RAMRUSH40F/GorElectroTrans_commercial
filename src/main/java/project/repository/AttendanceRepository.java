@@ -2,15 +2,21 @@ package project.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import project.exceptions.Validator;
 import project.model.Attendance;
 import project.model.AttendanceView;
+import project.model.Lesson;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static project.exceptions.Validator.validateDepartmentId;
 
 @Repository("AttendanceRepositoryBean")
 @RequiredArgsConstructor
@@ -117,6 +123,35 @@ public class AttendanceRepository {
         return jdbcTemplate.queryForObject("SELECT COUNT(student_id) FROM " +
                 databaseName + ".attendance AS COUNT", Integer.class);
 
+    }
+
+    public List<AttendanceView> getRecordsByChars(int departmentId, String key, int page, int size) {
+        validateDepartmentId(departmentId);
+        Map<String, String> parametrs = new HashMap<>();
+        parametrs.put("key", "%" + key + "%");
+
+        List<AttendanceView> records = namedJdbcTemplate.query("SELECT * FROM DEP_" + departmentId + ".Attendance_view WHERE name LIKE :key " +
+                "OR date LIKE :key " +
+                "OR topic LIKE :key " +
+                "OR teacher LIKE :key " +
+                "OR subdepartment LIKE :key " +
+                "ORDER BY name DESC LIMIT " + ((page - 1) * size) + "," + size, parametrs, new RowMapper<AttendanceView>() {
+                    @Override
+                    public AttendanceView mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        return AttendanceView.builder()
+                                .name(rs.getString("name"))
+                                .lessonId(rs.getInt("lesson_id"))
+                                .date(rs.getDate("date"))
+                                .studentId(rs.getString("student_id"))
+                                .success(rs.getInt("success"))
+                                .topic(rs.getString("topic"))
+                                .duration(rs.getFloat("duration"))
+                                .teacher(rs.getString("teacher"))
+                                .subDepartment(rs.getString("subdepartment"))
+                                .build();
+                    }
+                });
+        return records;
     }
 
 }
