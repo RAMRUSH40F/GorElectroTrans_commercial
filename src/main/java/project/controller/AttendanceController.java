@@ -58,7 +58,7 @@ public class AttendanceController {
         attendanceRepository.deleteRecordById(departmentId, attendance);
     }
 
-    @GetMapping("/dep_{N}/attendance/{key}")
+    @GetMapping("/dep_{N}/attendance/search/{key}")
     public ResponseEntity<List<AttendanceView>> getAttendanceByKeyword(@PathVariable("N") int department,
                                                                        @PathVariable String key,
                                                                        @RequestParam String page,
