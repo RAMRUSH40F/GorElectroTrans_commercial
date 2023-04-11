@@ -1,6 +1,6 @@
 package project.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,15 +13,15 @@ import static project.exceptions.Validator.validateDepartmentId;
 import static project.exceptions.Validator.validatePaginationParams;
 
 @RestController("LessonControllerBean")
+@RequiredArgsConstructor
 public class LessonController {
 
-    @Autowired
-    private LessonRepository lessonRepository;
+    private final LessonRepository lessonRepository;
 
     @GetMapping("/dep_{N}/work_plan/data")
-    public ResponseEntity<List<Lesson>> getPagedLessons(@PathVariable("N") int department,
-                                                        @RequestParam String page,
-                                                        @RequestParam String size) {
+    public ResponseEntity<List<Lesson>> getLessonsPaginated(@PathVariable("N") int department,
+                                                            @RequestParam String page,
+                                                            @RequestParam String size) {
         validateDepartmentId(department);
         validatePaginationParams(page, size);
         HttpHeaders headers = new HttpHeaders();
@@ -50,14 +50,14 @@ public class LessonController {
 
     @DeleteMapping("/dep_{N}/work_plan/{id}")
     public void deleteLessonById(@PathVariable("N") int department, @PathVariable("id") int id) {
-        lessonRepository.deleteLessonById(department, Integer.valueOf(id));
+        lessonRepository.deleteLessonById(department, id);
     }
 
     @GetMapping("/dep_{N}/work_plan/search/{key}")
-    public ResponseEntity<List<Lesson>> getPagedLessons(@PathVariable("N") int department,
-                                                        @PathVariable String key,
-                                                        @RequestParam String page,
-                                                        @RequestParam String size) {
+    public ResponseEntity<List<Lesson>> getLessonsByKeyword(@PathVariable("N") int department,
+                                                            @PathVariable String key,
+                                                            @RequestParam String page,
+                                                            @RequestParam String size) {
         validateDepartmentId(department);
         validatePaginationParams(page, size);
         HttpHeaders headers = new HttpHeaders();
@@ -65,7 +65,7 @@ public class LessonController {
         return ResponseEntity
                 .ok()
                 .headers(headers)
-                .body(lessonRepository.getRecordsByChars(department, key, Integer.parseInt(page), Integer.parseInt(size)));
+                .body(lessonRepository.getLessonByKeyword(department, key, Integer.parseInt(page), Integer.parseInt(size)));
     }
 
 }

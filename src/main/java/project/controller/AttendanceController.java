@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.model.Attendance;
 import project.model.AttendanceView;
-import project.model.Lesson;
 import project.repository.AttendanceRepository;
 
 import java.util.List;
@@ -38,7 +37,7 @@ public class AttendanceController {
     @GetMapping("/dep_{N}/attendance/")
     public AttendanceView getRecordAttendanceByStudentId(@PathVariable("N") int departmentId, @RequestBody Attendance attendance) {
         validateDepartmentId(departmentId);
-        return attendanceRepository.getAttendenceView(departmentId, attendance);
+        return attendanceRepository.getAttendanceView(departmentId, attendance);
     }
 
     @PostMapping("/dep_{N}/attendance/data")
@@ -60,10 +59,10 @@ public class AttendanceController {
     }
 
     @GetMapping("/dep_{N}/attendance/{key}")
-    public ResponseEntity<List<AttendanceView>> getPagedLessons(@PathVariable("N") int department,
-                                                                @PathVariable String key,
-                                                                @RequestParam String page,
-                                                                @RequestParam String size) {
+    public ResponseEntity<List<AttendanceView>> getAttendanceByKeyword(@PathVariable("N") int department,
+                                                                       @PathVariable String key,
+                                                                       @RequestParam String page,
+                                                                       @RequestParam String size) {
         validateDepartmentId(department);
         validatePaginationParams(page, size);
         HttpHeaders headers = new HttpHeaders();
@@ -71,7 +70,7 @@ public class AttendanceController {
         return ResponseEntity
                 .ok()
                 .headers(headers)
-                .body(attendanceRepository.getRecordsByChars(department, key, Integer.parseInt(page), Integer.parseInt(size)));
+                .body(attendanceRepository.getAttendanceByKeyword(department, key, Integer.parseInt(page), Integer.parseInt(size)));
     }
 
 }

@@ -138,32 +138,27 @@ public class LessonRepository {
                 .append(department)
                 .append(".lesson")
                 .toString();
-        int id = jdbcTemplate.query(query, (rs, rowNum) -> rs.getInt("id")).get(0);
-        return id;
+        int maxId = jdbcTemplate.query(query, (rs, rowNum) -> rs.getInt("id")).get(0);
+        return maxId;
     }
 
-    public List<Lesson> getRecordsByChars(int departmentId, String key, int page, int size) {
+    public List<Lesson> getLessonByKeyword(int departmentId, String key, int page, int size) {
         validateDepartmentId(departmentId);
-        Map<String, String> parametrs = new HashMap<>();
-        parametrs.put("key", "%" + key + "%");
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("key", "%" + key + "%");
+
+        String GET_LESSONS_SQL = String.format("SELECT * FROM DEP_%d.lesson WHERE topic LIKE :key OR date LIKE :key OR teacher LIKE :key ORDER BY date DESC LIMIT %d,%d",
+                departmentId, (page - 1) * size, size);
 
         List<Lesson> lessons = namedJdbcTemplate.query(
-                "SELECT * FROM DEP_" + departmentId + ".lesson WHERE topic LIKE :key " +
-                        "OR date LIKE :key " +
-                        "OR teacher LIKE :key " +
-                        "ORDER BY date DESC LIMIT " + ((page - 1) * size) + "," + size , parametrs, new RowMapper<Lesson>() {
-                    @Override
-                    public Lesson mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        return Lesson.builder()
-                                .id(rs.getInt("id"))
-                                .topic(rs.getString("topic"))
-                                .duration(rs.getFloat("duration"))
-                                .date(rs.getDate("date"))
-                                .teacher(rs.getString("teacher"))
-                                .peoplePlanned(rs.getInt("people_planned"))
-                                .build();
-                    }
-                });
+                GET_LESSONS_SQL, parameters, (rs, rowNum) -> Lesson.builder()
+                        .id(rs.getInt("id"))
+                        .topic(rs.getString("topic"))
+                        .duration(rs.getFloat("duration"))
+                        .date(rs.getDate("date"))
+                        .teacher(rs.getString("teacher"))
+                        .peoplePlanned(rs.getInt("people_planned"))
+                        .build());
         return lessons;
     }
 }
