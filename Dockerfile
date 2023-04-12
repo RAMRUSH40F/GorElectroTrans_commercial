@@ -4,4 +4,4 @@ COPY . .
 RUN mvn clean install
 EXPOSE 8082
 WORKDIR /github/build/target
-CMD ["nohup", "java", "-jar", "GorElectroTrans.war", "--server.port=8082"]
+CMD ["nohup", "java", "-jar", "GorElectroTrans.war", "--server.port=8082","&"]
