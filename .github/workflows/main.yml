@@ -17,6 +17,7 @@ jobs:
           TARGET: ${{ secrets.REMOTE_TARGET }}
           EXCLUDE: "/reactFrontend/"
           SCRIPT_AFTER: |
+                pwd
                 echo "MARIA_DB_PASSWORD=${{ secrets.MARIA_DB_PASSWORD }}" > .env
                 docker build -t gortrans .
                 docker run -itd -p 8081:8082 gortrans
