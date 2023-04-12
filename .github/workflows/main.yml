@@ -17,8 +17,7 @@ jobs:
           TARGET: ${{ secrets.REMOTE_TARGET }}
           EXCLUDE: "/reactFrontend/"
           SCRIPT_AFTER: |
-                pwd
                 docker build -t gortrans .
-                docker run -itd -p 8888:8082 gortrans
+                docker run -itd -p 8081:8082 gortrans
 
         
