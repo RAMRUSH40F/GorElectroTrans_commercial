@@ -1,6 +1,6 @@
 package project.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,24 +14,35 @@ import static project.exceptions.Validator.validateDepartmentId;
 import static project.exceptions.Validator.validatePaginationParams;
 
 @RestController("AttendanceControllerBean")
+@RequiredArgsConstructor
 public class AttendanceController {
 
-    @Autowired
-    AttendanceRepository attendanceRepository;
+    private final AttendanceRepository attendanceRepository;
 
     @GetMapping("/dep_{N}/attendance/data")
     public ResponseEntity<List<AttendanceView>> getAllRecords(@PathVariable("N") int departmentId,
                                                               @RequestParam(value = "page", required = true) String page,
-                                                              @RequestParam(value = "size", required = true) String pageSize) {
+                                                              @RequestParam(value = "size", required = true) String pageSize,
+                                                              @RequestParam(value = "key", required = false) String keyWord) {
 
         validateDepartmentId(departmentId);
         validatePaginationParams(page, pageSize);
+        List<AttendanceView> body;
         HttpHeaders headers = new HttpHeaders();
-        headers.add("attendance_count", String.valueOf(attendanceRepository.getRecordsAttendanceCount(departmentId)));
+        if (keyWord == null) {
+            body = attendanceRepository.getAllRecords(departmentId, Integer.valueOf(page), Integer.valueOf(pageSize));
+            headers.add("attendance_count", String.valueOf(attendanceRepository.getRecordsAttendanceCount(departmentId)));
+        } else {
+            body = attendanceRepository.getAttendanceByKeyword(departmentId, keyWord);
+            headers.add("attendance_count", String.valueOf(body.size()));
+            int start = (Integer.parseInt(page) - 1) * Integer.parseInt(pageSize);
+            int end = Integer.parseInt(page) * Integer.parseInt(pageSize);
+            body = body.subList(Math.min(start, body.size()), Math.min(end, body.size()));
+        }
         return ResponseEntity
                 .ok()
                 .headers(headers)
-                .body(attendanceRepository.getAllRecords(departmentId, Integer.valueOf(page), Integer.valueOf(pageSize)));
+                .body(body);
     }
 
     @GetMapping("/dep_{N}/attendance/")
@@ -56,21 +67,6 @@ public class AttendanceController {
     public void deleteRecordById(@PathVariable("N") int departmentId, @RequestBody Attendance attendance) {
         validateDepartmentId(departmentId);
         attendanceRepository.deleteRecordById(departmentId, attendance);
-    }
-
-    @GetMapping("/dep_{N}/attendance/search/{key}")
-    public ResponseEntity<List<AttendanceView>> getAttendanceByKeyword(@PathVariable("N") int department,
-                                                                       @PathVariable String key,
-                                                                       @RequestParam String page,
-                                                                       @RequestParam String size) {
-        validateDepartmentId(department);
-        validatePaginationParams(page, size);
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("attendance_count", String.valueOf(attendanceRepository.getRecordsAttendanceCount(department)));
-        return ResponseEntity
-                .ok()
-                .headers(headers)
-                .body(attendanceRepository.getAttendanceByKeyword(department, key, Integer.parseInt(page), Integer.parseInt(size)));
     }
 
 }

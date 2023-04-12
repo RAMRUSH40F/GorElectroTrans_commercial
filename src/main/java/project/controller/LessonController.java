@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import project.model.Lesson;
 import project.repository.LessonRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static project.exceptions.Validator.validateDepartmentId;
@@ -21,15 +22,26 @@ public class LessonController {
     @GetMapping("/dep_{N}/work_plan/data")
     public ResponseEntity<List<Lesson>> getLessonsPaginated(@PathVariable("N") int department,
                                                             @RequestParam String page,
-                                                            @RequestParam String size) {
+                                                            @RequestParam String size,
+                                                            @RequestParam(value = "key", required = false) String keyWord) {
         validateDepartmentId(department);
         validatePaginationParams(page, size);
         HttpHeaders headers = new HttpHeaders();
-        headers.add("lessons_count", String.valueOf(lessonRepository.getLessonsCount(department)));
+        List<Lesson> body;
+        if (keyWord == null) {
+            body = lessonRepository.getPagedLessons(department, Integer.parseInt(page), Integer.parseInt(size));
+            headers.add("lessons_count", String.valueOf(lessonRepository.getLessonsCount(department)));
+        } else {
+            body = lessonRepository.getLessonByKeyword(department, keyWord);
+            headers.add("lessons_count", String.valueOf(body.size()));
+            int start = (Integer.parseInt(page) - 1) * Integer.parseInt(size);
+            int end = Integer.parseInt(page) * Integer.parseInt(size);
+            body = body.subList(Math.max(start, body.size()), Math.max(end, body.size()));
+        }
         return ResponseEntity
                 .ok()
                 .headers(headers)
-                .body(lessonRepository.getPagedLessons(department, Integer.parseInt(page), Integer.parseInt(size)));
+                .body(body);
     }
 
     @PostMapping("/dep_{N}/work_plan/data")
@@ -51,21 +63,6 @@ public class LessonController {
     @DeleteMapping("/dep_{N}/work_plan/{id}")
     public void deleteLessonById(@PathVariable("N") int department, @PathVariable("id") int id) {
         lessonRepository.deleteLessonById(department, id);
-    }
-
-    @GetMapping("/dep_{N}/work_plan/search/{key}")
-    public ResponseEntity<List<Lesson>> getLessonsByKeyword(@PathVariable("N") int department,
-                                                            @PathVariable String key,
-                                                            @RequestParam String page,
-                                                            @RequestParam String size) {
-        validateDepartmentId(department);
-        validatePaginationParams(page, size);
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("lessons_count", String.valueOf(lessonRepository.getLessonsCount(department)));
-        return ResponseEntity
-                .ok()
-                .headers(headers)
-                .body(lessonRepository.getLessonByKeyword(department, key, Integer.parseInt(page), Integer.parseInt(size)));
     }
 
 }

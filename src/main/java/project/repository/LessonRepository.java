@@ -150,13 +150,13 @@ public class LessonRepository {
         return maxId;
     }
 
-    public List<Lesson> getLessonByKeyword(int departmentId, String key, int page, int size) {
+    public List<Lesson> getLessonByKeyword(int departmentId, String key) {
         validateDepartmentId(departmentId);
         Map<String, String> parameters = new HashMap<>();
         parameters.put("key", "%" + key + "%");
 
-        String GET_LESSONS_SQL = String.format("SELECT * FROM DEP_%d.lesson WHERE topic LIKE :key OR date LIKE :key OR teacher LIKE :key ORDER BY date DESC LIMIT %d,%d",
-                departmentId, (page - 1) * size, size);
+        String GET_LESSONS_SQL = String.format("SELECT * FROM DEP_%d.lesson WHERE topic LIKE :key OR date LIKE :key OR teacher LIKE :key ORDER BY date DESC",
+                departmentId);
 
         List<Lesson> lessons = namedJdbcTemplate.query(
                 GET_LESSONS_SQL, parameters, (rs, rowNum) -> Lesson.builder()

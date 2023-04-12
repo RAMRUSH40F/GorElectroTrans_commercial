@@ -102,7 +102,7 @@ public class AttendanceRepository {
 
     }
 
-    public List<AttendanceView> getAttendanceByKeyword(int departmentId, String key, int page, int size) {
+    public List<AttendanceView> getAttendanceByKeyword(int departmentId, String key) {
         validateDepartmentId(departmentId);
         Map<String, String> parametrs = new HashMap<>();
         parametrs.put("key", "%" + key + "%");
@@ -113,7 +113,7 @@ public class AttendanceRepository {
                         "OR topic LIKE :key " +
                         "OR teacher LIKE :key " +
                         "OR subdepartment LIKE :key " +
-                        "ORDER BY name DESC LIMIT " + ((page - 1) * size) + "," + size,
+                        "ORDER BY name DESC",
                 parametrs, mapper);
     }
 
