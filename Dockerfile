@@ -1,7 +1,7 @@
 FROM maven:3.8.6-openjdk-11
 WORKDIR /github/build
 COPY . .
-COPY /home/github/build/.env ./github/build
+COPY /home/github/build/.env .
 RUN mvn clean install
 EXPOSE 8082
 WORKDIR /github/build/target
