@@ -1,5 +1,6 @@
 package project.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,34 +26,50 @@ public class JwtAuthorizationService {
 
     private final UserRepository userRepository;
 
-    @PostConstruct
-    protected void init() {
-        secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
-    }
+    private final ObjectMapper mapper = new ObjectMapper();
 
+    /**
+     * @return true if the token is valid and does not expire. False otherwise.
+     */
     public boolean validateToken(String token) {
         try {
             Jws<Claims> claimsJws = Jwts.parser()
                     .setSigningKey(secretKey).parseClaimsJws(token);
-            return !claimsJws.getBody().getExpiration().before(new Date());
+            boolean userIsActive = decodeUserFromToken(token).isActive();
+            boolean tokenIsExpired = !claimsJws.getBody().getExpiration().before(new Date());
+            return userIsActive & tokenIsExpired;
         } catch (JwtException | IllegalArgumentException exception) {
-            throw new AuthenticationException("Ошибка сервера");
+            throw new RuntimeException(exception);
         }
-
-
     }
 
+
+    public User decodeUserFromToken(String token) {
+        Jws<Claims> jwtParameters = Jwts.parser()
+                .setSigningKey(secretKey).parseClaimsJws(token);
+        User userFromToken = mapper.convertValue(jwtParameters, User.class);
+        return userFromToken;
+    }
+
+    /**
+     * Checks if the password is right and return authorisation
+     * authentication jwtToken in cookie or throws an exception
+     *
+     * @param username
+     * @param password
+     * @return
+     */
     public Cookie authenticate(String username, String password) {
         User user = userRepository.getUserByUsername(username);
         if (user != null && user.getPassword().equals(password)) {
             if (user.isActive()) {
-                String jwtToken = createToken(new User(username, null, user.isActive(), user.getAuthorities()));
+                String jwtToken = createToken(user);
 
                 Cookie cookie = new Cookie("Token", jwtToken);
 
                 cookie.setMaxAge(JWT_TOKEN_MAX_AGE_HOURS * 3600);
                 cookie.setSecure(true);
-                cookie.setHttpOnly(true);
+                cookie.setHttpOnly(false); // false - можно достать данные на фронтэнде. true - доставать нельзя. Только отправлять
                 cookie.setPath("/");
                 return cookie;
             }
@@ -64,9 +81,11 @@ public class JwtAuthorizationService {
 
     }
 
+    /**
+     * @param user
+     * @return jwt token out of authorities and username;
+     */
     private String createToken(User user) {
-
-        //create jwt token out of authorities and username;
         Claims claims = Jwts.claims().setSubject(user.getUsername());
         claims.put("role", user.getAuthorities());
 
@@ -78,8 +97,6 @@ public class JwtAuthorizationService {
                 .setIssuedAt(now)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
-
-
         return jwtToken;
     }
 }

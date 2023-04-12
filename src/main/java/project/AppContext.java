@@ -39,7 +39,7 @@ public class AppContext {
         MariaDbDataSource mariaDbDataSource = new MariaDbDataSource();
         mariaDbDataSource.setUrl("jdbc:mariadb://82.146.38.158:3307");
         mariaDbDataSource.setUser("root");
-        mariaDbDataSource.setPassword("");
+        mariaDbDataSource.setPassword("2oCFWg8SU");
         return mariaDbDataSource;
     }
 
