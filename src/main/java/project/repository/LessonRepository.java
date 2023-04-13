@@ -68,6 +68,31 @@ public class LessonRepository {
                 databaseName + ".lesson AS COUNT", Integer.class);
     }
 
+    public List<Lesson> getLessonByKeyword(int departmentId, String key) {
+        validateDepartmentId(departmentId);
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("key", "%" + key + "%");
+
+        String GET_LESSONS_SQL = String.format("SELECT * FROM DEP_%d.lesson WHERE topic LIKE :key OR date LIKE :key OR teacher LIKE :key ORDER BY date DESC",
+                departmentId);
+
+        List<Lesson> lessons = namedJdbcTemplate.query(
+                GET_LESSONS_SQL, parameters, (rs, rowNum) -> Lesson.builder()
+                        .id(rs.getInt("id"))
+                        .topic(rs.getString("topic"))
+                        .duration(rs.getFloat("duration"))
+                        .date(rs.getDate("date"))
+                        .teacher(rs.getString("teacher"))
+                        .teacherPost(rs.getString("teacherPost"))
+                        .peoplePlanned(rs.getInt("people_planned"))
+                        .build());
+        for (Lesson x : lessons) {
+            x.setLessonContent(lessonContentRepository.getFileNamesByLessonId(departmentId, x.getId()));
+        }
+        return lessons;
+    }
+
+
     public List<Lesson> getPagedLessons(int department, int page, int size) {
         validateDepartmentId(department);
         String sqlQuery = "SELECT * FROM DEP_" + department + ".lesson" +
@@ -150,23 +175,5 @@ public class LessonRepository {
         return maxId;
     }
 
-    public List<Lesson> getLessonByKeyword(int departmentId, String key) {
-        validateDepartmentId(departmentId);
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put("key", "%" + key + "%");
 
-        String GET_LESSONS_SQL = String.format("SELECT * FROM DEP_%d.lesson WHERE topic LIKE :key OR date LIKE :key OR teacher LIKE :key ORDER BY date DESC",
-                departmentId);
-
-        List<Lesson> lessons = namedJdbcTemplate.query(
-                GET_LESSONS_SQL, parameters, (rs, rowNum) -> Lesson.builder()
-                        .id(rs.getInt("id"))
-                        .topic(rs.getString("topic"))
-                        .duration(rs.getFloat("duration"))
-                        .date(rs.getDate("date"))
-                        .teacher(rs.getString("teacher"))
-                        .peoplePlanned(rs.getInt("people_planned"))
-                        .build());
-        return lessons;
-    }
 }
