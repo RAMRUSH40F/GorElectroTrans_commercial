@@ -36,7 +36,7 @@ public class LessonController {
             headers.add("lessons_count", String.valueOf(body.size()));
             int start = (Integer.parseInt(page) - 1) * Integer.parseInt(size);
             int end = Integer.parseInt(page) * Integer.parseInt(size);
-            body = body.subList(Math.max(start, body.size()), Math.max(end, body.size()));
+            body = body.subList(Math.min(start, body.size()), Math.min(end, body.size()));
         }
         return ResponseEntity
                 .ok()
