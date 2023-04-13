@@ -1,6 +1,5 @@
 {
     "name": "gor-electro-trans",
-    "homepage": "https://KDarenskii.github.io",
     "version": "0.1.0",
     "private": true,
     "dependencies": {

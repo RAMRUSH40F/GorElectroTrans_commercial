@@ -48,6 +48,7 @@ const Attendance: React.FC = () => {
                     params: {
                         page,
                         size: LIMIT,
+                        key: searchParams.get("key"),
                     },
                     cancelToken: cancelToken.token,
                 });
@@ -69,7 +70,7 @@ const Attendance: React.FC = () => {
         fetchAttendance();
 
         return () => cancelToken.cancel();
-    }, [page, setAttendances, divisionId]);
+    }, [page, setAttendances, divisionId, searchParams]);
 
     const handleOpenEditing = (event: React.MouseEvent<HTMLTableRowElement>, attendace: IAttendance) => {
         event.stopPropagation();
@@ -115,7 +116,9 @@ const Attendance: React.FC = () => {
                                         onClick={(event) => handleOpenEditing(event, attendance)}
                                     >
                                         <TableBodyCell>{attendance.lessonId}</TableBodyCell>
-                                        <TableBodyCell>{attendance.name}</TableBodyCell>
+                                        <TableBodyCell>
+                                            <span className="attendance__table-name">{attendance.name}</span>
+                                        </TableBodyCell>
                                         <TableBodyCell>{formatDate(attendance.date)}</TableBodyCell>
                                         <TableBodyCell>{attendance.duration}</TableBodyCell>
                                         <TableBodyCell>{ATTENDACE_RESULT_VALUE[attendance.success]}</TableBodyCell>
@@ -125,7 +128,9 @@ const Attendance: React.FC = () => {
                                         <TableBodyCell className="attendance__table-subdepartment-cell">
                                             {attendance.subDepartment}
                                         </TableBodyCell>
-                                        <TableBodyCell>{attendance.teacher}</TableBodyCell>
+                                        <TableBodyCell>
+                                            <span className="attendance__table-name">{attendance.teacher}</span>
+                                        </TableBodyCell>
                                     </TableBodyRow>
                                 ))}
                             </tbody>

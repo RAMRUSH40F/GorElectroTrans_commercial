@@ -4,16 +4,14 @@ import {
     ATTENDANCE_ROUTE,
     DEPARTMENTS_ROUTE,
     DIVISIONS_ROUTE,
-    MATERIALS_ROUTE,
     EMPLOYEES_ROUTE,
     WORK_PLAN_ROUTE,
 } from "../../../../constants/routesPathnames";
 import cn from "classnames";
-import studentIconSrc from "../../../../assets/img/student-icon.svg";
 import scheduleIconSrc from "../../../../assets/img/schedule-icon.svg";
-import workbookIconSrc from "../../../../assets/img/workbook-icon.svg";
 import checklistIconSrc from "../../../../assets/img/checklist-icon.svg";
 import buildingIconSrc from "../../../../assets/img/building-icon.svg";
+import workerIconSrc from "../../../../assets/img/worker.svg";
 
 import "./styles.scss";
 
@@ -30,8 +28,7 @@ const Menu: React.FC<Props> = ({ className }) => {
     const links: { title: string; path: string; src: string }[] = [
         { title: "Рабочий план", path: `/${divisionId}/` + WORK_PLAN_ROUTE.NAME, src: scheduleIconSrc },
         { title: "Журнал посещаемости", path: `/${divisionId}/` + ATTENDANCE_ROUTE.NAME, src: checklistIconSrc },
-        { title: "Учебные материалы", path: `/${divisionId}/` + MATERIALS_ROUTE.NAME, src: workbookIconSrc },
-        { title: "Работники", path: `/${divisionId}/` + EMPLOYEES_ROUTE.NAME, src: studentIconSrc },
+        { title: "Работники", path: `/${divisionId}/` + EMPLOYEES_ROUTE.NAME, src: workerIconSrc },
         { title: "Отделы", path: `/${divisionId}/` + DEPARTMENTS_ROUTE.NAME, src: buildingIconSrc },
     ];
 

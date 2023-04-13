@@ -25,21 +25,43 @@
     &__row {
         display: flex;
         gap: 0.6rem;
-        margin-bottom: 10px;
         @media (max-width: $mobileMiddle) {
             flex-wrap: wrap;
         }
     }
-    // .plan-form__btn
-    &__btn {
-        display: block;
-        margin: 1.3rem 0 0 auto;
-    }
-    // .plan-form__footer
+    // .plan-form__actions
     &__actions {
-        @include flex-center(0.6rem, flex-end);
-        margin-top: 1.5rem;
-        padding-top: 1.3rem;
+        @include flex-center(1rem, space-between);
+        padding-top: 1rem;
+        margin-top: 1rem;
         border-top: 1px solid $grey;
+        @media (max-width: $mobileSmall) {
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+    }
+    // .plan-form__materials-icon
+    &__materials-icon {
+        height: 20px;
+        width: 20px;
+        fill: $white;
+    }
+    // .plan-form__actions-wrapper
+    &__actions-wrapper {
+        @include flex-center(0.6rem, flex-end);
+        width: 100%;
+    }
+    // .plan-form__add-button
+    &__add-button {
+        margin-left: auto;
+    }
+    // .plan-form__action-button
+    &__action-button {
+        @media (max-width: $mobileSmall) {
+            width: 100%;
+        }
+        &--materials {
+            @include flex-center(0.5rem);
+        }
     }
 }

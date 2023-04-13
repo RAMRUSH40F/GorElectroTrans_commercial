@@ -12,4 +12,8 @@
         margin: 20px 0 30px;
         flex-wrap: wrap;
     }
+    // .departments-page__button
+    &__button {
+        align-self: flex-end;
+    }
 }

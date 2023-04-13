@@ -40,7 +40,7 @@ const Employees: FC = () => {
         setIsFetching(true);
         setError(null);
 
-        const fetchStudents = async () => {
+        const fetchEmployees = async () => {
             try {
                 const response = await EmployeeService.fetch(divisionId, {
                     params: {
@@ -63,15 +63,10 @@ const Employees: FC = () => {
                 setIsFetching(false);
             }
         };
-        fetchStudents();
+        fetchEmployees();
 
         return () => cancelToken.cancel();
     }, [page, setEmployees, divisionId]);
-
-    const handleOpenEditing = (event: React.MouseEvent<HTMLTableRowElement>, employee: IEmployee) => {
-        event.stopPropagation();
-        setEditingEmployee(employee);
-    };
 
     const handlePageChange = (selectedItem: { selected: number }) => {
         setPage(selectedItem.selected + 1);
@@ -98,13 +93,15 @@ const Employees: FC = () => {
                                 <TableHeadCell>Фамилия И.О</TableHeadCell>
                                 <TableHeadCell>Отдел</TableHeadCell>
                             </TableHead>
-                            <tbody className={`employees__table-body ${isFetching && "employees__table-body--opacity"}`}>
+                            <tbody
+                                className={`employees__table-body ${isFetching && "employees__table-body--opacity"}`}
+                            >
                                 {!error &&
                                     !isLoading &&
                                     employees.map((employee) => (
                                         <TableBodyRow
                                             key={employee.studentId}
-                                            onClick={(event) => handleOpenEditing(event, employee)}
+                                            onClick={() => setEditingEmployee(employee)}
                                         >
                                             <TableBodyCell>{employee.studentId}</TableBodyCell>
                                             <TableBodyCell>{employee.fullName}</TableBodyCell>

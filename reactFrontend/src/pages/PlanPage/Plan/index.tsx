@@ -16,6 +16,8 @@ import { ALERT } from "../../../constants/alertTypes";
 import { usePlansContext } from "../../../context/plansContext";
 import { useParams, useSearchParams } from "react-router-dom";
 import Loader from "../../../components/Loader";
+import { PLAN_STATUS_VALUE } from "../../../constants/planStatus";
+import cn from "classnames";
 
 import "./styles.scss";
 
@@ -47,6 +49,7 @@ const Plan: React.FC = () => {
                     params: {
                         page,
                         size: LIMIT,
+                        key: searchParams.get("key"),
                     },
                     cancelToken: cancelToken.token,
                 });
@@ -68,7 +71,7 @@ const Plan: React.FC = () => {
         fetchPlans();
 
         return () => cancelToken.cancel();
-    }, [page, setPlans, divisionId]);
+    }, [page, setPlans, divisionId, searchParams]);
 
     const handleOpenEditing = (event: MouseEvent<HTMLTableRowElement>, plan: IPlan) => {
         event.stopPropagation();
@@ -102,10 +105,17 @@ const Plan: React.FC = () => {
                                 <TableHeadCell>Преподаватель</TableHeadCell>
                                 <TableHeadCell>Статус</TableHeadCell>
                             </TableHead>
-                            <tbody className={`plan__table-body ${isFetching && "plan__table-body--opacity"}`}>
+                            <tbody className={cn("plan__table-body", isFetching && "plan__table-body--opacity")}>
                                 {!error &&
                                     plans.map((plan) => (
-                                        <TableBodyRow key={plan.id} onClick={(event) => handleOpenEditing(event, plan)}>
+                                        <TableBodyRow
+                                            className={cn(
+                                                "plan__table-row",
+                                                plan.lessonContent.length < 1 && "plan__table-row--empty"
+                                            )}
+                                            key={plan.id}
+                                            onClick={(event) => handleOpenEditing(event, plan)}
+                                        >
                                             <TableBodyCell>{plan.id}</TableBodyCell>
                                             <TableBodyCell className="plan__table-date-cell">
                                                 {formatDate(plan.date)}
@@ -113,8 +123,12 @@ const Plan: React.FC = () => {
                                             <TableBodyCell>{plan.duration}</TableBodyCell>
                                             <TableBodyCell>{plan.peoplePlanned}</TableBodyCell>
                                             <TableBodyCell>{plan.topic}</TableBodyCell>
-                                            <TableBodyCell>{plan.teacher}</TableBodyCell>
-                                            <TableBodyCell>Проведено</TableBodyCell>
+                                            <TableBodyCell>
+                                                <span className="plan__table-name">{plan.teacher}</span>
+                                            </TableBodyCell>
+                                            <TableBodyCell>
+                                                {plan.isHeld ? PLAN_STATUS_VALUE.HELD : PLAN_STATUS_VALUE.SCHEDULED}
+                                            </TableBodyCell>
                                         </TableBodyRow>
                                     ))}
                             </tbody>
