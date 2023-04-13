@@ -1,6 +1,6 @@
 import React from "react";
 import Label from "../../formElements/Label";
-import DropDown, { Option } from "react-dropdown";
+import { Option } from "react-dropdown";
 import { TNewAttendance } from "../../../models/Attendance";
 import { ATTENDACE_RESULT_VALUE, ATTENDANCE_RESULT } from "../../../constants/attendanceResult";
 import useFocus from "../../../hooks/useFocus";
@@ -9,8 +9,8 @@ import FormErrorMessage from "../../formElements/FormErrorMessage";
 import ActionButton from "../../buttons/ActionButton";
 import { attendanceFormScheme } from "./attendanceFormSheme";
 import InputNumber from "../../formElements/InputNumber";
+import Select from "../../formElements/Select";
 
-import "react-dropdown/style.css";
 import "./styles.scss";
 
 const options: Option[] = [
@@ -29,17 +29,24 @@ type Props = {
 export interface AttendanceFormState {
     lessonId: string;
     studentId: string;
-    success: ATTENDANCE_RESULT;
+    success: Option;
 }
 
 const AttendanceForm: React.FC<Props> = ({ onSubmit, attendance, isDisabled, moveToConfrim, isEditing }) => {
     const inputRef = React.useRef<HTMLInputElement | null>(null);
     useFocus(inputRef, true);
 
+    const getInitialSuccessOption = (): Option => {
+        if (attendance) {
+            return options.find((option) => option.value === String(attendance.success)) ?? options[0];
+        }
+        return options[0];
+    };
+
     const initialState: AttendanceFormState = {
         lessonId: attendance?.lessonId ? String(attendance.lessonId) : "",
         studentId: attendance?.studentId ?? "",
-        success: attendance?.success ?? parseInt(options[0].value),
+        success: getInitialSuccessOption(),
     };
 
     return (
@@ -89,14 +96,13 @@ const AttendanceForm: React.FC<Props> = ({ onSubmit, attendance, isDisabled, mov
                         </>
                     )}
                     <Label className="attendance-form__label" text="Зачет/Незачет">
-                        <DropDown
+                        <Select
                             className="attendance-form__select"
                             options={options}
-                            value={ATTENDACE_RESULT_VALUE[values.success]}
-                            onChange={(option) => setFieldValue("success", parseInt(option.value))}
+                            value={values.success}
+                            onChange={(option) => setFieldValue("success", option)}
                             disabled={isSubmitting || isDisabled}
                         />
-                        {errors.success && touched.success && <FormErrorMessage>{errors.success}</FormErrorMessage>}
                     </Label>
                     <div className="attendance-form__actions">
                         {moveToConfrim && attendance ? (

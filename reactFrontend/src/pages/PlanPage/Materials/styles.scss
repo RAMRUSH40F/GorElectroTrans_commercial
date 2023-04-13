@@ -1,0 +1,86 @@
+@import "../../../assets/styles/mixins.scss";
+
+.materials {
+    // .materials__title
+    &__title {
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+    }
+    // .materials__list
+    &__list {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        padding-left: 10px;
+    }
+    // .materials__item
+    &__item {
+        @include flex-center(0.8rem, space-between);
+    }
+    // .materials__name
+    &__name {
+        font-size: 1rem;
+        color: $blue;
+        cursor: pointer;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+    // .materials__item-actions
+    &__item-actions {
+        @include flex-center(0.3rem);
+    }
+    // .materials__button
+    &__button {
+        @include flex-center;
+        padding: 4px;
+        border-radius: 100%;
+        &:hover {
+            fill: $red;
+            background-color: rgba($grey, 0.5);
+        }
+    }
+    // .materials__icon
+    &__icon {
+        width: 28px;
+        height: 28px;
+        transition: fill 0.15s ease;
+        &--download {
+            path {
+                stroke: $green;
+            }
+        }
+        &--delete {
+            fill: $red;
+        }
+    }
+    // .materials__input
+    &__input {
+        margin-top: 10px;
+    }
+    // .materials__actions
+    &__actions {
+        @include flex-center(0.6rem, flex-end);
+        padding-top: 1rem;
+        margin-top: 1rem;
+        border-top: 1px solid $grey;
+        @media (max-width: $mobileSmall) {
+            flex-direction: column;
+        }
+    }
+    // .materials__action-button
+    &__action-button {
+        @include flex-center(0.3rem);
+        @media (max-width: $mobileSmall) {
+            width: 100%;
+        }
+    }
+    // .materials__back-icon
+    &__back-icon {
+        width: 20px;
+        height: 20px;
+    }
+}

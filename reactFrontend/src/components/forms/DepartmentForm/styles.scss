@@ -13,8 +13,8 @@
     // .department-form__actions
     &__actions {
         @include flex-center(0.6rem, flex-end);
-        margin-top: 1.5rem;
-        padding-top: 1.3rem;
+        padding-top: 1rem;
+        margin-top: 1rem;
         border-top: 1px solid $grey;
     }
 }

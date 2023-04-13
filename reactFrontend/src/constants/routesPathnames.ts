@@ -27,10 +27,6 @@ export const ATTENDANCE_ROUTE: Route = {
     NAME: "attendance",
     PATH: "/:divisionId/attendance",
 };
-export const MATERIALS_ROUTE: Route = {
-    NAME: "materials",
-    PATH: "/:divisionId/materials",
-};
 export const DEPARTMENTS_ROUTE: Route = {
     NAME: "departments",
     PATH: "/:divisionId/departments",

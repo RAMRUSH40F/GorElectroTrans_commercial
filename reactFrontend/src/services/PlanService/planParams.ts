@@ -15,3 +15,11 @@ export interface PutParams extends Params {
 export interface DeleteParams extends Params {
     planId: number;
 }
+
+export interface FileParams extends Params {
+    fileName: string;
+}
+
+export interface PostFileParams extends Params {
+    data: FormData;
+}

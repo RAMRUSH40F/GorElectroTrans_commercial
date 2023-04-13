@@ -2,10 +2,15 @@ import React from "react";
 import ActionButton from "../../../components/buttons/ActionButton";
 import AddEmployeeModal from "../../../components/modals/employess/AddEmployeeModal";
 import useLockedBody from "../../../hooks/useLockedBody";
+import cn from "classnames";
 
 import "./styles.scss";
 
-const NewEmployee: React.FC = () => {
+type Props = {
+    className?: string;
+};
+
+const NewEmployee: React.FC<Props> = ({ className }) => {
     const [isAdding, setIsAdding] = React.useState(false);
 
     useLockedBody(isAdding);
@@ -18,7 +23,7 @@ const NewEmployee: React.FC = () => {
     return (
         <>
             {isAdding && <AddEmployeeModal closeModal={() => setIsAdding(false)} />}
-            <ActionButton className="new-employee-btn" colorType="info" onClick={handleOpenEditing}>
+            <ActionButton className={cn("new-employee-btn", className)} colorType="info" onClick={handleOpenEditing}>
                 Добавить +
             </ActionButton>
         </>

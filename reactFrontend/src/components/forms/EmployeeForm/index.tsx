@@ -1,7 +1,7 @@
 import React from "react";
 import Input from "../../formElements/Input";
 import Label from "../../formElements/Label";
-import DropDown, { Option } from "react-dropdown";
+import { Option } from "react-dropdown";
 import ActionButton from "../../buttons/ActionButton";
 import { IDepartment } from "../../../models/Department";
 import { Formik } from "formik";
@@ -10,8 +10,8 @@ import { employeeFormScheme } from "./employeeFormScheme";
 import FormErrorMessage from "../../formElements/FormErrorMessage";
 import { IEmployee } from "../../../models/Employee";
 import InputNumber from "../../formElements/InputNumber";
+import Select from "../../formElements/Select";
 
-import "react-dropdown/style.css";
 import "./styles.scss";
 
 type Props = {
@@ -26,7 +26,7 @@ type Props = {
 export type EmployeeFormState = {
     studentId: string;
     fullName: string;
-    subdepartmentName: string;
+    subdepartment: Option;
 };
 
 const EmployeeForm: React.FC<Props> = ({ departments, onSubmit, employee, moveToConfrim, isDisabled, isEditing }) => {
@@ -35,21 +35,28 @@ const EmployeeForm: React.FC<Props> = ({ departments, onSubmit, employee, moveTo
 
     const options: Option[] = departments.map((dep) => ({ label: dep.name, value: dep.name }));
 
+    const getInitialSubdepartmentOption = (): Option => {
+        if (employee) {
+            return options.find((option) => option.value === String(employee.subdepartmentName)) ?? options[0];
+        }
+        return options[0];
+    };
+
     const initialState: EmployeeFormState = {
         studentId: employee?.studentId ?? "",
         fullName: employee?.fullName ?? "",
-        subdepartmentName: employee?.subdepartmentName ?? options[0]?.value ?? "",
+        subdepartment: getInitialSubdepartmentOption(),
     };
 
     return (
         <Formik initialValues={initialState} onSubmit={onSubmit} validationSchema={employeeFormScheme}>
             {({ handleSubmit, handleChange, handleBlur, values, errors, touched, isSubmitting, setFieldValue }) => (
-                <form className="student-form" onSubmit={handleSubmit}>
+                <form className="employee-form" onSubmit={handleSubmit}>
                     {!isEditing && (
                         <>
-                            <Label className="student-form__label" text="Табельный номер">
+                            <Label className="employee-form__label" text="Табельный номер">
                                 <InputNumber
-                                    className="student-form__input"
+                                    className="employee-form__input"
                                     name="studentId"
                                     onBlur={handleBlur}
                                     onChange={handleChange}
@@ -66,9 +73,9 @@ const EmployeeForm: React.FC<Props> = ({ departments, onSubmit, employee, moveTo
                                     <FormErrorMessage>{errors.studentId}</FormErrorMessage>
                                 )}
                             </Label>
-                            <Label className="student-form__label" text="Фамилия И.О.">
+                            <Label className="employee-form__label" text="Фамилия И.О.">
                                 <Input
-                                    className="student-form__input"
+                                    className="employee-form__input"
                                     name="fullName"
                                     onBlur={handleBlur}
                                     onChange={handleChange}
@@ -83,19 +90,17 @@ const EmployeeForm: React.FC<Props> = ({ departments, onSubmit, employee, moveTo
                             </Label>
                         </>
                     )}
-                    <Label className="student-form__label" text="Отдел">
-                        <DropDown
-                            className="student-form__select"
+                    <Label className="employee-form__label" text="Отдел">
+                        <Select
+                            className="employee-form__select"
+                            menuClassName="employee-form__select-menu"
                             options={options}
-                            value={values.subdepartmentName}
-                            onChange={(option) => setFieldValue("subdepartmentName", option.value)}
+                            value={values.subdepartment}
+                            onChange={(option) => setFieldValue("subdepartment", option)}
                             disabled={isSubmitting || isDisabled}
                         />
-                        {errors.subdepartmentName && touched.subdepartmentName && (
-                            <FormErrorMessage>{errors.subdepartmentName}</FormErrorMessage>
-                        )}
                     </Label>
-                    <div className="student-form__actions">
+                    <div className="employee-form__actions">
                         {moveToConfrim && employee ? (
                             <>
                                 <ActionButton disabled={isSubmitting || isDisabled} type="submit" colorType="success">

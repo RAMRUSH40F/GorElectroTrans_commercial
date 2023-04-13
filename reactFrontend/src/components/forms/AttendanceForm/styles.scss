@@ -10,15 +10,11 @@
         width: 100%;
         margin-bottom: 2.5px;
     }
-    // .attendance-form__select
-    &__select {
-        font-size: 0.8rem;
-    }
     // .attendance-form__actions
     &__actions {
         @include flex-center(0.6rem, flex-end);
-        margin-top: 1.5rem;
-        padding-top: 1.3rem;
+        padding-top: 1rem;
+        margin-top: 1rem;
         border-top: 1px solid $grey;
     }
 }

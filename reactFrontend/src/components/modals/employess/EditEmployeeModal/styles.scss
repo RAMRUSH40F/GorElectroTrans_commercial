@@ -1,0 +1,12 @@
+.edit-employee-modal {
+    // .edit-employee-modal__loader
+    &__loader {
+        margin: 1rem auto;
+        width: 65px;
+        height: 65px;
+    }
+    // .edit-employee-modal__alert
+    &__alert {
+        margin-bottom: 1rem;
+    }
+}
