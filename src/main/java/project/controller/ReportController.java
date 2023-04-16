@@ -31,6 +31,7 @@ public class ReportController {
         HSSFWorkbook workbook = reportService.readWorkbook(fileName);
         reportService.formLessonReport(workbook, fileName, quarter);
         reportService.formWorkerReport(workbook, fileName);
+        reportService.formTeacherReport(workbook,fileName,quarter);
         String today = new Date().toString().substring(4, 10);
         // Set response headers
         HttpHeaders headers = new HttpHeaders();
