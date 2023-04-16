@@ -37,7 +37,8 @@ public class JwtAuthorizationService {
             boolean tokenIsExpired = !claimsJws.getBody().getExpiration().before(new Date());
             return userIsActive & tokenIsExpired;
         } catch (JwtException | IllegalArgumentException exception) {
-            throw new AuthenticationException(exception);
+            throw new AuthenticationException(exception, "Ваша прошлая сессия истекла. +" +
+                    "Войдите в аккаунт заново");
         }
     }
 
@@ -63,10 +64,9 @@ public class JwtAuthorizationService {
             if (user.isActive()) {
                 String jwtToken = createToken(user);
 
-                Cookie cookie = new Cookie("Token", jwtToken);
+                Cookie cookie = new Cookie("token", jwtToken);
 
                 cookie.setMaxAge(JWT_TOKEN_MAX_AGE_HOURS * 3600);
-                cookie.setSecure(true);
                 cookie.setHttpOnly(false); // false - можно достать данные на фронтэнде. true - доставать нельзя. Только отправлять
                 cookie.setPath("/");
                 return cookie;

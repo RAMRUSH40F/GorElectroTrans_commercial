@@ -26,8 +26,9 @@ public class RequestExceptionHandler {
 
         return new ResponseEntity<>(responseException, responseException.httpStatus);
     }
+
     @ExceptionHandler(value = {SQLIntegrityConstraintViolationException.class})
-    public ResponseEntity<ResponseException> handleSqlExceptions(RuntimeException e){
+    public ResponseEntity<ResponseException> handleSqlExceptions(RuntimeException e) {
         System.out.println(e.getCause());
         ResponseException responseException = ResponseException.builder()
                 .message("Такие данные не могут быть добавлены. " +
@@ -39,7 +40,18 @@ public class RequestExceptionHandler {
     }
 
     @ExceptionHandler(value = {AuthenticationException.class})
-    public ResponseEntity<ResponseException> authException(RuntimeException e){
+    public ResponseEntity<ResponseException> authException(RuntimeException e) {
+        System.out.println(e.getCause());
+        ResponseException responseException = ResponseException.builder()
+                .message(e.getMessage())
+                .timeStamp(ZonedDateTime.now(ZoneId.of("UTC+3")))
+                .httpStatus(HttpStatus.UNAUTHORIZED)
+                .build();
+        return new ResponseEntity<>(responseException, responseException.httpStatus);
+    }
+
+    @ExceptionHandler(value = {AuthorizationException.class})
+    public ResponseEntity<ResponseException> authorizationException(RuntimeException e) {
         System.out.println(e.getCause());
         ResponseException responseException = ResponseException.builder()
                 .message(e.getMessage())
@@ -50,10 +62,10 @@ public class RequestExceptionHandler {
     }
 
     @ExceptionHandler(value = {Exception.class})
-    public ResponseException exceptionHandler(Exception e){
+    public ResponseException exceptionHandler(Exception e) {
         System.out.println(e.getCause());
         return ResponseException.builder()
-                .message("Произошла ошибка. Перепроверьте свой запрос, или обратитесь к программисту")
+                .message("Произошла ошибка. Перепроверьте свой запрос, или обратитесь к администратору сайта")
                 .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
                 .timeStamp(ZonedDateTime.now())
                 .build();
