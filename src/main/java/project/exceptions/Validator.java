@@ -32,8 +32,7 @@ public class Validator {
     }
 
     public static void validateAuth(User user, int departmentID) {
-
-        if (!user.getAuthorities().get(0).equals(String.valueOf(departmentID))){
+        if (!user.getAuthorities().contains(String.valueOf(departmentID).intern())) {
             throw new RuntimeException("User permission is not correct with department ID");
         }
     }
