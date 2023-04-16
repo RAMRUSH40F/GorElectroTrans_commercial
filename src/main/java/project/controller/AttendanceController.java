@@ -16,6 +16,7 @@ import static project.exceptions.Validator.validatePaginationParams;
 
 @RequiredArgsConstructor
 @RestController("AttendanceControllerBean")
+@RequiredArgsConstructor
 public class AttendanceController {
 
     private final AttendanceRepository attendanceRepository;
@@ -25,16 +26,28 @@ public class AttendanceController {
     public ResponseEntity<List<AttendanceView>> getAllRecords(@PathVariable("N") int departmentId,
                                                               @RequestParam(value = "page") String page,
                                                               @RequestParam(value = "size") String pageSize,
+                                                              @RequestParam(value = "key", required = false) String keyWord,
                                                               @CookieValue(value = "token", defaultValue = "") String token) {
         validateDepartmentId(departmentId);
         validatePaginationParams(page, pageSize);
         auth.authorize(token,departmentId);
+
+        List<AttendanceView> body;
         HttpHeaders headers = new HttpHeaders();
-        headers.add("attendance_count", String.valueOf(attendanceRepository.getRecordsAttendanceCount(departmentId)));
+        if (keyWord == null) {
+            body = attendanceRepository.getAllRecords(departmentId, Integer.valueOf(page), Integer.valueOf(pageSize));
+            headers.add("attendance_count", String.valueOf(attendanceRepository.getRecordsAttendanceCount(departmentId)));
+        } else {
+            body = attendanceRepository.getAttendanceByKeyword(departmentId, keyWord);
+            headers.add("attendance_count", String.valueOf(body.size()));
+            int start = (Integer.parseInt(page) - 1) * Integer.parseInt(pageSize);
+            int end = Integer.parseInt(page) * Integer.parseInt(pageSize);
+            body = body.subList(Math.min(start, body.size()), Math.min(end, body.size()));
+        }
         return ResponseEntity
                 .ok()
                 .headers(headers)
-                .body(attendanceRepository.getAllRecords(departmentId, Integer.valueOf(page), Integer.valueOf(pageSize)));
+                .body(body);
     }
 
     @GetMapping("/dep_{N}/attendance/")
@@ -44,6 +57,7 @@ public class AttendanceController {
         validateDepartmentId(departmentId);
         auth.authorize(token,departmentId);
         return attendanceRepository.getAttendenceView(departmentId, attendance);
+
     }
 
     @PostMapping("/dep_{N}/attendance/data")

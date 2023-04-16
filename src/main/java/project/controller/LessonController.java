@@ -8,6 +8,7 @@ import project.model.Lesson;
 import project.repository.LessonRepository;
 import project.security.JwtAuthorizationService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static project.exceptions.Validator.validateDepartmentId;
@@ -20,20 +21,32 @@ public class LessonController {
     private final LessonRepository lessonRepository;
     private final JwtAuthorizationService auth;
 
-    @GetMapping("/dep_{N}/work_plan/data")
-    public ResponseEntity<List<Lesson>> getPagedLessons(@PathVariable("N") int departmentId,
-                                                        @RequestParam String page,
-                                                        @RequestParam String size,
-                                                        @CookieValue(value = "token", defaultValue = "") String token) {
-        validateDepartmentId(departmentId);
+
+    public ResponseEntity<List<Lesson>> getLessonsPaginated(@PathVariable("N") int department,
+                                                            @RequestParam String page,
+                                                            @RequestParam String size,
+                                                            @RequestParam(value = "key", required = false) String keyWord,
+                                                            @CookieValue(value = "token", defaultValue = "") String token) {
+        validateDepartmentId(department);
         validatePaginationParams(page, size);
         auth.authorize(token,departmentId);
         HttpHeaders headers = new HttpHeaders();
-        headers.add("lessons_count", String.valueOf(lessonRepository.getLessonsCount(departmentId)));
+
+        List<Lesson> body;
+        if (keyWord == null) {
+            body = lessonRepository.getPagedLessons(department, Integer.parseInt(page), Integer.parseInt(size));
+            headers.add("lessons_count", String.valueOf(lessonRepository.getLessonsCount(department)));
+        } else {
+            body = lessonRepository.getLessonByKeyword(department, keyWord);
+            headers.add("lessons_count", String.valueOf(body.size()));
+            int start = (Integer.parseInt(page) - 1) * Integer.parseInt(size);
+            int end = Integer.parseInt(page) * Integer.parseInt(size);
+            body = body.subList(Math.min(start, body.size()), Math.min(end, body.size()));
+        }
         return ResponseEntity
                 .ok()
                 .headers(headers)
-                .body(lessonRepository.getPagedLessons(departmentId, Integer.parseInt(page), Integer.parseInt(size)));
+                .body(body);
     }
 
     @PostMapping("/dep_{N}/work_plan/data")
@@ -63,13 +76,12 @@ public class LessonController {
     }
 
     @DeleteMapping("/dep_{N}/work_plan/{id}")
+
     public void deleteLessonById(@PathVariable("N") int departmentId,
                                  @PathVariable("id") int id,
                                  @CookieValue(value = "token", defaultValue = "") String token) {
         auth.authorize(token,departmentId);
         lessonRepository.deleteLessonById(departmentId, id);
-
     }
-
 
 }
