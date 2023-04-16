@@ -2,13 +2,11 @@ package project.controller;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.exceptions.AuthenticationException;
 import project.model.User;
 import project.security.JwtAuthorizationService;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * Эндпоинты для выдачи токена с ролью либо код ошибки с комментарием.
@@ -20,9 +18,10 @@ public class AuthorisationController {
     private final JwtAuthorizationService jwtAuthorizationService;
 
     @PostMapping("/auth/login")
-    public void authenticate(@RequestParam User user, HttpServletResponse response) {
-        Cookie JwtToken = jwtAuthorizationService.authenticate(user.getUsername(), user.getPassword());
-        response.addCookie(JwtToken);
+    public ResponseEntity<String> authenticate(@RequestBody User user) {
+        return ResponseEntity.ok(
+                jwtAuthorizationService.
+                        authenticate(user.getUsername(), user.getPassword()).getValue());
     }
 
     @GetMapping("/auth/validate")
@@ -33,6 +32,8 @@ public class AuthorisationController {
         throw new AuthenticationException("Ваша прошлая сессия истекла. +" +
                 "Войдите заново в аккаунт");
     }
+
+
 
 
 }

@@ -1,6 +1,7 @@
 package project.security;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,9 +10,7 @@ import project.exceptions.AuthenticationException;
 import project.model.User;
 import project.repository.UserRepository;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.Cookie;
-import java.util.Base64;
 import java.util.Date;
 
 @Service("JwtAuthorizationServiceBean")
@@ -25,8 +24,6 @@ public class JwtAuthorizationService {
     private String secretKey;
 
     private final UserRepository userRepository;
-
-    private final ObjectMapper mapper = new ObjectMapper();
 
     /**
      * @return true if the token is valid and does not expire. False otherwise.
@@ -45,19 +42,15 @@ public class JwtAuthorizationService {
 
 
     public User decodeUserFromToken(String token) {
-        Jws<Claims> jwtParameters = Jwts.parser()
-                .setSigningKey(secretKey).parseClaimsJws(token);
-        User userFromToken = mapper.convertValue(jwtParameters, User.class);
-        return userFromToken;
+        DecodedJWT jwt = JWT.decode(token);
+        String user = jwt.getSubject();
+        return userRepository.getUserByUsername(user);
     }
 
     /**
      * Checks if the password is right and return authorisation
      * authentication jwtToken in cookie or throws an exception
      *
-     * @param username
-     * @param password
-     * @return
      */
     public Cookie authenticate(String username, String password) {
         User user = userRepository.getUserByUsername(username);
@@ -82,7 +75,6 @@ public class JwtAuthorizationService {
     }
 
     /**
-     * @param user
      * @return jwt token out of authorities and username;
      */
     private String createToken(User user) {
@@ -91,13 +83,12 @@ public class JwtAuthorizationService {
 
         Date now = new Date();
         Date validity = new Date(now.getTime() + JWT_TOKEN_MAX_AGE_HOURS * 3600 * 1000);
-        String jwtToken = Jwts.builder()
+        return Jwts.builder()
                 .setClaims(claims)
                 .setExpiration(validity)
                 .setIssuedAt(now)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
-        return jwtToken;
     }
 }
 

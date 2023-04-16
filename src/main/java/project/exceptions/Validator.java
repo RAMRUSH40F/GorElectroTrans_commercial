@@ -1,6 +1,8 @@
 package project.exceptions;
 
 
+import project.model.User;
+
 public class Validator {
 
     public static void validateDepartmentId(Integer id) {
@@ -27,8 +29,13 @@ public class Validator {
             throw new PaginationException("Неправильные параметры page/size в параметрах URL запроса. " +
                     "Переданы параметры" + pageString + " ," + sizeString);
         }
+    }
 
+    public static void validateAuth(User user, int departmentID) {
 
+        if (!user.getAuthorities().get(0).equals(String.valueOf(departmentID))){
+            throw new RuntimeException("User permission is not correct with department ID");
+        }
     }
 
     public static void validateInterval(int interval) {
