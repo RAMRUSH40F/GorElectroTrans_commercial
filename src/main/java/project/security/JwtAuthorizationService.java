@@ -98,8 +98,10 @@ public class JwtAuthorizationService {
 
     public void authorize(String jwtToken, int departmentID) {
         User user = decodeUserFromToken(jwtToken);
-        System.out.println(user.getAuthorities());
-        if (user.getAuthorities().contains("100") || !user.getAuthorities().contains(String.valueOf(departmentID).intern())) {
+        // admin role ("100") has authorization to everything
+        if (!(user.getAuthorities().contains("100") || user.getAuthorities().contains(String.valueOf(departmentID)))) {
+            System.out.println("Права пользователя:" + user.getAuthorities());
+            System.out.println("Необходимые права:" + departmentID);
             throw new AuthenticationException("У пользователя нет доступа к данной информации.");
         }
     }

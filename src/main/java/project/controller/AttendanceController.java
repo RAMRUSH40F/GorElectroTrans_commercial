@@ -16,7 +16,6 @@ import static project.exceptions.Validator.validatePaginationParams;
 
 @RequiredArgsConstructor
 @RestController("AttendanceControllerBean")
-@RequiredArgsConstructor
 public class AttendanceController {
 
     private final AttendanceRepository attendanceRepository;
@@ -56,7 +55,7 @@ public class AttendanceController {
                                                          @CookieValue(value = "token", defaultValue = "") String token) {
         validateDepartmentId(departmentId);
         auth.authorize(token,departmentId);
-        return attendanceRepository.getAttendenceView(departmentId, attendance);
+        return attendanceRepository.getAttendanceView(departmentId, attendance);
 
     }
 

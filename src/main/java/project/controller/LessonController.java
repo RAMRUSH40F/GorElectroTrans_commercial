@@ -8,7 +8,6 @@ import project.model.Lesson;
 import project.repository.LessonRepository;
 import project.security.JwtAuthorizationService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static project.exceptions.Validator.validateDepartmentId;
@@ -21,7 +20,7 @@ public class LessonController {
     private final LessonRepository lessonRepository;
     private final JwtAuthorizationService auth;
 
-
+    @GetMapping("/dep_{N}/work_plan/data")
     public ResponseEntity<List<Lesson>> getLessonsPaginated(@PathVariable("N") int department,
                                                             @RequestParam String page,
                                                             @RequestParam String size,
@@ -29,7 +28,7 @@ public class LessonController {
                                                             @CookieValue(value = "token", defaultValue = "") String token) {
         validateDepartmentId(department);
         validatePaginationParams(page, size);
-        auth.authorize(token,departmentId);
+        auth.authorize(token, department);
         HttpHeaders headers = new HttpHeaders();
 
         List<Lesson> body;
