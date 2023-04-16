@@ -12,9 +12,9 @@ import org.apache.poi.ss.usermodel.Font;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.Year;
 import java.util.AbstractMap;
 import java.util.Iterator;
@@ -51,8 +51,8 @@ public class ReportService {
 
 
     public HSSFWorkbook readWorkbook(String filename) {
-        try {
-            return new HSSFWorkbook(new POIFSFileSystem(new FileInputStream(filename)));
+        try(InputStream inputStream = getClass().getResourceAsStream(filename)) {
+            return new HSSFWorkbook(new POIFSFileSystem(inputStream));
         } catch (IOException e) {
             throw new RuntimeException("Файл шаблона не был загружен в корневую папку проекта или " +
                     "произошла другая ошибка связанная с чтением шаблонной таблицы", e);
