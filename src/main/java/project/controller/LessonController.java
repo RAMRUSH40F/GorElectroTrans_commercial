@@ -5,14 +5,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.model.Lesson;
-import project.security.model.MyToken;
-import project.security.model.User;
 import project.repository.LessonRepository;
 import project.security.JwtAuthorizationService;
 
 import java.util.List;
 
-import static project.exceptions.Validator.*;
+import static project.exceptions.Validator.validateDepartmentId;
+import static project.exceptions.Validator.validatePaginationParams;
 
 @RestController("LessonControllerBean")
 @RequiredArgsConstructor
@@ -25,11 +24,10 @@ public class LessonController {
     public ResponseEntity<List<Lesson>> getPagedLessons(@PathVariable("N") int departmentId,
                                                         @RequestParam String page,
                                                         @RequestParam String size,
-                                                        @RequestBody MyToken token) {
+                                                        @CookieValue(value = "token", defaultValue = "") String token) {
         validateDepartmentId(departmentId);
         validatePaginationParams(page, size);
-        User user = auth.decodeUserFromToken(token.getToken());
-        validateAuth(user, departmentId);
+        auth.authorize(token,departmentId);
         HttpHeaders headers = new HttpHeaders();
         headers.add("lessons_count", String.valueOf(lessonRepository.getLessonsCount(departmentId)));
         return ResponseEntity
@@ -41,19 +39,17 @@ public class LessonController {
     @PostMapping("/dep_{N}/work_plan/data")
     public int addLesson(@PathVariable("N") int departmentId,
                          @RequestBody Lesson lesson,
-                         @RequestBody MyToken token) {
+                         @CookieValue(value = "token", defaultValue = "") String token) {
         lessonRepository.addNewLesson(departmentId, lesson);
-        User user = auth.decodeUserFromToken(token.getToken());
-        validateAuth(user, departmentId);
+        auth.authorize(token,departmentId);
         return lessonRepository.getMaxId(departmentId);
     }
 
     @GetMapping("/dep_{N}/work_plan/{id}")
     public List<Lesson> findLessonById(@PathVariable("N") int departmentId,
                                        @PathVariable("id") int id,
-                                       @RequestBody MyToken token) {
-        User user = auth.decodeUserFromToken(token.getToken());
-        validateAuth(user, departmentId);
+                                       @CookieValue(value = "token", defaultValue = "") String token) {
+        auth.authorize(token,departmentId);
         return lessonRepository.getLessonById(departmentId, id);
     }
 
@@ -61,18 +57,16 @@ public class LessonController {
     public void changeLesson(@PathVariable("N") int departmentId,
                              @PathVariable("id") int id,
                              @RequestBody Lesson lesson,
-                             @RequestBody MyToken token) {
-        User user = auth.decodeUserFromToken(token.getToken());
-        validateAuth(user, departmentId);
+                             @CookieValue(value = "token", defaultValue = "") String token) {
+        auth.authorize(token,departmentId);
         lessonRepository.changeLesson(departmentId, id, lesson);
     }
 
     @DeleteMapping("/dep_{N}/work_plan/{id}")
     public void deleteLessonById(@PathVariable("N") int departmentId,
                                  @PathVariable("id") int id,
-                                 @RequestBody MyToken token) {
-        User user = auth.decodeUserFromToken(token.getToken());
-        validateAuth(user, departmentId);
+                                 @CookieValue(value = "token", defaultValue = "") String token) {
+        auth.authorize(token,departmentId);
         lessonRepository.deleteLessonById(departmentId, id);
 
     }

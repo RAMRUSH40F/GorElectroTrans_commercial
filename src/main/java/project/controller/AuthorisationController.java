@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import project.exceptions.AuthenticationException;
+import project.security.exception.AuthenticationException;
 import project.security.JwtAuthorizationService;
 import project.security.model.User;
 
@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * Эндпоинты для выдачи токена с ролью либо код ошибки с комментарием.
- * Токен потом будет в header
+ * Токен потом будет в cookie
  */
 @RestController
 @RequiredArgsConstructor
@@ -40,7 +40,7 @@ public class AuthorisationController {
 
     @PostMapping("/auth/validate")
     public boolean validateToken(@CookieValue(value = "token", defaultValue = "") String token) {
-        if (token.length() != 0 && jwtAuthorizationService.validateToken(token)) {
+        if (jwtAuthorizationService.validateToken(token)) {
             return true;
         }
         throw new AuthenticationException("Ваша прошлая сессия истекла. +" +

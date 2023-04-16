@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
-import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -13,6 +13,6 @@ public class User {
     private final String username;
     private final String password;
     private final boolean isActive;
-    private final List<String> authorities;
+    private final Set<String> authorities;
 
 }

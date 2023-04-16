@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import project.security.model.User;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -34,9 +35,9 @@ public class UserRepository {
                             .username(rs.getString("username"))
                             .password(rs.getString("password"))
                             .isActive(rs.getBoolean("enabled"))
-                            .authorities(userAuthorities)
+                            .authorities(new HashSet<>(userAuthorities))
                             .build());
-            if (user.getUsername() != null && user.getAuthorities() != null && user.getPassword() != null) {
+            if (user != null && user.getUsername() != null && user.getAuthorities() != null && user.getPassword() != null) {
                 return user;
             } else {
                 return null;

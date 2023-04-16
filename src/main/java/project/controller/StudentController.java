@@ -4,9 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import project.security.model.MyToken;
 import project.model.StudentView;
-import project.security.model.User;
 import project.repository.StudentRepository;
 import project.security.JwtAuthorizationService;
 
@@ -25,11 +23,10 @@ public class StudentController {
     public ResponseEntity<List<StudentView>> getStudentPage(@PathVariable("N") int departmentId,
                                                             @RequestParam(value = "page") String page,
                                                             @RequestParam(value = "size") String pageSize,
-                                                            @RequestBody MyToken token) {
+                                                            @CookieValue(value = "token", defaultValue = "") String token) {
         validateDepartmentId(departmentId);
-        User user = auth.decodeUserFromToken(token.getToken());
-        validateAuth(user, departmentId);
         validatePaginationParams(page, pageSize);
+        auth.authorize(token,departmentId);
         HttpHeaders headers = new HttpHeaders();
         headers.add("students_count", String.valueOf(studentRepository.getStudentsCount(departmentId)));
         return ResponseEntity
@@ -41,44 +38,40 @@ public class StudentController {
     @GetMapping("/dep_{N}/students/{id}")
     public StudentView findStudentById(@PathVariable("N") int departmentId,
                                        @PathVariable("id") String studentId,
-                                       @RequestBody MyToken token) {
-        User user = auth.decodeUserFromToken(token.getToken());
-        validateAuth(user, departmentId);
+                                       @CookieValue(value = "token", defaultValue = "") String token) {
         validateDepartmentId(departmentId);
         validateStudentId(studentId);
+        auth.authorize(token,departmentId);
         return studentRepository.getStudentById(departmentId, studentId);
     }
 
     @PostMapping("/dep_{N}/students/data")
     public StudentView addNewStudent(@RequestBody StudentView student,
                                      @PathVariable("N") int departmentId,
-                                     @RequestBody MyToken token) {
+                                     @CookieValue(value = "token", defaultValue = "") String token) {
         validateDepartmentId(departmentId);
-        User user = auth.decodeUserFromToken(token.getToken());
-        validateAuth(user, departmentId);
+        auth.authorize(token,departmentId);
         return studentRepository.addNewStudent(departmentId, student);
     }
 
     @PutMapping("/dep_{N}/students/data")
     public void updateStudent(@RequestBody StudentView student,
                               @PathVariable("N") int departmentId,
-                              @RequestBody MyToken token) {
+                              @CookieValue(value = "token", defaultValue = "") String token) {
         validateDepartmentId(departmentId);
-        User user = auth.decodeUserFromToken(token.getToken());
-        validateAuth(user, departmentId);
         validateStudentId(student.getStudentId());
+        auth.authorize(token,departmentId);
         studentRepository.updateStudent(departmentId, student);
     }
 
     @DeleteMapping("/dep_{N}/students/{id}")
     public void deleteStudentById(@PathVariable("N") int departmentId,
                                   @PathVariable("id") String studentId,
-                                  @RequestBody MyToken token) {
+                                  @CookieValue(value = "token", defaultValue = "") String token) {
 
         validateDepartmentId(departmentId);
-        User user = auth.decodeUserFromToken(token.getToken());
-        validateAuth(user, departmentId);
         validateStudentId(studentId);
+        auth.authorize(token,departmentId);
         studentRepository.deleteStudentById(departmentId, studentId);
     }
 }

@@ -4,6 +4,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import project.security.exception.AuthenticationException;
+import project.security.exception.AuthorizationException;
 
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.ZoneId;

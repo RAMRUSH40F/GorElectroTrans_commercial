@@ -1,4 +1,4 @@
-package project.exceptions;
+package project.security.exception;
 
 
 public class AuthenticationException extends RuntimeException {

@@ -8,15 +8,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import project.model.LessonContent;
-import project.security.model.MyToken;
-import project.security.model.User;
 import project.repository.LessonContentRepository;
 import project.security.JwtAuthorizationService;
 
 import java.io.IOException;
 import java.util.List;
 
-import static project.exceptions.Validator.*;
+import static project.exceptions.Validator.validateDepartmentId;
+import static project.exceptions.Validator.validatePaginationParams;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,11 +28,10 @@ public class LessonContentController {
     public ResponseEntity<List<LessonContent>> getPagedLessons(@PathVariable("N") Integer departmentId,
                                                                @RequestParam String page,
                                                                @RequestParam String size,
-                                                               @RequestBody MyToken token) {
+                                                               @CookieValue(value = "token", defaultValue = "") String token) {
         validateDepartmentId(departmentId);
         validatePaginationParams(page, size);
-        User user = auth.decodeUserFromToken(token.getToken());
-        validateAuth(user, departmentId);
+        auth.authorize(token,departmentId);
         HttpHeaders headers = new HttpHeaders();
         headers.add("content_count", String.valueOf(repository.getLessonContentCount(departmentId)));
         return ResponseEntity
@@ -45,10 +43,9 @@ public class LessonContentController {
     @GetMapping("/dep_{N}/content/data/{file_name}")
     public ResponseEntity<ByteArrayResource> getFileByName(@PathVariable("N") Integer departmentId,
                                                            @PathVariable("file_name") String fileName,
-                                                           @RequestBody MyToken token) {
+                                                           @CookieValue(value = "token", defaultValue = "") String token) {
         validateDepartmentId(departmentId);
-        User user = auth.decodeUserFromToken(token.getToken());
-        validateAuth(user, departmentId);
+        auth.authorize(token,departmentId);
         byte[] file = repository.getFileByName(fileName, departmentId);
 
         ByteArrayResource resource = new ByteArrayResource(file);
@@ -69,10 +66,9 @@ public class LessonContentController {
     public LessonContent addNewContent(@RequestParam("file") MultipartFile file,
                                        @RequestParam("lessonId") String lessonId,
                                        @PathVariable("N") Integer departmentId,
-                                       @RequestBody MyToken token) {
+                                       @CookieValue(value = "token", defaultValue = "") String token) {
         validateDepartmentId(departmentId);
-        User user = auth.decodeUserFromToken(token.getToken());
-        validateAuth(user, departmentId);
+        auth.authorize(token,departmentId);
         try {
             repository.create(LessonContent.builder()
                     .lessonId(Integer.valueOf(lessonId))
@@ -91,10 +87,9 @@ public class LessonContentController {
     @DeleteMapping("/dep_{N}/content/data/{file_name}")
     public boolean deleteFileByName(@PathVariable("N") Integer departmentId,
                                     @PathVariable("file_name") String fileName,
-                                    @RequestBody MyToken token) {
+                                    @CookieValue(value = "token", defaultValue = "") String token) {
         validateDepartmentId(departmentId);
-        User user = auth.decodeUserFromToken(token.getToken());
-        validateAuth(user, departmentId);
+        auth.authorize(token,departmentId);
         return repository.deleteFileByName(departmentId, fileName);
     }
 

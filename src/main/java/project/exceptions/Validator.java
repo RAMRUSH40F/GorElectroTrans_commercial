@@ -1,6 +1,7 @@
 package project.exceptions;
 
 
+import project.security.exception.AuthenticationException;
 import project.security.model.User;
 
 public class Validator {
@@ -28,12 +29,6 @@ public class Validator {
         } catch (NumberFormatException e) {
             throw new PaginationException("Неправильные параметры page/size в параметрах URL запроса. " +
                     "Переданы параметры" + pageString + " ," + sizeString);
-        }
-    }
-
-    public static void validateAuth(User user, int departmentID) {
-        if (!user.getAuthorities().contains(String.valueOf(departmentID).intern())) {
-            throw new AuthenticationException("У пользователя нет доступа к данной информации.");
         }
     }
 

@@ -7,7 +7,7 @@ import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import project.exceptions.AuthenticationException;
+import project.security.exception.AuthenticationException;
 import project.security.model.User;
 import project.repository.UserRepository;
 
@@ -94,6 +94,14 @@ public class JwtAuthorizationService {
                 .setIssuedAt(now)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
+    }
+
+    public void authorize(String jwtToken, int departmentID) {
+        User user = decodeUserFromToken(jwtToken);
+        System.out.println(user.getAuthorities());
+        if (user.getAuthorities().contains("100") || !user.getAuthorities().contains(String.valueOf(departmentID).intern())) {
+            throw new AuthenticationException("У пользователя нет доступа к данной информации.");
+        }
     }
 }
 
