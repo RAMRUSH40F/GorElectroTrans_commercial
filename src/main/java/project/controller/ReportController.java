@@ -51,7 +51,6 @@ public class ReportController {
     @GetMapping("/dep_{N}/report/date")
     public List<QuarterDateModel> getYear(@CookieValue(value = "token", defaultValue = "") String token) {
         int year = Year.now().getValue();
-        auth.authorize(token, 100);
         List<QuarterDateModel> intervals = new ArrayList<>();
         for (int i = 1; i <= 4; i++) {
             intervals.add(new QuarterDateModel(year, i));

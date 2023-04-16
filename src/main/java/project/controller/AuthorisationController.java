@@ -4,12 +4,9 @@ package project.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-import project.security.exception.AuthenticationException;
+import org.springframework.web.bind.annotation.*;
 import project.security.JwtAuthorizationService;
+import project.security.exception.AuthenticationException;
 import project.security.model.User;
 
 import javax.servlet.http.Cookie;
@@ -45,6 +42,19 @@ public class AuthorisationController {
         }
         throw new AuthenticationException("Ваша прошлая сессия истекла. +" +
                 "Войдите в аккаунт заново");
+    }
+
+    @PostMapping("/auth/logout")
+    public ResponseEntity<Boolean> logout(HttpServletResponse response) {
+        try {
+            Cookie emptyToken = new Cookie("token", null);
+            emptyToken.setPath("/");
+            emptyToken.setMaxAge(0);
+            response.addCookie(emptyToken);
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        } catch (Exception e) {
+            throw new AuthenticationException(e, "Не получилось выйти из аккаунта");
+        }
     }
 
 
