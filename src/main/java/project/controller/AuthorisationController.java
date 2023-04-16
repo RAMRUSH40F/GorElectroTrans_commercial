@@ -8,6 +8,8 @@ import project.exceptions.AuthenticationException;
 import project.security.model.User;
 import project.security.JwtAuthorizationService;
 
+import javax.annotation.PostConstruct;
+
 /**
  * Эндпоинты для выдачи токена с ролью либо код ошибки с комментарием.
  * Суем в header
@@ -24,7 +26,7 @@ public class AuthorisationController {
                         authenticate(user.getUsername(), user.getPassword()).getValue());
     }
 
-    @GetMapping("/auth/validate")
+    @PostMapping("/auth/validate")
     public boolean validateToken(@CookieValue(value = "token", required = false) String token) {
         if (jwtAuthorizationService.validateToken(token)) {
             return true;

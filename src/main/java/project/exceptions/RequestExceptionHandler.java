@@ -17,7 +17,7 @@ public class RequestExceptionHandler {
             PaginationException.class,
             InvalidIntervalException.class})
     public ResponseEntity<ResponseException> handleInvalidRequestException(RuntimeException e) {
-        System.out.println(e);
+        System.out.println(e.getCause());
         ResponseException responseException = ResponseException.builder()
                 .message(e.getMessage())
                 .timeStamp(ZonedDateTime.now(ZoneId.of("UTC+3")))
@@ -28,7 +28,7 @@ public class RequestExceptionHandler {
     }
     @ExceptionHandler(value = {SQLIntegrityConstraintViolationException.class})
     public ResponseEntity<ResponseException> handleSqlExceptions(RuntimeException e){
-        System.out.println(e);
+        System.out.println(e.getCause());
         ResponseException responseException = ResponseException.builder()
                 .message("Такие данные не могут быть добавлены. " +
                         "Возможно, они уже дублируют существующие данные. Если вы загружаете файл, то он должен весить до 14 МБ")
@@ -40,7 +40,7 @@ public class RequestExceptionHandler {
 
     @ExceptionHandler(value = {AuthenticationException.class})
     public ResponseEntity<ResponseException> authException(RuntimeException e){
-        System.out.println(e);
+        System.out.println(e.getCause());
         ResponseException responseException = ResponseException.builder()
                 .message(e.getMessage())
                 .timeStamp(ZonedDateTime.now(ZoneId.of("UTC+3")))
@@ -51,7 +51,7 @@ public class RequestExceptionHandler {
 
     @ExceptionHandler(value = {Exception.class})
     public ResponseException exceptionHandler(Exception e){
-        System.out.println(e);
+        System.out.println(e.getCause());
         return ResponseException.builder()
                 .message("Произошла ошибка. Перепроверьте свой запрос, или обратитесь к программисту")
                 .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
