@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import project.exceptions.Validator;
 import project.model.QuarterDateModel;
-import project.service.ReportService;
+import project.service.reportService.ReportService;
 import project.security.JwtAuthorizationService;
 
 import java.nio.file.Paths;
@@ -28,13 +28,14 @@ public class ReportController {
     private final JwtAuthorizationService auth;
 
     @GetMapping("/dep_{N}/report")
-    public ResponseEntity<ByteArrayResource> getReport(@RequestParam int quarter,@CookieValue(value = "token", defaultValue = "") String token) {
+    public ResponseEntity<ByteArrayResource> getReport(@RequestParam int quarter, @CookieValue(value = "token", defaultValue = "") String token) {
         Validator.validateInterval(quarter);
         auth.authorize(token, 100);
-        final String fileName = Paths.get("report_template.xls").toString();
+        final String fileName = Paths.get("src", "main", "resources", "report_template.xls").toAbsolutePath().toString();
         HSSFWorkbook workbook = reportService.readWorkbook(fileName);
         reportService.formLessonReport(workbook, fileName, quarter);
         reportService.formWorkerReport(workbook, fileName);
+        reportService.formTeacherReport(workbook, fileName, quarter);
         String today = new Date().toString().substring(4, 10);
         // Set response headers
         HttpHeaders headers = new HttpHeaders();
@@ -48,7 +49,7 @@ public class ReportController {
     }
 
     @GetMapping("/dep_{N}/report/date")
-    public List<QuarterDateModel> getYear(@CookieValue(value = "token", defaultValue = "") String token) {
+    public List<QuarterDateModel> getYear() {
         int year = Year.now().getValue();
         List<QuarterDateModel> intervals = new ArrayList<>();
         for (int i = 1; i <= 4; i++) {

@@ -1,4 +1,4 @@
-package project.service;
+package project.service.reportService;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -10,7 +10,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -20,33 +20,16 @@ import java.util.AbstractMap;
 import java.util.Iterator;
 import java.util.Map;
 
-@Repository("ReportServiceBean")
+@Service("ReportServiceBean")
 @RequiredArgsConstructor
 public class ReportService {
     private final JdbcTemplate jdbcTemplate;
 
-    public HSSFWorkbook readWorkbook(String filename){
-        try {
-            return new HSSFWorkbook(new POIFSFileSystem(new FileInputStream(filename)));
-        } catch (IOException e) {
-            throw new RuntimeException("Файл шаблона не был загружен в корневую папку проекта или " +
-                    "произошла другая ошибка связанная с чтением шаблонной таблицы", e);
-        }
-    }
-
-    public void writeWorkbook(HSSFWorkbook wb, String fileName) {
-        try {
-            FileOutputStream fileOut = new FileOutputStream(fileName);
-            wb.write(fileOut);
-            fileOut.close();
-        } catch (IOException e) {
-            throw new RuntimeException(
-                    "Произошла другая ошибка связанная с записью в таблицу", e);
-        }
-    }
-
-    public void formLessonReport(HSSFWorkbook wb, String fileName, int quarter) {
-        final HSSFSheet sheet = wb.getSheet("Лист1");
+    /**
+     * Главный метод
+     */
+    public void formLessonReport(HSSFWorkbook workbook, String fileName, int quarter) {
+        final HSSFSheet sheet = workbook.getSheet("Лист1");
         final HSSFRow row1 = sheet.getRow(2);
         final HSSFRow row2 = sheet.getRow(3);
         final HSSFRow row3 = sheet.getRow(4);
@@ -59,16 +42,38 @@ public class ReportService {
         formLesson(row3, lastCell, yearMonthPair);
         formHeldLesson(row4, lastCell, yearMonthPair);
 
-        setLastValue(row1);
-        setLastValue(row2);
-        setLastValue(row3);
-        setLastValue(row4);
-        writeWorkbook(wb, fileName);
+        setResultingColumnValues(row1);
+        setResultingColumnValues(row2);
+        setResultingColumnValues(row3);
+        setResultingColumnValues(row4);
+        writeWorkbook(workbook, fileName);
     }
+
+
+    public HSSFWorkbook readWorkbook(String filename) {
+        try {
+            return new HSSFWorkbook(new POIFSFileSystem(new FileInputStream(filename)));
+        } catch (IOException e) {
+            throw new RuntimeException("Файл шаблона не был загружен в корневую папку проекта или " +
+                    "произошла другая ошибка связанная с чтением шаблонной таблицы", e);
+        }
+    }
+
+    public void writeWorkbook(HSSFWorkbook workbook, String fileName) {
+        try {
+            FileOutputStream fileOut = new FileOutputStream(fileName);
+            workbook.write(fileOut);
+            fileOut.close();
+        } catch (IOException e) {
+            throw new RuntimeException(
+                    "Произошла другая ошибка связанная с записью в таблицу", e);
+        }
+    }
+
 
     private void formLesson(HSSFRow row1, int lastCell, Map.Entry<Integer, Integer> yearMonthPair) {
         HSSFCell cell;
-        CellStyle style=setReportStyle(row1.getSheet().getWorkbook());
+        CellStyle style = applyClassicStyleToWorkbook(row1.getSheet().getWorkbook());
         for (int column = 1; column < lastCell; column += 2) {
             cell = row1.getCell(column);
             cell.setCellStyle(style);
@@ -85,7 +90,7 @@ public class ReportService {
 
     private void formHeldLesson(HSSFRow row, int lastCell, Map.Entry<Integer, Integer> yearMonthPair) {
         HSSFCell cell;
-        CellStyle style=setReportStyle(row.getSheet().getWorkbook());
+        CellStyle style = applyClassicStyleToWorkbook(row.getSheet().getWorkbook());
 
         for (int column = 1; column < lastCell - 1; column += 2) {
             cell = row.getCell(column);
@@ -103,10 +108,10 @@ public class ReportService {
         }
     }
 
-    private void setLastValue(HSSFRow row) {
+    private void setResultingColumnValues(HSSFRow row) {
         int total = 0;
         Cell cell;
-        CellStyle style=setReportStyle(row.getSheet().getWorkbook());
+        CellStyle style = applyClassicStyleToWorkbook(row.getSheet().getWorkbook());
 
         for (Iterator<Cell> x = row.cellIterator(); x.hasNext(); ) {
             cell = x.next();
@@ -122,11 +127,11 @@ public class ReportService {
     }
 
 
-    public void formWorkerReport(HSSFWorkbook wb, String filename) {
-        final HSSFSheet sheet = wb.getSheet("Лист1");
+    public void formWorkerReport(HSSFWorkbook workbook, String filename) {
+        final HSSFSheet sheet = workbook.getSheet("Лист1");
         final HSSFRow row = sheet.getRow(7);
         HSSFCell cell;
-        CellStyle style=setReportStyle(row.getSheet().getWorkbook());
+        CellStyle style = applyClassicStyleToWorkbook(row.getSheet().getWorkbook());
         int lastCell = 31;
         for (int column = 1; column < lastCell - 1; column += 2) {
             cell = row.getCell(column);
@@ -134,25 +139,25 @@ public class ReportService {
             cell.setCellValue(jdbcTemplate.query("SELECT COUNT(1) FROM DEP_" + (column / 2 + 1) + ".student",
                     (rs, rowNum) -> rs.getInt("COUNT(1)")).get(0));
         }
-        formSpecificWorkersReport(WorkerProfessions.VODITELY.getProfession(), sheet.getRow(8));
-        formSpecificWorkersReport(WorkerProfessions.SLESARY.getProfession(), sheet.getRow(9));
-        formSpecificWorkersReport(WorkerProfessions.DISPETCHERS.getProfession(), sheet.getRow(10));
-        formSpecificWorkersReport(WorkerProfessions.SPECIALISTS.getProfession(), sheet.getRow(11));
+        formWorkerStatsByProfession(WorkerProfessions.VODITELY.getProfession(), sheet.getRow(8));
+        formWorkerStatsByProfession(WorkerProfessions.SLESARY.getProfession(), sheet.getRow(9));
+        formWorkerStatsByProfession(WorkerProfessions.DISPETCHERS.getProfession(), sheet.getRow(10));
+        formWorkerStatsByProfession(WorkerProfessions.SPECIALISTS.getProfession(), sheet.getRow(11));
 
 
-        setSubstractionValue(sheet.getRow(12), 7, 11, 1, row.getLastCellNum(), sheet);
-        setLastValue(row);
-        writeWorkbook(wb, filename);
+        formTeacherStatsForOthersCategory(sheet.getRow(12), 7, 11, 1, row.getLastCellNum(), sheet);
+        setResultingColumnValues(row);
+        writeWorkbook(workbook, filename);
     }
 
-    private void formSpecificWorkersReport(String profession, HSSFRow row) {
+    private void formWorkerStatsByProfession(String profession, HSSFRow row) {
         if (profession == null || row == null) {
             return;
         }
         final int lastCell = 31;
         int professionId;
         HSSFCell cell;
-        CellStyle style=setReportStyle(row.getSheet().getWorkbook());
+        CellStyle style = applyClassicStyleToWorkbook(row.getSheet().getWorkbook());
         for (int column = 1; column < lastCell; column += 2) {
             cell = row.getCell(column);
             cell.setCellStyle(style);
@@ -164,7 +169,6 @@ public class ReportService {
                         (rs, rowNum) -> rs.getInt("id")).get(0);
             } catch (IndexOutOfBoundsException e) {
                 professionId = 0;
-                System.out.println("No_One_Found");
             }
             cell.setCellValue(jdbcTemplate.query("SELECT COUNT(1) FROM DEP_"
                             + (column / 2 + 1)
@@ -172,35 +176,35 @@ public class ReportService {
                             + professionId,
                     (rs, rowNum) -> rs.getInt("COUNT(1)")).get(0));
         }
-        setLastValue(row);
+        setResultingColumnValues(row);
     }
 
-    public void formTeacherReport(HSSFWorkbook wb, String filename, int quarter) {
-        final HSSFSheet sheet = wb.getSheet("Лист1");
+    public void formTeacherReport(HSSFWorkbook workbook, String filename, int quarter) {
+        final HSSFSheet sheet = workbook.getSheet("Лист1");
         final HSSFRow row1 = sheet.getRow(13);
         int lastCell = 31;
         Map.Entry<Integer, Integer> yearMonthPair = calculateDate(quarter);
 
         formLesson(row1, lastCell, yearMonthPair);
 
-        formSpecificTeacherReport(TeacherProfession.RUKOVODITEL.getProfession(), sheet.getRow(14), quarter);
-        formSpecificTeacherReport(TeacherProfession.MASTER.getProfession(), sheet.getRow(15), quarter);
-        formSpecificTeacherReport(TeacherProfession.NASTAVNIK.getProfession(), sheet.getRow(16), quarter);
-        setSubstractionValue(sheet.getRow(17), 13, 16, 1, lastCell, sheet);
-        setLastValue(row1);
+        formTeacherStatsByProfession(TeacherProfession.RUKOVODITEL.getProfession(), sheet.getRow(14), quarter);
+        formTeacherStatsByProfession(TeacherProfession.MASTER.getProfession(), sheet.getRow(15), quarter);
+        formTeacherStatsByProfession(TeacherProfession.NASTAVNIK.getProfession(), sheet.getRow(16), quarter);
+        formTeacherStatsForOthersCategory(sheet.getRow(17), 13, 16, 1, lastCell, sheet);
+        setResultingColumnValues(row1);
 
-        writeWorkbook(wb, filename);
+        writeWorkbook(workbook, filename);
     }
 
 
-    private void formSpecificTeacherReport(String profession, HSSFRow row, int quarter) {
+    private void formTeacherStatsByProfession(String profession, HSSFRow row, int quarter) {
         if (profession == null || row == null) {
             return;
         }
         Map.Entry<Integer, Integer> yearMonthPair = calculateDate(quarter);
         int lastCell = 31;
         HSSFCell cell;
-        CellStyle style=setReportStyle(row.getSheet().getWorkbook());
+        CellStyle style = applyClassicStyleToWorkbook(row.getSheet().getWorkbook());
         for (int column = 1; column < lastCell; column += 2) {
             cell = row.getCell(column);
             cell.setCellStyle(style);
@@ -215,14 +219,14 @@ public class ReportService {
                             + profession + "'",
                     (rs, rowNum) -> rs.getInt("COUNT(1)")).get(0));
         }
-        setLastValue(row);
+        setResultingColumnValues(row);
     }
 
-    public void setSubstractionValue(HSSFRow destination, int from, int to, int firstCell, int lastCell, HSSFSheet sheet) {
+    public void formTeacherStatsForOthersCategory(HSSFRow destination, int from, int to, int firstCell, int lastCell, HSSFSheet sheet) {
         int value;
         HSSFRow row;
         Cell cell;
-        CellStyle style=setReportStyle(destination.getSheet().getWorkbook());
+        CellStyle style = applyClassicStyleToWorkbook(destination.getSheet().getWorkbook());
         int result;
         for (int cellIndex = firstCell; cellIndex < lastCell; cellIndex += 2) {
             value = 0;
@@ -231,13 +235,11 @@ public class ReportService {
                 value += row.getCell(cellIndex).getNumericCellValue();
             }
             result = (int) sheet.getRow(from).getCell(cellIndex).getNumericCellValue() - value;
-           cell= destination.getCell(cellIndex);
-           cell.setCellStyle(style);
-           cell.setCellValue(result);
-
-
+            cell = destination.getCell(cellIndex);
+            cell.setCellStyle(style);
+            cell.setCellValue(result);
         }
-        setLastValue(destination);
+        setResultingColumnValues(destination);
     }
 
     private Map.Entry<Integer, Integer> calculateDate(int quarter) {
@@ -252,14 +254,14 @@ public class ReportService {
         }
         return new AbstractMap.SimpleImmutableEntry<>(year, month);
     }
-private CellStyle setReportStyle(HSSFWorkbook wb){
-    CellStyle style = wb.createCellStyle(); // Creating Style
-    // Creating Font and settings
-    Font font = wb.createFont();
-    font.setFontHeightInPoints((short)20);
-    font.setFontName("Times New Roman");
-    // Applying font to the style
-    style.setFont(font);
-    return style;
-}
+
+    private CellStyle applyClassicStyleToWorkbook(HSSFWorkbook workbook) {
+        CellStyle style = workbook.createCellStyle();
+        // Настройки фона и шрифта
+        Font font = workbook.createFont();
+        font.setFontHeightInPoints((short) 20);
+        font.setFontName("Times New Roman");
+        style.setFont(font);
+        return style;
+    }
 }

@@ -1,4 +1,4 @@
-package project.service;
+package project.service.reportService;
 
 public enum TeacherProfession implements Profession {
     MASTER("Ст. мастер/мастер"),
