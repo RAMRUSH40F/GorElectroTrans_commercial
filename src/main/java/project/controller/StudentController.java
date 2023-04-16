@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import project.model.MyToken;
+import project.security.model.MyToken;
 import project.model.StudentView;
-import project.model.User;
+import project.security.model.User;
 import project.repository.StudentRepository;
 import project.security.JwtAuthorizationService;
 

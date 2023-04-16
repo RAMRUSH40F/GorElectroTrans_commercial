@@ -5,8 +5,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.model.Lesson;
-import project.model.MyToken;
-import project.model.User;
+import project.security.model.MyToken;
+import project.security.model.User;
 import project.repository.LessonRepository;
 import project.security.JwtAuthorizationService;
 

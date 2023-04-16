@@ -1,7 +1,7 @@
 package project.exceptions;
 
 
-import project.model.User;
+import project.security.model.User;
 
 public class Validator {
 

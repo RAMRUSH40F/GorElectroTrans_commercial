@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.exceptions.AuthenticationException;
-import project.model.User;
+import project.security.model.User;
 import project.security.JwtAuthorizationService;
 
 /**

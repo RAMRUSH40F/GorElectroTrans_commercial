@@ -6,8 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.model.Attendance;
 import project.model.AttendanceView;
-import project.model.MyToken;
-import project.model.User;
+import project.security.model.MyToken;
+import project.security.model.User;
 import project.repository.AttendanceRepository;
 import project.security.JwtAuthorizationService;
 

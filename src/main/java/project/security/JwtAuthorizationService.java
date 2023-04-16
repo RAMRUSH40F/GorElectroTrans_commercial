@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import project.exceptions.AuthenticationException;
-import project.model.User;
+import project.security.model.User;
 import project.repository.UserRepository;
 
 import javax.servlet.http.Cookie;

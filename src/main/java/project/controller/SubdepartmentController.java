@@ -2,9 +2,9 @@ package project.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import project.model.MyToken;
+import project.security.model.MyToken;
 import project.model.Subdepartment;
-import project.model.User;
+import project.security.model.User;
 import project.repository.SubdepartmentRepository;
 import project.security.JwtAuthorizationService;
 

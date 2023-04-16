@@ -1,4 +1,4 @@
-package project.model;
+package project.security.model;
 
 import lombok.Data;
 
