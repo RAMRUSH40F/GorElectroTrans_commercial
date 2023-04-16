@@ -1,6 +1,9 @@
 package project.exceptions;
 
 
+import project.security.exception.AuthenticationException;
+import project.security.model.User;
+
 public class Validator {
 
     public static void validateDepartmentId(Integer id) {
@@ -27,8 +30,6 @@ public class Validator {
             throw new PaginationException("Неправильные параметры page/size в параметрах URL запроса. " +
                     "Переданы параметры" + pageString + " ," + sizeString);
         }
-
-
     }
 
     public static void validateInterval(int interval) {

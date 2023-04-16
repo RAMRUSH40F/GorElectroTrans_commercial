@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import project.model.LessonContent;
 import project.repository.LessonContentRepository;
+import project.security.JwtAuthorizationService;
 
 import java.io.IOException;
 import java.util.List;
@@ -21,25 +22,30 @@ import static project.exceptions.Validator.validatePaginationParams;
 public class LessonContentController {
 
     private final LessonContentRepository repository;
+    private final JwtAuthorizationService auth;
 
     @GetMapping("/dep_{N}/content/data")
-    public ResponseEntity<List<LessonContent>> getPagedLessons(@PathVariable("N") Integer department,
+    public ResponseEntity<List<LessonContent>> getPagedLessons(@PathVariable("N") Integer departmentId,
                                                                @RequestParam String page,
-                                                               @RequestParam String size) {
-        validateDepartmentId(department);
+                                                               @RequestParam String size,
+                                                               @CookieValue(value = "token", defaultValue = "") String token) {
+        validateDepartmentId(departmentId);
         validatePaginationParams(page, size);
-
+        auth.authorize(token,departmentId);
         HttpHeaders headers = new HttpHeaders();
-        headers.add("content_count", String.valueOf(repository.getLessonContentCount(department)));
+        headers.add("content_count", String.valueOf(repository.getLessonContentCount(departmentId)));
         return ResponseEntity
                 .ok()
                 .headers(headers)
-                .body(repository.getAllContentInfoPaged(department, Integer.parseInt(page), Integer.parseInt(size)));
+                .body(repository.getAllContentInfoPaged(departmentId, Integer.parseInt(page), Integer.parseInt(size)));
     }
 
     @GetMapping("/dep_{N}/content/data/{file_name}")
-    public ResponseEntity<ByteArrayResource> getFileByName(@PathVariable("N") Integer departmentId, @PathVariable("file_name") String fileName) {
+    public ResponseEntity<ByteArrayResource> getFileByName(@PathVariable("N") Integer departmentId,
+                                                           @PathVariable("file_name") String fileName,
+                                                           @CookieValue(value = "token", defaultValue = "") String token) {
         validateDepartmentId(departmentId);
+        auth.authorize(token,departmentId);
         byte[] file = repository.getFileByName(fileName, departmentId);
 
         ByteArrayResource resource = new ByteArrayResource(file);
@@ -59,8 +65,10 @@ public class LessonContentController {
     @PostMapping("/dep_{N}/content/data")
     public LessonContent addNewContent(@RequestParam("file") MultipartFile file,
                                        @RequestParam("lessonId") String lessonId,
-                                       @PathVariable("N") Integer departmentId) {
+                                       @PathVariable("N") Integer departmentId,
+                                       @CookieValue(value = "token", defaultValue = "") String token) {
         validateDepartmentId(departmentId);
+        auth.authorize(token,departmentId);
         try {
             repository.create(LessonContent.builder()
                     .lessonId(Integer.valueOf(lessonId))
@@ -77,8 +85,11 @@ public class LessonContentController {
 
 
     @DeleteMapping("/dep_{N}/content/data/{file_name}")
-    public boolean deleteFileByName(@PathVariable("N") Integer departmentId, @PathVariable("file_name") String fileName) {
+    public boolean deleteFileByName(@PathVariable("N") Integer departmentId,
+                                    @PathVariable("file_name") String fileName,
+                                    @CookieValue(value = "token", defaultValue = "") String token) {
         validateDepartmentId(departmentId);
+        auth.authorize(token,departmentId);
         return repository.deleteFileByName(departmentId, fileName);
     }
 
