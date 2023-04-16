@@ -1,6 +1,7 @@
 package project.security;
 
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
@@ -36,21 +37,25 @@ public class JwtAuthorizationService {
             boolean tokenIsExpired = !claimsJws.getBody().getExpiration().before(new Date());
             return userIsActive & tokenIsExpired;
         } catch (JwtException | IllegalArgumentException exception) {
-            throw new RuntimeException(exception);
+            throw new AuthenticationException(exception);
         }
     }
 
 
     public User decodeUserFromToken(String token) {
-        DecodedJWT jwt = JWT.decode(token);
-        String user = jwt.getSubject();
-        return userRepository.getUserByUsername(user);
+        try {
+            DecodedJWT jwt = JWT.decode(token);
+            String user = jwt.getSubject();
+            return userRepository.getUserByUsername(user);
+        } catch (JWTVerificationException e) {
+            throw new AuthenticationException(e, "Ошибка при проверке уровня прав пользователя. " +
+                    "Скорее всего, токен авторизации невалиден");
+        }
     }
 
     /**
      * Checks if the password is right and return authorisation
      * jwtToken in cookie or throws an exception
-     *
      */
     public Cookie authenticate(String username, String password) {
         User user = userRepository.getUserByUsername(username);

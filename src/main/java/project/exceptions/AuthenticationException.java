@@ -1,13 +1,21 @@
 package project.exceptions;
 
 
-
 public class AuthenticationException extends RuntimeException {
     private final String DEFAULT_MESSAGE = "Произошла ошибка";
     private String customMessage;
 
 
     public AuthenticationException(String customMessage) {
+        this.customMessage = customMessage;
+    }
+
+    public AuthenticationException(Throwable cause) {
+        super(cause);
+    }
+
+    public AuthenticationException(Throwable cause, String customMessage) {
+        super(cause);
         this.customMessage = customMessage;
     }
 

@@ -25,7 +25,7 @@ public class AuthorisationController {
     }
 
     @GetMapping("/auth/validate")
-    public boolean validateToken(@CookieValue(value = "Token", required = false) String token) {
+    public boolean validateToken(@CookieValue(value = "token", required = false) String token) {
         if (jwtAuthorizationService.validateToken(token)) {
             return true;
         }
