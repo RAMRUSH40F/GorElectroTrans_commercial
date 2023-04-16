@@ -27,7 +27,7 @@ public class ReportController {
     @GetMapping("/dep_{N}/report")
     public ResponseEntity<ByteArrayResource> getReport(@RequestParam int quarter) {
         Validator.validateInterval(quarter);
-        final String fileName = Paths.get("src", "main", "resources", "report_template.xls").toString();
+        final String fileName = Paths.get( "report_template.xls").toString();
         HSSFWorkbook workbook = reportService.readWorkbook(fileName);
         reportService.formLessonReport(workbook, fileName, quarter);
         reportService.formWorkerReport(workbook, fileName);

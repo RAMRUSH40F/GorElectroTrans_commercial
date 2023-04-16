@@ -7,6 +7,8 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -47,23 +49,30 @@ public class ReportService {
         final HSSFSheet sheet = wb.getSheet("Лист1");
         final HSSFRow row1 = sheet.getRow(2);
         final HSSFRow row2 = sheet.getRow(3);
+        final HSSFRow row3 = sheet.getRow(4);
+        final HSSFRow row4 = sheet.getRow(5);
         final int lastCell = 31;
-        final Map.Entry<Integer, Integer> yearMonthPair = calculateMonth(quarter);
+        final Map.Entry<Integer, Integer> yearMonthPair = calculateDate(quarter);
 
         formLesson(row1, lastCell, yearMonthPair);
-
         formHeldLesson(row2, lastCell, yearMonthPair);
+        formLesson(row3, lastCell, yearMonthPair);
+        formHeldLesson(row4, lastCell, yearMonthPair);
 
         setLastValue(row1);
         setLastValue(row2);
+        setLastValue(row3);
+        setLastValue(row4);
         writeWorkbook(wb, fileName);
     }
 
     private void formLesson(HSSFRow row1, int lastCell, Map.Entry<Integer, Integer> yearMonthPair) {
-        HSSFCell cell1;
+        HSSFCell cell;
+        CellStyle style=setReportStyle(row1.getSheet().getWorkbook());
         for (int column = 1; column < lastCell; column += 2) {
-            cell1 = row1.getCell(column);
-            cell1.setCellValue(jdbcTemplate.query("SELECT COUNT(1) FROM DEP_" + (column / 2 + 1)
+            cell = row1.getCell(column);
+            cell.setCellStyle(style);
+            cell.setCellValue(jdbcTemplate.query("SELECT COUNT(1) FROM DEP_" + (column / 2 + 1)
                             + ".lesson WHERE `date` BETWEEN '"
                             + yearMonthPair.getKey() + "-"
                             + yearMonthPair.getValue()
@@ -74,10 +83,13 @@ public class ReportService {
         }
     }
 
-    private void formHeldLesson(HSSFRow row2, int lastCell, Map.Entry<Integer, Integer> yearMonthPair) {
+    private void formHeldLesson(HSSFRow row, int lastCell, Map.Entry<Integer, Integer> yearMonthPair) {
         HSSFCell cell;
+        CellStyle style=setReportStyle(row.getSheet().getWorkbook());
+
         for (int column = 1; column < lastCell - 1; column += 2) {
-            cell = row2.getCell(column);
+            cell = row.getCell(column);
+            cell.setCellStyle(style);
             cell.setCellValue(jdbcTemplate.query("SELECT COUNT(1) FROM DEP_"
                             + (column / 2 + 1)
                             + ".lesson WHERE `date` BETWEEN '"
@@ -94,12 +106,15 @@ public class ReportService {
     private void setLastValue(HSSFRow row) {
         int total = 0;
         Cell cell;
+        CellStyle style=setReportStyle(row.getSheet().getWorkbook());
+
         for (Iterator<Cell> x = row.cellIterator(); x.hasNext(); ) {
             cell = x.next();
             if (cell.getColumnIndex() == 0) {
                 continue;
             }
             if (cell.getColumnIndex() == row.getLastCellNum() - 2) {
+                cell.setCellStyle(style);
                 cell.setCellValue(total);
             }
             total += cell.getNumericCellValue();
@@ -111,14 +126,20 @@ public class ReportService {
         final HSSFSheet sheet = wb.getSheet("Лист1");
         final HSSFRow row = sheet.getRow(7);
         HSSFCell cell;
+        CellStyle style=setReportStyle(row.getSheet().getWorkbook());
         int lastCell = 31;
         for (int column = 1; column < lastCell - 1; column += 2) {
             cell = row.getCell(column);
+            cell.setCellStyle(style);
             cell.setCellValue(jdbcTemplate.query("SELECT COUNT(1) FROM DEP_" + (column / 2 + 1) + ".student",
                     (rs, rowNum) -> rs.getInt("COUNT(1)")).get(0));
         }
         formSpecificWorkersReport(WorkerProfessions.VODITELY.getProfession(), sheet.getRow(8));
         formSpecificWorkersReport(WorkerProfessions.SLESARY.getProfession(), sheet.getRow(9));
+        formSpecificWorkersReport(WorkerProfessions.DISPETCHERS.getProfession(), sheet.getRow(10));
+        formSpecificWorkersReport(WorkerProfessions.SPECIALISTS.getProfession(), sheet.getRow(11));
+
+
         setSubstractionValue(sheet.getRow(12), 7, 11, 1, row.getLastCellNum(), sheet);
         setLastValue(row);
         writeWorkbook(wb, filename);
@@ -131,16 +152,24 @@ public class ReportService {
         final int lastCell = 31;
         int professionId;
         HSSFCell cell;
-        for (int i = 1; i < lastCell; i += 2) {
-            cell = row.getCell(i);
+        CellStyle style=setReportStyle(row.getSheet().getWorkbook());
+        for (int column = 1; column < lastCell; column += 2) {
+            cell = row.getCell(column);
+            cell.setCellStyle(style);
             try {
-                professionId = jdbcTemplate.query("SELECT id FROM DEP_" + (i / 2 + 1) + ".subdepartment WHERE name LIKE '" + profession + "'",
+                professionId = jdbcTemplate.query("SELECT id FROM DEP_"
+                                + (column / 2 + 1)
+                                + ".subdepartment WHERE name LIKE '"
+                                + profession + "'",
                         (rs, rowNum) -> rs.getInt("id")).get(0);
             } catch (IndexOutOfBoundsException e) {
                 professionId = 0;
                 System.out.println("No_One_Found");
             }
-            cell.setCellValue(jdbcTemplate.query("SELECT COUNT(1) FROM DEP_" + (i / 2 + 1) + ".student WHERE subdepartment_id=" + professionId,
+            cell.setCellValue(jdbcTemplate.query("SELECT COUNT(1) FROM DEP_"
+                            + (column / 2 + 1)
+                            + ".student WHERE subdepartment_id="
+                            + professionId,
                     (rs, rowNum) -> rs.getInt("COUNT(1)")).get(0));
         }
         setLastValue(row);
@@ -149,9 +178,8 @@ public class ReportService {
     public void formTeacherReport(HSSFWorkbook wb, String filename, int quarter) {
         final HSSFSheet sheet = wb.getSheet("Лист1");
         final HSSFRow row1 = sheet.getRow(13);
-        HSSFCell cell1;
         int lastCell = 31;
-        Map.Entry<Integer, Integer> yearMonthPair = calculateMonth(quarter);
+        Map.Entry<Integer, Integer> yearMonthPair = calculateDate(quarter);
 
         formLesson(row1, lastCell, yearMonthPair);
 
@@ -169,11 +197,13 @@ public class ReportService {
         if (profession == null || row == null) {
             return;
         }
-        Map.Entry<Integer, Integer> yearMonthPair = calculateMonth(quarter);
+        Map.Entry<Integer, Integer> yearMonthPair = calculateDate(quarter);
         int lastCell = 31;
         HSSFCell cell;
+        CellStyle style=setReportStyle(row.getSheet().getWorkbook());
         for (int column = 1; column < lastCell; column += 2) {
             cell = row.getCell(column);
+            cell.setCellStyle(style);
             cell.setCellValue(jdbcTemplate.query("SELECT COUNT(1) FROM DEP_" + (column / 2 + 1)
                             + ".lesson WHERE `date` BETWEEN '"
                             + yearMonthPair.getKey() + "-"
@@ -191,6 +221,8 @@ public class ReportService {
     public void setSubstractionValue(HSSFRow destination, int from, int to, int firstCell, int lastCell, HSSFSheet sheet) {
         int value;
         HSSFRow row;
+        Cell cell;
+        CellStyle style=setReportStyle(destination.getSheet().getWorkbook());
         int result;
         for (int cellIndex = firstCell; cellIndex < lastCell; cellIndex += 2) {
             value = 0;
@@ -199,13 +231,16 @@ public class ReportService {
                 value += row.getCell(cellIndex).getNumericCellValue();
             }
             result = (int) sheet.getRow(from).getCell(cellIndex).getNumericCellValue() - value;
-            destination.getCell(cellIndex).setCellValue(result);
+           cell= destination.getCell(cellIndex);
+           cell.setCellStyle(style);
+           cell.setCellValue(result);
+
 
         }
         setLastValue(destination);
     }
 
-    private Map.Entry<Integer, Integer> calculateMonth(int quarter) {
+    private Map.Entry<Integer, Integer> calculateDate(int quarter) {
         int month;
         int year;
         if (quarter == 4) {
@@ -217,5 +252,14 @@ public class ReportService {
         }
         return new AbstractMap.SimpleImmutableEntry<>(year, month);
     }
-
+private CellStyle setReportStyle(HSSFWorkbook wb){
+    CellStyle style = wb.createCellStyle(); // Creating Style
+    // Creating Font and settings
+    Font font = wb.createFont();
+    font.setFontHeightInPoints((short)20);
+    font.setFontName("Times New Roman");
+    // Applying font to the style
+    style.setFont(font);
+    return style;
+}
 }
