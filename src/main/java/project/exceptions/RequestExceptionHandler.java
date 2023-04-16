@@ -42,7 +42,7 @@ public class RequestExceptionHandler {
         ResponseException responseException = ResponseException.builder()
                 .message(e.getMessage())
                 .timeStamp(ZonedDateTime.now(ZoneId.of("UTC+3")))
-                .httpStatus(HttpStatus.UNAUTHORIZED)
+                .httpStatus(HttpStatus.FORBIDDEN)
                 .build();
         return new ResponseEntity<>(responseException, responseException.httpStatus);
     }

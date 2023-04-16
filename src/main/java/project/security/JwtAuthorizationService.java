@@ -49,7 +49,7 @@ public class JwtAuthorizationService {
 
     /**
      * Checks if the password is right and return authorisation
-     * authentication jwtToken in cookie or throws an exception
+     * jwtToken in cookie or throws an exception
      *
      */
     public Cookie authenticate(String username, String password) {

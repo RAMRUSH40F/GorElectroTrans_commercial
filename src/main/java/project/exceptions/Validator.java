@@ -33,7 +33,7 @@ public class Validator {
 
     public static void validateAuth(User user, int departmentID) {
         if (!user.getAuthorities().contains(String.valueOf(departmentID).intern())) {
-            throw new RuntimeException("User permission is not correct with department ID");
+            throw new AuthenticationException("У пользователя нет доступа к данной информации.");
         }
     }
 

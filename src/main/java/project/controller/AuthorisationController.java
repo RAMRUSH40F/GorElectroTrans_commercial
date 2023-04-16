@@ -30,7 +30,7 @@ public class AuthorisationController {
             return true;
         }
         throw new AuthenticationException("Ваша прошлая сессия истекла. +" +
-                "Войдите заново в аккаунт");
+                "Войдите в аккаунт заново");
     }
 
 
