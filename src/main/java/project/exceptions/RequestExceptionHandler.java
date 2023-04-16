@@ -4,6 +4,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import project.security.exception.AuthenticationException;
+import project.security.exception.AuthorizationException;
 
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.ZoneId;
@@ -17,7 +19,7 @@ public class RequestExceptionHandler {
             PaginationException.class,
             InvalidIntervalException.class})
     public ResponseEntity<ResponseException> handleInvalidRequestException(RuntimeException e) {
-
+        System.out.println(e.getCause());
         ResponseException responseException = ResponseException.builder()
                 .message(e.getMessage())
                 .timeStamp(ZonedDateTime.now(ZoneId.of("UTC+3")))
@@ -26,8 +28,10 @@ public class RequestExceptionHandler {
 
         return new ResponseEntity<>(responseException, responseException.httpStatus);
     }
+
     @ExceptionHandler(value = {SQLIntegrityConstraintViolationException.class})
-    public ResponseEntity<ResponseException> handleSqlExceptions(RuntimeException e){
+    public ResponseEntity<ResponseException> handleSqlExceptions(RuntimeException e) {
+        System.out.println(e.getCause());
         ResponseException responseException = ResponseException.builder()
                 .message("Такие данные не могут быть добавлены. " +
                         "Возможно, они уже дублируют существующие данные. Если вы загружаете файл, то он должен весить до 14 МБ")
@@ -35,5 +39,37 @@ public class RequestExceptionHandler {
                 .httpStatus(HttpStatus.BAD_REQUEST)
                 .build();
         return new ResponseEntity<>(responseException, responseException.httpStatus);
+    }
+
+    @ExceptionHandler(value = {AuthenticationException.class})
+    public ResponseEntity<ResponseException> authException(RuntimeException e) {
+        System.out.println(e.getCause());
+        ResponseException responseException = ResponseException.builder()
+                .message(e.getMessage())
+                .timeStamp(ZonedDateTime.now(ZoneId.of("UTC+3")))
+                .httpStatus(HttpStatus.UNAUTHORIZED)
+                .build();
+        return new ResponseEntity<>(responseException, responseException.httpStatus);
+    }
+
+    @ExceptionHandler(value = {AuthorizationException.class})
+    public ResponseEntity<ResponseException> authorizationException(RuntimeException e) {
+        System.out.println(e.getCause());
+        ResponseException responseException = ResponseException.builder()
+                .message(e.getMessage())
+                .timeStamp(ZonedDateTime.now(ZoneId.of("UTC+3")))
+                .httpStatus(HttpStatus.FORBIDDEN)
+                .build();
+        return new ResponseEntity<>(responseException, responseException.httpStatus);
+    }
+
+    @ExceptionHandler(value = {Exception.class})
+    public ResponseException exceptionHandler(Exception e) {
+        System.out.println(e.getCause());
+        return ResponseException.builder()
+                .message("Произошла ошибка. Перепроверьте свой запрос, или обратитесь к администратору сайта")
+                .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+                .timeStamp(ZonedDateTime.now())
+                .build();
     }
 }
