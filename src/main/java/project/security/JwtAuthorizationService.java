@@ -84,7 +84,7 @@ public class JwtAuthorizationService {
     /**
      * @return jwt token out of authorities and username;
      */
-    private String createToken(User user) {
+    public String createToken(User user) {
         Claims claims = Jwts.claims().setSubject(user.getUsername());
         claims.put("role", user.getAuthorities());
 
@@ -99,6 +99,9 @@ public class JwtAuthorizationService {
     }
 
     public void authorize(String jwtToken, int departmentID) {
+        if(jwtToken.isEmpty()){
+            jwtToken=" ";
+        }
         User user = decodeUserFromToken(jwtToken);
         // admin role ("100") has authorization to everything
         if (!(user.getAuthorities().contains("100") || user.getAuthorities().contains(String.valueOf(departmentID)))) {

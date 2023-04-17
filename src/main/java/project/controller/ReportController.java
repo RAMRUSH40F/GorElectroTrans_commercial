@@ -12,6 +12,7 @@ import project.model.QuarterDateModel;
 import project.security.JwtAuthorizationService;
 import project.service.reportService.ReportService;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,9 +26,9 @@ public class ReportController {
 
     @GetMapping("/dep_{N}/report/stats")
     public ResponseEntity<ByteArrayResource> getReport(@RequestParam int quarter,
-                                                       @CookieValue(value = "token", defaultValue = "") String token) {
+                                                       HttpServletRequest request) {
         Validator.validateInterval(quarter);
-        auth.authorize(token, 100);
+        auth.authorize(request.getHeader("Authorization"), 100);
         final String fileName = "/report_template.xls";
         HSSFWorkbook workbook = reportService.readWorkbook(fileName);
         reportService.formLessonReport(workbook, fileName, quarter);

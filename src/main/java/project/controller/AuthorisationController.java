@@ -10,11 +10,13 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import project.repository.UserRepository;
 import project.security.JwtAuthorizationService;
 import project.security.exception.AuthenticationException;
 import project.security.model.User;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -29,10 +31,10 @@ public class AuthorisationController {
     @PostMapping("/auth/login")
     public ResponseEntity<Boolean> authenticate(@RequestBody User user, HttpServletResponse response) {
         try {
-            ResponseCookie jwtToken = jwtAuthorizationService.
-                    authenticate(user.getUsername(), user.getPassword());
 
-            response.addHeader(HttpHeaders.SET_COOKIE, jwtToken.toString());
+            String jwtToken = jwtAuthorizationService.createToken(user);
+
+            response.addHeader(HttpHeaders.AUTHORIZATION, jwtToken);
             return new ResponseEntity<>(true, HttpStatus.OK);
         } catch (Exception e) {
             throw new AuthenticationException(e, "Ваша прошлая сессия истекла. +" +
@@ -41,8 +43,8 @@ public class AuthorisationController {
     }
 
     @PostMapping("/auth/validate")
-    public boolean validateToken(@CookieValue(value = "token", defaultValue = "") String token) {
-        if (jwtAuthorizationService.validateToken(token)) {
+    public boolean validateToken( HttpServletRequest request) {
+        if (jwtAuthorizationService.validateToken(request.getHeader("Authorization"))) {
             return true;
         }
         throw new AuthenticationException("Ваша прошлая сессия истекла. +" +

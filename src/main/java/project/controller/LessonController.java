@@ -8,6 +8,7 @@ import project.model.Lesson;
 import project.repository.LessonRepository;
 import project.security.JwtAuthorizationService;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 import static project.exceptions.Validator.validateDepartmentId;
@@ -25,10 +26,10 @@ public class LessonController {
                                                             @RequestParam String page,
                                                             @RequestParam String size,
                                                             @RequestParam(value = "key", required = false) String keyWord,
-                                                            @CookieValue(value = "token", defaultValue = "") String token) {
+                                                            HttpServletRequest request) {
         validateDepartmentId(department);
         validatePaginationParams(page, size);
-        auth.authorize(token, department);
+        auth.authorize(request.getHeader("Authorization"), department);
         HttpHeaders headers = new HttpHeaders();
 
         List<Lesson> body;
@@ -51,17 +52,17 @@ public class LessonController {
     @PostMapping("/dep_{N}/work_plan/data")
     public int addLesson(@PathVariable("N") int departmentId,
                          @RequestBody Lesson lesson,
-                         @CookieValue(value = "token", defaultValue = "") String token) {
+                         HttpServletRequest request) {
         lessonRepository.addNewLesson(departmentId, lesson);
-        auth.authorize(token,departmentId);
+        auth.authorize(request.getHeader("Authorization"),departmentId);
         return lessonRepository.getMaxId(departmentId);
     }
 
     @GetMapping("/dep_{N}/work_plan/{id}")
     public List<Lesson> findLessonById(@PathVariable("N") int departmentId,
                                        @PathVariable("id") int id,
-                                       @CookieValue(value = "token", defaultValue = "") String token) {
-        auth.authorize(token,departmentId);
+                                       HttpServletRequest request) {
+        auth.authorize(request.getHeader("Authorization"),departmentId);
         return lessonRepository.getLessonById(departmentId, id);
     }
 
@@ -69,8 +70,8 @@ public class LessonController {
     public void changeLesson(@PathVariable("N") int departmentId,
                              @PathVariable("id") int id,
                              @RequestBody Lesson lesson,
-                             @CookieValue(value = "token", defaultValue = "") String token) {
-        auth.authorize(token,departmentId);
+                             HttpServletRequest request) {
+        auth.authorize(request.getHeader("Authorization"),departmentId);
         lessonRepository.changeLesson(departmentId, id, lesson);
     }
 
@@ -78,8 +79,8 @@ public class LessonController {
 
     public void deleteLessonById(@PathVariable("N") int departmentId,
                                  @PathVariable("id") int id,
-                                 @CookieValue(value = "token", defaultValue = "") String token) {
-        auth.authorize(token,departmentId);
+                                 HttpServletRequest request) {
+        auth.authorize(request.getHeader("Authorization"),departmentId);
         lessonRepository.deleteLessonById(departmentId, id);
     }
 

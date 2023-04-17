@@ -6,6 +6,7 @@ import project.model.Subdepartment;
 import project.repository.SubdepartmentRepository;
 import project.security.JwtAuthorizationService;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 import static project.exceptions.Validator.validateDepartmentId;
@@ -20,18 +21,18 @@ public class SubdepartmentController {
 
     @GetMapping("/dep_{N}/subdep/data")
     public List<Subdepartment> getAll(@PathVariable("N") Integer departmentId,
-                                      @CookieValue(value = "token", defaultValue = "") String token) {
+                                      HttpServletRequest request) {
         validateDepartmentId(departmentId);
-        auth.authorize(token,departmentId);
+        auth.authorize(request.getHeader("Authorization"),departmentId);
         return subdepartmentRepository.getAll(departmentId);
     }
 
     @PostMapping("/dep_{N}/subdep/data")
     public Subdepartment addNewSubdepartment(@PathVariable("N") int departmentId,
                                              @RequestBody Subdepartment subdepartment,
-                                             @CookieValue(value = "token", defaultValue = "") String token) {
+                                             HttpServletRequest request) {
         validateDepartmentId(departmentId);
-        auth.authorize(token,departmentId);
+        auth.authorize(request.getHeader("Authorization"),departmentId);
         return subdepartmentRepository.addNewSubdepartment(departmentId, subdepartment);
 
     }
@@ -39,18 +40,18 @@ public class SubdepartmentController {
     @PutMapping("/dep_{N}/subdep/data")
     public Subdepartment updateSubdepartmentName(@PathVariable("N") int departmentId,
                                                  @RequestBody Subdepartment subdepartment,
-                                                 @CookieValue(value = "token", defaultValue = "") String token) {
+                                                 HttpServletRequest request) {
         validateDepartmentId(departmentId);
-        auth.authorize(token,departmentId);
+        auth.authorize(request.getHeader("Authorization"),departmentId);
         return subdepartmentRepository.updateSubdepartmentName(departmentId, subdepartment);
     }
 
     @DeleteMapping("/dep_{N}/subdep/{id}")
     public void deleteSubdepartmentById(@PathVariable("N") Integer departmentId,
                                         @PathVariable("id") short id,
-                                        @CookieValue(value = "token", defaultValue = "") String token) {
+                                        HttpServletRequest request) {
         validateDepartmentId(departmentId);
-        auth.authorize(token,departmentId);
+        auth.authorize(request.getHeader("Authorization"),departmentId);
         subdepartmentRepository.deleteSubdepartmentById(departmentId, id);
     }
 
