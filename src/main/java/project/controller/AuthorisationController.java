@@ -33,7 +33,7 @@ public class AuthorisationController {
         try {
 
             String jwtToken = jwtAuthorizationService.createToken(user);
-
+jwtAuthorizationService.authenticate(user.getUsername(), user.getPassword());
             response.addHeader(HttpHeaders.AUTHORIZATION, jwtToken);
             return new ResponseEntity<>(true, HttpStatus.OK);
         } catch (Exception e) {
@@ -52,14 +52,14 @@ public class AuthorisationController {
     }
 
     @PostMapping("/auth/logout")
-    public ResponseEntity<Boolean> logout(HttpServletResponse response) {
+    public HttpHeaders logout(HttpServletResponse response) {
         try {
             Cookie emptyToken = new Cookie("token", null);
             emptyToken.setPath("/");
             emptyToken.setMaxAge(0);
             emptyToken.setSecure(false);
             response.addCookie(emptyToken);
-            return new ResponseEntity<>(true, HttpStatus.OK);
+            return HttpHeaders.EMPTY;
         } catch (Exception e) {
             throw new AuthenticationException(e, "Не получилось выйти из аккаунта");
         }
