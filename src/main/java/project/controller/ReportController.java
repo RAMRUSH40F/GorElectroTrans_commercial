@@ -25,8 +25,7 @@ public class ReportController {
 
     @GetMapping("/dep_{N}/report/stats")
     public ResponseEntity<ByteArrayResource> getReport(@RequestParam int quarter,
-                                                       @CookieValue(value = "token", defaultValue = "") String token,
-                                                       @PathVariable("N") Integer departmentId) {
+                                                       @CookieValue(value = "token", defaultValue = "") String token) {
         Validator.validateInterval(quarter);
         auth.authorize(token, 100);
         final String fileName = "/report_template.xls";
@@ -47,7 +46,7 @@ public class ReportController {
     }
 
     @GetMapping("/dep_{N}/report/date")
-    public List<QuarterDateModel> getYear(@PathVariable("N") Integer departmentId) {
+    public List<QuarterDateModel> getYear() {
         int year = Year.now().getValue();
         List<QuarterDateModel> intervals = new ArrayList<>();
         for (int i = 1; i <= 4; i++) {
