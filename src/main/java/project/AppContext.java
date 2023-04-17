@@ -28,7 +28,7 @@ public class AppContext {
                 registry.addMapping("/**")
                         .allowedMethods("GET", "POST", "PUT", "DELETE")
                         .allowCredentials(true)
-                        .allowedOrigins("*")
+                        .allowedOriginPatterns("*")
                         .allowedHeaders("*")
                         .exposedHeaders("students_count","lessons_count","attendance_count","content_count", "Set-Cookie");
             }
