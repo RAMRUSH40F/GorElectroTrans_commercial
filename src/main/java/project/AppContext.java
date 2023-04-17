@@ -27,6 +27,7 @@ public class AppContext {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
                         .allowedMethods("GET", "POST", "PUT", "DELETE")
+                        .allowCredentials(true)
                         .allowedOrigins("*")
                         .allowedHeaders("*")
                         .exposedHeaders("students_count","lessons_count","attendance_count","content_count", "Set-Cookie");
