@@ -50,6 +50,7 @@ public class AuthorisationController {
             Cookie emptyToken = new Cookie("token", null);
             emptyToken.setPath("/");
             emptyToken.setMaxAge(0);
+            emptyToken.setSecure(false);
             response.addCookie(emptyToken);
             return new ResponseEntity<>(true, HttpStatus.OK);
         } catch (Exception e) {

@@ -65,7 +65,7 @@ public class JwtAuthorizationService {
                 String jwtToken = createToken(user);
 
                 Cookie cookie = new Cookie("token", jwtToken);
-
+                cookie.setSecure(false);
                 cookie.setMaxAge(JWT_TOKEN_MAX_AGE_HOURS * 3600);
                 cookie.setHttpOnly(false); // false - можно достать данные на фронтэнде. true - доставать нельзя. Только отправлять
                 cookie.setPath("/");
