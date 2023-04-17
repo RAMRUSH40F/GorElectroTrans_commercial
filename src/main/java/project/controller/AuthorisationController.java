@@ -2,9 +2,14 @@ package project.controller;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 import project.security.JwtAuthorizationService;
 import project.security.exception.AuthenticationException;
 import project.security.model.User;
@@ -24,10 +29,10 @@ public class AuthorisationController {
     @PostMapping("/auth/login")
     public ResponseEntity<Boolean> authenticate(@RequestBody User user, HttpServletResponse response) {
         try {
-            Cookie jwtToken = jwtAuthorizationService.
+            ResponseCookie jwtToken = jwtAuthorizationService.
                     authenticate(user.getUsername(), user.getPassword());
 
-            response.addCookie(jwtToken);
+            response.addHeader(HttpHeaders.SET_COOKIE, jwtToken.toString());
             return new ResponseEntity<>(true, HttpStatus.OK);
         } catch (Exception e) {
             throw new AuthenticationException(e, "Ваша прошлая сессия истекла. +" +

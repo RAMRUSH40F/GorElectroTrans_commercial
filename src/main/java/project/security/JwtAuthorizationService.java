@@ -6,12 +6,12 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
+import project.repository.UserRepository;
 import project.security.exception.AuthenticationException;
 import project.security.model.User;
-import project.repository.UserRepository;
 
-import javax.servlet.http.Cookie;
 import java.util.Date;
 
 @Service("JwtAuthorizationServiceBean")
@@ -58,17 +58,19 @@ public class JwtAuthorizationService {
      * Checks if the password is right and return authorisation
      * jwtToken in cookie or throws an exception
      */
-    public Cookie authenticate(String username, String password) {
+    public ResponseCookie authenticate(String username, String password) {
         User user = userRepository.getUserByUsername(username);
         if (user != null && user.getPassword().equals(password)) {
             if (user.isActive()) {
                 String jwtToken = createToken(user);
-
-                Cookie cookie = new Cookie("token", jwtToken);
-                cookie.setSecure(false);
-                cookie.setMaxAge(JWT_TOKEN_MAX_AGE_HOURS * 3600);
-                cookie.setHttpOnly(false); // false - можно достать данные на фронтэнде. true - доставать нельзя. Только отправлять
-                cookie.setPath("/");
+                ResponseCookie cookie = ResponseCookie
+                        .from("token", jwtToken)
+                        .secure(false)
+                        .sameSite("None")
+                        .maxAge(JWT_TOKEN_MAX_AGE_HOURS * 3600)
+                        .httpOnly(false) // false - можно достать данные на фронтэнде. true - доставать нельзя. Только отправлять
+                        .path("/")
+                        .build();
                 return cookie;
             }
             throw new AuthenticationException("Этот аккаунт был отключен в базе данных, обратитесь к администратору.");
