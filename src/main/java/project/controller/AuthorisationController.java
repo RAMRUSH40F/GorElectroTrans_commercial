@@ -27,7 +27,6 @@ public class AuthorisationController {
     @PostMapping("/auth/login")
     public ResponseEntity<Boolean> authenticate(@RequestBody User user, HttpServletResponse response) {
         try {
-
             String jwtToken = jwtAuthorizationService.authenticate(user.getUsername(), user.getPassword());
             response.addHeader(HttpHeaders.AUTHORIZATION, jwtToken);
             return new ResponseEntity<>(true, HttpStatus.OK);

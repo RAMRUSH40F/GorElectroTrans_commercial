@@ -9,7 +9,6 @@ import project.model.AttendanceView;
 import project.repository.AttendanceRepository;
 import project.security.JwtAuthorizationService;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 import static project.exceptions.Validator.validateDepartmentId;
@@ -27,10 +26,11 @@ public class AttendanceController {
                                                               @RequestParam(value = "page") String page,
                                                               @RequestParam(value = "size") String pageSize,
                                                               @RequestParam(value = "key", required = false) String keyWord,
-                                                              HttpServletRequest request) {
+                                                              @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         validateDepartmentId(departmentId);
         validatePaginationParams(page, pageSize);
-        auth.authorize(request.getHeader("Authorization"),departmentId);
+        auth.authorize(jwtToken, departmentId);
+
 
         List<AttendanceView> body;
         HttpHeaders headers = new HttpHeaders();
@@ -53,9 +53,10 @@ public class AttendanceController {
     @GetMapping("/dep_{N}/attendance/")
     public AttendanceView getRecordAttendanceByStudentId(@PathVariable("N") int departmentId,
                                                          @RequestBody Attendance attendance,
-                                                         HttpServletRequest request) {
+                                                         @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         validateDepartmentId(departmentId);
-        auth.authorize(request.getHeader("Authorization"),departmentId);
+        auth.authorize(jwtToken, departmentId);
+
         return attendanceRepository.getAttendanceView(departmentId, attendance);
 
     }
@@ -63,27 +64,30 @@ public class AttendanceController {
     @PostMapping("/dep_{N}/attendance/data")
     public AttendanceView addNewRecordAttendance(@PathVariable("N") int departmentId,
                                                  @RequestBody Attendance attendance,
-                                                 HttpServletRequest request) {
+                                                 @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         validateDepartmentId(departmentId);
-        auth.authorize(request.getHeader("Authorization"),departmentId);
+        auth.authorize(jwtToken, departmentId);
+
         return attendanceRepository.addNewRecord(departmentId, attendance);
     }
 
     @PutMapping("/dep_{N}/attendance/data")
     public void updateRecordAttendance(@PathVariable("N") int departmentId,
                                        @RequestBody Attendance attendance,
-                                       HttpServletRequest request) {
+                                       @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         validateDepartmentId(departmentId);
-        auth.authorize(request.getHeader("Authorization"),departmentId);
+        auth.authorize(jwtToken, departmentId);
+
         attendanceRepository.updateRecordAttendance(departmentId, attendance);
     }
 
     @DeleteMapping("/dep_{N}/attendance/data")
     public void deleteRecordById(@PathVariable("N") int departmentId,
                                  @RequestBody Attendance attendance,
-                                 HttpServletRequest request) {
+                                 @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         validateDepartmentId(departmentId);
-        auth.authorize(request.getHeader("Authorization"),departmentId);
+        auth.authorize(jwtToken, departmentId);
+
         attendanceRepository.deleteRecordById(departmentId, attendance);
     }
 

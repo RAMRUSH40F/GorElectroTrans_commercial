@@ -8,7 +8,6 @@ import project.model.Lesson;
 import project.repository.LessonRepository;
 import project.security.JwtAuthorizationService;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 import static project.exceptions.Validator.validateDepartmentId;
@@ -26,10 +25,10 @@ public class LessonController {
                                                             @RequestParam String page,
                                                             @RequestParam String size,
                                                             @RequestParam(value = "key", required = false) String keyWord,
-                                                            HttpServletRequest request) {
+                                                            @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         validateDepartmentId(department);
         validatePaginationParams(page, size);
-        auth.authorize(request.getHeader("Authorization"), department);
+        auth.authorize(jwtToken, department);
         HttpHeaders headers = new HttpHeaders();
 
         List<Lesson> body;
@@ -52,17 +51,19 @@ public class LessonController {
     @PostMapping("/dep_{N}/work_plan/data")
     public int addLesson(@PathVariable("N") int departmentId,
                          @RequestBody Lesson lesson,
-                         HttpServletRequest request) {
+                         @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         lessonRepository.addNewLesson(departmentId, lesson);
-        auth.authorize(request.getHeader("Authorization"),departmentId);
+        auth.authorize(jwtToken, departmentId);
+
         return lessonRepository.getMaxId(departmentId);
     }
 
     @GetMapping("/dep_{N}/work_plan/{id}")
     public List<Lesson> findLessonById(@PathVariable("N") int departmentId,
                                        @PathVariable("id") int id,
-                                       HttpServletRequest request) {
-        auth.authorize(request.getHeader("Authorization"),departmentId);
+                                       @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
+        auth.authorize(jwtToken, departmentId);
+
         return lessonRepository.getLessonById(departmentId, id);
     }
 
@@ -70,8 +71,9 @@ public class LessonController {
     public void changeLesson(@PathVariable("N") int departmentId,
                              @PathVariable("id") int id,
                              @RequestBody Lesson lesson,
-                             HttpServletRequest request) {
-        auth.authorize(request.getHeader("Authorization"),departmentId);
+                             @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
+        auth.authorize(jwtToken, departmentId);
+
         lessonRepository.changeLesson(departmentId, id, lesson);
     }
 
@@ -79,8 +81,9 @@ public class LessonController {
 
     public void deleteLessonById(@PathVariable("N") int departmentId,
                                  @PathVariable("id") int id,
-                                 HttpServletRequest request) {
-        auth.authorize(request.getHeader("Authorization"),departmentId);
+                                 @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
+        auth.authorize(jwtToken, departmentId);
+
         lessonRepository.deleteLessonById(departmentId, id);
     }
 
