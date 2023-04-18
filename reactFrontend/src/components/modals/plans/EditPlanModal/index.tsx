@@ -7,10 +7,10 @@ import ModalHeader from "../../ModalLayout/ModalHeader";
 import Materials from "../../../../pages/PlanPage/Materials";
 import PlanEditing from "../../../../pages/PlanPage/PlanEditing";
 import { ALERT } from "../../../../constants/alertTypes";
-
-import "./styles.scss";
 import Alert from "../../../Alert";
 import ModalContent from "../../ModalLayout/ModalContent";
+
+import "./styles.scss";
 
 type Props = {
     closeEditing: () => void;

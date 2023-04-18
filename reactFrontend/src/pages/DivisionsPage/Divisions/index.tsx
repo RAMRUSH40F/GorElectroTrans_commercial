@@ -8,7 +8,7 @@ const Divisions: React.FC = () => {
     return (
         <ul className="divisions">
             {DIVISIONS_ROUTES.map((division) => (
-                <DivisionsItem key={division.id} division={division} />
+                <DivisionsItem key={division.allowedRole} division={division} />
             ))}
         </ul>
     );

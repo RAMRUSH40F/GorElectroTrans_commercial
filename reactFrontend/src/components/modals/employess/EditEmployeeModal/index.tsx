@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { NOTION } from "../../../../constants/notion";
 import { useEmployeesContext } from "../../../../context/employeesContext";
+import { useFetchDepartmentsList } from "../../../../hooks/useFetchDepartmentsList";
 import { showNotion } from "../../../../helpers/showNotion";
 import useClickOutside from "../../../../hooks/useClickOutside";
 import useEscape from "../../../../hooks/useEscape";
@@ -13,12 +14,10 @@ import ModalHeader from "../../ModalLayout/ModalHeader";
 import EmployeeService from "../../../../services/EmployeeService";
 import { ALERT } from "../../../../constants/alertTypes";
 import ModalContent from "../../ModalLayout/ModalContent";
+import Alert from "../../../Alert";
+import Loader from "../../../Loader";
 
 import "./styles.scss";
-import Alert from "../../../Alert";
-import DepartmentService from "../../../../services/DepartmentService";
-import axios from "axios";
-import Loader from "../../../Loader";
 
 type Props = {
     closeModal: () => void;
@@ -32,38 +31,13 @@ const EditEmployeeModal: React.FC<Props> = ({ closeModal, employee }) => {
 
     const { divisionId = "" } = useParams();
 
-    const { departments, deleteEmployee, updateEmployee, setDepartments } = useEmployeesContext();
+    const { deleteEmployee, updateEmployee } = useEmployeesContext();
     const [error, setError] = useState<string | null>(null);
     const [isConfirming, setIsConfirming] = useState(false);
     const [isDisabled, setIsDisabled] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
-    const [depError, setDepError] = useState<string | null>(null);
 
-    useEffect(() => {
-        setIsLoading(true);
-        setDepError(null);
-        setDepartments([]);
+    const { departments, error: depError, isLoading } = useFetchDepartmentsList(divisionId);
 
-        const cancelToken = axios.CancelToken.source();
-
-        const fetchDepartments = async () => {
-            try {
-                const response = await DepartmentService.fetch(divisionId, {
-                    cancelToken: cancelToken.token,
-                });
-                setDepartments(response.data);
-            } catch (error) {
-                console.log(error);
-                const err = error as any;
-                setDepError(err?.response?.data?.message ?? "Не удалось получить данные с сервера");
-            } finally {
-                setIsLoading(false);
-            }
-        };
-        fetchDepartments();
-
-        return () => cancelToken.cancel();
-    }, [divisionId, setDepartments]);
 
     const handleSubmit = async (values: EmployeeFormState) => {
         setError(null);
@@ -108,41 +82,45 @@ const EditEmployeeModal: React.FC<Props> = ({ closeModal, employee }) => {
         }
     };
 
+    let contentToRender: React.ReactNode;
+
+    if (isLoading) {
+        contentToRender = <Loader className="edit-employee-modal__loader" />;
+    } else if (depError) {
+        contentToRender = (
+            <Alert className="edit-employee-modal__alert" type={ALERT.ERROR}>
+                {depError}
+            </Alert>
+        );
+    } else if (error) {
+        contentToRender = (
+            <Alert className="edit-employee-modal__alert" type={ALERT.ERROR}>
+                {error}
+            </Alert>
+        );
+    } else {
+        contentToRender = isConfirming ? (
+            <Confirm
+                title="Вы уверены, что хотите удалить работника?"
+                handleConfirm={handleDelete}
+                handleDecline={() => setIsConfirming(false)}
+            />
+        ) : (
+            <EmployeeForm
+                onSubmit={handleSubmit}
+                departments={departments}
+                employee={employee}
+                moveToConfrim={() => setIsConfirming(true)}
+                isDisabled={isDisabled}
+                isEditing={true}
+            />
+        );
+    }
+
     return (
         <ModalLayout className="edit-employee-modal" ref={modalRef}>
             <ModalHeader closeModal={closeModal}>Редактирование</ModalHeader>
-            <ModalContent>
-                {isLoading && <Loader className="edit-employee-modal__loader" />}
-                {depError ? (
-                    <Alert className="edit-employee-modal__alert" type={ALERT.ERROR}>
-                        {depError}
-                    </Alert>
-                ) : (
-                    <>
-                        {error && (
-                            <Alert className="edit-employee-modal__alert" type={ALERT.ERROR}>
-                                {error}
-                            </Alert>
-                        )}
-                        {isConfirming ? (
-                            <Confirm
-                                title="Вы уверены, что хотите удалить работника?"
-                                handleConfirm={handleDelete}
-                                handleDecline={() => setIsConfirming(false)}
-                            />
-                        ) : (
-                            <EmployeeForm
-                                onSubmit={handleSubmit}
-                                departments={departments}
-                                employee={employee}
-                                moveToConfrim={() => setIsConfirming(true)}
-                                isDisabled={isDisabled}
-                                isEditing={true}
-                            />
-                        )}
-                    </>
-                )}
-            </ModalContent>
+            <ModalContent>{contentToRender}</ModalContent>
         </ModalLayout>
     );
 };

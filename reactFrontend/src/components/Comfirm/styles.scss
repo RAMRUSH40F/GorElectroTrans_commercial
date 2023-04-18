@@ -1,10 +1,6 @@
 @import "../../assets/styles/mixins.scss";
 
 .confirm {
-    // .confirm__wrapper
-    &__wrapper {
-        padding: 1rem;
-    }
     // .confirm__title
     &__title {
         color: $black;
@@ -21,7 +17,8 @@
     // .confirm__actions
     &__actions {
         @include flex-center(0.6rem, flex-end);
-        padding: 1rem;
+        padding-top: 1rem;
+        margin-top: 1rem;
         border-top: 1px solid $grey;
     }
 }

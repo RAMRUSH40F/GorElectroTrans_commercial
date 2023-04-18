@@ -13,9 +13,9 @@ import ModalLayout from "../../ModalLayout";
 import ModalHeader from "../../ModalLayout/ModalHeader";
 import { ALERT } from "../../../../constants/alertTypes";
 import Alert from "../../../Alert";
+import ModalContent from "../../ModalLayout/ModalContent";
 
 import "./styles.scss";
-import ModalContent from "../../ModalLayout/ModalContent";
 
 type Props = {
     closeModal: () => void;

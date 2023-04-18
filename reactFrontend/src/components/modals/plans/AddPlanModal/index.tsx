@@ -12,10 +12,10 @@ import PlanForm, { PlanFormValues } from "../../../forms/PlanForm";
 import ModalLayout from "../../ModalLayout";
 import ModalHeader from "../../ModalLayout/ModalHeader";
 import { ALERT } from "../../../../constants/alertTypes";
+import ModalContent from "../../ModalLayout/ModalContent";
+import Alert from "../../../Alert";
 
 import "./styles.scss";
-import Alert from "../../../Alert";
-import ModalContent from "../../ModalLayout/ModalContent";
 
 type Props = {
     closeModal: () => void;

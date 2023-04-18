@@ -1,18 +1,26 @@
 import React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import logoSrc from "../../../../assets/img/logo.svg";
 import { LOGIN_ROUTE } from "../../../../constants/routesPathnames";
 import Container from "../../../Container";
 import ActionButton from "../../../buttons/ActionButton";
+import UserService from "../../../../services/UserService";
+import { useUserContext } from "../../../../context/userContext";
 
 import "./styles.scss";
 
 const Header: React.FC = () => {
-    const navigate = useNavigate();
     const location = useLocation();
+    const { logout } = useUserContext();
 
-    const handleLogout = () => {
-        navigate(LOGIN_ROUTE.PATH);
+    const handleLogout = async () => {
+        try {
+            await UserService.logout();
+            localStorage.removeItem("accessToken");
+            logout();
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (

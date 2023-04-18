@@ -8,18 +8,18 @@ import { loginFormScheme } from "./loginFormScheme";
 
 import "./styles.scss";
 
+export interface LoginFormState {
+    username: string;
+    password: string;
+}
+
 type Props = {
     onSubmit: (values: LoginFormState) => Promise<void>;
 };
 
-export interface LoginFormState {
-    email: string;
-    password: string;
-}
-
 const LoginForm: React.FC<Props> = ({ onSubmit }) => {
     const initialState: LoginFormState = {
-        email: "",
+        username: "",
         password: "",
     };
 
@@ -30,15 +30,15 @@ const LoginForm: React.FC<Props> = ({ onSubmit }) => {
                     <Label className="login-form__label">
                         <Input
                             className="login-form__input"
-                            name="email"
+                            name="username"
                             placeholder="Логин"
                             onBlur={handleBlur}
                             onChange={handleChange}
-                            value={values.email}
+                            value={values.username}
                             disabled={isSubmitting}
                             autoComplete="none"
                         />
-                        {errors.email && touched.email && <FormErrorMessage>{errors.email}</FormErrorMessage>}
+                        {errors.username && touched.username && <FormErrorMessage>{errors.username}</FormErrorMessage>}
                     </Label>
                     <Label className="login-form__label">
                         <Input

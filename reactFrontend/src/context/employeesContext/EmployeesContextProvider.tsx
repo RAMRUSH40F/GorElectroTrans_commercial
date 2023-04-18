@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { EmployeesContext } from ".";
-import { IDepartment } from "../../models/Department";
 import { IEmployee } from "../../models/Employee";
 
 type Props = {
@@ -9,7 +8,6 @@ type Props = {
 
 const EmployeesContextProvider: React.FC<Props> = ({ children }) => {
     const [employees, setEmployees] = useState<IEmployee[]>([]);
-    const [departments, setDepartments] = useState<IDepartment[]>([]);
 
     const updateEmployee = (changedStudent: IEmployee) => {
         setEmployees((employees) =>
@@ -32,8 +30,6 @@ const EmployeesContextProvider: React.FC<Props> = ({ children }) => {
             value={{
                 employees,
                 setEmployees,
-                departments,
-                setDepartments,
                 deleteEmployee,
                 updateEmployee,
                 addEmployee,

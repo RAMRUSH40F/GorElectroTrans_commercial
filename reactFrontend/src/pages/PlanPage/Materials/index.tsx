@@ -57,9 +57,10 @@ const Materials: React.FC<Props> = ({ closeMaterialsEditing, lessonId, fileNames
         }
     };
 
-    const handleDeleteFile = async () => {
+    const handleDeleteFile = async (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.stopPropagation();
         if (!fileToDelete) return;
-        
+
         setIsConfirming(false);
         setIsDisabled(true);
         setError(null);
@@ -96,9 +97,15 @@ const Materials: React.FC<Props> = ({ closeMaterialsEditing, lessonId, fileNames
         setFile(file);
     };
 
-    const moveToConfirm = (fileName: string) => {
+    const moveToConfirm = (event: React.MouseEvent<HTMLButtonElement>, fileName: string) => {
+        event.stopPropagation();
         setIsConfirming(true);
         setFileToDelete(fileName);
+    };
+
+    const handleDecline = (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.stopPropagation();
+        setIsConfirming(false);
     };
 
     return (
@@ -107,7 +114,7 @@ const Materials: React.FC<Props> = ({ closeMaterialsEditing, lessonId, fileNames
                 <Confirm
                     title="Вы уверены, что хотите удалить запись?"
                     handleConfirm={handleDeleteFile}
-                    handleDecline={() => setIsConfirming(false)}
+                    handleDecline={handleDecline}
                 />
             ) : (
                 <div className="materials">
@@ -120,7 +127,12 @@ const Materials: React.FC<Props> = ({ closeMaterialsEditing, lessonId, fileNames
                                 <ul className="materials__list">
                                     {fileNames.map((fileName) => (
                                         <li className="materials__item" key={fileName}>
-                                            <div className="materials__name">{fileName}</div>
+                                            <button
+                                                className="materials__name"
+                                                onClick={() => handleDownLoadFile(fileName)}
+                                            >
+                                                {fileName}
+                                            </button>
                                             <div className="materials__item-actions">
                                                 <button
                                                     className="materials__button"
@@ -150,7 +162,7 @@ const Materials: React.FC<Props> = ({ closeMaterialsEditing, lessonId, fileNames
                                                 </button>
                                                 <button
                                                     className="materials__button"
-                                                    onClick={() => moveToConfirm(fileName)}
+                                                    onClick={(event) => moveToConfirm(event, fileName)}
                                                     disabled={isDisabled}
                                                 >
                                                     <svg
@@ -172,11 +184,20 @@ const Materials: React.FC<Props> = ({ closeMaterialsEditing, lessonId, fileNames
 
                     <div className="materials__actions">
                         {isAdding ? (
-                            <ActionButton className="materials__action-button" colorType="success" onClick={handleAddFile} disabled={isDisabled}>
+                            <ActionButton
+                                className="materials__action-button"
+                                colorType="success"
+                                onClick={handleAddFile}
+                                disabled={isDisabled}
+                            >
                                 Сохранить
                             </ActionButton>
                         ) : (
-                            <ActionButton className="materials__action-button" colorType="info" onClick={() => setIsAdding(true)}>
+                            <ActionButton
+                                className="materials__action-button"
+                                colorType="info"
+                                onClick={() => setIsAdding(true)}
+                            >
                                 Добавить +
                             </ActionButton>
                         )}

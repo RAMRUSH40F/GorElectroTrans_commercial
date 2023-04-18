@@ -31,3 +31,11 @@ export const DEPARTMENTS_ROUTE: Route = {
     NAME: "departments",
     PATH: "/:divisionId/departments",
 };
+export const UNAUTHORIZED_ROUTE: Route = {
+    NAME: "unauthorized",
+    PATH: "/unauthorized",
+};
+export const MISSING_ROUTE: Route = {
+    NAME: "missing",
+    PATH: "*",
+};
