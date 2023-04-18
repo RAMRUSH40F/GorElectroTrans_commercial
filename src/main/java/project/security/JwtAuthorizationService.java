@@ -92,6 +92,7 @@ public class JwtAuthorizationService {
     }
 
     public void authorize(String jwtToken, int departmentID) {
+        validateToken(jwtToken);
         User user = decodeUserFromToken(jwtToken);
         // admin role ("100") has authorization to everything
         if (!(user.getAuthorities().contains("100") || user.getAuthorities().contains(String.valueOf(departmentID)))) {
