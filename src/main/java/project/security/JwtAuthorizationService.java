@@ -79,12 +79,10 @@ public class JwtAuthorizationService {
         claims.put("role", user.getAuthorities());
 
         Date now = new Date();
-//        Date validity = new Date(now.getTime() + JWT_TOKEN_MAX_AGE_HOURS * 3600 * 1000);
-        //5 mins
-        Date testValidity = new Date(now.getTime() + JWT_TOKEN_MAX_AGE_HOURS * 37500);
+        Date validity = new Date(now.getTime() + JWT_TOKEN_MAX_AGE_HOURS * 3600 * 1000);
         String token = Jwts.builder()
                 .setClaims(claims)
-                .setExpiration(testValidity)
+                .setExpiration(validity)
                 .setIssuedAt(now)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
