@@ -1,0 +1,27 @@
+@import "../../assets/styles/vars.scss";
+
+.missing-page {
+    text-align: center;
+    padding-top: 100px;
+    // .missing-page__title
+    &__title {
+        font-size: 25px;
+        margin-bottom: 10px;
+    }
+    // .missing-page__subtitle
+    &__subtitle {
+        margin-bottom: 5px;
+    }
+    // .missing-page__text
+    &__text {
+        color: $darkblue;
+    }
+    // .missing-page__link
+    &__link {
+        color: $blue;
+        text-decoration: underline;
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}

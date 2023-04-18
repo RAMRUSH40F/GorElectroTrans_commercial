@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { NOTION } from "../../../../constants/notion";
 import { useEmployeesContext } from "../../../../context/employeesContext";
@@ -11,11 +11,10 @@ import ModalHeader from "../../ModalLayout/ModalHeader";
 import EmployeeForm, { EmployeeFormState } from "../../../forms/EmployeeForm";
 import { IEmployee } from "../../../../models/Employee";
 import { ALERT } from "../../../../constants/alertTypes";
-import axios from "axios";
-import DepartmentService from "../../../../services/DepartmentService";
 import Loader from "../../../Loader";
 import ModalContent from "../../ModalLayout/ModalContent";
 import Alert from "../../../Alert";
+import { useFetchDepartmentsList } from "../../../../hooks/useFetchDepartmentsList";
 
 import "./styles.scss";
 
@@ -29,36 +28,11 @@ const AddEmployeeModal: React.FC<Props> = ({ closeModal }) => {
     useEscape(closeModal);
 
     const { divisionId = "" } = useParams();
-    const { departments, addEmployee, setDepartments } = useEmployeesContext();
-    const [isLoading, setIsLoading] = useState(true);
+
+    const { addEmployee } = useEmployeesContext();
     const [error, setError] = useState<string | null>(null);
-    const [depError, setDepError] = useState<string | null>(null);
 
-    useEffect(() => {
-        setIsLoading(true);
-        setDepError(null);
-        setDepartments([]);
-
-        const cancelToken = axios.CancelToken.source();
-
-        const fetchDepartments = async () => {
-            try {
-                const response = await DepartmentService.fetch(divisionId, {
-                    cancelToken: cancelToken.token,
-                });
-                setDepartments(response.data);
-            } catch (error) {
-                console.log(error);
-                const err = error as any;
-                setDepError(err?.response?.data?.message ?? "Не удалось получить данные с сервера");
-            } finally {
-                setIsLoading(false);
-            }
-        };
-        fetchDepartments();
-
-        return () => cancelToken.cancel();
-    }, [divisionId, setDepartments]);
+    const { departments, error: depError, isLoading } = useFetchDepartmentsList(divisionId);
 
     const handleSubmit = async (values: EmployeeFormState) => {
         setError(null);
@@ -84,27 +58,30 @@ const AddEmployeeModal: React.FC<Props> = ({ closeModal }) => {
         }
     };
 
+    let contentToRender: React.ReactNode;
+
+    if (isLoading) {
+        contentToRender = <Loader className="add-employee-modal__loader" />;
+    } else if (depError) {
+        contentToRender = (
+            <Alert className="add-employee-modal__alert" type={ALERT.ERROR}>
+                {depError}
+            </Alert>
+        );
+    } else if (error) {
+        contentToRender = (
+            <Alert className="add-employee-modal__alert" type={ALERT.ERROR}>
+                {error}
+            </Alert>
+        );
+    } else {
+        contentToRender = <EmployeeForm departments={departments} onSubmit={handleSubmit} />;
+    }
+
     return (
         <ModalLayout className="add-employee-modal" ref={modalRef}>
             <ModalHeader closeModal={closeModal}>Добавление</ModalHeader>
-            <ModalContent>
-                {depError && (
-                    <Alert className="add-employee-modal__alert" type={ALERT.ERROR}>
-                        {depError}
-                    </Alert>
-                )}
-                {!depError && (
-                    <>
-                        {error && (
-                            <Alert className="add-employee-modal__alert" type={ALERT.ERROR}>
-                                {error}
-                            </Alert>
-                        )}
-                        {!isLoading && <EmployeeForm departments={departments} onSubmit={handleSubmit} />}
-                    </>
-                )}
-                {isLoading && <Loader className="add-employee-modal__loader" />}
-            </ModalContent>
+            <ModalContent>{contentToRender}</ModalContent>
         </ModalLayout>
     );
 };
