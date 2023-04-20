@@ -6,13 +6,15 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import project.exceptions.Validator;
 import project.model.QuarterDateModel;
 import project.security.JwtAuthorizationService;
 import project.service.reportService.ReportService;
 
-import javax.servlet.http.HttpServletRequest;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,9 +28,9 @@ public class ReportController {
 
     @GetMapping("/dep_{N}/report/stats")
     public ResponseEntity<ByteArrayResource> getReport(@RequestParam int quarter,
-                                                       HttpServletRequest request) {
+                                                       @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Validator.validateInterval(quarter);
-        auth.authorize(request.getHeader("Authorization"), 100);
+        auth.authorize(jwtToken, 100);
         final String fileName = "/report_template.xls";
         HSSFWorkbook workbook = reportService.readWorkbook(fileName);
         reportService.formLessonReport(workbook, fileName, quarter);

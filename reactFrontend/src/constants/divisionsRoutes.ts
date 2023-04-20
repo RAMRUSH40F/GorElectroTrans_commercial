@@ -1,85 +1,85 @@
 import { WORK_PLAN_ROUTE } from "./routesPathnames";
 
-export type Division = {
+export type DivisionRoute = {
     name: string;
-    id: string;
-    route: string;
+    allowedRole: string;
+    path: string;
 };
 
-export const DIVISIONS_ROUTES: Division[] = [
+export const DIVISIONS_ROUTES: DivisionRoute[] = [
     {
-        id: "1",
+        allowedRole: "1",
         name: "ОСП «Трамвайный парк №1»",
-        route: `/1/${WORK_PLAN_ROUTE.NAME}`,
+        path: `/1/${WORK_PLAN_ROUTE.NAME}`,
     },
     {
-        id: "2",
+        allowedRole: "6",
         name: "«Совмещенный трамвайно-троллейбусный парк»",
-        route: `/6/${WORK_PLAN_ROUTE.NAME}`,
+        path: `/6/${WORK_PLAN_ROUTE.NAME}`,
     },
     {
-        id: "3",
+        allowedRole: "11",
         name: "СП «Служба подвижного состава»",
-        route: `/11/${WORK_PLAN_ROUTE.NAME}`,
+        path: `/11/${WORK_PLAN_ROUTE.NAME}`,
     },
     {
-        id: "4",
+        allowedRole: "2",
         name: "ОСП «Трамвайный парк №3»",
-        route: `/2/${WORK_PLAN_ROUTE.NAME}`,
+        path: `/2/${WORK_PLAN_ROUTE.NAME}`,
     },
     {
-        id: "5",
+        allowedRole: "7",
         name: "ОСП «Троллейбусный парк №1»",
-        route: `/7/${WORK_PLAN_ROUTE.NAME}`,
+        path: `/7/${WORK_PLAN_ROUTE.NAME}`,
     },
     {
-        id: "6",
+        allowedRole: "12",
         name: "ОСП «Служба движения»",
-        route: `/12/${WORK_PLAN_ROUTE.NAME}`,
+        path: `/12/${WORK_PLAN_ROUTE.NAME}`,
     },
     {
-        id: "7",
+        allowedRole: "3",
         name: "ОСП «Трамвайный парк №5»",
-        route: `/3/${WORK_PLAN_ROUTE.NAME}`,
+        path: `/3/${WORK_PLAN_ROUTE.NAME}`,
     },
     {
-        id: "8",
+        allowedRole: "8",
         name: "ОСП «Троллейбусный парк №2»",
-        route: `/8/${WORK_PLAN_ROUTE.NAME}`,
+        path: `/8/${WORK_PLAN_ROUTE.NAME}`,
     },
     {
-        id: "9",
+        allowedRole: "13",
         name: "ОСП «Служба пути»",
-        route: `/13/${WORK_PLAN_ROUTE.NAME}`,
+        path: `/13/${WORK_PLAN_ROUTE.NAME}`,
     },
     {
-        id: "10",
+        allowedRole: "4",
         name: "ОСП «Трамвайный парк №7»",
-        route: `/4/${WORK_PLAN_ROUTE.NAME}`,
+        path: `/4/${WORK_PLAN_ROUTE.NAME}`,
     },
     {
-        id: "11",
+        allowedRole: "9",
         name: "ОСП «Троллейбусный парк №3»",
-        route: `/9/${WORK_PLAN_ROUTE.NAME}`,
+        path: `/9/${WORK_PLAN_ROUTE.NAME}`,
     },
     {
-        id: "12",
+        allowedRole: "14",
         name: "ОСП «Аварийно-восстановительное хозяйство «Носорог»",
-        route: `/14/${WORK_PLAN_ROUTE.NAME}`,
+        path: `/14/${WORK_PLAN_ROUTE.NAME}`,
     },
     {
-        id: "13",
+        allowedRole: "5",
         name: "ОСП «Трамвайный парк №8»",
-        route: `/5/${WORK_PLAN_ROUTE.NAME}`,
+        path: `/5/${WORK_PLAN_ROUTE.NAME}`,
     },
     {
-        id: "14",
+        allowedRole: "10",
         name: "ОСП «Троллейбусный парк №6»",
-        route: `/10/${WORK_PLAN_ROUTE.NAME}`,
+        path: `/10/${WORK_PLAN_ROUTE.NAME}`,
     },
     {
-        id: "15",
+        allowedRole: "15",
         name: "ОСП «Энергохозяйство»",
-        route: `/15/${WORK_PLAN_ROUTE.NAME}`,
+        path: `/15/${WORK_PLAN_ROUTE.NAME}`,
     },
 ];

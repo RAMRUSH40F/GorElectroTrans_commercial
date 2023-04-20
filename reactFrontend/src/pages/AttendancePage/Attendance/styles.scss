@@ -19,6 +19,10 @@
             pointer-events: none;
         }
     }
+    // .attendance__table-name
+    &__table-name {
+        white-space: nowrap;
+    }
     // .attendance__table-topic-cell
     &__table-topic-cell {
         min-width: 13.75rem;

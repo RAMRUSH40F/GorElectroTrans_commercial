@@ -19,19 +19,23 @@ export const WORK_PLAN_ROUTE: Route = {
     NAME: "work-plan",
     PATH: "/:divisionId/work-plan",
 };
-export const STUDENTS_ROUTE: Route = {
-    NAME: "students",
-    PATH: "/:divisionId/students",
+export const EMPLOYEES_ROUTE: Route = {
+    NAME: "employees",
+    PATH: "/:divisionId/employees",
 };
 export const ATTENDANCE_ROUTE: Route = {
     NAME: "attendance",
     PATH: "/:divisionId/attendance",
 };
-export const MATERIALS_ROUTE: Route = {
-    NAME: "materials",
-    PATH: "/:divisionId/materials",
-};
 export const DEPARTMENTS_ROUTE: Route = {
     NAME: "departments",
     PATH: "/:divisionId/departments",
+};
+export const UNAUTHORIZED_ROUTE: Route = {
+    NAME: "unauthorized",
+    PATH: "/unauthorized",
+};
+export const MISSING_ROUTE: Route = {
+    NAME: "missing",
+    PATH: "*",
 };

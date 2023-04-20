@@ -1,8 +1,7 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import Search from "../../components/Search";
 import SectionHeader from "../../components/SectionHeader";
-import { getDivisionName } from "../../helpers/getDivisionName";
+import { getDivisionRoute } from "../../helpers/getDivisionRoute";
 import Departments from "./Departments";
 import NewDepartment from "./NewDepartment";
 
@@ -10,15 +9,14 @@ import "./styles.scss";
 
 const DepartmentsPage: React.FC = () => {
     const { divisionId = "" } = useParams();
-    const divisionName = getDivisionName(divisionId);
+    const division = getDivisionRoute(divisionId);
 
     return (
         <div className="departments-page">
             <section className="departments-page__info">
-                <SectionHeader title="Отделы" subtitle={divisionName ?? "Подразделение"} />
                 <div className="departments-page__wrapper">
-                    <Search />
-                    <NewDepartment />
+                    <SectionHeader title="Отделы" subtitle={division?.name ?? "Подразделение"} />
+                    <NewDepartment className="departments-page__button" />
                 </div>
                 <Departments />
             </section>

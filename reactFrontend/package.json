@@ -1,6 +1,5 @@
 {
     "name": "gor-electro-trans",
-    "homepage": "https://KDarenskii.github.io",
     "version": "0.1.0",
     "private": true,
     "dependencies": {
@@ -15,6 +14,7 @@
         "classnames": "^2.3.2",
         "date-fns": "^2.29.3",
         "formik": "^2.2.9",
+        "jwt-decode": "^3.1.2",
         "react": "^18.2.0",
         "react-datepicker": "^4.10.0",
         "react-dom": "^18.2.0",

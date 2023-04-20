@@ -1,0 +1,29 @@
+@import "../../../assets/styles/mixins.scss";
+
+.employee-form {
+    // .employee-form__label
+    &__label {
+        margin-bottom: 10px;
+    }
+    // .employee-form__input
+    &__input {
+        width: 100%;
+        margin-bottom: 2.5px;
+    }
+    // .employee-form__select
+    &__select {
+        font-size: 0.8rem;
+    }
+    // .employee-form__checkbox
+    &__checkbox {
+        margin-top: 1.5rem;
+        margin-bottom: 0.8rem;
+    }
+    // .employee-form__actions
+    &__actions {
+        @include flex-center(0.6rem, flex-end);
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid $grey;
+    }
+}

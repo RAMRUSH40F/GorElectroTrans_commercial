@@ -2,10 +2,15 @@ import React from "react";
 import ActionButton from "../../../components/buttons/ActionButton";
 import AddDepartmentModal from "../../../components/modals/departments/AddDepartmentModal";
 import useLockedBody from "../../../hooks/useLockedBody";
+import cn from "classnames";
 
 import "./styles.scss";
 
-const NewDepartment: React.FC = () => {
+type Props = {
+    className?: string;
+};
+
+const NewDepartment: React.FC<Props> = ({ className }) => {
     const [isAdding, setIsAdding] = React.useState(false);
 
     useLockedBody(isAdding);
@@ -18,7 +23,7 @@ const NewDepartment: React.FC = () => {
     return (
         <>
             {isAdding && <AddDepartmentModal closeModal={() => setIsAdding(false)} />}
-            <ActionButton className="new-department-btn" colorType="info" onClick={handleOpenEditing}>
+            <ActionButton className={cn("new-department-btn", className)} colorType="info" onClick={handleOpenEditing}>
                 Добавить +
             </ActionButton>
         </>

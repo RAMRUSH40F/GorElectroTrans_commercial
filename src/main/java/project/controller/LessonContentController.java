@@ -11,7 +11,6 @@ import project.model.LessonContent;
 import project.repository.LessonContentRepository;
 import project.security.JwtAuthorizationService;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
 
@@ -29,10 +28,11 @@ public class LessonContentController {
     public ResponseEntity<List<LessonContent>> getPagedLessons(@PathVariable("N") Integer departmentId,
                                                                @RequestParam String page,
                                                                @RequestParam String size,
-                                                               HttpServletRequest request) {
+                                                               @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         validateDepartmentId(departmentId);
         validatePaginationParams(page, size);
-        auth.authorize(request.getHeader("Authorization"),departmentId);
+        auth.authorize(jwtToken, departmentId);
+
         HttpHeaders headers = new HttpHeaders();
         headers.add("content_count", String.valueOf(repository.getLessonContentCount(departmentId)));
         return ResponseEntity
@@ -44,9 +44,9 @@ public class LessonContentController {
     @GetMapping("/dep_{N}/content/data/{file_name}")
     public ResponseEntity<ByteArrayResource> getFileByName(@PathVariable("N") Integer departmentId,
                                                            @PathVariable("file_name") String fileName,
-                                                           HttpServletRequest request) {
+                                                           @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         validateDepartmentId(departmentId);
-        auth.authorize(request.getHeader("Authorization"),departmentId);
+        auth.authorize(jwtToken, departmentId);
         byte[] file = repository.getFileByName(fileName, departmentId);
 
         ByteArrayResource resource = new ByteArrayResource(file);
@@ -67,9 +67,10 @@ public class LessonContentController {
     public LessonContent addNewContent(@RequestParam("file") MultipartFile file,
                                        @RequestParam("lessonId") String lessonId,
                                        @PathVariable("N") Integer departmentId,
-                                       HttpServletRequest request) {
+                                       @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         validateDepartmentId(departmentId);
-        auth.authorize(request.getHeader("Authorization"),departmentId);
+        auth.authorize(jwtToken, departmentId);
+
         try {
             repository.create(LessonContent.builder()
                     .lessonId(Integer.valueOf(lessonId))
@@ -88,9 +89,10 @@ public class LessonContentController {
     @DeleteMapping("/dep_{N}/content/data/{file_name}")
     public boolean deleteFileByName(@PathVariable("N") Integer departmentId,
                                     @PathVariable("file_name") String fileName,
-                                    HttpServletRequest request) {
+                                    @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         validateDepartmentId(departmentId);
-        auth.authorize(request.getHeader("Authorization"),departmentId);
+        auth.authorize(jwtToken, departmentId);
+
         return repository.deleteFileByName(departmentId, fileName);
     }
 
