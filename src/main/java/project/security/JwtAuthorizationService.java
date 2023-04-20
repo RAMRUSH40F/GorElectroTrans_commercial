@@ -99,7 +99,7 @@ public class JwtAuthorizationService {
     }
 
     public void authorize(String jwtToken, int departmentID) {
-        if(jwtToken.isEmpty()){
+        if(jwtToken==null||jwtToken.isEmpty()){
             jwtToken=" ";
         }
         User user = decodeUserFromToken(jwtToken);
