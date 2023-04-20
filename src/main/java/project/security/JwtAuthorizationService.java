@@ -30,14 +30,17 @@ public class JwtAuthorizationService {
      */
     public boolean validateToken(String token) {
         try {
+            if(token.isEmpty()){
+                throw new AuthenticationException("Прежде чем пользоваться сервисом войдите в аккаунт.");
+            }
             Jws<Claims> claimsJws = Jwts.parser()
                     .setSigningKey(secretKey).parseClaimsJws(token);
             boolean userIsActive = decodeUserFromToken(token).isActive();
             boolean tokenIsExpired = !claimsJws.getBody().getExpiration().before(new Date());
             return userIsActive & tokenIsExpired;
         } catch (JwtException | IllegalArgumentException exception) {
-            throw new AuthenticationException(exception, "Ваша прошлая сессия истекла. +" +
-                    "Войдите в аккаунт заново");
+            throw new AuthenticationException(exception,
+                    "Прежде чем пользоваться сервисом войдите в аккаунт заново");
         }
     }
 
@@ -61,6 +64,8 @@ public class JwtAuthorizationService {
         User user = userRepository.getUserByUsername(username);
         if (user != null && user.getPassword().equals(password)) {
             if (user.isActive()) {
+                System.out.println(user.getPassword());
+                System.out.println(user.getAuthorities());
                 return createToken(user);
             }
             throw new AuthenticationException("Этот аккаунт был отключен в базе данных, обратитесь к администратору.");
