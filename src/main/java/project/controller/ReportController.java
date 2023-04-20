@@ -30,7 +30,7 @@ public class ReportController {
     public ResponseEntity<ByteArrayResource> getReport(@RequestParam int quarter,
                                                        @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Validator.validateInterval(quarter);
-        auth.authorize(jwtToken, 100);
+        //  auth.authorize(jwtToken, 100);
         final String fileName = "/report_template.xls";
         HSSFWorkbook workbook = reportService.readWorkbook(fileName);
         reportService.formLessonReport(workbook, fileName, quarter);
