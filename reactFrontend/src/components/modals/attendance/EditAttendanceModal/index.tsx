@@ -14,6 +14,7 @@ import ModalHeader from "../../ModalLayout/ModalHeader";
 import { ALERT } from "../../../../constants/alertTypes";
 import ModalContent from "../../ModalLayout/ModalContent";
 import Alert from "../../../Alert";
+import { useUserContext } from "../../../../context/userContext";
 
 import "./styles.scss";
 
@@ -30,6 +31,7 @@ const EditAttendanceModal: React.FC<Props> = ({ closeEditing, attendance }) => {
     const { lessonId, studentId } = attendance;
     const { divisionId = "" } = useParams();
 
+    const { logout } = useUserContext();
     const [error, setError] = useState<string | null>(null);
     const { updateAttendance, deleteAttendance } = useAttendanceContext();
     const [isConfirming, setIsConfirming] = useState(false);
@@ -37,8 +39,6 @@ const EditAttendanceModal: React.FC<Props> = ({ closeEditing, attendance }) => {
 
     const handleSubmit = async (values: AttendanceFormState) => {
         setError(null);
-
-        console.log(values);
 
         try {
             await AttendanceService.put({
@@ -49,14 +49,17 @@ const EditAttendanceModal: React.FC<Props> = ({ closeEditing, attendance }) => {
             showNotion(NOTION.SUCCESS, "Изменения успешно сохранены");
             closeEditing();
         } catch (error) {
-            console.log(error);
             const err = error as any;
-            setError(err?.response?.data?.message ?? "Не удалось сохранить изменения");
+            console.log(err);
+            if (err.response.status === 401) {
+                logout();
+            } else {
+                setError(err?.response?.data?.message ?? "Не удалось сохранить изменения");
+            }
         }
     };
 
-    const handleDelete = async (event: React.MouseEvent<HTMLButtonElement>) => {
-        event.stopPropagation();
+    const handleDelete = async () => {
         setIsConfirming(false);
         setIsDisabled(true);
         setError(null);
@@ -70,9 +73,13 @@ const EditAttendanceModal: React.FC<Props> = ({ closeEditing, attendance }) => {
             showNotion(NOTION.SUCCESS, "Запись успешно удалена");
             closeEditing();
         } catch (error) {
-            console.log(error);
             const err = error as any;
-            setError(err?.response?.data?.message ?? "Не удалось удалить запись");
+            console.log(err);
+            if (err.response.status === 401) {
+                logout();
+            } else {
+                setError(err?.response?.data?.message ?? "Не удалось удалить запись");
+            }
         }
     };
 
@@ -80,7 +87,11 @@ const EditAttendanceModal: React.FC<Props> = ({ closeEditing, attendance }) => {
         <ModalLayout className="edit-attendance-modal" ref={modalRef}>
             <ModalHeader closeModal={closeEditing}>Редактирование</ModalHeader>
             <ModalContent>
-                {error && <Alert className="edit-attendance-modal__alert" type={ALERT.ERROR}>{error}</Alert>}
+                {error && (
+                    <Alert className="edit-attendance-modal__alert" type={ALERT.ERROR}>
+                        {error}
+                    </Alert>
+                )}
                 {isConfirming && (
                     <Confirm
                         title="Вы уверены, что хотите удалить запись?"

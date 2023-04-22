@@ -15,4 +15,4 @@ export interface IAttendance extends IAttendanceCredentials {
     topic: string;
 }
 
-export type TNewAttendance = Pick<IAttendance, "lessonId" | "studentId" | "success">;
+export type TAttendanceDto = Pick<IAttendance, "lessonId" | "studentId" | "success">;

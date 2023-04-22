@@ -16,6 +16,9 @@
         @include flex-center(12px, space-between);
         margin: 20px 0 30px;
         flex-wrap: wrap;
+        @media (max-width: $mobile) {
+            margin: 20px 0;
+        }
     }
     // .plan-page__actions
     &__actions {

@@ -1,7 +1,8 @@
 @import "./vars.scss";
 
 html,
-body, #root {
+body,
+#root {
     height: 100%;
     width: 100%;
 }
@@ -9,7 +10,10 @@ body {
     font-family: $fontFamily;
     font-size: $fontSize;
     color: $black;
+    position: relative;
     &.overflow {
+        touch-action: none;
+        -ms-touch-action: none;
         overflow: hidden;
     }
 }

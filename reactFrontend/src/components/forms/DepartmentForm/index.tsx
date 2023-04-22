@@ -1,7 +1,7 @@
 import { Formik } from "formik";
 import React from "react";
 import useFocus from "../../../hooks/useFocus";
-import { IDepartment, TNewDepartment } from "../../../models/Department";
+import { IDepartment, TDepartmentDto } from "../../../models/Department";
 import ActionButton from "../../buttons/ActionButton";
 import FormErrorMessage from "../../formElements/FormErrorMessage";
 import Input from "../../formElements/Input";
@@ -11,7 +11,7 @@ import { departmentFormScheme } from "./departmentFormSchema";
 import "./styles.scss";
 
 type Props = {
-    onSubmit: (values: TNewDepartment) => Promise<void>;
+    onSubmit: (values: TDepartmentDto) => Promise<void>;
     department?: IDepartment;
     moveToConfrim?: (event: React.MouseEvent<HTMLButtonElement>) => void;
     isDisabled?: boolean;
@@ -21,7 +21,7 @@ const DepartmentForm: React.FC<Props> = ({ onSubmit, department, moveToConfrim, 
     const inputRef = React.useRef<HTMLInputElement | null>(null);
     useFocus(inputRef, true);
 
-    const initialState: TNewDepartment = {
+    const initialState: TDepartmentDto = {
         name: department?.name ?? "",
     };
 

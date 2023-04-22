@@ -1,41 +1,59 @@
-*{
+* {
     padding: 0;
     margin: 0;
     border: 0;
 }
-*,*::before,*::after{
+*,
+*::before,
+*::after {
     box-sizing: border-box;
 }
-footer{
+footer {
     display: block;
 }
 body {
     margin: 0;
     padding: 0;
 }
-ul, li{list-style: none;}
-a:hover{text-decoration: none;}
-a{
+ul,
+li {
+    list-style: none;
+}
+a:hover {
+    text-decoration: none;
+}
+a {
     text-decoration: none;
 }
 input {
     width: 0;
 }
-button{
+button {
     background: none;
     padding: 0;
     border: none;
     cursor: pointer;
     font-family: inherit;
 }
-h6,h5,h4,h3,h2,h1{
+h6,
+h5,
+h4,
+h3,
+h2,
+h1 {
     font-weight: 400;
     margin: 0;
 }
-input, select, textarea, button {
+input,
+select,
+textarea,
+button {
     font-family: inherit;
 }
-input:focus, select:focus, textarea:focus, button:focus {
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
     outline: none;
 }
 input::-webkit-outer-spin-button,
@@ -43,6 +61,23 @@ input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
-input[type=number]{
-    -moz-appearance: textfield;
+@media (max-widht: 768px) {
+    input[type="color"],
+    input[type="date"],
+    input[type="datetime"],
+    input[type="datetime-local"],
+    input[type="email"],
+    input[type="month"],
+    input[type="number"],
+    input[type="password"],
+    input[type="search"],
+    input[type="tel"],
+    input[type="text"],
+    input[type="time"],
+    input[type="url"],
+    input[type="week"],
+    select:focus,
+    textarea {
+        font-size: 16px;
+    }
 }

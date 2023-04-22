@@ -14,6 +14,7 @@ import { useDepartmentsContext } from "../../../context/departmentsContext";
 import useLockedBody from "../../../hooks/useLockedBody";
 import { IDepartment } from "../../../models/Department";
 import DepartmentService from "../../../services/DepartmentService";
+import { useUserContext } from "../../../context/userContext";
 
 import "./styles.scss";
 
@@ -22,6 +23,7 @@ const Departments: React.FC = () => {
     useLockedBody(!!editingDepartment);
 
     const { divisionId = "" } = useParams();
+    const { logout } = useUserContext();
 
     const { departments, setDepartments } = useDepartmentsContext();
     const [isLoading, setIsLoading] = useState(true);
@@ -36,12 +38,15 @@ const Departments: React.FC = () => {
                 const response = await DepartmentService.fetch(divisionId, {
                     cancelToken: cancelToken.token,
                 });
-                console.log(response);
                 setDepartments(response.data);
             } catch (error) {
-                console.log(error);
                 const err = error as any;
-                setError(err?.response?.data?.message ?? "Не удалось получить данные с сервера");
+                console.log(err);
+                if (err?.response?.status === 401) {
+                    logout();
+                } else {
+                    setError(err?.response?.data?.message ?? "Не удалось получить данные с сервера");
+                }
             } finally {
                 setIsLoading(false);
             }
@@ -50,12 +55,7 @@ const Departments: React.FC = () => {
         fetchDepartments();
 
         return () => cancelToken.cancel();
-    }, [divisionId, setDepartments]);
-
-    const handleOpenEditing = (event: React.MouseEvent<HTMLTableRowElement>, department: IDepartment) => {
-        event.stopPropagation();
-        setEditingDepartment(department);
-    };
+    }, [divisionId, setDepartments, logout]);
 
     return (
         <div className="departments">
@@ -76,7 +76,7 @@ const Departments: React.FC = () => {
                         </TableHead>
                         <tbody>
                             {departments.map((dep) => (
-                                <TableBodyRow key={dep.id} onClick={(event) => handleOpenEditing(event, dep)}>
+                                <TableBodyRow key={dep.id} onClick={() => setEditingDepartment(dep)}>
                                     <TableBodyCell>{dep.id}</TableBodyCell>
                                     <TableBodyCell className="departments__table-dep-cell">{dep.name}</TableBodyCell>
                                 </TableBodyRow>

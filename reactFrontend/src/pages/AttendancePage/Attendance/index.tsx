@@ -1,5 +1,5 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { useParams, useSearchParams } from "react-router-dom";
 import Alert from "../../../components/Alert";
 import Loader from "../../../components/Loader";
@@ -17,10 +17,11 @@ import { formatDate } from "../../../helpers/formatDate";
 import useLockedBody from "../../../hooks/useLockedBody";
 import { IAttendance } from "../../../models/Attendance";
 import AttendanceService from "../../../services/AttendanceService";
+import { useUserContext } from "../../../context/userContext";
 
 import "./styles.scss";
 
-const LIMIT = 15;
+const LIMIT = 20;
 
 const Attendance: React.FC = () => {
     const [editingAttendance, setEditingAttendance] = React.useState<IAttendance | null>(null);
@@ -28,6 +29,7 @@ const Attendance: React.FC = () => {
 
     const { divisionId = "" } = useParams();
     const [searchParams, setSearchParams] = useSearchParams();
+    const { logout } = useUserContext();
 
     const { attendances, setAttendances } = useAttendanceContext();
     const [isLoading, setIsLoading] = useState(true);
@@ -36,6 +38,8 @@ const Attendance: React.FC = () => {
 
     const [page, setPage] = useState<number>(searchParams.get("page") ? Number(searchParams.get("page")) : 1);
     const [totalPages, setTotalPages] = useState(0);
+
+    const searchQuery = searchParams.get("key");
 
     useEffect(() => {
         const cancelToken = axios.CancelToken.source();
@@ -48,19 +52,22 @@ const Attendance: React.FC = () => {
                     params: {
                         page,
                         size: LIMIT,
-                        key: searchParams.get("key"),
+                        key: searchQuery,
                     },
                     cancelToken: cancelToken.token,
                 });
-                console.log(response);
                 const totalPlans = response.headers["attendance_count"];
                 const totalPages = totalPlans ? Math.ceil(totalPlans / LIMIT) : 1;
                 setAttendances(response.data);
                 setTotalPages(totalPages);
             } catch (error) {
-                console.log(error);
                 const err = error as any;
-                setError(err?.response?.data?.message ?? "Не удалось получить данные с сервера");
+                console.log(err);
+                if (err?.response?.status === 401) {
+                    logout();
+                } else {
+                    setError(err?.response?.data?.message ?? "Не удалось получить данные с сервера");
+                }
             } finally {
                 setIsLoading(false);
                 setIsFetching(false);
@@ -70,12 +77,7 @@ const Attendance: React.FC = () => {
         fetchAttendance();
 
         return () => cancelToken.cancel();
-    }, [page, setAttendances, divisionId, searchParams]);
-
-    const handleOpenEditing = (event: React.MouseEvent<HTMLTableRowElement>, attendace: IAttendance) => {
-        event.stopPropagation();
-        setEditingAttendance(attendace);
-    };
+    }, [page, setAttendances, divisionId, logout, searchQuery]);
 
     const handlePageChange = (selectedItem: { selected: number }) => {
         setPage(selectedItem.selected + 1);
@@ -113,7 +115,7 @@ const Attendance: React.FC = () => {
                                 {attendances.map((attendance) => (
                                     <TableBodyRow
                                         key={`${attendance.studentId}${attendance.lessonId}`}
-                                        onClick={(event) => handleOpenEditing(event, attendance)}
+                                        onClick={() => setEditingAttendance(attendance)}
                                     >
                                         <TableBodyCell>{attendance.lessonId}</TableBodyCell>
                                         <TableBodyCell>

@@ -3,4 +3,4 @@ export interface IDepartment {
     name: string;
 }
 
-export type TNewDepartment = Omit<IDepartment, "id">;
+export type TDepartmentDto = Omit<IDepartment, "id">;

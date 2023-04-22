@@ -1,6 +1,10 @@
 import { AxiosRequestConfig, AxiosResponse } from "axios";
 import { api, authApi } from "../api";
-import { ICredentials } from "../types/Credentials";
+
+export interface ICredentials {
+    username: string;
+    password: string;
+}
 
 export default class UserService {
     static login = async (credentials: ICredentials, config?: AxiosRequestConfig): Promise<AxiosResponse<void>> => {

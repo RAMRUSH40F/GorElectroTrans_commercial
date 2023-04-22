@@ -3,6 +3,7 @@ import { authApi } from "../../api";
 import { IPlan } from "../../models/Plan";
 import { PostParams, PutParams, DeleteParams, FileParams, PostFileParams } from "./planParams";
 import { IMaterial } from "../../models/Material";
+import { IQuarter } from "../../models/Quarter";
 
 export default class PlanService {
     static fetch = (depId: string, config?: AxiosRequestConfig): Promise<AxiosResponse<IPlan[]>> => {
@@ -41,8 +42,11 @@ export default class PlanService {
     ): Promise<AxiosResponse<void>> => {
         return authApi.delete<void>(`/dep_${depId}/content/data/${fileName}`, config);
     };
+    static fetchQuarters = (depId: string, config?: AxiosRequestConfig): Promise<AxiosResponse<IQuarter[]>> => {
+        return authApi.get<IQuarter[]>(`/dep_${depId}/report/date`, config);
+    };
     static fetchReport = (depId: string, config?: AxiosRequestConfig): Promise<AxiosResponse<Blob>> => {
-        return authApi.get<Blob>(`/dep_${depId}/report`, {
+        return authApi.get<Blob>(`/dep_${depId}/report/stats`, {
             responseType: "blob",
             headers: { "Content-Type": "application/octet-stream" },
             ...config,

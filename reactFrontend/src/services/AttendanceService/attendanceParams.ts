@@ -1,15 +1,15 @@
-import { IAttendanceCredentials, TNewAttendance } from "../../models/Attendance";
+import { IAttendanceCredentials, TAttendanceDto } from "../../models/Attendance";
 
 interface Params {
     depId: string;
 }
 
 export interface PostParams extends Params {
-    attendanceResult: TNewAttendance;
+    attendanceResult: TAttendanceDto;
 }
 
 export interface PutParams extends Params {
-    attendanceResult: TNewAttendance;
+    attendanceResult: TAttendanceDto;
 }
 
 export interface DeleteParams extends Params {

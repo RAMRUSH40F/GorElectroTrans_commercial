@@ -11,7 +11,7 @@ export default class DepartmentService {
         { depId, department }: PostParams,
         config?: AxiosRequestConfig
     ): Promise<AxiosResponse<IDepartment>> => {
-        return authApi.post<IDepartment>(`/dep_${depId}/subdep/data1`, department, config);
+        return authApi.post<IDepartment>(`/dep_${depId}/subdep/data`, department, config);
     };
     static put = ({ depId, department }: PutParams, config?: AxiosRequestConfig): Promise<AxiosResponse<void>> => {
         return authApi.put<void>(`/dep_${depId}/subdep/data`, department, config);

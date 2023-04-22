@@ -8,7 +8,7 @@ import "./styles.scss";
 
 type Props = {
     options: Option[];
-    handleSubmit: (event: React.FormEvent<HTMLFormElement>, quarter: number) => Promise<void>;
+    handleSubmit: (event: React.FormEvent<HTMLFormElement>, quarter: string) => Promise<void>;
     isSubmitting: boolean;
 };
 
@@ -16,7 +16,7 @@ const PlanReportForm: React.FC<Props> = ({ options, handleSubmit, isSubmitting }
     const [option, setOption] = useState(options[0]);
 
     return (
-        <form className="plan-report-form" onSubmit={(event) => handleSubmit(event, parseInt(option.value))}>
+        <form className="plan-report-form" onSubmit={(event) => handleSubmit(event, option.value)}>
             <Label className="plan-report-form__label">
                 <Select
                     className="plan-report-form__select"

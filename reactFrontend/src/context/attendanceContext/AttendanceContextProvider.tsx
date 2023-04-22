@@ -1,6 +1,6 @@
 import React from "react";
 import { AttendanceContext } from ".";
-import { IAttendance, IAttendanceCredentials, TNewAttendance } from "../../models/Attendance";
+import { IAttendance, IAttendanceCredentials, TAttendanceDto } from "../../models/Attendance";
 
 type Props = {
     children: React.ReactNode;
@@ -9,7 +9,7 @@ type Props = {
 const AttendanceContextProvider: React.FC<Props> = ({ children }) => {
     const [attendances, setAttendances] = React.useState<IAttendance[]>([]);
 
-    const updateAttendance = (changedAttendance: TNewAttendance) => {
+    const updateAttendance = (changedAttendance: TAttendanceDto) => {
         const updatedAttendance: IAttendance[] = attendances.map((attendance) => {
             if (
                 attendance.lessonId === changedAttendance.lessonId &&

@@ -7,8 +7,12 @@
     }
     // .attendance-form__input
     &__input {
+        font-size: 0.9375rem;
         width: 100%;
         margin-bottom: 2.5px;
+        &::placeholder {
+            font-size: 0.87rem;
+        }
     }
     // .attendance-form__actions
     &__actions {
