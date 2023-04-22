@@ -9,30 +9,32 @@ import {
     WORK_PLAN_ROUTE,
     UNAUTHORIZED_ROUTE,
     MISSING_ROUTE,
-} from "../constants/routesPathnames";
-import AttendanceContextProvider from "../context/attendanceContext/AttendanceContextProvider";
-import DepartmentsContextProvider from "../context/departmentsContext/DepartmentsContextProvider";
-import PlansContextProvider from "../context/plansContext/PlansContextProvider";
-import EmployeesContextProvider from "../context/employeesContext/EmployeesContextProvider";
-import AttendancePage from "../pages/AttendancePage";
-import DepartmentsPage from "../pages/DepartmentsPage";
-import DivisionsPage from "../pages/DivisionsPage";
-import LoginPage from "../pages/LoginPage";
-import EmployeesPage from "../pages/EmployeesPage";
-import PlanPage from "../pages/PlanPage";
-import MainLayout from "./layouts/MainLayout";
-import MenuLayout from "./layouts/MenuLayout";
+    LOGIN_ROUTE,
+} from "../../constants/routesPathnames";
+import AttendanceContextProvider from "../../context/attendanceContext/AttendanceContextProvider";
+import DepartmentsContextProvider from "../../context/departmentsContext/DepartmentsContextProvider";
+import PlansContextProvider from "../../context/plansContext/PlansContextProvider";
+import EmployeesContextProvider from "../../context/employeesContext/EmployeesContextProvider";
+import AttendancePage from "../../pages/AttendancePage";
+import DepartmentsPage from "../../pages/DepartmentsPage";
+import DivisionsPage from "../../pages/DivisionsPage";
+import LoginPage from "../../pages/LoginPage";
+import EmployeesPage from "../../pages/EmployeesPage";
+import PlanPage from "../../pages/PlanPage";
+import MainLayout from "../layouts/MainLayout";
+import MenuLayout from "../layouts/MenuLayout";
 import RoleProtectedRoute from "./RoleProtectedRoute";
-import { ROLES } from "../constants/roles";
+import { ROLES } from "../../constants/roles";
 import ProtectedDepartmentRoute from "./ProtectedDepartmentRoute";
-import MissingPage from "../pages/MissingPage";
-import UnauthorizedPage from "../pages/UnauthorizedPage";
+import MissingPage from "../../pages/MissingPage";
+import UnauthorizedPage from "../../pages/UnauthorizedPage";
+import HomeRoute from "./HomeRoute";
 
 const Router: React.FC = () => {
     return (
         <Routes>
-            <Route path={ROOT_ROUTE.PATH} element={<MainLayout />}>
-                <Route index element={<LoginPage />} />
+            <Route element={<MainLayout />}>
+                <Route path={LOGIN_ROUTE.PATH} element={<LoginPage />} />
 
                 <Route element={<RoleProtectedRoute allowedRoles={[ROLES.ADMIN]} />}>
                     <Route path={DIVISIONS_ROUTE.PATH} element={<DivisionsPage />} />
@@ -75,6 +77,7 @@ const Router: React.FC = () => {
                     </Route>
                 </Route>
             </Route>
+            <Route path={ROOT_ROUTE.PATH} element={<HomeRoute />} />
             <Route path={UNAUTHORIZED_ROUTE.PATH} element={<UnauthorizedPage />} />
             <Route path={MISSING_ROUTE.PATH} element={<MissingPage />} />
         </Routes>

@@ -1,13 +1,14 @@
 import React, { useState } from "react";
-import PlanForm, { PlanFormValues } from "../../../components/forms/PlanForm";
-import { usePlansContext } from "../../../context/plansContext";
-import { parseISO } from "../../../helpers/parseISO";
-import { IPlan } from "../../../models/Plan";
+import PlanForm, { PlanFormValues } from "../../components/forms/PlanForm";
+import { usePlansContext } from "../../context/plansContext";
+import { parseISO } from "../../helpers/parseISO";
+import { IPlan } from "../../models/Plan";
 import { useParams } from "react-router-dom";
-import PlanService from "../../../services/PlanService";
-import { showNotion } from "../../../helpers/showNotion";
-import { NOTION } from "../../../constants/notion";
-import Confirm from "../../../components/Comfirm";
+import PlanService from "../../services/PlanService";
+import { showNotion } from "../../helpers/showNotion";
+import { NOTION } from "../../constants/notion";
+import Confirm from "../../components/Comfirm";
+import { useUserContext } from "../../context/userContext";
 
 type Props = {
     plan: IPlan;
@@ -19,6 +20,7 @@ type Props = {
 const PlanEditing: React.FC<Props> = ({ plan, closeEditing, openMaterialsEditing, setError }) => {
     const { divisionId = "" } = useParams();
 
+    const { logout } = useUserContext();
     const { updatePlans, deletePlan } = usePlansContext();
     const [isConfirming, setIsConfirming] = useState(false);
     const [isDisabled, setIsDisabled] = useState(false);
@@ -27,7 +29,6 @@ const PlanEditing: React.FC<Props> = ({ plan, closeEditing, openMaterialsEditing
         setError(null);
         const { date, duration, peoplePlanned, teacher, topic, status, teacherPost } = values;
         const { day } = parseISO(date);
-        console.log(values);
 
         const changedPlan: IPlan = {
             date: day,
@@ -41,17 +42,19 @@ const PlanEditing: React.FC<Props> = ({ plan, closeEditing, openMaterialsEditing
             lessonContent: plan.lessonContent,
         };
 
-        console.log(changedPlan);
-
         try {
             await PlanService.put({ depId: divisionId, plan: changedPlan });
             updatePlans(changedPlan);
             showNotion(NOTION.SUCCESS, "Изменения успешно сохранены");
             closeEditing();
         } catch (error) {
-            console.log(error);
             const err = error as any;
-            setError(err?.response?.data?.message ?? "Не удалось сохранить изменения");
+            console.log(err);
+            if (err.response.status === 401) {
+                logout();
+            } else {
+                setError(err?.response?.data?.message ?? "Не удалось сохранить изменения");
+            }
         }
     };
 
@@ -67,9 +70,13 @@ const PlanEditing: React.FC<Props> = ({ plan, closeEditing, openMaterialsEditing
             showNotion(NOTION.SUCCESS, "Запись успешно удалена");
             closeEditing();
         } catch (error) {
-            console.log(error);
             const err = error as any;
-            setError(err?.response?.data?.message ?? "Не удалось удалить запись");
+            console.log(err);
+            if (err.response.status === 401) {
+                logout();
+            } else {
+                setError(err?.response?.data?.message ?? "Не удалось удалить запись");
+            }
         } finally {
             setIsDisabled(false);
         }

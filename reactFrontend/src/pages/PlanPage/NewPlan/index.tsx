@@ -7,18 +7,12 @@ import "./styles.scss";
 
 const NewPlan: React.FC = () => {
     const [isAdding, setIsAdding] = React.useState(false);
-
     useLockedBody(isAdding);
-
-    const handleOpenEditing = (event: React.MouseEvent<HTMLButtonElement>) => {
-        event.stopPropagation();
-        setIsAdding(true);
-    };
 
     return (
         <>
             {isAdding && <AddPlanModal closeModal={() => setIsAdding(false)} />}
-            <ActionButton className="new-plan-btn" colorType="info" onClick={handleOpenEditing}>
+            <ActionButton className="new-plan-btn" colorType="info" onClick={() => setIsAdding(true)}>
                 Добавить +
             </ActionButton>
         </>

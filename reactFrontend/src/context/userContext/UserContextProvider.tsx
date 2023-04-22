@@ -12,6 +12,12 @@ const UserContextProvider: React.FC<Props> = ({ children }) => {
     const [roles, setRoles] = useState<ROLES[]>([]);
     const [isAuth, setIsAuth] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    const login = useCallback((roles: ROLES[]) => {
+        setRoles(roles);
+        setIsAuth(true);
+    }, []);
 
     const logout = useCallback(() => {
         setIsAuth(false);
@@ -20,7 +26,7 @@ const UserContextProvider: React.FC<Props> = ({ children }) => {
 
     useEffect(() => {
         setIsLoading(true);
-        const token = localStorage.getItem("accessToken");
+        setError(null);
 
         const authenticateUser = async () => {
             try {
@@ -32,21 +38,25 @@ const UserContextProvider: React.FC<Props> = ({ children }) => {
             } catch (error) {
                 const err = error as any;
                 if (err?.response?.status === 401) {
-                    setRoles([]);
-                    setIsAuth(false);
+                    logout();
                     localStorage.removeItem("accessToken");
+                } else {
+                    const message =
+                        err?.response?.data?.message ??
+                        "Произошла техническая ошибка. Попробуйте перезагрузить страницу.";
+                    setError(message);
                 }
             } finally {
                 setIsLoading(false);
             }
         };
 
-        if (token) authenticateUser();
+        if (localStorage.getItem("accessToken")) authenticateUser();
         else setIsLoading(false);
-    }, []);
+    }, [logout]);
 
     return (
-        <UserContext.Provider value={{ roles, setRoles, isAuth, setIsAuth, isLoading, logout }}>
+        <UserContext.Provider value={{ roles, setRoles, isAuth, setIsAuth, isLoading, error, login, logout }}>
             {children}
         </UserContext.Provider>
     );

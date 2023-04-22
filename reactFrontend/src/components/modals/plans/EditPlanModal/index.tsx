@@ -44,7 +44,6 @@ const EditPlanModal: React.FC<Props> = ({ closeEditing, plan }) => {
                         fileNames={plan.lessonContent}
                         lessonId={plan.id}
                         closeMaterialsEditing={handleMoveToMaterials}
-                        setError={setError}
                     />
                 ) : (
                     <PlanEditing

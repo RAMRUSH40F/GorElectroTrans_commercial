@@ -7,12 +7,12 @@
     }
     // .employee-form__input
     &__input {
+        font-size: 0.9375rem;
         width: 100%;
         margin-bottom: 2.5px;
-    }
-    // .employee-form__select
-    &__select {
-        font-size: 0.8rem;
+        &::placeholder {
+            font-size: 0.87rem;
+        }
     }
     // .employee-form__checkbox
     &__checkbox {

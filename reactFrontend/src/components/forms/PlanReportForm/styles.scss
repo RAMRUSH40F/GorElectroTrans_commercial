@@ -5,7 +5,7 @@
     &__label {
         width: 100%;
     }
-    // .plan-report-form__input
+    // .plan-report-form__select
     &__select {
         width: 100%;
     }
@@ -17,6 +17,7 @@
     }
     // .plan-report-form__select-placeholder
     &__select-placeholder {
+        color: $black;
         font-size: 1rem;
     }
     // .plan-report-form__actions

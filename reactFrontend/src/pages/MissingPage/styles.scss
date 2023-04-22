@@ -2,11 +2,14 @@
 
 .missing-page {
     text-align: center;
-    padding-top: 100px;
+    padding: 100px 20px 20px;
     // .missing-page__title
     &__title {
         font-size: 25px;
         margin-bottom: 10px;
+        @media (max-width: $mobile) {
+            font-size: 23px;
+        }
     }
     // .missing-page__subtitle
     &__subtitle {
@@ -20,6 +23,7 @@
     &__link {
         color: $blue;
         text-decoration: underline;
+        white-space: nowrap;
         &:hover {
             text-decoration: underline;
         }

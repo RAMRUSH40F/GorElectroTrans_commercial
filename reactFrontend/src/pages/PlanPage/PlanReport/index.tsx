@@ -7,18 +7,12 @@ import "./styles.scss";
 
 const PlanReport: React.FC = () => {
     const [isActive, setIsActive] = React.useState(false);
-
     useLockedBody(isActive);
-
-    const handleOpenReport = (event: React.MouseEvent<HTMLButtonElement>) => {
-        event.stopPropagation();
-        setIsActive(true);
-    };
 
     return (
         <>
-            {isActive && <PlanReportModal setIsActive={setIsActive} />}
-            <ActionButton className="plan-report-btn" onClick={handleOpenReport} colorType="custom">
+            {isActive && <PlanReportModal closeModal={() => setIsActive(false)} />}
+            <ActionButton className="plan-report-btn" onClick={() => setIsActive(true)} colorType="custom">
                 Сформировать отчет
             </ActionButton>
         </>

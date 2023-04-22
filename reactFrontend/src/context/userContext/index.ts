@@ -7,6 +7,8 @@ interface UserState {
     isAuth: boolean;
     setIsAuth: Dispatch<SetStateAction<boolean>>;
     isLoading: boolean;
+    error: string | null;
+    login: (roles: ROLES[]) => void;
     logout: () => void;
 }
 

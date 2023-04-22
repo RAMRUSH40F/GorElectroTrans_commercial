@@ -1,6 +1,10 @@
 @import "../../../assets/styles/mixins.scss";
 
 .materials {
+    // .materials__alert
+    &__alert {
+        margin-bottom: 0.8rem;
+    }
     // .materials__title
     &__title {
         font-size: 1.1rem;
@@ -32,6 +36,12 @@
     // .materials__item-actions
     &__item-actions {
         @include flex-center(0.3rem);
+    }
+    // .materials__file-loader
+    &__file-loader {
+        width: 28px;
+        height: 28px;
+        margin-right: 4px;
     }
     // .materials__button
     &__button {

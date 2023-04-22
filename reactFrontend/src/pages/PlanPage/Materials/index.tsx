@@ -11,6 +11,8 @@ import Confirm from "../../../components/Comfirm";
 import { downloadFile } from "../../../helpers/downloadFile";
 import { ALERT } from "../../../constants/alertTypes";
 import Alert from "../../../components/Alert";
+import { useUserContext } from "../../../context/userContext";
+import Loader from "../../../components/Loader";
 
 import "./styles.scss";
 
@@ -18,24 +20,31 @@ type Props = {
     lessonId: number;
     fileNames: string[];
     closeMaterialsEditing: (event: React.MouseEvent<HTMLButtonElement>) => void;
-    setError: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
-const Materials: React.FC<Props> = ({ closeMaterialsEditing, lessonId, fileNames, setError }) => {
+const Materials: React.FC<Props> = ({ closeMaterialsEditing, lessonId, fileNames }) => {
     const [isAdding, setIsAdding] = useState(false);
-    const [isConfirmin, setIsConfirming] = useState(false);
+    const [isConfirming, setIsConfirming] = useState(false);
     const [file, setFile] = useState<File | null>(null);
     const [fileToDelete, setFileToDelete] = useState<string | null>(null);
     const [isDisabled, setIsDisabled] = useState(false);
+    const [isFileLoading, setIsFileLoading] = useState<boolean[]>(new Array(fileNames.length).fill(false));
+    const [error, setError] = useState<string | null>(null);
+    const { addFile, deleteFile } = usePlansContext();
+    const { logout } = useUserContext();
 
     const { divisionId = "" } = useParams();
-    const { addFile, deleteFile } = usePlansContext();
 
     const handleAddFile = async () => {
         if (!file) {
             setIsAdding(false);
             return;
         }
+        if (fileNames.includes(file.name)) {
+            setError("Файл с таким именем уже существует");
+            return;
+        }
+
         setIsDisabled(true);
         setError(null);
 
@@ -50,8 +59,11 @@ const Materials: React.FC<Props> = ({ closeMaterialsEditing, lessonId, fileNames
             setIsAdding(false);
         } catch (error) {
             const err = error as any;
-            setError(err?.response?.data?.message ?? "Не удалось добавить запись");
-            console.log(err);
+            if (err?.response?.status === 401) {
+                logout();
+            } else {
+                setError(err?.response?.data?.message ?? "Не удалось добавить запись");
+            }
         } finally {
             setIsDisabled(false);
         }
@@ -71,27 +83,39 @@ const Materials: React.FC<Props> = ({ closeMaterialsEditing, lessonId, fileNames
             showNotion(NOTION.SUCCESS, "Запись успешно удалена");
             setIsAdding(false);
         } catch (error) {
-            console.log(error);
             const err = error as any;
-            setError(err?.response?.data?.message ?? "Не удалось удалить запись");
+            if (err?.response?.status === 401) {
+                logout();
+            } else {
+                setError(err?.response?.data?.message ?? "Не удалось добавить запись");
+            }
         } finally {
             setIsDisabled(false);
         }
     };
 
-    const handleDownLoadFile = async (fileName: string) => {
+    const handleDownLoadFile = async (event: React.MouseEvent<HTMLButtonElement>, fileName: string, index: number) => {
+        event.stopPropagation();
         setError(null);
+        if (isFileLoading[index]) return;
+        setIsFileLoading((prev) => prev.map((isLoading, currIndex) => (currIndex === index ? true : isLoading)));
         try {
             const response = await PlanService.fetchFile({ depId: divisionId, fileName });
             downloadFile(response.data, fileName);
         } catch (error) {
-            console.log(error);
             const err = error as any;
-            setError(err?.response?.data?.message ?? "Не удалось скачать запись");
+            if (err?.response?.status === 401) {
+                logout();
+            } else {
+                setError(err?.response?.data?.message ?? "Не удалось добавить запись");
+            }
+        } finally {
+            setIsFileLoading((prev) => prev.map((isLoading, currIndex) => (currIndex === index ? false : isLoading)));
         }
     };
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setError(null);
         const filesList = event.target.files;
         const file = filesList ? filesList[0] : null;
         setFile(file);
@@ -110,7 +134,7 @@ const Materials: React.FC<Props> = ({ closeMaterialsEditing, lessonId, fileNames
 
     return (
         <>
-            {isConfirmin ? (
+            {isConfirming ? (
                 <Confirm
                     title="Вы уверены, что хотите удалить запись?"
                     handleConfirm={handleDeleteFile}
@@ -119,47 +143,56 @@ const Materials: React.FC<Props> = ({ closeMaterialsEditing, lessonId, fileNames
             ) : (
                 <div className="materials">
                     <>
+                        {error && (
+                            <Alert className="materials__alert" type={ALERT.ERROR}>
+                                {error}
+                            </Alert>
+                        )}
                         {fileNames.length < 1 && !isAdding ? (
                             <Alert type={ALERT.INFO}>Список конспектов пуст</Alert>
                         ) : (
                             <>
                                 <h5 className="materials__title">Конспекты:</h5>
                                 <ul className="materials__list">
-                                    {fileNames.map((fileName) => (
+                                    {fileNames.map((fileName, index) => (
                                         <li className="materials__item" key={fileName}>
                                             <button
                                                 className="materials__name"
-                                                onClick={() => handleDownLoadFile(fileName)}
+                                                onClick={(event) => handleDownLoadFile(event, fileName, index)}
                                             >
                                                 {fileName}
                                             </button>
                                             <div className="materials__item-actions">
-                                                <button
-                                                    className="materials__button"
-                                                    onClick={() => handleDownLoadFile(fileName)}
-                                                >
-                                                    <svg
-                                                        className="materials__icon materials__icon--download"
-                                                        viewBox="0 0 24 24"
-                                                        fill="none"
-                                                        xmlns="http://www.w3.org/2000/svg"
+                                                {isFileLoading[index] ? (
+                                                    <Loader className="materials__file-loader" />
+                                                ) : (
+                                                    <button
+                                                        className="materials__button"
+                                                        onClick={(event) => handleDownLoadFile(event, fileName, index)}
                                                     >
-                                                        <path
-                                                            d="M13.5 3H12H7C5.89543 3 5 3.89543 5 5V19C5 20.1046 5.89543 21 7 21H7.5M13.5 3L19 8.625M13.5 3V7.625C13.5 8.17728 13.9477 8.625 14.5 8.625H19M19 8.625V9.75V12V19C19 20.1046 18.1046 21 17 21H16.5"
-                                                            stroke="#000000"
-                                                            strokeWidth="1.5"
-                                                            strokeLinecap="round"
-                                                            strokeLinejoin="round"
-                                                        />
-                                                        <path
-                                                            d="M12 12V20M12 20L9.5 17.5M12 20L14.5 17.5"
-                                                            stroke="#000000"
-                                                            strokeWidth="2"
-                                                            strokeLinecap="round"
-                                                            strokeLinejoin="round"
-                                                        />
-                                                    </svg>
-                                                </button>
+                                                        <svg
+                                                            className="materials__icon materials__icon--download"
+                                                            viewBox="0 0 24 24"
+                                                            fill="none"
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                        >
+                                                            <path
+                                                                d="M13.5 3H12H7C5.89543 3 5 3.89543 5 5V19C5 20.1046 5.89543 21 7 21H7.5M13.5 3L19 8.625M13.5 3V7.625C13.5 8.17728 13.9477 8.625 14.5 8.625H19M19 8.625V9.75V12V19C19 20.1046 18.1046 21 17 21H16.5"
+                                                                stroke="#000000"
+                                                                strokeWidth="1.5"
+                                                                strokeLinecap="round"
+                                                                strokeLinejoin="round"
+                                                            />
+                                                            <path
+                                                                d="M12 12V20M12 20L9.5 17.5M12 20L14.5 17.5"
+                                                                stroke="#000000"
+                                                                strokeWidth="2"
+                                                                strokeLinecap="round"
+                                                                strokeLinejoin="round"
+                                                            />
+                                                        </svg>
+                                                    </button>
+                                                )}
                                                 <button
                                                     className="materials__button"
                                                     onClick={(event) => moveToConfirm(event, fileName)}

@@ -9,10 +9,11 @@ import AttendanceService from "../../../../services/AttendanceService";
 import AttendanceForm, { AttendanceFormState } from "../../../forms/AttendanceForm";
 import ModalLayout from "../../ModalLayout";
 import ModalHeader from "../../ModalLayout/ModalHeader";
-import { TNewAttendance } from "../../../../models/Attendance";
+import { TAttendanceDto } from "../../../../models/Attendance";
 import { ALERT } from "../../../../constants/alertTypes";
 import Alert from "../../../Alert";
 import ModalContent from "../../ModalLayout/ModalContent";
+import { useUserContext } from "../../../../context/userContext";
 
 import "./styles.scss";
 
@@ -29,14 +30,14 @@ const AddAttendanceModal: React.FC<Props> = ({ closeModal }) => {
 
     const [error, setError] = useState<string | null>(null);
     const { addAttendance } = useAttendanceContext();
+    const { logout } = useUserContext();
 
     const handleSubmit = async (values: AttendanceFormState) => {
         setError(null);
-        console.log(values);
 
         const { lessonId, studentId, success } = values;
 
-        const newAttendance: TNewAttendance = {
+        const newAttendance: TAttendanceDto = {
             studentId,
             lessonId: parseInt(lessonId),
             success: parseInt(success.value),
@@ -44,15 +45,17 @@ const AddAttendanceModal: React.FC<Props> = ({ closeModal }) => {
 
         try {
             const response = await AttendanceService.post({ depId: divisionId, attendanceResult: newAttendance });
-            console.log(response);
             addAttendance(response.data);
             showNotion(NOTION.SUCCESS, "Запись успешно добавлена");
             closeModal();
         } catch (error) {
-            console.log(error);
             const err = error as any;
-            const message = err?.response?.data?.message ?? "Не удалось добавить посещаемость";
-            setError(message);
+            console.log(err);
+            if (err.response.status === 401) {
+                logout();
+            } else {
+                setError(err?.response?.data?.message ?? "Не удалось добавить посещаемость");
+            }
         }
     };
 
@@ -60,7 +63,11 @@ const AddAttendanceModal: React.FC<Props> = ({ closeModal }) => {
         <ModalLayout className="add-attendance-modal" ref={modalRef}>
             <ModalHeader closeModal={closeModal}>Добавление</ModalHeader>
             <ModalContent>
-                {error && <Alert className="add-attendance-modal__alert" type={ALERT.ERROR}>{error}</Alert>}
+                {error && (
+                    <Alert className="add-attendance-modal__alert" type={ALERT.ERROR}>
+                        {error}
+                    </Alert>
+                )}
                 <AttendanceForm onSubmit={handleSubmit} />
             </ModalContent>
         </ModalLayout>

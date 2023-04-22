@@ -81,104 +81,105 @@ const PlanForm: React.FC<Props> = ({ onSubmit, plan, moveToConfrim, isDisabled, 
         <Formik initialValues={initialState} onSubmit={onSubmit} validationSchema={planFormScheme}>
             {({ handleSubmit, handleChange, handleBlur, values, errors, touched, isSubmitting, setFieldValue }) => (
                 <form onSubmit={handleSubmit} className="plan-form">
-                        <Label className="plan-form__label plan-form__label--mb" text="Тема занятия">
-                            <Textarea
-                                className="plan-form__textarea"
-                                ref={textareaRef}
-                                name="topic"
-                                onBlur={handleBlur}
-                                onChange={handleChange}
-                                value={values.topic}
-                                disabled={isSubmitting || isDisabled}
-                                placeholder="Тема"
-                            />
-                            {errors.topic && touched.topic && <FormErrorMessage>{errors.topic}</FormErrorMessage>}
-                        </Label>
-                        <div className="plan-form__row">
-                            <Label className="plan-form__label" text="Дата">
-                                <DateInput
-                                    className="plan-form__input"
-                                    name="date"
-                                    onChange={(date, event) => {
-                                        event?.stopPropagation();
-                                        setDate(date);
-                                        setFieldValue("date", date?.toISOString());
-                                    }}
-                                    selected={date}
-                                    disabled={isSubmitting || isDisabled}
-                                    autoComplete="none"
-                                />
-                                {errors.date && touched.date && <FormErrorMessage>{errors.date}</FormErrorMessage>}
-                            </Label>
-                            <Label className="plan-form__label" text="Длительность/ч.">
-                                <InputNumber
-                                    className="plan-form__input"
-                                    name="duration"
-                                    onBlur={handleBlur}
-                                    onChange={handleChange}
-                                    value={values.duration}
-                                    disabled={isSubmitting || isDisabled}
-                                    placeholder="Длительность"
-                                    decimalScale={2}
-                                    allowNegative={false}
-                                    autoComplete="none"
-                                />
-                                {errors.duration && touched.duration && (
-                                    <FormErrorMessage>{errors.duration}</FormErrorMessage>
-                                )}
-                            </Label>
-                            <Label className="plan-form__label plan-form__label--mb" text="Кол-во людей">
-                                <InputNumber
-                                    className="plan-form__input"
-                                    name="peoplePlanned"
-                                    onBlur={handleBlur}
-                                    onChange={handleChange}
-                                    value={values.peoplePlanned}
-                                    disabled={isSubmitting || isDisabled}
-                                    placeholder="Количество"
-                                    allowLeadingZeros={false}
-                                    decimalScale={0}
-                                    allowNegative={false}
-                                    autoComplete="none"
-                                />
-                                {errors.peoplePlanned && touched.peoplePlanned && (
-                                    <FormErrorMessage>{errors.peoplePlanned}</FormErrorMessage>
-                                )}
-                            </Label>
-                        </div>
-                        <Label className="plan-form__label plan-form__label--mb" text="ФИО преподавателя">
-                            <Input
+                    <Label className="plan-form__label plan-form__label--mb" text="Тема занятия">
+                        <Textarea
+                            className="plan-form__textarea"
+                            ref={textareaRef}
+                            name="topic"
+                            onBlur={handleBlur}
+                            onChange={handleChange}
+                            value={values.topic}
+                            disabled={isSubmitting || isDisabled}
+                            placeholder="Тема"
+                        />
+                        {errors.topic && touched.topic && <FormErrorMessage>{errors.topic}</FormErrorMessage>}
+                    </Label>
+                    <div className="plan-form__row">
+                        <Label className="plan-form__label" text="Дата">
+                            <DateInput
                                 className="plan-form__input"
-                                name="teacher"
+                                name="date"
+                                onChange={(date, event) => {
+                                    event?.preventDefault();
+                                    setDate(date);
+                                    setFieldValue("date", date?.toISOString());
+                                }}
+                                selected={date}
+                                disabled={isSubmitting || isDisabled}
+                                autoComplete="none"
+                                shouldCloseOnSelect={true}
+                            />
+                            {errors.date && touched.date && <FormErrorMessage>{errors.date}</FormErrorMessage>}
+                        </Label>
+                        <Label className="plan-form__label" text="Длительность/ч.">
+                            <InputNumber
+                                className="plan-form__input"
+                                name="duration"
                                 onBlur={handleBlur}
                                 onChange={handleChange}
-                                value={values.teacher}
+                                value={values.duration}
                                 disabled={isSubmitting || isDisabled}
-                                placeholder="ФИО"
+                                placeholder="Длительность"
+                                decimalScale={2}
+                                allowNegative={false}
                                 autoComplete="none"
                             />
-                            {errors.teacher && touched.teacher && <FormErrorMessage>{errors.teacher}</FormErrorMessage>}
+                            {errors.duration && touched.duration && (
+                                <FormErrorMessage>{errors.duration}</FormErrorMessage>
+                            )}
                         </Label>
-                        <Label className="plan-form__label  plan-form__label--mb" text="Должность преподавателя">
+                        <Label className="plan-form__label plan-form__label--mb" text="Кол-во людей">
+                            <InputNumber
+                                className="plan-form__input"
+                                name="peoplePlanned"
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                value={values.peoplePlanned}
+                                disabled={isSubmitting || isDisabled}
+                                placeholder="Количество"
+                                allowLeadingZeros={false}
+                                decimalScale={0}
+                                allowNegative={false}
+                                autoComplete="none"
+                            />
+                            {errors.peoplePlanned && touched.peoplePlanned && (
+                                <FormErrorMessage>{errors.peoplePlanned}</FormErrorMessage>
+                            )}
+                        </Label>
+                    </div>
+                    <Label className="plan-form__label plan-form__label--mb" text="ФИО преподавателя">
+                        <Input
+                            className="plan-form__input"
+                            name="teacher"
+                            onBlur={handleBlur}
+                            onChange={handleChange}
+                            value={values.teacher}
+                            disabled={isSubmitting || isDisabled}
+                            placeholder="ФИО"
+                            autoComplete="none"
+                        />
+                        {errors.teacher && touched.teacher && <FormErrorMessage>{errors.teacher}</FormErrorMessage>}
+                    </Label>
+                    <Label className="plan-form__label  plan-form__label--mb" text="Должность преподавателя">
+                        <Select
+                            className="plan-form__select"
+                            options={teacherOptions}
+                            value={values.teacherPost}
+                            onChange={(option) => setFieldValue("teacherPost", option)}
+                            disabled={isSubmitting || isDisabled}
+                        />
+                    </Label>
+                    {isEditing && (
+                        <Label className="plan-form__label" text="Статус занятия">
                             <Select
                                 className="plan-form__select"
-                                options={teacherOptions}
-                                value={values.teacherPost}
-                                onChange={(option) => setFieldValue("teacherPost", option)}
+                                options={statusOptions}
+                                value={values.status}
+                                onChange={(option) => setFieldValue("status", option)}
                                 disabled={isSubmitting || isDisabled}
                             />
                         </Label>
-                        {isEditing && (
-                            <Label className="plan-form__label" text="Статус занятия">
-                                <Select
-                                    className="plan-form__select"
-                                    options={statusOptions}
-                                    value={values.status}
-                                    onChange={(option) => setFieldValue("status", option)}
-                                    disabled={isSubmitting || isDisabled}
-                                />
-                            </Label>
-                        )}
+                    )}
                     <div className="plan-form__actions">
                         {moveToConfrim && plan ? (
                             <>

@@ -15,9 +15,10 @@ export interface LoginFormState {
 
 type Props = {
     onSubmit: (values: LoginFormState) => Promise<void>;
+    disableError: () => void;
 };
 
-const LoginForm: React.FC<Props> = ({ onSubmit }) => {
+const LoginForm: React.FC<Props> = ({ onSubmit, disableError }) => {
     const initialState: LoginFormState = {
         username: "",
         password: "",
@@ -26,7 +27,7 @@ const LoginForm: React.FC<Props> = ({ onSubmit }) => {
     return (
         <Formik initialValues={initialState} onSubmit={onSubmit} validationSchema={loginFormScheme}>
             {({ handleChange, handleBlur, handleSubmit, values, isSubmitting, errors, touched }) => (
-                <form className="login-form" onSubmit={handleSubmit}>
+                <form className="login-form" onSubmit={handleSubmit} onChange={disableError}>
                     <Label className="login-form__label">
                         <Input
                             className="login-form__input"
@@ -54,7 +55,7 @@ const LoginForm: React.FC<Props> = ({ onSubmit }) => {
                         />
                         {errors.password && touched.password && <FormErrorMessage>{errors.password}</FormErrorMessage>}
                     </Label>
-                    <ActionButton className="login-form__button" type="submit" colorType="info">
+                    <ActionButton className="login-form__button" type="submit" disabled={isSubmitting} colorType="info">
                         Войти
                     </ActionButton>
                 </form>

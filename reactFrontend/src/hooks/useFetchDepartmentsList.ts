@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import { IDepartment } from "../models/Department";
 import axios from "axios";
 import DepartmentService from "../services/DepartmentService";
+import { useUserContext } from "../context/userContext";
 
 export const useFetchDepartmentsList = (depId: string) => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [departments, setDepartments] = useState<IDepartment[]>([]);
+    const { logout } = useUserContext();
 
     useEffect(() => {
         setIsLoading(true);
@@ -22,9 +24,13 @@ export const useFetchDepartmentsList = (depId: string) => {
                 });
                 setDepartments(response.data);
             } catch (error) {
-                console.log(error);
                 const err = error as any;
-                setError(err?.response?.data?.message ?? "Не удалось получить данные с сервера");
+                console.log(err);
+                if (err.response.status === 401) {
+                    logout();
+                } else {
+                    setError(err?.response?.data?.message ?? "Не удалось получить данные с сервера");
+                }
             } finally {
                 setIsLoading(false);
             }
@@ -32,7 +38,7 @@ export const useFetchDepartmentsList = (depId: string) => {
         fetchDepartments();
 
         return () => cancelToken.cancel();
-    }, [depId]);
+    }, [depId, logout]);
 
     return { departments, isLoading, error };
 };

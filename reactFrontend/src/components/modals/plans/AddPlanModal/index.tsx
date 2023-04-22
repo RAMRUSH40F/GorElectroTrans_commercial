@@ -6,7 +6,7 @@ import { parseISO } from "../../../../helpers/parseISO";
 import { showNotion } from "../../../../helpers/showNotion";
 import useClickOutside from "../../../../hooks/useClickOutside";
 import useEscape from "../../../../hooks/useEscape";
-import { TNewPlan } from "../../../../models/Plan";
+import { TPlanDto } from "../../../../models/Plan";
 import PlanService from "../../../../services/PlanService";
 import PlanForm, { PlanFormValues } from "../../../forms/PlanForm";
 import ModalLayout from "../../ModalLayout";
@@ -14,6 +14,7 @@ import ModalHeader from "../../ModalLayout/ModalHeader";
 import { ALERT } from "../../../../constants/alertTypes";
 import ModalContent from "../../ModalLayout/ModalContent";
 import Alert from "../../../Alert";
+import { useUserContext } from "../../../../context/userContext";
 
 import "./styles.scss";
 
@@ -30,13 +31,14 @@ const AddPlanModal: React.FC<Props> = ({ closeModal }) => {
 
     const [error, setError] = useState<string | null>(null);
     const { addPlan } = usePlansContext();
+    const { logout } = useUserContext();
 
     const handleSubmit = async (values: PlanFormValues) => {
         setError(null);
         const { date, duration, peoplePlanned, teacher, topic, status, teacherPost } = values;
         const { day } = parseISO(date);
-        console.log(values);
-        const newPlan: TNewPlan = {
+
+        const newPlan: TPlanDto = {
             date: day,
             duration: Number(duration),
             peoplePlanned: Number(peoplePlanned),
@@ -46,17 +48,20 @@ const AddPlanModal: React.FC<Props> = ({ closeModal }) => {
             teacherPost: String(teacherPost.label),
             lessonContent: [],
         };
-        console.log(newPlan);
+
         try {
             const response = await PlanService.post({ depId: divisionId, plan: newPlan });
-            console.log(response);
             addPlan({ ...newPlan, id: response.data });
-            showNotion(NOTION.SUCCESS, "Запись успешно удалена");
+            showNotion(NOTION.SUCCESS, "Запись успешно добавлена");
             closeModal();
         } catch (error) {
-            console.log(error);
             const err = error as any;
-            setError(err?.response?.data?.message ?? "Не удалось добавить запись");
+            console.log(err);
+            if (err.response.status === 401) {
+                logout();
+            } else {
+                setError(err?.response?.data?.message ?? "Не удалось добавить запись");
+            }
         }
     };
 

@@ -15,6 +15,7 @@ import Alert from "../../../components/Alert";
 import { ALERT } from "../../../constants/alertTypes";
 import Loader from "../../../components/Loader";
 import EditEmployeeModal from "../../../components/modals/employess/EditEmployeeModal";
+import { useUserContext } from "../../../context/userContext";
 
 import "./styles.scss";
 
@@ -26,6 +27,7 @@ const Employees: FC = () => {
 
     const { divisionId = "" } = useParams();
     const [searchParams, setSearchParams] = useSearchParams();
+    const { logout } = useUserContext();
 
     const { employees, setEmployees } = useEmployeesContext();
     const [isLoading, setIsLoading] = useState(true);
@@ -49,15 +51,18 @@ const Employees: FC = () => {
                     },
                     cancelToken: cancelToken.token,
                 });
-                console.log(response);
                 const totalEmployees = response.headers["students_count"];
                 const totalPages = totalEmployees ? Math.ceil(totalEmployees / LIMIT) : 1;
                 setEmployees(response.data);
                 setTotalPages(totalPages);
             } catch (error) {
-                console.log(error);
                 const err = error as any;
-                setError(err?.response?.data?.message ?? "Не удалось получить данные с сервера");
+                console.log(err);
+                if (err?.response?.status === 401) {
+                    logout();
+                } else {
+                    setError(err?.response?.data?.message ?? "Не удалось получить данные с сервера");
+                }
             } finally {
                 setIsLoading(false);
                 setIsFetching(false);
@@ -66,7 +71,7 @@ const Employees: FC = () => {
         fetchEmployees();
 
         return () => cancelToken.cancel();
-    }, [page, setEmployees, divisionId]);
+    }, [page, setEmployees, divisionId, logout]);
 
     const handlePageChange = (selectedItem: { selected: number }) => {
         setPage(selectedItem.selected + 1);
