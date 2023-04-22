@@ -15,6 +15,7 @@ import Loader from "../../../Loader";
 import ModalContent from "../../ModalLayout/ModalContent";
 import Alert from "../../../Alert";
 import { useFetchDepartmentsList } from "../../../../hooks/useFetchDepartmentsList";
+import { useUserContext } from "../../../../context/userContext";
 
 import "./styles.scss";
 
@@ -29,6 +30,7 @@ const AddEmployeeModal: React.FC<Props> = ({ closeModal }) => {
 
     const { divisionId = "" } = useParams();
 
+    const { logout } = useUserContext();
     const { addEmployee } = useEmployeesContext();
     const [error, setError] = useState<string | null>(null);
 
@@ -36,7 +38,6 @@ const AddEmployeeModal: React.FC<Props> = ({ closeModal }) => {
 
     const handleSubmit = async (values: EmployeeFormState) => {
         setError(null);
-        console.log(values);
         const { fullName, studentId, subdepartment } = values;
 
         const newEmployee: IEmployee = {
@@ -47,14 +48,17 @@ const AddEmployeeModal: React.FC<Props> = ({ closeModal }) => {
 
         try {
             const response = await EmployeeService.post({ depId: divisionId, employee: newEmployee });
-            console.log(response);
             addEmployee(response.data);
             showNotion(NOTION.SUCCESS, "Изменения успешно сохранены");
             closeModal();
         } catch (error) {
-            console.log(error);
             const err = error as any;
-            setError(err?.response?.data?.message ?? "Не удалось добавить работника");
+            console.log(err);
+            if (err.response.status === 401) {
+                logout();
+            } else {
+                setError(err?.response?.data?.message ?? "Не удалось добавить работника");
+            }
         }
     };
 

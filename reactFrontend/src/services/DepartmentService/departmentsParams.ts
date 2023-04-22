@@ -1,11 +1,11 @@
-import { IDepartment, TNewDepartment } from "../../models/Department";
+import { IDepartment, TDepartmentDto } from "../../models/Department";
 
 interface Params {
     depId: string;
 }
 
 export interface PostParams extends Params {
-    department: TNewDepartment;
+    department: TDepartmentDto;
 }
 
 export interface PutParams extends Params {

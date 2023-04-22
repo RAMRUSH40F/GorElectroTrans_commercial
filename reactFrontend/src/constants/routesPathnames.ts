@@ -9,7 +9,7 @@ export const ROOT_ROUTE: Route = {
 };
 export const LOGIN_ROUTE: Route = {
     NAME: "login",
-    PATH: ROOT_ROUTE.PATH,
+    PATH: "/login",
 };
 export const DIVISIONS_ROUTE: Route = {
     NAME: "divisions",

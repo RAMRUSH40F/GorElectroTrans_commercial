@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import useClickOutside from "../../../../hooks/useClickOutside";
 import useEscape from "../../../../hooks/useEscape";
-import { TNewDepartment } from "../../../../models/Department";
+import { TDepartmentDto } from "../../../../models/Department";
 import DepartmentService from "../../../../services/DepartmentService";
 import DepartmentForm from "../../../forms/DepartmentForm";
 import ModalLayout from "../../ModalLayout";
@@ -15,6 +15,7 @@ import ModalContent from "../../ModalLayout/ModalContent";
 import Alert from "../../../Alert";
 
 import "./styles.scss";
+import { useUserContext } from "../../../../context/userContext";
 
 type Props = {
     closeModal: () => void;
@@ -25,11 +26,12 @@ const AddDepartmentModal: React.FC<Props> = ({ closeModal }) => {
     useClickOutside(modalRef, closeModal);
     useEscape(closeModal);
 
+    const { logout } = useUserContext();
     const { addDepartment } = useDepartmentsContext();
     const { divisionId = "" } = useParams();
     const [error, setError] = useState<string | null>(null);
 
-    const handleSubmit = async (values: TNewDepartment) => {
+    const handleSubmit = async (values: TDepartmentDto) => {
         setError(null);
         console.log(values);
 
@@ -43,9 +45,13 @@ const AddDepartmentModal: React.FC<Props> = ({ closeModal }) => {
             showNotion(NOTION.SUCCESS, "Запись успешно добавлена");
             closeModal();
         } catch (error) {
-            console.log(error);
             const err = error as any;
-            setError(err?.response?.data?.message ?? "Не удалось добавить запись");
+            console.log(err);
+            if (err.response.status === 401) {
+                logout();
+            } else {
+                setError(err?.response?.data?.message ?? "Не удалось добавить запись");
+            }
         }
     };
 

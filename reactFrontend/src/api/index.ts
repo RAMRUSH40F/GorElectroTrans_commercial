@@ -1,11 +1,13 @@
 import axios from "axios";
 
+const API_URL = window.location.origin;
+
 export const api = axios.create({
-    baseURL: process.env.REACT_APP_API_URL,
+    baseURL: API_URL,
 });
 
 export const authApi = axios.create({
-    baseURL: process.env.REACT_APP_API_URL,
+    baseURL: API_URL,
 });
 
 authApi.interceptors.request.use((config) => {

@@ -12,14 +12,24 @@
     }
     // .plan-form__textarea
     &__textarea {
+        color: $lightblack;
+        font-size: 0.9375rem;
         width: 100%;
         min-height: 100px;
         margin-bottom: 2.5px;
+        &::placeholder {
+            font-size: 0.87rem;
+        }
     }
     // .plan-form__input
     &__input {
+        color: $lightblack;
+        font-size: 0.9375rem;
         width: 100%;
         margin-bottom: 2.5px;
+        &::placeholder {
+            font-size: 0.87rem;
+        }
     }
     // .plan-form__row
     &__row {

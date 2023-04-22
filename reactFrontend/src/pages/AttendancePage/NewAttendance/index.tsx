@@ -9,15 +9,10 @@ const NewAttendance: React.FC = () => {
     const [isAdding, setIsAdding] = React.useState(false);
     useLockedBody(isAdding);
 
-    const handleOpenEditing = (event: React.MouseEvent<HTMLButtonElement>) => {
-        event.stopPropagation();
-        setIsAdding(true);
-    };
-
     return (
         <>
             {isAdding && <AddAttendanceModal closeModal={() => setIsAdding(false)} />}
-            <ActionButton className="new-attendance-btn" colorType="info" onClick={handleOpenEditing}>
+            <ActionButton className="new-attendance-btn" colorType="info" onClick={() => setIsAdding(true)}>
                 Добавить +
             </ActionButton>
         </>

@@ -1,7 +1,7 @@
 import React from "react";
 import Label from "../../formElements/Label";
 import { Option } from "react-dropdown";
-import { TNewAttendance } from "../../../models/Attendance";
+import { TAttendanceDto } from "../../../models/Attendance";
 import { ATTENDACE_RESULT_VALUE, ATTENDANCE_RESULT } from "../../../constants/attendanceResult";
 import useFocus from "../../../hooks/useFocus";
 import { Formik } from "formik";
@@ -20,7 +20,7 @@ const options: Option[] = [
 
 type Props = {
     onSubmit: (values: AttendanceFormState) => Promise<void>;
-    attendance?: TNewAttendance;
+    attendance?: TAttendanceDto;
     moveToConfrim?: (event: React.MouseEvent<HTMLButtonElement>) => void;
     isDisabled?: boolean;
     isEditing?: boolean;

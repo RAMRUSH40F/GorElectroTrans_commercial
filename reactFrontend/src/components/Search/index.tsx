@@ -17,7 +17,7 @@ const Search: React.FC<Props> = ({ className }) => {
     const debouncedSearch = useDeboucedCallback((value) => {
         value ? searchParams.set("key", value) : searchParams.delete("key");
         setSearchParams(searchParams);
-    }, 600);
+    }, 250);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         debouncedSearch(event.target.value);

@@ -12,18 +12,16 @@ type Props = {
 
 const NewDepartment: React.FC<Props> = ({ className }) => {
     const [isAdding, setIsAdding] = React.useState(false);
-
     useLockedBody(isAdding);
-
-    const handleOpenEditing = (event: React.MouseEvent<HTMLButtonElement>) => {
-        event.stopPropagation();
-        setIsAdding(true);
-    };
 
     return (
         <>
             {isAdding && <AddDepartmentModal closeModal={() => setIsAdding(false)} />}
-            <ActionButton className={cn("new-department-btn", className)} colorType="info" onClick={handleOpenEditing}>
+            <ActionButton
+                className={cn("new-department-btn", className)}
+                colorType="info"
+                onClick={() => setIsAdding(true)}
+            >
                 Добавить +
             </ActionButton>
         </>

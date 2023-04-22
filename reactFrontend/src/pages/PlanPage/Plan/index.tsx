@@ -18,6 +18,7 @@ import { useParams, useSearchParams } from "react-router-dom";
 import Loader from "../../../components/Loader";
 import { PLAN_STATUS_VALUE } from "../../../constants/planStatus";
 import cn from "classnames";
+import { useUserContext } from "../../../context/userContext";
 
 import "./styles.scss";
 
@@ -30,6 +31,7 @@ const Plan: React.FC = () => {
     const { divisionId = "" } = useParams();
     const [searchParams, setSearchParams] = useSearchParams();
 
+    const { logout } = useUserContext();
     const { plans, setPlans } = usePlansContext();
     const [isLoading, setIsLoading] = useState(true);
     const [isFetching, setIsFetching] = useState(true);
@@ -53,15 +55,18 @@ const Plan: React.FC = () => {
                     },
                     cancelToken: cancelToken.token,
                 });
-                console.log(response);
                 const totalPlans = response.headers["lessons_count"];
                 const totalPages = totalPlans ? Math.ceil(totalPlans / LIMIT) : 1;
                 setPlans(response.data);
                 setTotalPages(totalPages);
             } catch (error) {
-                console.log(error);
                 const err = error as any;
-                setError(err?.response?.data?.message ?? "Не удалось получить данные с сервера");
+                console.log(err);
+                if (err?.response?.status === 401) {
+                    logout();
+                } else {
+                    setError(err?.response?.data?.message ?? "Не удалось получить данные с сервера");
+                }
             } finally {
                 setIsLoading(false);
                 setIsFetching(false);
@@ -71,7 +76,7 @@ const Plan: React.FC = () => {
         fetchPlans();
 
         return () => cancelToken.cancel();
-    }, [page, setPlans, divisionId, searchParams]);
+    }, [page, setPlans, divisionId, searchParams, logout]);
 
     const handleOpenEditing = (event: MouseEvent<HTMLTableRowElement>, plan: IPlan) => {
         event.stopPropagation();

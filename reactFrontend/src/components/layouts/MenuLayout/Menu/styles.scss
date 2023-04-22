@@ -18,13 +18,7 @@
     // .menu__item
     &__item {
         border-bottom: 1px solid $grey;
-        cursor: pointer;
         width: 100%;
-        @media (min-width: $tablet) {
-            &:hover {
-                background-color: rgba($grey, 0.4);
-            }
-        }
     }
     // .menu__link-icons-wrapper
     &__link-icons-wrapper {
@@ -50,8 +44,13 @@
         line-height: 1.35;
         color: inherit;
         position: relative;
+        cursor: pointer;
+        &:hover {
+            background-color: rgba($grey, 0.4);
+        }
         &--active {
             color: $blue;
+            pointer-events: none;
             &::before {
                 content: "";
                 display: block;

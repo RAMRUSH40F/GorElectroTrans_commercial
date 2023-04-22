@@ -92,8 +92,6 @@ const EmployeeForm: React.FC<Props> = ({ departments, onSubmit, employee, moveTo
                     )}
                     <Label className="employee-form__label" text="Отдел">
                         <Select
-                            className="employee-form__select"
-                            menuClassName="employee-form__select-menu"
                             options={options}
                             value={values.subdepartment}
                             onChange={(option) => setFieldValue("subdepartment", option)}

@@ -16,6 +16,7 @@ import { ALERT } from "../../../../constants/alertTypes";
 import ModalContent from "../../ModalLayout/ModalContent";
 import Alert from "../../../Alert";
 import Loader from "../../../Loader";
+import { useUserContext } from "../../../../context/userContext";
 
 import "./styles.scss";
 
@@ -31,6 +32,7 @@ const EditEmployeeModal: React.FC<Props> = ({ closeModal, employee }) => {
 
     const { divisionId = "" } = useParams();
 
+    const { logout } = useUserContext();
     const { deleteEmployee, updateEmployee } = useEmployeesContext();
     const [error, setError] = useState<string | null>(null);
     const [isConfirming, setIsConfirming] = useState(false);
@@ -38,10 +40,8 @@ const EditEmployeeModal: React.FC<Props> = ({ closeModal, employee }) => {
 
     const { departments, error: depError, isLoading } = useFetchDepartmentsList(divisionId);
 
-
     const handleSubmit = async (values: EmployeeFormState) => {
         setError(null);
-        console.log(values);
 
         const { fullName, studentId, subdepartment } = values;
 
@@ -57,9 +57,13 @@ const EditEmployeeModal: React.FC<Props> = ({ closeModal, employee }) => {
             showNotion(NOTION.SUCCESS, "Изменения успешно сохранены");
             closeModal();
         } catch (error) {
-            console.log(error);
             const err = error as any;
-            setError(err?.response?.data?.message ?? "Не удалось сохранить изменения");
+            console.log(err);
+            if (err.response.status === 401) {
+                logout();
+            } else {
+                setError(err?.response?.data?.message ?? "Не удалось сохранить изменения");
+            }
         }
     };
 
@@ -74,9 +78,13 @@ const EditEmployeeModal: React.FC<Props> = ({ closeModal, employee }) => {
             showNotion(NOTION.SUCCESS, "Запись успешно удалена");
             closeModal();
         } catch (error) {
-            console.log(error);
             const err = error as any;
-            setError(err?.response?.data?.message ?? "Не удалось удалить запись");
+            console.log(err);
+            if (err.response.status === 401) {
+                logout();
+            } else {
+                setError(err?.response?.data?.message ?? "Не удалось удалить запись");
+            }
         } finally {
             setIsDisabled(false);
         }

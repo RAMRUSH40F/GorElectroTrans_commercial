@@ -1,0 +1,12 @@
+.page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+.alert {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 25px 15px;
+    line-height: 1.5;
+}
