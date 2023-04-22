@@ -1,6 +1,8 @@
 package project;
 
+import lombok.RequiredArgsConstructor;
 import org.mariadb.jdbc.MariaDbDataSource;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -14,7 +16,15 @@ import java.sql.SQLException;
 
 @Configuration
 @PropertySource("classpath:stringWorkerNamesRes.properties")
+@RequiredArgsConstructor
 public class AppContext {
+
+    @Value("${maria.db.url}")
+    private String mariaDbUrl;
+    @Value("${maria.db.user}")
+    private String mariaDbUser;
+    @Value("${maria.db.password}")
+    private String mariaDbPassword;
 
     /**
      * This configuration allows Cross-Origin Resource Sharing (CORS)
@@ -38,9 +48,9 @@ public class AppContext {
     @Bean("mariaDB")
     public DataSource mariaDataSource() throws SQLException {
         MariaDbDataSource mariaDbDataSource = new MariaDbDataSource();
-        mariaDbDataSource.setUrl("jdbc:mariadb://82.146.38.158:3307");
-        mariaDbDataSource.setUser("root");
-        mariaDbDataSource.setPassword("2oCFWg8SU");
+        mariaDbDataSource.setUrl(mariaDbUrl);
+        mariaDbDataSource.setUser(mariaDbUser);
+        mariaDbDataSource.setPassword(mariaDbPassword);
         return mariaDbDataSource;
     }
 
