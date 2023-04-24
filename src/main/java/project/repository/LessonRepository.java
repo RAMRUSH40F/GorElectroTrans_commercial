@@ -10,8 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static project.exceptions.Validator.validateDepartmentId;
-
 @Repository("LessonRepositoryBean")
 @RequiredArgsConstructor
 public class LessonRepository {
@@ -22,7 +20,6 @@ public class LessonRepository {
 
 
     public void addNewLesson(int department, Lesson lesson) {
-        validateDepartmentId(department);
 
         String databaseName = "DEP_" + department;
 
@@ -43,16 +40,12 @@ public class LessonRepository {
     }
 
     public void deleteAllLessons(int department) {
-        validateDepartmentId(department);
         String databaseName = "DEP_" + department;
-
         jdbcTemplate.update(
                 "DELETE FROM " + databaseName + ".lesson ;");
     }
 
     public List<Lesson> getLessonsIdList(int department) {
-        validateDepartmentId(department);
-
         String databaseName = "DEP_" + department;
         List<Lesson> lessonsIdList = jdbcTemplate.query("SELECT id FROM " +
                 databaseName + ".lesson", (rs, rowNum) -> Lesson.builder()
@@ -62,14 +55,12 @@ public class LessonRepository {
     }
 
     public Integer getLessonsCount(int department) {
-        validateDepartmentId(department);
         String databaseName = "DEP_" + department;
         return jdbcTemplate.queryForObject("SELECT COUNT(id) FROM " +
                 databaseName + ".lesson AS COUNT", Integer.class);
     }
 
     public List<Lesson> getLessonByKeyword(int departmentId, String key) {
-        validateDepartmentId(departmentId);
         Map<String, String> parameters = new HashMap<>();
         parameters.put("key", "%" + key + "%");
 
@@ -94,7 +85,6 @@ public class LessonRepository {
 
 
     public List<Lesson> getPagedLessons(int department, int page, int size) {
-        validateDepartmentId(department);
         String sqlQuery = "SELECT * FROM DEP_" + department + ".lesson" +
                 " ORDER BY date DESC LIMIT " + ((page - 1) * size) + "," + size;
         List<Lesson> lessonList = namedJdbcTemplate.query(sqlQuery, (rs, rowNum) -> Lesson.builder().
@@ -112,7 +102,6 @@ public class LessonRepository {
     }
 
     public List<Lesson> getLessonById(int department, int id) {
-        validateDepartmentId(department);
         List<Lesson> lessonList = namedJdbcTemplate.query("SELECT * FROM DEP_" + department + ".lesson WHERE id=" + id,
                 (rs, rowNum) -> Lesson.builder().
                         id(rs.getInt("id")).
@@ -129,7 +118,6 @@ public class LessonRepository {
     }
 
     public void changeLesson(int department, int id, Lesson changed_lesson) {
-        validateDepartmentId(department);
         String query = new StringBuilder()
                 .append("UPDATE DEP_")
                 .append(department)
@@ -156,7 +144,6 @@ public class LessonRepository {
     }
 
     public void deleteLessonById(int department, int id) {
-        validateDepartmentId(department);
         String query = new StringBuilder()
                 .append("DELETE FROM DEP_")
                 .append(department)

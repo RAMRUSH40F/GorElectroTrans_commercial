@@ -92,7 +92,7 @@ public class JwtAuthorizationService {
         return token;
     }
 
-    public void authorize(String jwtToken, int departmentID) {
+    public void authorize(String jwtToken, Integer departmentID) {
         validateToken(jwtToken);
         User user = decodeUserFromToken(jwtToken);
         // admin role ("100") has authorization to everything

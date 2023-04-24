@@ -25,11 +25,11 @@ public class LessonContentController {
     private final JwtAuthorizationService auth;
 
     @GetMapping("/dep_{N}/content/data")
-    public ResponseEntity<List<LessonContent>> getPagedLessons(@PathVariable("N") Integer departmentId,
+    public ResponseEntity<List<LessonContent>> getPagedLessons(@PathVariable("N") String depId,
                                                                @RequestParam String page,
                                                                @RequestParam String size,
                                                                @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
-        validateDepartmentId(departmentId);
+        Integer departmentId = validateDepartmentId(depId);
         validatePaginationParams(page, size);
         auth.authorize(jwtToken, departmentId);
 
@@ -42,10 +42,10 @@ public class LessonContentController {
     }
 
     @GetMapping("/dep_{N}/content/data/{file_name}")
-    public ResponseEntity<ByteArrayResource> getFileByName(@PathVariable("N") Integer departmentId,
+    public ResponseEntity<ByteArrayResource> getFileByName(@PathVariable("N") String depId,
                                                            @PathVariable("file_name") String fileName,
                                                            @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
-        validateDepartmentId(departmentId);
+        Integer departmentId = validateDepartmentId(depId);
         auth.authorize(jwtToken, departmentId);
         byte[] file = repository.getFileByName(fileName, departmentId);
 
@@ -65,10 +65,10 @@ public class LessonContentController {
 
     @PostMapping("/dep_{N}/content/data")
     public LessonContent addNewContent(@RequestParam("file") MultipartFile file,
+                                       @PathVariable("N") String depId,
                                        @RequestParam("lessonId") String lessonId,
-                                       @PathVariable("N") Integer departmentId,
                                        @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
-        validateDepartmentId(departmentId);
+        Integer departmentId = validateDepartmentId(depId);
         auth.authorize(jwtToken, departmentId);
 
         try {
@@ -87,10 +87,10 @@ public class LessonContentController {
 
 
     @DeleteMapping("/dep_{N}/content/data/{file_name}")
-    public boolean deleteFileByName(@PathVariable("N") Integer departmentId,
+    public boolean deleteFileByName(@PathVariable("N") String depId,
                                     @PathVariable("file_name") String fileName,
                                     @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
-        validateDepartmentId(departmentId);
+        Integer departmentId = validateDepartmentId(depId);
         auth.authorize(jwtToken, departmentId);
 
         return repository.deleteFileByName(departmentId, fileName);

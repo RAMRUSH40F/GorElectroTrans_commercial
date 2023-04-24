@@ -92,9 +92,8 @@ public class LessonContentRepository {
 
     }
 
-    public Integer getLessonContentCount(int department) {
-        validateDepartmentId(department);
-        String databaseName = "DEP_" + department;
+    public Integer getLessonContentCount(Integer departmentId) {
+        String databaseName = "DEP_" + departmentId;
         return jdbcTemplate.queryForObject("SELECT COUNT(file_name) FROM " +
                 databaseName + ".lesson_content AS COUNT", Integer.class);
     }
