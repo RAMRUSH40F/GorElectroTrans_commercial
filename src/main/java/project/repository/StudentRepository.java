@@ -139,7 +139,15 @@ public class StudentRepository {
                 .append("'")
                 .toString();
 
+        String query2 = new StringBuilder()
+                .append("UPDATE WORKERS.workers SET name='")
+                .append(studentView.getFullName())
+                .append("' WHERE id='")
+                .append(studentView.getStudentId())
+                .append("'")
+                .toString();
         jdbcTemplate.execute(query);
+        jdbcTemplate.execute(query2);
     }
 
     public void addNewStudentByDepId(int departmentId, Student student) {
