@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import project.exceptions.InvalidStudentIdException;
+import project.exceptions.InvalidSubdepartmentException;
 import project.exceptions.Validator;
 import project.model.Student;
 import project.model.StudentView;
@@ -128,7 +129,9 @@ public class StudentRepository {
         Short newSubDepartmentId = subdepartmentRepository
                 .getSubdepartmentByName(departmentId, studentView.getSubDepartment())
                 .getId();
-
+        if(newSubDepartmentId==null){
+            throw new InvalidSubdepartmentException(studentView.getSubDepartment());
+        }
         String query = new StringBuilder()
                 .append("UPDATE DEP_")
                 .append(departmentId)

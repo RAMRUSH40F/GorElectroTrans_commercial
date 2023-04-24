@@ -17,7 +17,8 @@ public class RequestExceptionHandler {
             InvalidDepartmentException.class,
             InvalidStudentIdException.class,
             PaginationException.class,
-            InvalidIntervalException.class})
+            InvalidIntervalException.class,
+            InvalidSubdepartmentException.class})
     public ResponseEntity<ResponseException> handleInvalidRequestException(RuntimeException e) {
         System.out.println(e.getCause());
         ResponseException responseException = ResponseException.builder()
