@@ -37,8 +37,10 @@ const Plan: React.FC = () => {
     const [isFetching, setIsFetching] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    const [page, setPage] = useState<number>(searchParams.get("page") ? Number(searchParams.get("page")) : 1);
     const [totalPages, setTotalPages] = useState(0);
+
+    const page = searchParams.get("page") ?? 1;
+    const searchQuery = searchParams.get("key");
 
     useEffect(() => {
         const cancelToken = axios.CancelToken.source();
@@ -51,7 +53,7 @@ const Plan: React.FC = () => {
                     params: {
                         page,
                         size: LIMIT,
-                        key: searchParams.get("key"),
+                        key: searchQuery,
                     },
                     cancelToken: cancelToken.token,
                 });
@@ -76,7 +78,7 @@ const Plan: React.FC = () => {
         fetchPlans();
 
         return () => cancelToken.cancel();
-    }, [page, setPlans, divisionId, searchParams, logout]);
+    }, [page, setPlans, divisionId, searchQuery, logout]);
 
     const handleOpenEditing = (event: MouseEvent<HTMLTableRowElement>, plan: IPlan) => {
         event.stopPropagation();
@@ -84,7 +86,6 @@ const Plan: React.FC = () => {
     };
 
     const handlePageChange = (selectedItem: { selected: number }) => {
-        setPage(selectedItem.selected + 1);
         searchParams.set("page", String(selectedItem.selected + 1));
         setSearchParams(searchParams);
     };

@@ -15,7 +15,12 @@ const Search: React.FC<Props> = ({ className }) => {
     const [value, setValue] = useState(searchParams.get("key") || "");
 
     const debouncedSearch = useDeboucedCallback((value) => {
-        value ? searchParams.set("key", value) : searchParams.delete("key");
+        if (value) {
+            searchParams.set("page", String(1));
+            searchParams.set("key", value);
+        } else {
+            searchParams.delete("key");
+        }
         setSearchParams(searchParams);
     }, 250);
 

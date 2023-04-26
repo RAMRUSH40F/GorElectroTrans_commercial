@@ -10,20 +10,19 @@ import ActionButton from "../../buttons/ActionButton";
 import { planFormScheme } from "./planFormScheme";
 import FormErrorMessage from "../../formElements/FormErrorMessage";
 import InputNumber from "../../formElements/InputNumber";
-import { Option } from "react-dropdown";
 import { PLAN_STATUS, PLAN_STATUS_VALUE } from "../../../constants/planStatus";
-import Select from "../../formElements/Select";
+import Dropdown, { DropdownOption } from "../../formElements/Dropdown";
 
 import "./styles.scss";
 
-const teacherOptions: Option[] = [
+const teacherOptions: DropdownOption[] = [
     { label: "Руководитель/зам.руководителя", value: "post-1" },
     { label: "Ст. мастер/мастер", value: "post-2" },
     { label: "Наставник", value: "post-3" },
     { label: "Cпециалист по техническому обучению", value: "post-4" },
     { label: "Другое", value: "post-5" },
 ];
-const statusOptions: Option[] = [
+const statusOptions: DropdownOption[] = [
     { label: PLAN_STATUS_VALUE[PLAN_STATUS.SCHEDULED], value: String(PLAN_STATUS.SCHEDULED) },
     { label: PLAN_STATUS_VALUE[PLAN_STATUS.HELD], value: String(PLAN_STATUS.HELD) },
 ];
@@ -43,8 +42,8 @@ export type PlanFormValues = {
     peoplePlanned: string;
     teacher: string;
     topic: string;
-    teacherPost: Option;
-    status: Option;
+    teacherPost: DropdownOption;
+    status: DropdownOption;
 };
 
 const PlanForm: React.FC<Props> = ({ onSubmit, plan, moveToConfrim, isDisabled, isEditing, openMaterialsEditing }) => {
@@ -54,13 +53,14 @@ const PlanForm: React.FC<Props> = ({ onSubmit, plan, moveToConfrim, isDisabled, 
     const initialDate = plan?.date ? new Date(plan.date) : new Date();
     const [date, setDate] = React.useState<Date | null>(initialDate);
 
-    const getInitialTeacherPostOption = (): Option => {
+    const getInitialTeacherPostOption = (): DropdownOption => {
         if (plan) {
             return teacherOptions.find((option) => option.label === String(plan.teacherPost)) ?? teacherOptions[0];
         }
         return teacherOptions[0];
     };
-    const getInitialStatusOption = (): Option => {
+
+    const getInitialStatusOption = (): DropdownOption => {
         if (plan) {
             return statusOptions.find((option) => option.value === String(plan.isHeld)) ?? statusOptions[0];
         }
@@ -101,6 +101,7 @@ const PlanForm: React.FC<Props> = ({ onSubmit, plan, moveToConfrim, isDisabled, 
                                 name="date"
                                 onChange={(date, event) => {
                                     event?.preventDefault();
+                                    event?.stopPropagation();
                                     setDate(date);
                                     setFieldValue("date", date?.toISOString());
                                 }}
@@ -161,20 +162,20 @@ const PlanForm: React.FC<Props> = ({ onSubmit, plan, moveToConfrim, isDisabled, 
                         {errors.teacher && touched.teacher && <FormErrorMessage>{errors.teacher}</FormErrorMessage>}
                     </Label>
                     <Label className="plan-form__label  plan-form__label--mb" text="Должность преподавателя">
-                        <Select
+                        <Dropdown
                             className="plan-form__select"
                             options={teacherOptions}
-                            value={values.teacherPost}
+                            initialOption={values.teacherPost}
                             onChange={(option) => setFieldValue("teacherPost", option)}
                             disabled={isSubmitting || isDisabled}
                         />
                     </Label>
                     {isEditing && (
                         <Label className="plan-form__label" text="Статус занятия">
-                            <Select
+                            <Dropdown
                                 className="plan-form__select"
                                 options={statusOptions}
-                                value={values.status}
+                                initialOption={values.status}
                                 onChange={(option) => setFieldValue("status", option)}
                                 disabled={isSubmitting || isDisabled}
                             />

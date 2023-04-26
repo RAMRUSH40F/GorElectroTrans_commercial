@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import Label from "../../formElements/Label";
-import Select from "../../formElements/Select";
-import { Option } from "react-dropdown";
 import ActionButton from "../../buttons/ActionButton";
+import Dropdown, { DropdownOption } from "../../formElements/Dropdown";
 
 import "./styles.scss";
 
 type Props = {
-    options: Option[];
+    options: DropdownOption[];
     handleSubmit: (event: React.FormEvent<HTMLFormElement>, quarter: string) => Promise<void>;
     isSubmitting: boolean;
 };
@@ -18,12 +17,10 @@ const PlanReportForm: React.FC<Props> = ({ options, handleSubmit, isSubmitting }
     return (
         <form className="plan-report-form" onSubmit={(event) => handleSubmit(event, option.value)}>
             <Label className="plan-report-form__label">
-                <Select
+                <Dropdown
                     className="plan-report-form__select"
-                    controlClassName="plan-report-form__select-control"
-                    placeholderClassName="plan-report-form__select-placeholder"
                     options={options}
-                    value={option}
+                    initialOption={option}
                     onChange={(option) => setOption(option)}
                     disabled={isSubmitting}
                 />

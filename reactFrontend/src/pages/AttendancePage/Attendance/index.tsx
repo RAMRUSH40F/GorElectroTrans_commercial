@@ -36,9 +36,9 @@ const Attendance: React.FC = () => {
     const [isFetching, setIsFetching] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    const [page, setPage] = useState<number>(searchParams.get("page") ? Number(searchParams.get("page")) : 1);
     const [totalPages, setTotalPages] = useState(0);
 
+    const page = searchParams.get("page") ?? 1;
     const searchQuery = searchParams.get("key");
 
     useEffect(() => {
@@ -80,7 +80,6 @@ const Attendance: React.FC = () => {
     }, [page, setAttendances, divisionId, logout, searchQuery]);
 
     const handlePageChange = (selectedItem: { selected: number }) => {
-        setPage(selectedItem.selected + 1);
         searchParams.set("page", String(selectedItem.selected + 1));
         setSearchParams(searchParams);
     };

@@ -38,14 +38,15 @@ const EditAttendanceModal: React.FC<Props> = ({ closeEditing, attendance }) => {
     const [isDisabled, setIsDisabled] = useState(false);
 
     const handleSubmit = async (values: AttendanceFormState) => {
+        const { success } = values;
         setError(null);
 
         try {
             await AttendanceService.put({
                 depId: divisionId,
-                attendanceResult: { lessonId, studentId, success: parseInt(values.success.value) },
+                attendanceResult: { lessonId, studentId, success: parseInt(success.value) },
             });
-            updateAttendance({ lessonId, studentId, success: parseInt(values.success.value) });
+            updateAttendance({ lessonId, studentId, success: parseInt(success.value) });
             showNotion(NOTION.SUCCESS, "Изменения успешно сохранены");
             closeEditing();
         } catch (error) {
