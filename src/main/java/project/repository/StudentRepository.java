@@ -1,6 +1,7 @@
 package project.repository;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -48,11 +49,20 @@ public class StudentRepository {
             }
             studentView.setFullName(worker.getName());
         } else {
-            workersRepository.addNewWorker(
-                    Worker.builder()
-                            .id(studentView.getStudentId())
-                            .name(studentView.getFullName())
-                            .build());
+            try {
+                workersRepository.addNewWorker(
+                        Worker.builder()
+                                .id(studentView.getStudentId())
+                                .name(studentView.getFullName())
+                                .build());
+            } catch (DataIntegrityViolationException exception) {
+                if (exception.getMessage().contains("Duplicate")) {
+                    throw new IllegalArgumentException("Рабочий с таким номером уже есть в системе");
+                } else {
+                    throw new RuntimeException(exception);
+                }
+
+            }
         }
         // Для добавления нужен SubDepartmentId, а с фронта приходит SubDepartmentName
         Short newSubDepartmentId = subdepartmentRepository
@@ -129,7 +139,7 @@ public class StudentRepository {
         Short newSubDepartmentId = subdepartmentRepository
                 .getSubdepartmentByName(departmentId, studentView.getSubDepartment())
                 .getId();
-        if(newSubDepartmentId==null){
+        if (newSubDepartmentId == null) {
             throw new InvalidSubdepartmentException(studentView.getSubDepartment());
         }
         String query = new StringBuilder()
