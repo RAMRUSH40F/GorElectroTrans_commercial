@@ -5,7 +5,6 @@ import org.mariadb.jdbc.MariaDbDataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -15,7 +14,6 @@ import javax.sql.DataSource;
 import java.sql.SQLException;
 
 @Configuration
-@PropertySource("classpath:stringWorkerNamesRes.properties")
 @RequiredArgsConstructor
 public class AppContext {
 

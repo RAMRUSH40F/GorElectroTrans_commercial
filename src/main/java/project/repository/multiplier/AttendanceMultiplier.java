@@ -29,25 +29,25 @@ public class AttendanceMultiplier {
 
         Random random = new Random();
 
-        // Достаем из БД все записи об уроках и об учениках и оставляем каждый второй id студента.
+        // Достаем из БД все записи об уроках и об учениках и оставляем каждый шестой id студента.
         List<Lesson> lessons = lessonRepository.getLessonsIdList(departmentId);
         List<Integer> lessIds = lessons.stream()
                 .map(Lesson::getId)
-                .filter(id -> random.nextInt(3) == 1)
+                .filter(id -> random.nextInt(6) == 1)
                 .collect(Collectors.toList());
         System.out.println(lessIds);
 
-        // Достаем из БД все записи об уроках и об учениках и оставляем каждый пятый урок.
+        // Достаем из БД все записи об уроках и об учениках и оставляем каждый 3ий урок.
         List<Student> students = studentRepository.getStudentsIdList(departmentId);
         List<String> studentIdS = students.stream().
                 map(Student::getStudentId).
-                filter(id -> random.nextInt(6) == 1)
+                filter(id -> random.nextInt(3) == 1)
                 .collect(Collectors.toList());
         System.out.println(studentIdS);
 
-        // Каждый третий в среднем ходит на какие-то уроки
+        // Каждый шестой в среднем ходит на какие-то уроки
         for (String studId : studentIdS) {
-            // Ходят в среднем на каждый трейти урок.
+            // Ходят в среднем на каждый третий урок.
             for (Integer lessId : lessIds) {
                 Attendance attendance = Attendance.builder()
                         .lessonId(lessId)
