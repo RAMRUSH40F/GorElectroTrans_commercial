@@ -1,6 +1,7 @@
 package project.repository;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -12,6 +13,7 @@ import project.repository.mapper.AttendanceMapper;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @Repository("AttendanceRepositoryBean")
 @RequiredArgsConstructor
@@ -28,12 +30,20 @@ public class AttendanceRepository {
         parameters.put("lesson_id", attendance.getLessonId());
         parameters.put("student_id", attendance.getStudentId());
         parameters.put("success", attendance.getSuccess());
+        try {
+            namedJdbcTemplate.update(
+                    "INSERT INTO " + databaseName + ".attendance (lesson_id,student_id,success)" +
+                            "VALUES (:lesson_id,:student_id,:success);",
+                    parameters);
+            return getAttendanceView(departmentId, attendance);
+        } catch (DataIntegrityViolationException exception) {
 
-        namedJdbcTemplate.update(
-                "INSERT INTO " + databaseName + ".attendance (lesson_id,student_id,success)" +
-                        "VALUES (:lesson_id,:student_id,:success);",
-                parameters);
-        return getAttendanceView(departmentId, attendance);
+            if (exception.getMessage().contains("Duplicate")) {
+                throw new IllegalArgumentException("Такой рабочий уже существует");
+            } else {
+                throw new NoSuchElementException("Рабочий с таким номером еще не был добавлен");
+            }
+        }
 
     }
 

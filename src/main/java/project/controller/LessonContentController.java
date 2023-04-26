@@ -2,11 +2,13 @@ package project.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import project.exceptions.FileSizeLimitExceededException;
 import project.model.LessonContent;
 import project.repository.LessonContentRepository;
 import project.security.JwtAuthorizationService;
@@ -79,6 +81,8 @@ public class LessonContentController {
                     .build(), departmentId);
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } catch (DataIntegrityViolationException e) {
+            throw new FileSizeLimitExceededException();
         }
         return repository.getContentInfoByFileName(departmentId, file.getOriginalFilename());
 
