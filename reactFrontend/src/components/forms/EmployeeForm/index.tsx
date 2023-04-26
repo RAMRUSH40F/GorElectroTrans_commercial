@@ -84,7 +84,7 @@ const EmployeeForm: React.FC<Props> = ({ departments, onSubmit, employee, moveTo
                             </Label>
                         </>
                     )}
-                    <Label className="employee-form__label" text="Фамилия И.О.">
+                    <Label className="employee-form__label" text="ФИО (полностью)">
                         <Input
                             className="employee-form__input"
                             ref={employeeNameRef}

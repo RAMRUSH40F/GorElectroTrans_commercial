@@ -148,7 +148,7 @@ const PlanForm: React.FC<Props> = ({ onSubmit, plan, moveToConfrim, isDisabled, 
                             )}
                         </Label>
                     </div>
-                    <Label className="plan-form__label plan-form__label--mb" text="ФИО преподавателя">
+                    <Label className="plan-form__label plan-form__label--mb" text="ФИО преподавателя (полностью)">
                         <Input
                             className="plan-form__input"
                             name="teacher"

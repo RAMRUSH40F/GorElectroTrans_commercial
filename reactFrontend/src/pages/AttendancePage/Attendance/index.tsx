@@ -100,7 +100,7 @@ const Attendance: React.FC = () => {
                         <Table className="attendance__table">
                             <TableHead>
                                 <TableHeadCell>Номер занятия</TableHeadCell>
-                                <TableHeadCell>Фамилия И.О</TableHeadCell>
+                                <TableHeadCell>ФИО</TableHeadCell>
                                 <TableHeadCell>Дата</TableHeadCell>
                                 <TableHeadCell>Кол-во часов</TableHeadCell>
                                 <TableHeadCell>Зачет/Незачет</TableHeadCell>
@@ -117,8 +117,8 @@ const Attendance: React.FC = () => {
                                         onClick={() => setEditingAttendance(attendance)}
                                     >
                                         <TableBodyCell>{attendance.lessonId}</TableBodyCell>
-                                        <TableBodyCell>
-                                            <span className="attendance__table-name">{attendance.name}</span>
+                                        <TableBodyCell className="attendance__table-name-cell">
+                                            {attendance.name}
                                         </TableBodyCell>
                                         <TableBodyCell>{formatDate(attendance.date)}</TableBodyCell>
                                         <TableBodyCell>{attendance.duration}</TableBodyCell>
@@ -129,8 +129,8 @@ const Attendance: React.FC = () => {
                                         <TableBodyCell className="attendance__table-subdepartment-cell">
                                             {attendance.subDepartment}
                                         </TableBodyCell>
-                                        <TableBodyCell>
-                                            <span className="attendance__table-name">{attendance.teacher}</span>
+                                        <TableBodyCell className="attendance__table-name-cell">
+                                            {attendance.teacher}
                                         </TableBodyCell>
                                     </TableBodyRow>
                                 ))}

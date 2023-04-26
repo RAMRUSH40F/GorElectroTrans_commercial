@@ -129,11 +129,11 @@ const Plan: React.FC = () => {
                                             <TableBodyCell>{plan.duration}</TableBodyCell>
                                             <TableBodyCell>{plan.peoplePlanned}</TableBodyCell>
                                             <TableBodyCell>{plan.topic}</TableBodyCell>
-                                            <TableBodyCell>
-                                                <span className="plan__table-name">{plan.teacher}</span>
+                                            <TableBodyCell className="plan__table-name-cell">
+                                                {plan.teacher}
                                             </TableBodyCell>
                                             <TableBodyCell>
-                                                {plan.isHeld ? PLAN_STATUS_VALUE.HELD : PLAN_STATUS_VALUE.SCHEDULED}
+                                                {plan.isHeld ? PLAN_STATUS_VALUE[1] : PLAN_STATUS_VALUE[0]}
                                             </TableBodyCell>
                                         </TableBodyRow>
                                     ))}

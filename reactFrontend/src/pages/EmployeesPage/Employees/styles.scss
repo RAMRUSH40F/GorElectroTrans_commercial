@@ -6,7 +6,7 @@
     // .employees__table-wrapper
     &__table-wrapper {
         overflow-x: auto;
-        margin-bottom: 2.2rem;
+        margin-bottom: 1rem;
     }
     // .employees__table
     &__table {
@@ -20,6 +20,10 @@
             opacity: 0.5;
             pointer-events: none;
         }
+    }
+    // .employees__table-name-cell
+    &__table-name-cell {
+        min-width: 11rem;
     }
     // .employees__pagination
     &__pagination {

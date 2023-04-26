@@ -37,7 +37,7 @@ const PlanEditing: React.FC<Props> = ({ plan, closeEditing, openMaterialsEditing
             peoplePlanned: parseInt(peoplePlanned),
             teacher: teacher.trim(),
             topic: topic.trim(),
-            isHeld: !+status.value,
+            isHeld: !!Number(status.value),
             teacherPost: String(teacherPost.label),
             lessonContent: plan.lessonContent,
         };

@@ -5,7 +5,7 @@
     }
     // .attendance__table-wrapper
     &__table-wrapper {
-        margin-bottom: 1.5rem;
+        margin-bottom: 1rem;
         overflow-x: auto;
     }
     // .attendance__table
@@ -20,9 +20,9 @@
             pointer-events: none;
         }
     }
-    // .attendance__table-name
-    &__table-name {
-        white-space: nowrap;
+    // .attendance__table-name-cell
+    &__table-name-cell {
+        min-width: 11rem;
     }
     // .attendance__table-topic-cell
     &__table-topic-cell {
