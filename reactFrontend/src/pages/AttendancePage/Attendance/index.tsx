@@ -36,9 +36,9 @@ const Attendance: React.FC = () => {
     const [isFetching, setIsFetching] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    const [page, setPage] = useState<number>(searchParams.get("page") ? Number(searchParams.get("page")) : 1);
     const [totalPages, setTotalPages] = useState(0);
 
+    const page = searchParams.get("page") ?? 1;
     const searchQuery = searchParams.get("key");
 
     useEffect(() => {
@@ -80,7 +80,6 @@ const Attendance: React.FC = () => {
     }, [page, setAttendances, divisionId, logout, searchQuery]);
 
     const handlePageChange = (selectedItem: { selected: number }) => {
-        setPage(selectedItem.selected + 1);
         searchParams.set("page", String(selectedItem.selected + 1));
         setSearchParams(searchParams);
     };
@@ -101,7 +100,7 @@ const Attendance: React.FC = () => {
                         <Table className="attendance__table">
                             <TableHead>
                                 <TableHeadCell>Номер занятия</TableHeadCell>
-                                <TableHeadCell>Фамилия И.О</TableHeadCell>
+                                <TableHeadCell>ФИО</TableHeadCell>
                                 <TableHeadCell>Дата</TableHeadCell>
                                 <TableHeadCell>Кол-во часов</TableHeadCell>
                                 <TableHeadCell>Зачет/Незачет</TableHeadCell>
@@ -118,8 +117,8 @@ const Attendance: React.FC = () => {
                                         onClick={() => setEditingAttendance(attendance)}
                                     >
                                         <TableBodyCell>{attendance.lessonId}</TableBodyCell>
-                                        <TableBodyCell>
-                                            <span className="attendance__table-name">{attendance.name}</span>
+                                        <TableBodyCell className="attendance__table-name-cell">
+                                            {attendance.name}
                                         </TableBodyCell>
                                         <TableBodyCell>{formatDate(attendance.date)}</TableBodyCell>
                                         <TableBodyCell>{attendance.duration}</TableBodyCell>
@@ -130,8 +129,8 @@ const Attendance: React.FC = () => {
                                         <TableBodyCell className="attendance__table-subdepartment-cell">
                                             {attendance.subDepartment}
                                         </TableBodyCell>
-                                        <TableBodyCell>
-                                            <span className="attendance__table-name">{attendance.teacher}</span>
+                                        <TableBodyCell className="attendance__table-name-cell">
+                                            {attendance.teacher}
                                         </TableBodyCell>
                                     </TableBodyRow>
                                 ))}

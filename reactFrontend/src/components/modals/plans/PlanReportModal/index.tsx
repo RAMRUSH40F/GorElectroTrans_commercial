@@ -8,13 +8,13 @@ import Alert from "../../../Alert";
 import { ALERT } from "../../../../constants/alertTypes";
 import { useParams } from "react-router-dom";
 import PlanService from "../../../../services/PlanService";
-import { Option } from "react-dropdown";
 import PlanReportForm from "../../../forms/PlanReportForm";
 import { useUserContext } from "../../../../context/userContext";
 import { downloadFile } from "../../../../helpers/downloadFile";
 import Loader from "../../../Loader";
 import { IQuarter } from "../../../../models/Quarter";
 import axios from "axios";
+import { DropdownOption } from "../../../formElements/Dropdown";
 
 import "./styles.scss";
 
@@ -35,7 +35,7 @@ const PlanReportModal: React.FC<Props> = ({ closeModal }) => {
     const [error, setError] = useState<string | null>(null);
     const [quarters, setQuarters] = useState<IQuarter[]>([]);
 
-    const options: Option[] = quarters.map((quarter) => ({
+    const options: DropdownOption[] = quarters.map((quarter) => ({
         label: `Год: ${quarter.year}, квартал: ${quarter.quoter}`,
         value: String(quarter.quoter),
     }));

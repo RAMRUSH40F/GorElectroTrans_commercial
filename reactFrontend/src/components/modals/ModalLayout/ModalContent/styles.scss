@@ -1,3 +1,8 @@
+@import "../../../../assets/styles/vars.scss";
+
 .modal-content {
     padding: 1rem 1.5rem;
+    @media (max-width: $mobileSmall) {
+        padding: 1rem;
+    }
 }

@@ -21,6 +21,7 @@
 }
 
 @mixin control {
+    font-size: 1rem;
     border: 1px solid $grey;
     padding: 0.7rem;
     color: $black;
@@ -31,5 +32,8 @@
     }
     &:disabled {
         opacity: 0.5;
+    }
+    &::placeholder {
+        font-size: 0.9rem;
     }
 }
