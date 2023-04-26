@@ -1,6 +1,6 @@
 export enum PLAN_STATUS {
-    HELD = "HELD",
-    SCHEDULED = "SCHEDULED",
+    HELD = 1,
+    SCHEDULED = 0,
 }
 
 export const PLAN_STATUS_VALUE: { [key in PLAN_STATUS]: string } = {

@@ -12,6 +12,7 @@
     &__table {
         min-width: 40.625rem;
         width: 100%;
+        margin-bottom: 1rem;
     }
     // .plan__table-body
     &__table-body {
@@ -37,9 +38,9 @@
     &__table-topic-column {
         min-width: 13.75rem;
     }
-    // .plan__table-name
-    &__table-name {
-        white-space: nowrap;
+    // .plan__table-name-cell
+    &__table-name-cell {
+        min-width: 11rem;
     }
     // .plan__pagination
     &__pagination {

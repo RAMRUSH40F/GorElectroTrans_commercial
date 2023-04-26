@@ -1,6 +1,5 @@
 import React from "react";
 import Label from "../../formElements/Label";
-import { Option } from "react-dropdown";
 import { TAttendanceDto } from "../../../models/Attendance";
 import { ATTENDACE_RESULT_VALUE, ATTENDANCE_RESULT } from "../../../constants/attendanceResult";
 import useFocus from "../../../hooks/useFocus";
@@ -9,11 +8,11 @@ import FormErrorMessage from "../../formElements/FormErrorMessage";
 import ActionButton from "../../buttons/ActionButton";
 import { attendanceFormScheme } from "./attendanceFormSheme";
 import InputNumber from "../../formElements/InputNumber";
-import Select from "../../formElements/Select";
+import Dropdown, { DropdownOption } from "../../formElements/Dropdown";
 
 import "./styles.scss";
 
-const options: Option[] = [
+const options: DropdownOption[] = [
     { label: ATTENDACE_RESULT_VALUE[ATTENDANCE_RESULT.SUCCESS], value: String(ATTENDANCE_RESULT.SUCCESS) },
     { label: ATTENDACE_RESULT_VALUE[ATTENDANCE_RESULT.FAIL], value: String(ATTENDANCE_RESULT.FAIL) },
 ];
@@ -29,14 +28,14 @@ type Props = {
 export interface AttendanceFormState {
     lessonId: string;
     studentId: string;
-    success: Option;
+    success: DropdownOption;
 }
 
 const AttendanceForm: React.FC<Props> = ({ onSubmit, attendance, isDisabled, moveToConfrim, isEditing }) => {
     const inputRef = React.useRef<HTMLInputElement | null>(null);
     useFocus(inputRef, true);
 
-    const getInitialSuccessOption = (): Option => {
+    const getInitialSuccessOption = (): DropdownOption => {
         if (attendance) {
             return options.find((option) => option.value === String(attendance.success)) ?? options[0];
         }
@@ -96,10 +95,10 @@ const AttendanceForm: React.FC<Props> = ({ onSubmit, attendance, isDisabled, mov
                         </>
                     )}
                     <Label className="attendance-form__label" text="Зачет/Незачет">
-                        <Select
+                        <Dropdown
                             className="attendance-form__select"
                             options={options}
-                            value={values.success}
+                            initialOption={values.success}
                             onChange={(option) => setFieldValue("success", option)}
                             disabled={isSubmitting || isDisabled}
                         />

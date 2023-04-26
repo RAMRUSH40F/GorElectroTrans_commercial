@@ -3,9 +3,9 @@ import React from "react";
 const useLockedBody = (isLocked: boolean) => {
     React.useEffect(() => {
         if (isLocked) {
-            document.body.style.overflow = "hidden";
+            document.body.classList.add("overflow");
         } else {
-            document.body.style.overflow = "initial";
+            document.body.classList.remove("overflow");
         }
     }, [isLocked]);
 };

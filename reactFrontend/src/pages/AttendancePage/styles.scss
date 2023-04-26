@@ -15,4 +15,10 @@
             margin: 20px 0;
         }
     }
+    // .attendance-page__search
+    &__search {
+        @media(max-width: $mobileSmall) {
+            width: 80%;
+        }
+    }
 }
