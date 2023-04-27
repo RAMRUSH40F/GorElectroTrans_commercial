@@ -19,7 +19,7 @@ public class StudentMultiplier {
         Student student;
 
         for (int j = 0; j < 333; j++) {
-            SubdepartmentId = (short) ((random.nextInt(6) + 1) * 100 + departmentId);
+            SubdepartmentId = (short) ((random.nextInt(6) + 1));
             idBuilder.delete(0, 6);
             idBuilder.append(100000 + j + 333 * (departmentId - 1))
                     .deleteCharAt(0);

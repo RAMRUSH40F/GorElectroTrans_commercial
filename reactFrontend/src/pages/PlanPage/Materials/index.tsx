@@ -57,6 +57,7 @@ const Materials: React.FC<Props> = ({ closeMaterialsEditing, lessonId, fileNames
             showNotion(NOTION.SUCCESS, "Материалы успешно добавлены");
             setFile(null);
             setIsAdding(false);
+            setIsFileLoading((prev) => [false, ...prev]);
         } catch (error) {
             const err = error as any;
             if (err?.response?.status === 401) {

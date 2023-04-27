@@ -1,15 +1,20 @@
 package project.exceptions;
 
 
-import project.security.exception.AuthenticationException;
-import project.security.model.User;
-
 public class Validator {
 
-    public static void validateDepartmentId(Integer id) {
-        if (id > 15 || id < 1) {
+    public static Integer validateDepartmentId(String id) {
+        try {
+            Integer depId = Integer.valueOf(id);
+            if (depId > 15 || depId < 1) {
+                throw new InvalidDepartmentException(id);
+            }
+            return depId;
+        } catch (NumberFormatException e) {
             throw new InvalidDepartmentException(id);
         }
+
+
     }
 
     public static void validateStudentId(String id) {

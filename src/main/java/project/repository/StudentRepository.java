@@ -1,11 +1,13 @@
 package project.repository;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import project.exceptions.InvalidStudentIdException;
+import project.exceptions.InvalidSubdepartmentException;
 import project.exceptions.Validator;
 import project.model.Student;
 import project.model.StudentView;
@@ -47,11 +49,20 @@ public class StudentRepository {
             }
             studentView.setFullName(worker.getName());
         } else {
-            workersRepository.addNewWorker(
-                    Worker.builder()
-                            .id(studentView.getStudentId())
-                            .name(studentView.getFullName())
-                            .build());
+            try {
+                workersRepository.addNewWorker(
+                        Worker.builder()
+                                .id(studentView.getStudentId())
+                                .name(studentView.getFullName())
+                                .build());
+            } catch (DataIntegrityViolationException exception) {
+                if (exception.getMessage().contains("Duplicate")) {
+                    throw new IllegalArgumentException("Рабочий с таким номером уже есть в системе");
+                } else {
+                    throw new RuntimeException(exception);
+                }
+
+            }
         }
         // Для добавления нужен SubDepartmentId, а с фронта приходит SubDepartmentName
         Short newSubDepartmentId = subdepartmentRepository
@@ -128,7 +139,9 @@ public class StudentRepository {
         Short newSubDepartmentId = subdepartmentRepository
                 .getSubdepartmentByName(departmentId, studentView.getSubDepartment())
                 .getId();
-
+        if (newSubDepartmentId == null) {
+            throw new InvalidSubdepartmentException(studentView.getSubDepartment());
+        }
         String query = new StringBuilder()
                 .append("UPDATE DEP_")
                 .append(departmentId)
@@ -139,7 +152,15 @@ public class StudentRepository {
                 .append("'")
                 .toString();
 
+        String query2 = new StringBuilder()
+                .append("UPDATE WORKERS.workers SET name='")
+                .append(studentView.getFullName())
+                .append("' WHERE id='")
+                .append(studentView.getStudentId())
+                .append("'")
+                .toString();
         jdbcTemplate.execute(query);
+        jdbcTemplate.execute(query2);
     }
 
     public void addNewStudentByDepId(int departmentId, Student student) {

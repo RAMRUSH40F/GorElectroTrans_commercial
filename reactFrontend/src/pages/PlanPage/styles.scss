@@ -1,5 +1,4 @@
 @import "../../assets/styles/mixins.scss";
-@import "../../assets/styles/vars.scss";
 
 .plan-page {
     width: 100%;
@@ -18,6 +17,12 @@
         flex-wrap: wrap;
         @media (max-width: $mobile) {
             margin: 20px 0;
+        }
+    }
+    // .plan-page__search
+    &__search {
+        @media (max-width: $mobileSmall) {
+            width: 80%;
         }
     }
     // .plan-page__actions

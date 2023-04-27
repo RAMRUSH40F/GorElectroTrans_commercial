@@ -20,11 +20,11 @@ public class StudentController {
     private final JwtAuthorizationService auth;
 
     @GetMapping("/dep_{N}/students/data")
-    public ResponseEntity<List<StudentView>> getStudentPage(@PathVariable("N") int departmentId,
+    public ResponseEntity<List<StudentView>> getStudentPage(@PathVariable("N") String depId,
                                                             @RequestParam(value = "page") String page,
                                                             @RequestParam(value = "size") String pageSize,
                                                             @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
-        validateDepartmentId(departmentId);
+        Integer departmentId = validateDepartmentId(depId);
         validatePaginationParams(page, pageSize);
         auth.authorize(jwtToken, departmentId);
 
@@ -37,10 +37,10 @@ public class StudentController {
     }
 
     @GetMapping("/dep_{N}/students/{id}")
-    public StudentView findStudentById(@PathVariable("N") int departmentId,
+    public StudentView findStudentById(@PathVariable("N") String depId,
                                        @PathVariable("id") String studentId,
                                        @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
-        validateDepartmentId(departmentId);
+        Integer departmentId = validateDepartmentId(depId);
         validateStudentId(studentId);
         auth.authorize(jwtToken, departmentId);
 
@@ -48,20 +48,20 @@ public class StudentController {
     }
 
     @PostMapping("/dep_{N}/students/data")
-    public StudentView addNewStudent(@RequestBody StudentView student,
-                                     @PathVariable("N") int departmentId,
+    public StudentView addNewStudent(@PathVariable("N") String depId,
+                                     @RequestBody StudentView student,
                                      @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
-        validateDepartmentId(departmentId);
+        Integer departmentId = validateDepartmentId(depId);
         auth.authorize(jwtToken, departmentId);
 
         return studentRepository.addNewStudent(departmentId, student);
     }
 
     @PutMapping("/dep_{N}/students/data")
-    public void updateStudent(@RequestBody StudentView student,
-                              @PathVariable("N") int departmentId,
+    public void updateStudent(@PathVariable("N") String depId,
+                              @RequestBody StudentView student,
                               @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
-        validateDepartmentId(departmentId);
+        Integer departmentId = validateDepartmentId(depId);
         validateStudentId(student.getStudentId());
         auth.authorize(jwtToken, departmentId);
 
@@ -69,11 +69,11 @@ public class StudentController {
     }
 
     @DeleteMapping("/dep_{N}/students/{id}")
-    public void deleteStudentById(@PathVariable("N") int departmentId,
+    public void deleteStudentById(@PathVariable("N") String depId,
                                   @PathVariable("id") String studentId,
                                   @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
 
-        validateDepartmentId(departmentId);
+        Integer departmentId = validateDepartmentId(depId);
         validateStudentId(studentId);
         auth.authorize(jwtToken, departmentId);
 

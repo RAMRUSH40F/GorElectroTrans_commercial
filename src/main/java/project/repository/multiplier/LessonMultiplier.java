@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import project.model.Lesson;
 import project.repository.LessonRepository;
+import project.service.reportService.TeacherProfession;
 
 import java.sql.Date;
 
@@ -16,14 +17,13 @@ public class LessonMultiplier {
     public void addAllLessons(int departmentId){
 
         Object [] [] lessons = {
-                {"Тех.обслуживание на новых моделях трамваев", 2.0f, new Date(1647748285L), "Джмун Ф.К.", 34},
-                {"Как вкручивать лампочки правильно", 1.6f, new Date(1677508698105L), "Высоцкий П.К.", 10},
-                {"Здоровый образ жизни у водителей трамваев", 2.6f, new Date(1647754134L), "Капылов П.К.", 112},
-                {"Разговоры о важном", 1f, new Date(1649562685L), "Высоцкий П.К.", 34},
-                {"Ремонт нового подвижного состава трамваев", 2.6f, new Date(1650772285L), "Левицкий Л.К.", 52},
-                {"Ремонт усиков троллейбуса", 2.4f, new Date(1677508698105L), "Яшин А.С.", 40}
+                {"Тех.обслуживание на новых моделях трамваев", 2.0f, new Date(1679846400L), "Джмун Федор Кириллович", 34,TeacherProfession.MASTER.getProfession()},
+                {"Как вкручивать лампочки правильно", 1.6f, new Date(1680873600L), "Высоцкий Констанстин Павлович.", 10,TeacherProfession.RUKOVODITEL.getProfession()},
+                {"Здоровый образ жизни у водителей трамваев", 2.6f, new Date(1681900800L), "Капылов Петр Дмитриевич.", 112,TeacherProfession.RUKOVODITEL.getProfession()},
+                {"Разговоры о важном", 1f, new Date(1682457600L), "Высоцкий П.К.", 34,TeacherProfession.NASTAVNIK.getProfession()},
+                {"Ремонт нового подвижного состава трамваев", 2.6f, new Date(1683014400L), "Левицкий Леонид Константинович.", 52,TeacherProfession.MASTER.getProfession()},
+                {"Ремонт усов троллейбуса", 2.4f, new Date(1684041600L), "Яшин А.С.", 40, "Лучший механик месяца"}
         };
-
         lessonRepository.deleteAllLessons(departmentId);
 
         for (int i = 0; i < 6; i++) {
@@ -33,6 +33,8 @@ public class LessonMultiplier {
                     .date((Date) lessons [i][2])
                     .teacher((String) lessons [i][3])
                     .peoplePlanned((Integer) lessons [i][4])
+                    .teacherPost((String) lessons [i][5])
+                    .isHeld(true)
                     .build();
             lessonRepository.addNewLesson(departmentId, lesson);
         }

@@ -20,19 +20,19 @@ public class SubdepartmentController {
     private final JwtAuthorizationService auth;
 
     @GetMapping("/dep_{N}/subdep/data")
-    public List<Subdepartment> getAll(@PathVariable("N") Integer departmentId,
+    public List<Subdepartment> getAll(@PathVariable("N") String depId,
                                       @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
-        validateDepartmentId(departmentId);
+        Integer departmentId = validateDepartmentId(depId);
         auth.authorize(jwtToken, departmentId);
 
         return subdepartmentRepository.getAll(departmentId);
     }
 
     @PostMapping("/dep_{N}/subdep/data")
-    public Subdepartment addNewSubdepartment(@PathVariable("N") int departmentId,
+    public Subdepartment addNewSubdepartment(@PathVariable("N") String depId,
                                              @RequestBody Subdepartment subdepartment,
                                              @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
-        validateDepartmentId(departmentId);
+        Integer departmentId = validateDepartmentId(depId);
         auth.authorize(jwtToken, departmentId);
 
         return subdepartmentRepository.addNewSubdepartment(departmentId, subdepartment);
@@ -40,20 +40,20 @@ public class SubdepartmentController {
     }
 
     @PutMapping("/dep_{N}/subdep/data")
-    public Subdepartment updateSubdepartmentName(@PathVariable("N") int departmentId,
+    public Subdepartment updateSubdepartmentName(@PathVariable("N") String depId,
                                                  @RequestBody Subdepartment subdepartment,
                                                  @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
-        validateDepartmentId(departmentId);
+        Integer departmentId = validateDepartmentId(depId);
         auth.authorize(jwtToken, departmentId);
 
         return subdepartmentRepository.updateSubdepartmentName(departmentId, subdepartment);
     }
 
     @DeleteMapping("/dep_{N}/subdep/{id}")
-    public void deleteSubdepartmentById(@PathVariable("N") Integer departmentId,
+    public void deleteSubdepartmentById(@PathVariable("N") String depId,
                                         @PathVariable("id") short id,
                                         @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
-        validateDepartmentId(departmentId);
+        Integer departmentId = validateDepartmentId(depId);
         auth.authorize(jwtToken, departmentId);
 
         subdepartmentRepository.deleteSubdepartmentById(departmentId, id);

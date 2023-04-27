@@ -1,11 +1,11 @@
 package project.repository;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
-import project.exceptions.Validator;
 import project.model.Attendance;
 import project.model.AttendanceView;
 import project.repository.mapper.AttendanceMapper;
@@ -13,8 +13,7 @@ import project.repository.mapper.AttendanceMapper;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static project.exceptions.Validator.validateDepartmentId;
+import java.util.NoSuchElementException;
 
 @Repository("AttendanceRepositoryBean")
 @RequiredArgsConstructor
@@ -26,19 +25,25 @@ public class AttendanceRepository {
 
     // Метод добавляет запись о результатах посещения какого-то занятия учеником.
     public AttendanceView addNewRecord(int departmentId, Attendance attendance) {
-        Validator.validateDepartmentId(departmentId);
-
         String databaseName = "DEP_" + departmentId;
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("lesson_id", attendance.getLessonId());
         parameters.put("student_id", attendance.getStudentId());
         parameters.put("success", attendance.getSuccess());
+        try {
+            namedJdbcTemplate.update(
+                    "INSERT INTO " + databaseName + ".attendance (lesson_id,student_id,success)" +
+                            "VALUES (:lesson_id,:student_id,:success);",
+                    parameters);
+            return getAttendanceView(departmentId, attendance);
+        } catch (DataIntegrityViolationException exception) {
 
-        namedJdbcTemplate.update(
-                "INSERT INTO " + databaseName + ".attendance (lesson_id,student_id,success)" +
-                        "VALUES (:lesson_id,:student_id,:success);",
-                parameters);
-        return getAttendanceView(departmentId, attendance);
+            if (exception.getMessage().contains("Duplicate")) {
+                throw new IllegalArgumentException("Такой рабочий уже существует");
+            } else {
+                throw new NoSuchElementException("Рабочий с таким номером еще не был добавлен");
+            }
+        }
 
     }
 
@@ -103,9 +108,8 @@ public class AttendanceRepository {
     }
 
     public List<AttendanceView> getAttendanceByKeyword(int departmentId, String key) {
-        validateDepartmentId(departmentId);
-        Map<String, String> parametrs = new HashMap<>();
-        parametrs.put("key", "%" + key + "%");
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("key", "%" + key + "%");
 
         return namedJdbcTemplate.query(
                 "SELECT * FROM DEP_" + departmentId + ".Attendance_view WHERE name LIKE :key " +
@@ -114,7 +118,7 @@ public class AttendanceRepository {
                         "OR teacher LIKE :key " +
                         "OR subdepartment LIKE :key " +
                         "ORDER BY name DESC",
-                parametrs, mapper);
+                parameters, mapper);
     }
 
 }

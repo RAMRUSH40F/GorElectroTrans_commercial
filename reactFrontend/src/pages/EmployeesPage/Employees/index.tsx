@@ -95,7 +95,7 @@ const Employees: FC = () => {
                         <Table className="employees__table">
                             <TableHead>
                                 <TableHeadCell>Табельный номер</TableHeadCell>
-                                <TableHeadCell>Фамилия И.О</TableHeadCell>
+                                <TableHeadCell>ФИО</TableHeadCell>
                                 <TableHeadCell>Отдел</TableHeadCell>
                             </TableHead>
                             <tbody
@@ -109,7 +109,7 @@ const Employees: FC = () => {
                                             onClick={() => setEditingEmployee(employee)}
                                         >
                                             <TableBodyCell>{employee.studentId}</TableBodyCell>
-                                            <TableBodyCell>{employee.fullName}</TableBodyCell>
+                                            <TableBodyCell className="employees__table-name-cell">{employee.fullName}</TableBodyCell>
                                             <TableBodyCell>{employee.subdepartmentName}</TableBodyCell>
                                         </TableBodyRow>
                                     ))}

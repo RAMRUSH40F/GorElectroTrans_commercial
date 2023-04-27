@@ -64,8 +64,6 @@ public class JwtAuthorizationService {
         User user = userRepository.getUserByUsername(username);
         if (user != null && user.getPassword().equals(password)) {
             if (user.isActive()) {
-                System.out.println(user.getPassword());
-                System.out.println(user.getAuthorities());
                 return createToken(user);
             }
             throw new AuthenticationException("Этот аккаунт был отключен в базе данных, обратитесь к администратору.");
@@ -94,7 +92,7 @@ public class JwtAuthorizationService {
         return token;
     }
 
-    public void authorize(String jwtToken, int departmentID) {
+    public void authorize(String jwtToken, Integer departmentID) {
         validateToken(jwtToken);
         User user = decodeUserFromToken(jwtToken);
         // admin role ("100") has authorization to everything
