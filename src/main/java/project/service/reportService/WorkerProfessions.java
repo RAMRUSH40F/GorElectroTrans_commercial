@@ -2,8 +2,9 @@ package project.service.reportService;
 
 
 public enum WorkerProfessions implements Profession{
-    SLESARY("Водители"),
-    VODITELY("Cлесари"),
+    SLESARY("Слесари"),
+    VODITELYT("Водители трамваев"),
+    VODITELYTR("Водители троллейбусов"),
     DISPETCHERS("Диспетчеры"),
     SPECIALISTS("Специалисты УГМ"),
     OTHERS("Другие");

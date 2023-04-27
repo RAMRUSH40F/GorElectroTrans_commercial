@@ -13,7 +13,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
-import java.time.Year;
 import java.util.AbstractMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -27,14 +26,14 @@ public class ReportService {
 /*
 Метод чтения файла
 */
-    public HSSFWorkbook readWorkbook(String filename) {
-        try(InputStream inputStream = getClass().getResourceAsStream(filename)) {
-            return new HSSFWorkbook(new POIFSFileSystem(inputStream));
-        } catch (IOException e) {
-            throw new RuntimeException("Файл шаблона не был загружен в корневую папку проекта или " +
-                    "произошла другая ошибка связанная с чтением шаблонной таблицы", e);
-        }
+public HSSFWorkbook readWorkbook(String filename) {
+    try(InputStream inputStream = getClass().getResourceAsStream(filename)) {
+        return new HSSFWorkbook(new POIFSFileSystem(inputStream));
+    } catch (IOException e) {
+        throw new RuntimeException("Файл шаблона не был загружен в корневую папку проекта или " +
+                "произошла другая ошибка связанная с чтением шаблонной таблицы", e);
     }
+}
     /*
     * Метод записи файла
     */
@@ -51,14 +50,14 @@ public class ReportService {
     /*
      * Метод формирования отчетов
      */
-    public void formLessonReport(HSSFWorkbook workbook, String fileName, int quarter) {
+    public void formLessonReport(HSSFWorkbook workbook, String fileName, int quarter,int year) {
         final HSSFSheet sheet = workbook.getSheet("Лист1");
         final HSSFRow row1 = sheet.getRow(2);
         final HSSFRow row2 = sheet.getRow(3);
         final HSSFRow row3 = sheet.getRow(4);
         final HSSFRow row4 = sheet.getRow(5);
         final int lastCell = 31;
-        final Map.Entry<Integer, Integer> yearMonthPair = calculateDate(quarter);
+        final Map.Entry<Integer, Integer> yearMonthPair = calculateDate(quarter,year);
 
         formLesson(row1, lastCell, yearMonthPair);
         formHeldLesson(row2, lastCell, yearMonthPair);
@@ -136,55 +135,84 @@ public class ReportService {
     /*
      * Формирования данных о всех работниках
      */
-    public void formWorkerReport(HSSFWorkbook workbook, String filename) {
+    public void formWorkerReport(HSSFWorkbook workbook, String filename,int quarter,int year) {
         final HSSFSheet sheet = workbook.getSheet("Лист1");
-        final HSSFRow row = sheet.getRow(7);
-        HSSFCell cell;
-        CellStyle style = applyClassicStyle(row.getSheet().getWorkbook());
+        final HSSFRow row = sheet.getRow(6);
+        final Map.Entry<Integer, Integer> yearMonthPair = calculateDate(quarter, year);
         int lastCell = 31;
-        for (int column = 1; column < lastCell - 1; column += 2) {
-            cell = row.getCell(column);
-            cell.setCellStyle(style);
-            cell.setCellValue(jdbcTemplate.query("SELECT COUNT(1) FROM DEP_" + (column / 2 + 1) + ".student",
-                    (rs, rowNum) -> rs.getInt("COUNT(1)")).get(0));
-        }
-        formWorkerStatsByProfession(WorkerProfessions.VODITELY.getProfession(), sheet.getRow(8));
-        formWorkerStatsByProfession(WorkerProfessions.SLESARY.getProfession(), sheet.getRow(9));
-        formWorkerStatsByProfession(WorkerProfessions.DISPETCHERS.getProfession(), sheet.getRow(10));
-        formWorkerStatsByProfession(WorkerProfessions.SPECIALISTS.getProfession(), sheet.getRow(11));
+        formAllWorker(row, yearMonthPair, lastCell);
+        formSuccessWorker(sheet.getRow(7),yearMonthPair,lastCell);
+        formWorkerStatsByProfession(WorkerProfessions.VODITELYTR.getProfession(), sheet.getRow(8),yearMonthPair);
+        formWorkerStatsByProfession(WorkerProfessions.VODITELYT.getProfession(), sheet.getRow(9),yearMonthPair);
+        formWorkerStatsByProfession(WorkerProfessions.SLESARY.getProfession(), sheet.getRow(10),yearMonthPair);
+        formWorkerStatsByProfession(WorkerProfessions.DISPETCHERS.getProfession(), sheet.getRow(11),yearMonthPair);
+        formWorkerStatsByProfession(WorkerProfessions.SPECIALISTS.getProfession(), sheet.getRow(12),yearMonthPair);
 
 
-        formStatsForOthersCategory(sheet.getRow(12), 7, 11, 1, row.getLastCellNum(), sheet);
+        formStatsForOthersCategory(sheet.getRow(13), 7, 12, 1, row.getLastCellNum(), sheet);
         setResultingColumnValues(row);
         writeWorkbook(workbook, filename);
     }
+
+    private void formAllWorker(HSSFRow row, Map.Entry<Integer, Integer> yearMonthPair, int lastCell) {
+        HSSFCell cell;
+        CellStyle style = applyClassicStyle(row.getSheet().getWorkbook());
+        for (int column = 1; column < lastCell - 1; column += 2) {
+            cell = row.getCell(column);
+            cell.setCellStyle(style);
+            cell.setCellValue(jdbcTemplate.query("SELECT COUNT(1) FROM DEP_"
+                            + (column / 2 + 1)
+                            + ".Attendance_view WHERE `date` BETWEEN '"
+                            + yearMonthPair.getKey() + "-0"
+                            + yearMonthPair.getValue()
+                            + "-01' AND '"
+                            + yearMonthPair.getKey() + "-0"
+                            + (yearMonthPair.getValue() + 3)
+                            + "-01'",
+                    (rs, rowNum) -> rs.getInt("COUNT(1)")).get(0));
+        }
+    }
+    private void formSuccessWorker(HSSFRow row, Map.Entry<Integer, Integer> yearMonthPair, int lastCell) {
+        HSSFCell cell;
+        CellStyle style = applyClassicStyle(row.getSheet().getWorkbook());
+        for (int column = 1; column < lastCell - 1; column += 2) {
+            cell = row.getCell(column);
+            cell.setCellStyle(style);
+            cell.setCellValue(jdbcTemplate.query("SELECT COUNT(1) FROM DEP_"
+                            + (column / 2 + 1)
+                            + ".Attendance_view WHERE `date` BETWEEN '"
+                            + yearMonthPair.getKey() + "-0"
+                            + yearMonthPair.getValue()
+                            + "-01' AND '"
+                            + yearMonthPair.getKey() + "-0"
+                            + (yearMonthPair.getValue() + 3)
+                            + "-01' and success=1",
+                    (rs, rowNum) -> rs.getInt("COUNT(1)")).get(0));
+        }
+    }
+
     /*
      * Формирования данных о работниках по специальности
      */
-    private void formWorkerStatsByProfession(String profession, HSSFRow row) {
+    private void formWorkerStatsByProfession(String profession, HSSFRow row,Map.Entry<Integer, Integer> yearMonthPair) {
         if (profession == null || row == null) {
             return;
         }
         final int lastCell = 31;
-        int professionId;
         HSSFCell cell;
         CellStyle style = applyClassicStyle(row.getSheet().getWorkbook());
         for (int column = 1; column < lastCell; column += 2) {
             cell = row.getCell(column);
             cell.setCellStyle(style);
-            try {
-                professionId = jdbcTemplate.query("SELECT id FROM DEP_"
-                                + (column / 2 + 1)
-                                + ".subdepartment WHERE name LIKE '"
-                                + profession + "'",
-                        (rs, rowNum) -> rs.getInt("id")).get(0);
-            } catch (IndexOutOfBoundsException e) {
-                professionId = 0;
-            }
             cell.setCellValue(jdbcTemplate.query("SELECT COUNT(1) FROM DEP_"
-                            + (column / 2 + 1)
-                            + ".student WHERE subdepartment_id="
-                            + professionId,
+                    + (column / 2 + 1)
+                    + ".Attendance_view WHERE `date` BETWEEN '"
+                    + yearMonthPair.getKey() + "-0"
+                    + yearMonthPair.getValue()
+                    + "-01' AND '"
+                    + yearMonthPair.getKey() + "-0"
+                    + (yearMonthPair.getValue() + 3)
+                    + "-01' and success=1 and subdepartment LIKE '"+profession+"'",
                     (rs, rowNum) -> rs.getInt("COUNT(1)")).get(0));
         }
         setResultingColumnValues(row);
@@ -192,18 +220,18 @@ public class ReportService {
     /*
      * Формирования данных об учителях
      */
-    public void formTeacherReport(HSSFWorkbook workbook, String filename, int quarter) {
+    public void formTeacherReport(HSSFWorkbook workbook, String filename, int quarter, int year) {
         final HSSFSheet sheet = workbook.getSheet("Лист1");
-        final HSSFRow row1 = sheet.getRow(13);
+        final HSSFRow row1 = sheet.getRow(14);
         int lastCell = 31;
-        Map.Entry<Integer, Integer> yearMonthPair = calculateDate(quarter);
+        Map.Entry<Integer, Integer> yearMonthPair = calculateDate(quarter, year);
 
         formLesson(row1, lastCell, yearMonthPair);
 
-        formTeacherStatsByProfession(TeacherProfession.RUKOVODITEL.getProfession(), sheet.getRow(14), quarter);
-        formTeacherStatsByProfession(TeacherProfession.MASTER.getProfession(), sheet.getRow(15), quarter);
-        formTeacherStatsByProfession(TeacherProfession.NASTAVNIK.getProfession(), sheet.getRow(16), quarter);
-        formStatsForOthersCategory(sheet.getRow(17), 13, 16, 1, lastCell, sheet);
+        formTeacherStatsByProfession(TeacherProfession.RUKOVODITEL.getProfession(), sheet.getRow(15), yearMonthPair);
+        formTeacherStatsByProfession(TeacherProfession.MASTER.getProfession(), sheet.getRow(16), yearMonthPair);
+        formTeacherStatsByProfession(TeacherProfession.NASTAVNIK.getProfession(), sheet.getRow(17), yearMonthPair);
+        formStatsForOthersCategory(sheet.getRow(18), 14, 17, 1, lastCell, sheet);
         setResultingColumnValues(row1);
 
         writeWorkbook(workbook, filename);
@@ -212,11 +240,10 @@ public class ReportService {
     /*
      * Формирования данных об учителях определенной должности
      */
-    private void formTeacherStatsByProfession(String profession, HSSFRow row, int quarter) {
+    private void formTeacherStatsByProfession(String profession, HSSFRow row,Map.Entry<Integer, Integer> yearMonthPair) {
         if (profession == null || row == null) {
             return;
         }
-        Map.Entry<Integer, Integer> yearMonthPair = calculateDate(quarter);
         int lastCell = 31;
         HSSFCell cell;
         CellStyle style = applyClassicStyle(row.getSheet().getWorkbook());
@@ -261,16 +288,9 @@ public class ReportService {
     /*
      * Расчет интервала
      */
-    private Map.Entry<Integer, Integer> calculateDate(int quarter) {
+    private Map.Entry<Integer, Integer> calculateDate(int quarter,int year) {
         int month;
-        int year;
-        if (quarter == 4) {
-            year = Year.now().getValue() + 1;
-            month = 1;
-        } else {
-            year = Year.now().getValue();
             month = (quarter - 1) * 3 + 1;
-        }
         return new AbstractMap.SimpleImmutableEntry<>(year, month);
     }
     /*

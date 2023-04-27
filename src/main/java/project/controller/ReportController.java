@@ -15,7 +15,10 @@ import project.model.QuarterDateModel;
 import project.security.JwtAuthorizationService;
 import project.service.reportService.ReportService;
 
+import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.time.Year;
+import java.time.temporal.IsoFields;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -27,15 +30,15 @@ public class ReportController {
     private final JwtAuthorizationService auth;
 
     @GetMapping("/dep_{N}/report/stats")
-    public ResponseEntity<ByteArrayResource> getReport(@RequestParam int quarter,
+    public ResponseEntity<ByteArrayResource> getReport(@RequestParam int quarter,@RequestParam int year,
                                                        @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Validator.validateInterval(quarter);
-        auth.authorize(jwtToken, 100);
+       auth.authorize(jwtToken, 100);
         final String fileName = "/report_template.xls";
         HSSFWorkbook workbook = reportService.readWorkbook(fileName);
-        reportService.formLessonReport(workbook, fileName, quarter);
-        reportService.formWorkerReport(workbook, fileName);
-        reportService.formTeacherReport(workbook, fileName, quarter);
+        reportService.formLessonReport(workbook, fileName, quarter,year);
+        reportService.formWorkerReport(workbook, fileName,quarter,year);
+        reportService.formTeacherReport(workbook, fileName, quarter,year);
         String today = new Date().toString().substring(4, 10);
         // Set response headers
         HttpHeaders headers = new HttpHeaders();
@@ -51,9 +54,15 @@ public class ReportController {
     @GetMapping("/dep_{N}/report/date")
     public List<QuarterDateModel> getYear() {
         int year = Year.now().getValue();
+        int quarter= LocalDate.now().get(IsoFields.QUARTER_OF_YEAR);
         List<QuarterDateModel> intervals = new ArrayList<>();
-        for (int i = 1; i <= 4; i++) {
-            intervals.add(new QuarterDateModel(year, i));
+        for (int i = 0; i < 4; i++) {
+            intervals.add(new QuarterDateModel(year, quarter));
+            quarter--;
+            if(quarter<=0) {
+            quarter=4;
+            year--;
+            }
         }
         return intervals;
     }
