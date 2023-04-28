@@ -72,12 +72,13 @@ const PlanReportModal: React.FC<Props> = ({ closeModal }) => {
         setError(null);
 
         try {
-            const response = await PlanService.fetchReport(divisionId, { params: { quarter } });
             const year =
                 quarters.find((currQuarter) => currQuarter.quoter === parseInt(quarter))?.year ??
                 new Date().getFullYear();
+            const response = await PlanService.fetchReport(divisionId, { params: { quarter, year } });
             const fileName = `Отчет_${quarter}кв_${year}.xls`;
             downloadFile(response.data, fileName);
+            
         } catch (error) {
             const err = error as any;
             console.log(err);

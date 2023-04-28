@@ -2,7 +2,7 @@
 
 .plan-report-btn {
     background-color: $darkyellow;
-    color: darken($white, 6%);
+    color: $black;
     &:hover {
         background-color: darken($darkyellow, 5%);
     }
