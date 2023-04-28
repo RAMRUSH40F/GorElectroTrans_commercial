@@ -14,6 +14,8 @@ type Props = {
 const PlanReportForm: React.FC<Props> = ({ options, handleSubmit, isSubmitting }) => {
     const [option, setOption] = useState(options[0]);
 
+    console.log(options);
+
     return (
         <form className="plan-report-form" onSubmit={(event) => handleSubmit(event, option.value)}>
             <Label className="plan-report-form__label">

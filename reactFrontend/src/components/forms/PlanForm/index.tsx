@@ -62,7 +62,7 @@ const PlanForm: React.FC<Props> = ({ onSubmit, plan, moveToConfrim, isDisabled, 
 
     const getInitialStatusOption = (): DropdownOption => {
         if (plan) {
-            return statusOptions.find((option) => option.value === String(plan.isHeld)) ?? statusOptions[0];
+            return statusOptions.find((option) => !!parseInt(option.value) === plan.isHeld) ?? statusOptions[0];
         }
         return statusOptions[0];
     };
