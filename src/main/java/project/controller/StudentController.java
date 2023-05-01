@@ -16,7 +16,7 @@ import static project.exceptions.Validator.*;
 @RequiredArgsConstructor
 public class StudentController {
 
-    private final StudentRepository studentRepository;
+    private final StudentRepository studentRepositoryImpl;
     private final JwtAuthorizationService auth;
 
     @GetMapping("/dep_{N}/students/data")
@@ -29,11 +29,11 @@ public class StudentController {
         auth.authorize(jwtToken, departmentId);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("students_count", String.valueOf(studentRepository.getStudentsCount(departmentId)));
+        headers.add("students_count", String.valueOf(studentRepositoryImpl.getStudentsCount(departmentId)));
         return ResponseEntity
                 .ok()
                 .headers(headers)
-                .body(studentRepository.getStudentsView(departmentId, Integer.parseInt(page), Integer.parseInt(pageSize)));
+                .body(studentRepositoryImpl.getStudentsView(departmentId, Integer.parseInt(page), Integer.parseInt(pageSize)));
     }
 
     @GetMapping("/dep_{N}/students/{id}")
@@ -44,7 +44,7 @@ public class StudentController {
         validateStudentId(studentId);
         auth.authorize(jwtToken, departmentId);
 
-        return studentRepository.getStudentById(departmentId, studentId);
+        return studentRepositoryImpl.getStudentById(departmentId, studentId);
     }
 
     @PostMapping("/dep_{N}/students/data")
@@ -54,7 +54,7 @@ public class StudentController {
         Integer departmentId = validateDepartmentId(depId);
         auth.authorize(jwtToken, departmentId);
 
-        return studentRepository.addNewStudent(departmentId, student);
+        return studentRepositoryImpl.addNewStudent(departmentId, student);
     }
 
     @PutMapping("/dep_{N}/students/data")
@@ -65,7 +65,7 @@ public class StudentController {
         validateStudentId(student.getStudentId());
         auth.authorize(jwtToken, departmentId);
 
-        studentRepository.updateStudent(departmentId, student);
+        studentRepositoryImpl.updateStudent(departmentId, student);
     }
 
     @DeleteMapping("/dep_{N}/students/{id}")
@@ -77,6 +77,6 @@ public class StudentController {
         validateStudentId(studentId);
         auth.authorize(jwtToken, departmentId);
 
-        studentRepository.deleteStudentById(departmentId, studentId);
+        studentRepositoryImpl.deleteStudentById(departmentId, studentId);
     }
 }

@@ -22,7 +22,7 @@ public class AttendanceMultiplier {
     @Autowired
     LessonRepository lessonRepository;
     @Autowired
-    StudentRepository studentRepository;
+    StudentRepository studentRepositoryImpl;
 
 
     public void addAllAttendance(int departmentId) {
@@ -38,7 +38,7 @@ public class AttendanceMultiplier {
         System.out.println(lessIds);
 
         // Достаем из БД все записи об уроках и об учениках и оставляем каждый 3ий урок.
-        List<Student> students = studentRepository.getStudentsIdList(departmentId);
+        List<Student> students = studentRepositoryImpl.getStudentsIdList(departmentId);
         List<String> studentIdS = students.stream().
                 map(Student::getStudentId).
                 filter(id -> random.nextInt(3) == 1)

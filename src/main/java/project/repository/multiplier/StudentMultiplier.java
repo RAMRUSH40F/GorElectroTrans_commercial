@@ -10,7 +10,7 @@ import java.util.Random;
 @Service("StudentMultiplierBean")
 public class StudentMultiplier {
     @Autowired
-    StudentRepository studentRepository;
+    StudentRepository studentRepositoryImpl;
 
     public void addAllStudents(int departmentId) {
         Random random = new Random();
@@ -27,7 +27,7 @@ public class StudentMultiplier {
                     .studentId(idBuilder.toString())
                     .subDepartmentId(SubdepartmentId)
                     .build();
-            studentRepository.addNewStudentByDepId(departmentId, student);
+            studentRepositoryImpl.addNewStudentByDepId(departmentId, student);
         }
 
         System.out.printf("Student Multiplier ended work on %d department \n ", departmentId);
