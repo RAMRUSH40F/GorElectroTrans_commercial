@@ -1,14 +1,13 @@
 package project.repository.multiplier;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import project.model.Subdepartment;
 import project.repository.SubdepartmentRepository;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Service("SubdepartmentMultiplierBean")
+//@Service("SubdepartmentMultiplierBean")
 @RequiredArgsConstructor
 public class SubdepartmentMultiplier {
 

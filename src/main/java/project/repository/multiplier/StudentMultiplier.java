@@ -1,16 +1,15 @@
 package project.repository.multiplier;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import lombok.RequiredArgsConstructor;
 import project.model.Student;
 import project.repository.StudentRepository;
 
 import java.util.Random;
 
-@Service("StudentMultiplierBean")
+//@Service("StudentMultiplierBean")
+@RequiredArgsConstructor
 public class StudentMultiplier {
-    @Autowired
-    StudentRepository studentRepository;
+    private final StudentRepository studentRepository;
 
     public void addAllStudents(int departmentId) {
         Random random = new Random();

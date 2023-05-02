@@ -1,7 +1,6 @@
 package project.repository.multiplier;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import lombok.RequiredArgsConstructor;
 import project.model.Attendance;
 import project.model.Lesson;
 import project.model.Student;
@@ -14,15 +13,13 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 
-@Service("AttendanceMultiplierBean")
+//@Service("AttendanceMultiplierBean")
+@RequiredArgsConstructor
 public class AttendanceMultiplier {
 
-    @Autowired
-    AttendanceRepository attendanceRepository;
-    @Autowired
-    LessonRepository lessonRepository;
-    @Autowired
-    StudentRepository studentRepository;
+    private final AttendanceRepository attendanceRepository;
+    private final LessonRepository lessonRepository;
+    private final StudentRepository studentRepository;
 
 
     public void addAllAttendance(int departmentId) {
