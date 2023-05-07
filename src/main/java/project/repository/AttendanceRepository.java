@@ -41,7 +41,8 @@ public class AttendanceRepository {
             if (exception.getMessage().contains("Duplicate")) {
                 throw new IllegalArgumentException("Подобная запись уже существует");
             } else {
-                throw new NoSuchElementException("Рабочий с таким номером или урок с таким номером еще не были добавлен");
+                throw new NoSuchElementException("Рабочий с таким номером или урок с таким номером " +
+                        "еще не были добавлены");
             }
         }
 
