@@ -13,9 +13,9 @@ import { useDepartmentsContext } from "../../../../context/departmentsContext";
 import { ALERT } from "../../../../constants/alertTypes";
 import ModalContent from "../../ModalLayout/ModalContent";
 import Alert from "../../../Alert";
+import { useUserContext } from "../../../../context/userContext";
 
 import "./styles.scss";
-import { useUserContext } from "../../../../context/userContext";
 
 type Props = {
     closeModal: () => void;
@@ -33,24 +33,20 @@ const AddDepartmentModal: React.FC<Props> = ({ closeModal }) => {
 
     const handleSubmit = async (values: TDepartmentDto) => {
         setError(null);
-        console.log(values);
-
         try {
             const response = await DepartmentService.post({
                 depId: divisionId,
                 department: { name: values.name.trim() },
             });
-            console.log(response);
             addDepartment(response.data);
-            showNotion(NOTION.SUCCESS, "Запись успешно добавлена");
+            showNotion(NOTION.SUCCESS, "Отдел успешно добавлен");
             closeModal();
         } catch (error) {
             const err = error as any;
-            console.log(err);
             if (err.response.status === 401) {
                 logout();
             } else {
-                setError(err?.response?.data?.message ?? "Не удалось добавить запись");
+                setError(err?.response?.data?.message ?? "Не удалось добавить отдел");
             }
         }
     };
@@ -64,7 +60,7 @@ const AddDepartmentModal: React.FC<Props> = ({ closeModal }) => {
                         {error}
                     </Alert>
                 )}
-                <DepartmentForm onSubmit={handleSubmit} />
+                <DepartmentForm clearError={() => setError(null)} onSubmit={handleSubmit} />
             </ModalContent>
         </ModalLayout>
     );

@@ -63,7 +63,7 @@ const Materials: React.FC<Props> = ({ closeMaterialsEditing, lessonId, fileNames
             if (err?.response?.status === 401) {
                 logout();
             } else {
-                setError(err?.response?.data?.message ?? "Не удалось добавить запись");
+                setError(err?.response?.data?.message ?? "Не удалось добавить файл");
             }
         } finally {
             setIsDisabled(false);
@@ -81,14 +81,14 @@ const Materials: React.FC<Props> = ({ closeMaterialsEditing, lessonId, fileNames
         try {
             await PlanService.deleteFile({ depId: divisionId, fileName: fileToDelete });
             deleteFile(lessonId, fileToDelete);
-            showNotion(NOTION.SUCCESS, "Запись успешно удалена");
+            showNotion(NOTION.SUCCESS, "Файл успешно удален");
             setIsAdding(false);
         } catch (error) {
             const err = error as any;
             if (err?.response?.status === 401) {
                 logout();
             } else {
-                setError(err?.response?.data?.message ?? "Не удалось добавить запись");
+                setError(err?.response?.data?.message ?? "Не удалось удалить файл");
             }
         } finally {
             setIsDisabled(false);
@@ -108,7 +108,7 @@ const Materials: React.FC<Props> = ({ closeMaterialsEditing, lessonId, fileNames
             if (err?.response?.status === 401) {
                 logout();
             } else {
-                setError(err?.response?.data?.message ?? "Не удалось добавить запись");
+                setError(err?.response?.data?.message ?? "Не удалось скачать файл");
             }
         } finally {
             setIsFileLoading((prev) => prev.map((isLoading, currIndex) => (currIndex === index ? false : isLoading)));
@@ -126,6 +126,7 @@ const Materials: React.FC<Props> = ({ closeMaterialsEditing, lessonId, fileNames
         event.stopPropagation();
         setIsConfirming(true);
         setFileToDelete(fileName);
+        setError(null);
     };
 
     const handleDecline = (event: React.MouseEvent<HTMLButtonElement>) => {

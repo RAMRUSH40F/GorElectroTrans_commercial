@@ -51,7 +51,6 @@ const EditDepartmentModal: React.FC<Props> = ({ closeModal, department }) => {
             closeModal();
         } catch (error) {
             const err = error as any;
-            console.log(err);
             if (err.response.status === 401) {
                 logout();
             } else {
@@ -68,15 +67,14 @@ const EditDepartmentModal: React.FC<Props> = ({ closeModal, department }) => {
         try {
             await DepartmentService.delete({ depId: divisionId, departmentId: department.id });
             deleteDepartment(department.id);
-            showNotion(NOTION.SUCCESS, "Запись успешно удалена");
+            showNotion(NOTION.SUCCESS, "Отдел успешно удален");
             closeModal();
         } catch (error) {
             const err = error as any;
-            console.log(err);
             if (err.response.status === 401) {
                 logout();
             } else {
-                setError(err?.response?.data?.message ?? "Не удалось удалить запись");
+                setError(err?.response?.data?.message ?? "Не удалось удалить отдел");
             }
         } finally {
             setIsDisabled(false);
@@ -87,7 +85,7 @@ const EditDepartmentModal: React.FC<Props> = ({ closeModal, department }) => {
         <ModalLayout className="edit-department-modal" ref={modalRef}>
             <ModalHeader closeModal={closeModal}>Редактирование</ModalHeader>
             <ModalContent>
-                {error && (
+                {error && !isConfirming && (
                     <Alert className="edit-department-modal__alert" type={ALERT.ERROR}>
                         {error}
                     </Alert>
@@ -101,6 +99,7 @@ const EditDepartmentModal: React.FC<Props> = ({ closeModal, department }) => {
                 ) : (
                     <DepartmentForm
                         onSubmit={handleSubmit}
+                        clearError={() => setError(null)}
                         department={department}
                         moveToConfrim={() => setIsConfirming(true)}
                         isDisabled={isDisabled}

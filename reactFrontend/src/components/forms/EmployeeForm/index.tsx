@@ -15,6 +15,7 @@ import "./styles.scss";
 type Props = {
     onSubmit: (values: EmployeeFormState) => Promise<void>;
     departments: IDepartment[];
+    clearError?: () => void;
     employee?: IEmployee;
     moveToConfrim?: (event: React.MouseEvent<HTMLButtonElement>) => void;
     isDisabled?: boolean;
@@ -27,7 +28,15 @@ export type EmployeeFormState = {
     subdepartment: DropdownOption;
 };
 
-const EmployeeForm: React.FC<Props> = ({ departments, onSubmit, employee, moveToConfrim, isDisabled, isEditing }) => {
+const EmployeeForm: React.FC<Props> = ({
+    departments,
+    onSubmit,
+    employee,
+    moveToConfrim,
+    clearError,
+    isDisabled,
+    isEditing,
+}) => {
     const employeeIdRef = React.useRef<HTMLInputElement | null>(null);
     const employeeNameRef = React.useRef<HTMLInputElement | null>(null);
 
@@ -58,7 +67,7 @@ const EmployeeForm: React.FC<Props> = ({ departments, onSubmit, employee, moveTo
     return (
         <Formik initialValues={initialState} onSubmit={onSubmit} validationSchema={employeeFormScheme}>
             {({ handleSubmit, handleChange, handleBlur, values, errors, touched, isSubmitting, setFieldValue }) => (
-                <form className="employee-form" onSubmit={handleSubmit}>
+                <form className="employee-form" onSubmit={handleSubmit} onChange={clearError}>
                     {!isEditing && (
                         <>
                             <Label className="employee-form__label" text="Табельный номер">
@@ -102,7 +111,10 @@ const EmployeeForm: React.FC<Props> = ({ departments, onSubmit, employee, moveTo
                         <Dropdown
                             options={options}
                             initialOption={values.subdepartment}
-                            onChange={(option) => setFieldValue("subdepartment", option)}
+                            onChange={(option) => {
+                                setFieldValue("subdepartment", option);
+                                clearError && clearError();
+                            }}
                             disabled={isSubmitting || isDisabled}
                         />
                     </Label>

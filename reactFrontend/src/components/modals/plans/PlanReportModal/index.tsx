@@ -33,6 +33,7 @@ const PlanReportModal: React.FC<Props> = ({ closeModal }) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [quartersError, setQuartersError] = useState<string | null>(null);
     const [quarters, setQuarters] = useState<IQuarter[]>([]);
 
     const options: DropdownOption[] = quarters.map((quarter) => ({
@@ -51,11 +52,10 @@ const PlanReportModal: React.FC<Props> = ({ closeModal }) => {
                 setQuarters(response.data);
             } catch (error) {
                 const err = error as any;
-                console.log(err);
                 if (err.response.status === 401) {
                     logout();
                 } else {
-                    setError(err?.response?.data?.message ?? "Не удалось скачать отчет");
+                    setQuartersError(err?.response?.data?.message ?? "Не удалось получить данные с сервера");
                 }
             } finally {
                 setIsLoading(false);
@@ -78,10 +78,8 @@ const PlanReportModal: React.FC<Props> = ({ closeModal }) => {
             const response = await PlanService.fetchReport(divisionId, { params: { quarter, year } });
             const fileName = `Отчет_${quarter}кв_${year}.xls`;
             downloadFile(response.data, fileName);
-            
         } catch (error) {
             const err = error as any;
-            console.log(err);
             if (err.response.status === 401) {
                 logout();
             } else {
@@ -92,20 +90,38 @@ const PlanReportModal: React.FC<Props> = ({ closeModal }) => {
         }
     };
 
-    return (
-        <ModalLayout className="plan-report-modal" ref={modalRef}>
-            <ModalHeader closeModal={closeModal}>Отчетность</ModalHeader>
-            <ModalContent>
-                {isLoading && <Loader className="plan-report-modal__loader" />}
+    let contentToRender: React.ReactNode;
+
+    if (quartersError) {
+        contentToRender = (
+            <Alert className="plan-report-modal__alert" type={ALERT.ERROR}>
+                {quartersError}
+            </Alert>
+        );
+    } else if (isLoading) {
+        contentToRender = <Loader className="plan-report-modal__loader" />;
+    } else {
+        contentToRender = (
+            <>
                 {error && (
                     <Alert className="plan-report-modal__alert" type={ALERT.ERROR}>
                         {error}
                     </Alert>
                 )}
-                {!error && !isLoading && (
-                    <PlanReportForm options={options} handleSubmit={handleSubmit} isSubmitting={isSubmitting} />
-                )}
-            </ModalContent>
+                <PlanReportForm
+                    options={options}
+                    handleSubmit={handleSubmit}
+                    clearError={() => setError(null)}
+                    isSubmitting={isSubmitting}
+                />
+            </>
+        );
+    }
+
+    return (
+        <ModalLayout className="plan-report-modal" ref={modalRef}>
+            <ModalHeader closeModal={closeModal}>Отчетность</ModalHeader>
+            <ModalContent>{contentToRender}</ModalContent>
         </ModalLayout>
     );
 };

@@ -51,7 +51,6 @@ const EditAttendanceModal: React.FC<Props> = ({ closeEditing, attendance }) => {
             closeEditing();
         } catch (error) {
             const err = error as any;
-            console.log(err);
             if (err.response.status === 401) {
                 logout();
             } else {
@@ -75,12 +74,13 @@ const EditAttendanceModal: React.FC<Props> = ({ closeEditing, attendance }) => {
             closeEditing();
         } catch (error) {
             const err = error as any;
-            console.log(err);
             if (err.response.status === 401) {
                 logout();
             } else {
                 setError(err?.response?.data?.message ?? "Не удалось удалить запись");
             }
+        } finally {
+            setIsDisabled(false);
         }
     };
 
@@ -104,9 +104,13 @@ const EditAttendanceModal: React.FC<Props> = ({ closeEditing, attendance }) => {
                     <AttendanceForm
                         onSubmit={handleSubmit}
                         attendance={attendance}
-                        moveToConfrim={() => setIsConfirming(true)}
+                        moveToConfrim={() => {
+                            setIsConfirming(true);
+                            setError(null);
+                        }}
                         isDisabled={isDisabled}
                         isEditing={true}
+                        clearError={() => setError(null)}
                     />
                 )}
             </ModalContent>

@@ -29,16 +29,15 @@ const Attendance: React.FC = () => {
 
     const { divisionId = "" } = useParams();
     const [searchParams, setSearchParams] = useSearchParams();
-    const { logout } = useUserContext();
 
+    const { logout } = useUserContext();
     const { attendances, setAttendances } = useAttendanceContext();
     const [isLoading, setIsLoading] = useState(true);
     const [isFetching, setIsFetching] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     const [totalPages, setTotalPages] = useState(0);
-
-    const page = searchParams.get("page") ?? 1;
+    const [page, setPage] = useState<number>(searchParams.get("page") ? Number(searchParams.get("page")) : 1);
     const searchQuery = searchParams.get("key");
 
     useEffect(() => {
@@ -56,13 +55,12 @@ const Attendance: React.FC = () => {
                     },
                     cancelToken: cancelToken.token,
                 });
-                const totalPlans = response.headers["attendance_count"];
-                const totalPages = totalPlans ? Math.ceil(totalPlans / LIMIT) : 1;
+                const totalAttendances = response.headers["attendance_count"];
+                const totalPages = totalAttendances ? Math.ceil(totalAttendances / LIMIT) : 1;
                 setAttendances(response.data);
                 setTotalPages(totalPages);
             } catch (error) {
                 const err = error as any;
-                console.log(err);
                 if (err?.response?.status === 401) {
                     logout();
                 } else {
@@ -77,9 +75,10 @@ const Attendance: React.FC = () => {
         fetchAttendance();
 
         return () => cancelToken.cancel();
-    }, [page, setAttendances, divisionId, logout, searchQuery]);
+    }, [page, setAttendances, divisionId, searchQuery, logout]);
 
     const handlePageChange = (selectedItem: { selected: number }) => {
+        setPage(selectedItem.selected + 1);
         searchParams.set("page", String(selectedItem.selected + 1));
         setSearchParams(searchParams);
     };
