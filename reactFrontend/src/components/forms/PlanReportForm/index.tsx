@@ -9,12 +9,11 @@ type Props = {
     options: DropdownOption[];
     handleSubmit: (event: React.FormEvent<HTMLFormElement>, quarter: string) => Promise<void>;
     isSubmitting: boolean;
+    clearError?: () => void;
 };
 
-const PlanReportForm: React.FC<Props> = ({ options, handleSubmit, isSubmitting }) => {
+const PlanReportForm: React.FC<Props> = ({ options, handleSubmit, clearError, isSubmitting }) => {
     const [option, setOption] = useState(options[0]);
-
-    console.log(options);
 
     return (
         <form className="plan-report-form" onSubmit={(event) => handleSubmit(event, option.value)}>
@@ -23,7 +22,10 @@ const PlanReportForm: React.FC<Props> = ({ options, handleSubmit, isSubmitting }
                     className="plan-report-form__select"
                     options={options}
                     initialOption={option}
-                    onChange={(option) => setOption(option)}
+                    onChange={(option) => {
+                        setOption(option);
+                        clearError && clearError();
+                    }}
                     disabled={isSubmitting}
                 />
             </Label>

@@ -27,8 +27,8 @@ const Employees: FC = () => {
 
     const { divisionId = "" } = useParams();
     const [searchParams, setSearchParams] = useSearchParams();
+    
     const { logout } = useUserContext();
-
     const { employees, setEmployees } = useEmployeesContext();
     const [isLoading, setIsLoading] = useState(true);
     const [isFetching, setIsFetching] = useState(true);
@@ -57,7 +57,6 @@ const Employees: FC = () => {
                 setTotalPages(totalPages);
             } catch (error) {
                 const err = error as any;
-                console.log(err);
                 if (err?.response?.status === 401) {
                     logout();
                 } else {
@@ -101,18 +100,15 @@ const Employees: FC = () => {
                             <tbody
                                 className={`employees__table-body ${isFetching && "employees__table-body--opacity"}`}
                             >
-                                {!error &&
-                                    !isLoading &&
-                                    employees.map((employee) => (
-                                        <TableBodyRow
-                                            key={employee.studentId}
-                                            onClick={() => setEditingEmployee(employee)}
-                                        >
-                                            <TableBodyCell>{employee.studentId}</TableBodyCell>
-                                            <TableBodyCell className="employees__table-name-cell">{employee.fullName}</TableBodyCell>
-                                            <TableBodyCell>{employee.subdepartmentName}</TableBodyCell>
-                                        </TableBodyRow>
-                                    ))}
+                                {employees.map((employee) => (
+                                    <TableBodyRow key={employee.studentId} onClick={() => setEditingEmployee(employee)}>
+                                        <TableBodyCell>{employee.studentId}</TableBodyCell>
+                                        <TableBodyCell className="employees__table-name-cell">
+                                            {employee.fullName}
+                                        </TableBodyCell>
+                                        <TableBodyCell>{employee.subdepartmentName}</TableBodyCell>
+                                    </TableBodyRow>
+                                ))}
                             </tbody>
                         </Table>
                     </div>

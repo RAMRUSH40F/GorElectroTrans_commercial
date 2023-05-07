@@ -3,7 +3,7 @@ import { NOTION } from "../constants/notion";
 
 const alertOptions: ToastOptions = {
     position: "top-right",
-    autoClose: 1200,
+    autoClose: 700,
     hideProgressBar: false,
     closeOnClick: true,
     pauseOnHover: true,

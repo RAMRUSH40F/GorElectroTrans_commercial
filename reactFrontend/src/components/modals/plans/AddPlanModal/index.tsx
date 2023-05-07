@@ -56,7 +56,6 @@ const AddPlanModal: React.FC<Props> = ({ closeModal }) => {
             closeModal();
         } catch (error) {
             const err = error as any;
-            console.log(err);
             if (err.response.status === 401) {
                 logout();
             } else {
@@ -66,11 +65,15 @@ const AddPlanModal: React.FC<Props> = ({ closeModal }) => {
     };
 
     return (
-        <ModalLayout ref={modalRef}>
+        <ModalLayout className="add-plan-modal" ref={modalRef}>
             <ModalHeader closeModal={closeModal}>Добавление</ModalHeader>
             <ModalContent>
-                {error && <Alert type={ALERT.ERROR}>{error}</Alert>}
-                <PlanForm onSubmit={handleSubmit} />
+                {error && (
+                    <Alert className="add-plan-modal__alert" type={ALERT.ERROR}>
+                        {error}
+                    </Alert>
+                )}
+                <PlanForm onSubmit={handleSubmit} clearError={() => setError(null)} />
             </ModalContent>
         </ModalLayout>
     );

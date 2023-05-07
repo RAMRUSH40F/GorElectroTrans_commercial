@@ -50,7 +50,6 @@ const AddAttendanceModal: React.FC<Props> = ({ closeModal }) => {
             closeModal();
         } catch (error) {
             const err = error as any;
-            console.log(err);
             if (err.response.status === 401) {
                 logout();
             } else {
@@ -68,7 +67,7 @@ const AddAttendanceModal: React.FC<Props> = ({ closeModal }) => {
                         {error}
                     </Alert>
                 )}
-                <AttendanceForm onSubmit={handleSubmit} />
+                <AttendanceForm onSubmit={handleSubmit} clearError={() => setError(null)} />
             </ModalContent>
         </ModalLayout>
     );

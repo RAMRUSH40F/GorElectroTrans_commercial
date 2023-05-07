@@ -6,6 +6,8 @@ import Container from "../../../Container";
 import ActionButton from "../../../buttons/ActionButton";
 import UserService from "../../../../services/UserService";
 import { useUserContext } from "../../../../context/userContext";
+import { showNotion } from "../../../../helpers/showNotion";
+import { NOTION } from "../../../../constants/notion";
 
 import "./styles.scss";
 
@@ -19,7 +21,7 @@ const Header: React.FC = () => {
             localStorage.removeItem("accessToken");
             logout();
         } catch (error) {
-            console.log(error);
+            showNotion(NOTION.ERROR, "Произошла техническая ошибка");
         }
     };
 

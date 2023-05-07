@@ -23,6 +23,7 @@ type Props = {
     moveToConfrim?: (event: React.MouseEvent<HTMLButtonElement>) => void;
     isDisabled?: boolean;
     isEditing?: boolean;
+    clearError?: () => void;
 };
 
 export interface AttendanceFormState {
@@ -31,7 +32,14 @@ export interface AttendanceFormState {
     success: DropdownOption;
 }
 
-const AttendanceForm: React.FC<Props> = ({ onSubmit, attendance, isDisabled, moveToConfrim, isEditing }) => {
+const AttendanceForm: React.FC<Props> = ({
+    onSubmit,
+    attendance,
+    isDisabled,
+    moveToConfrim,
+    isEditing,
+    clearError,
+}) => {
     const inputRef = React.useRef<HTMLInputElement | null>(null);
     useFocus(inputRef, true);
 
@@ -51,7 +59,7 @@ const AttendanceForm: React.FC<Props> = ({ onSubmit, attendance, isDisabled, mov
     return (
         <Formik initialValues={initialState} onSubmit={onSubmit} validationSchema={attendanceFormScheme}>
             {({ handleSubmit, handleChange, handleBlur, values, errors, touched, isSubmitting, setFieldValue }) => (
-                <form className="attendance-form" onSubmit={handleSubmit}>
+                <form className="attendance-form" onSubmit={handleSubmit} onChange={clearError}>
                     {!isEditing && (
                         <>
                             <Label className="attendance-form__label" text="Табельный номер">
@@ -99,7 +107,10 @@ const AttendanceForm: React.FC<Props> = ({ onSubmit, attendance, isDisabled, mov
                             className="attendance-form__select"
                             options={options}
                             initialOption={values.success}
-                            onChange={(option) => setFieldValue("success", option)}
+                            onChange={(option) => {
+                                setFieldValue("success", option);
+                                clearError && clearError();
+                            }}
                             disabled={isSubmitting || isDisabled}
                         />
                     </Label>
