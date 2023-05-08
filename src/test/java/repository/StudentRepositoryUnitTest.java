@@ -1,3 +1,5 @@
+package repository;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,7 +10,7 @@ import project.model.StudentView;
 import project.repository.StudentRepository;
 
 @RunWith(MockitoJUnitRunner.class)
-public class MockIntegrativeTest {
+public class StudentRepositoryUnitTest {
 
     @Mock
     StudentRepository studentRepository;

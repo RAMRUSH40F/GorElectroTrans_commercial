@@ -1,9 +1,9 @@
-
+package repository;
 
 import org.springframework.boot.test.context.TestConfiguration;
 
 @TestConfiguration
-public class IntegrationTestConfig {
+public class IntegrativeStudentRepositoryTestConfig {
 
 //    @Bean
 //    public MockServerClient mockServerClient() throws JsonProcessingException {
