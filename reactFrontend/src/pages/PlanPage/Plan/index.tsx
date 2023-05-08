@@ -38,8 +38,7 @@ const Plan: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
 
     const [totalPages, setTotalPages] = useState(0);
-
-    const page = searchParams.get("page") ?? 1;
+    const [page, setPage] = useState<number>(searchParams.get("page") ? Number(searchParams.get("page")) : 1);
     const searchQuery = searchParams.get("key");
 
     useEffect(() => {
@@ -63,7 +62,6 @@ const Plan: React.FC = () => {
                 setTotalPages(totalPages);
             } catch (error) {
                 const err = error as any;
-                console.log(err);
                 if (err?.response?.status === 401) {
                     logout();
                 } else {
@@ -86,6 +84,7 @@ const Plan: React.FC = () => {
     };
 
     const handlePageChange = (selectedItem: { selected: number }) => {
+        setPage(selectedItem.selected + 1);
         searchParams.set("page", String(selectedItem.selected + 1));
         setSearchParams(searchParams);
     };

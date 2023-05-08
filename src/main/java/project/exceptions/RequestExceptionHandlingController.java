@@ -36,14 +36,16 @@ public class RequestExceptionHandlingController {
         System.out.println(e.getCause());
         ResponseException responseException = ResponseException.builder()
                 .message("Такие данные не могут быть добавлены. " +
-                        "Возможно, они уже дублируют существующие данные.")
+                        "Возможно, они дублируют существующие данные.")
                 .timeStamp(ZonedDateTime.now(ZoneId.of("UTC+3")))
                 .httpStatus(HttpStatus.BAD_REQUEST)
                 .build();
         return new ResponseEntity<>(responseException, responseException.httpStatus);
     }
 
-    @ExceptionHandler(value = {NoSuchElementException.class, IllegalArgumentException.class})
+    @ExceptionHandler(value = {
+            NoSuchElementException.class,
+            IllegalArgumentException.class})
     public ResponseEntity<ResponseException> handleNoSuchStudentSqlException(RuntimeException e) {
         System.out.println(e.getMessage());
         ResponseException responseException = ResponseException.builder()

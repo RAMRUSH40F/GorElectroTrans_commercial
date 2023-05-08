@@ -25,7 +25,6 @@ export const useFetchDepartmentsList = (depId: string) => {
                 setDepartments(response.data);
             } catch (error) {
                 const err = error as any;
-                console.log(err);
                 if (err.response.status === 401) {
                     logout();
                 } else {

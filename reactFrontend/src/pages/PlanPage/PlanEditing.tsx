@@ -49,7 +49,6 @@ const PlanEditing: React.FC<Props> = ({ plan, closeEditing, openMaterialsEditing
             closeEditing();
         } catch (error) {
             const err = error as any;
-            console.log(err);
             if (err.response.status === 401) {
                 logout();
             } else {
@@ -71,7 +70,6 @@ const PlanEditing: React.FC<Props> = ({ plan, closeEditing, openMaterialsEditing
             closeEditing();
         } catch (error) {
             const err = error as any;
-            console.log(err);
             if (err.response.status === 401) {
                 logout();
             } else {
@@ -84,6 +82,7 @@ const PlanEditing: React.FC<Props> = ({ plan, closeEditing, openMaterialsEditing
 
     const moveToConfirm = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.stopPropagation();
+        setError(null);
         setIsConfirming(true);
     };
 
@@ -103,6 +102,7 @@ const PlanEditing: React.FC<Props> = ({ plan, closeEditing, openMaterialsEditing
             ) : (
                 <PlanForm
                     onSubmit={handleSubmit}
+                    clearError={() => setError(null)}
                     plan={plan}
                     moveToConfrim={moveToConfirm}
                     openMaterialsEditing={openMaterialsEditing}

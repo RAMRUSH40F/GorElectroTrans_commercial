@@ -29,6 +29,7 @@ const statusOptions: DropdownOption[] = [
 
 type Props = {
     onSubmit: (values: PlanFormValues) => Promise<void>;
+    clearError?: () => void;
     plan?: IPlan;
     isDisabled?: boolean;
     isEditing?: boolean;
@@ -46,7 +47,15 @@ export type PlanFormValues = {
     status: DropdownOption;
 };
 
-const PlanForm: React.FC<Props> = ({ onSubmit, plan, moveToConfrim, isDisabled, isEditing, openMaterialsEditing }) => {
+const PlanForm: React.FC<Props> = ({
+    onSubmit,
+    plan,
+    moveToConfrim,
+    isDisabled,
+    isEditing,
+    clearError,
+    openMaterialsEditing,
+}) => {
     const textareaRef = React.useRef<HTMLTextAreaElement | null>(null);
     useFocus(textareaRef, true);
 
@@ -80,7 +89,7 @@ const PlanForm: React.FC<Props> = ({ onSubmit, plan, moveToConfrim, isDisabled, 
     return (
         <Formik initialValues={initialState} onSubmit={onSubmit} validationSchema={planFormScheme}>
             {({ handleSubmit, handleChange, handleBlur, values, errors, touched, isSubmitting, setFieldValue }) => (
-                <form onSubmit={handleSubmit} className="plan-form">
+                <form onSubmit={handleSubmit} className="plan-form" onChange={clearError}>
                     <Label className="plan-form__label plan-form__label--mb" text="Тема занятия">
                         <Textarea
                             className="plan-form__textarea"
@@ -104,6 +113,7 @@ const PlanForm: React.FC<Props> = ({ onSubmit, plan, moveToConfrim, isDisabled, 
                                     event?.stopPropagation();
                                     setDate(date);
                                     setFieldValue("date", date?.toISOString());
+                                    clearError && clearError();
                                 }}
                                 selected={date}
                                 disabled={isSubmitting || isDisabled}
@@ -166,7 +176,10 @@ const PlanForm: React.FC<Props> = ({ onSubmit, plan, moveToConfrim, isDisabled, 
                             className="plan-form__select"
                             options={teacherOptions}
                             initialOption={values.teacherPost}
-                            onChange={(option) => setFieldValue("teacherPost", option)}
+                            onChange={(option) => {
+                                setFieldValue("teacherPost", option);
+                                clearError && clearError();
+                            }}
                             disabled={isSubmitting || isDisabled}
                         />
                     </Label>
@@ -176,7 +189,10 @@ const PlanForm: React.FC<Props> = ({ onSubmit, plan, moveToConfrim, isDisabled, 
                                 className="plan-form__select"
                                 options={statusOptions}
                                 initialOption={values.status}
-                                onChange={(option) => setFieldValue("status", option)}
+                                onChange={(option) => {
+                                    setFieldValue("status", option);
+                                    clearError && clearError();
+                                }}
                                 disabled={isSubmitting || isDisabled}
                             />
                         </Label>

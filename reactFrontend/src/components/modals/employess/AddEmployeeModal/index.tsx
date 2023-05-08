@@ -49,11 +49,10 @@ const AddEmployeeModal: React.FC<Props> = ({ closeModal }) => {
         try {
             const response = await EmployeeService.post({ depId: divisionId, employee: newEmployee });
             addEmployee(response.data);
-            showNotion(NOTION.SUCCESS, "Изменения успешно сохранены");
+            showNotion(NOTION.SUCCESS, "Работник успешно добавлен");
             closeModal();
         } catch (error) {
             const err = error as any;
-            console.log(err);
             if (err.response.status === 401) {
                 logout();
             } else {
@@ -64,22 +63,25 @@ const AddEmployeeModal: React.FC<Props> = ({ closeModal }) => {
 
     let contentToRender: React.ReactNode;
 
-    if (isLoading) {
-        contentToRender = <Loader className="add-employee-modal__loader" />;
-    } else if (depError) {
+    if (depError) {
         contentToRender = (
             <Alert className="add-employee-modal__alert" type={ALERT.ERROR}>
                 {depError}
             </Alert>
         );
-    } else if (error) {
-        contentToRender = (
-            <Alert className="add-employee-modal__alert" type={ALERT.ERROR}>
-                {error}
-            </Alert>
-        );
+    } else if (isLoading) {
+        contentToRender = <Loader className="add-employee-modal__loader" />;
     } else {
-        contentToRender = <EmployeeForm departments={departments} onSubmit={handleSubmit} />;
+        contentToRender = (
+            <>
+                {error && (
+                    <Alert className="add-employee-modal__alert" type={ALERT.ERROR}>
+                        {error}
+                    </Alert>
+                )}
+                <EmployeeForm departments={departments} onSubmit={handleSubmit} clearError={() => setError(null)} />
+            </>
+        );
     }
 
     return (

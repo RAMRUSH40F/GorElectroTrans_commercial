@@ -28,6 +28,7 @@ const EditPlanModal: React.FC<Props> = ({ closeEditing, plan }) => {
     const handleMoveToMaterials = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.stopPropagation();
         setIsEditingMaterials((prev) => !prev);
+        setError(null);
     };
 
     return (

@@ -45,8 +45,10 @@
         color: inherit;
         position: relative;
         cursor: pointer;
-        &:hover {
-            background-color: rgba($grey, 0.4);
+        @media (min-width: $tablet) {
+            &:hover {
+                background-color: rgba($grey, 0.4);
+            }
         }
         &--active {
             color: $blue;
@@ -67,7 +69,7 @@
         }
         @media (max-width: $pcBig) {
             padding: 0.95rem 0.5rem 0.95rem 1rem;
-            font-size: 0.95rem;
+            font-size: 1.05rem;
         }
     }
     // .menu__link-icon

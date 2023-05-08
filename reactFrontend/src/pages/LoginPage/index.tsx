@@ -8,12 +8,14 @@ import { ROLES } from "../../constants/roles";
 import { getDivisionRoute } from "../../helpers/getDivisionRoute";
 import Alert from "../../components/Alert";
 import { ALERT } from "../../constants/alertTypes";
-import { useFromNavigate } from "../../hooks/useFromNavigate";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import "./styles.scss";
 
 const LoginPage: React.FC = () => {
-    const navigate = useFromNavigate();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const from = location.state?.from?.pathname as string;
     const { login } = useUserContext();
     const [error, setError] = useState<string | null>(null);
 
@@ -32,7 +34,9 @@ const LoginPage: React.FC = () => {
             const { role } = decodeJwt(token) as { role: ROLES[] };
             localStorage.setItem("accessToken", token);
             login(role as ROLES[]);
-            if (role.includes(ROLES.ADMIN)) {
+            if (from) {
+                navigate(from, { replace: true });
+            } else if (role.includes(ROLES.ADMIN)) {
                 navigate(DIVISIONS_ROUTE.PATH);
             } else {
                 const route = getDivisionRoute(role[0]);
@@ -40,7 +44,6 @@ const LoginPage: React.FC = () => {
             }
         } catch (error) {
             const err = error as any;
-            console.log(err);
             if (err?.response) {
                 setError("Неверный логин или пароль");
             } else {

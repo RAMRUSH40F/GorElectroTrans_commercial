@@ -15,8 +15,11 @@
     }
     // .input-file__field
     &__field {
-        font-size: 14px;
+        font-size: 17px;
         color: grey;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
         &--active {
             color: $green;
         }
@@ -28,7 +31,8 @@
         justify-content: center;
         width: 80px;
         height: 100%;
-        font-size: 14px;
+        flex-shrink: 0;
+        font-size: 17px;
         text-align: center;
         color: #2e2e2e;
         background-color: #e2e2e2;

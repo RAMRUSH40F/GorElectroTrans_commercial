@@ -1,6 +1,6 @@
 package project.repository.multiplier;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import project.model.Worker;
 import project.repository.WorkersRepository;
@@ -9,12 +9,11 @@ import java.util.List;
 import java.util.Random;
 
 @Service("WorkersMultiplierBean")
+@RequiredArgsConstructor
 public class WorkersMultiplier {
+
+    private final WorkersRepository workersRepository;
     List<String> workerRandomNameList = List.of("Стремглав Вячеслав Игоревич", "Семен Иванович Дмитриевич", "Треуголова София Дмитриевна", "Рябичев Даниил Алексендрович", "Теска Кирилл Дмитриевич", "Трезубец Арина Дмитриевич", "Талец Данир Игоревич", "Иванов Семен Алексендрович", "Тодоренко Регина Алексендровна", "Бактяп Иван Алексендрович", "Ильюшина Мария Алексендровна", "Звонкович Николай Игоревич", "Жданович Артем Дмитриевич", "Скряпкин Сергей Алексендрович", "Карцева Катя Игоревна", "Трошин Никита Алексендрович", "Астон Михаил Дмитриевич", "Кудряшев Михаил Игоревич", "Москов Артем Алексендрович", "Король Артем Дмитриевич");
-
-    @Autowired
-    WorkersRepository workersRepository;
-
 
     public void addAllWorkers() {
         StringBuilder idBuilder = new StringBuilder();
@@ -32,8 +31,6 @@ public class WorkersMultiplier {
                                 .name(workerName)
                                 .build();
                         workersRepository.addNewWorker(worker);
-
-
                     }
                 }
             }

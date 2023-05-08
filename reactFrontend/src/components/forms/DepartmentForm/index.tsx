@@ -12,12 +12,13 @@ import "./styles.scss";
 
 type Props = {
     onSubmit: (values: TDepartmentDto) => Promise<void>;
+    clearError?: () => void;
     department?: IDepartment;
     moveToConfrim?: (event: React.MouseEvent<HTMLButtonElement>) => void;
     isDisabled?: boolean;
 };
 
-const DepartmentForm: React.FC<Props> = ({ onSubmit, department, moveToConfrim, isDisabled }) => {
+const DepartmentForm: React.FC<Props> = ({ onSubmit, department, clearError, moveToConfrim, isDisabled }) => {
     const inputRef = React.useRef<HTMLInputElement | null>(null);
     useFocus(inputRef, true);
 
@@ -28,7 +29,7 @@ const DepartmentForm: React.FC<Props> = ({ onSubmit, department, moveToConfrim, 
     return (
         <Formik initialValues={initialState} onSubmit={onSubmit} validationSchema={departmentFormScheme}>
             {({ handleSubmit, handleChange, handleBlur, values, errors, touched, isSubmitting }) => (
-                <form className="department-form" onSubmit={handleSubmit}>
+                <form className="department-form" onSubmit={handleSubmit} onChange={clearError}>
                     <Label className="department-form__label" text="Название отдела">
                         <Input
                             className="department-form__input"

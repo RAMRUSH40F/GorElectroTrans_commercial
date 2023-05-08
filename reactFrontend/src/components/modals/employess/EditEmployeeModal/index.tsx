@@ -58,7 +58,6 @@ const EditEmployeeModal: React.FC<Props> = ({ closeModal, employee }) => {
             closeModal();
         } catch (error) {
             const err = error as any;
-            console.log(err);
             if (err.response.status === 401) {
                 logout();
             } else {
@@ -79,11 +78,10 @@ const EditEmployeeModal: React.FC<Props> = ({ closeModal, employee }) => {
             closeModal();
         } catch (error) {
             const err = error as any;
-            console.log(err);
             if (err.response.status === 401) {
                 logout();
             } else {
-                setError(err?.response?.data?.message ?? "Не удалось удалить запись");
+                setError("Не удалось удалить запись");
             }
         } finally {
             setIsDisabled(false);
@@ -92,36 +90,40 @@ const EditEmployeeModal: React.FC<Props> = ({ closeModal, employee }) => {
 
     let contentToRender: React.ReactNode;
 
-    if (isLoading) {
-        contentToRender = <Loader className="edit-employee-modal__loader" />;
-    } else if (depError) {
+    if (depError) {
         contentToRender = (
             <Alert className="edit-employee-modal__alert" type={ALERT.ERROR}>
                 {depError}
             </Alert>
         );
-    } else if (error) {
-        contentToRender = (
-            <Alert className="edit-employee-modal__alert" type={ALERT.ERROR}>
-                {error}
-            </Alert>
-        );
+    } else if (isLoading) {
+        contentToRender = <Loader className="edit-employee-modal__loader" />;
     } else {
-        contentToRender = isConfirming ? (
-            <Confirm
-                title="Вы уверены, что хотите удалить работника?"
-                handleConfirm={handleDelete}
-                handleDecline={() => setIsConfirming(false)}
-            />
-        ) : (
-            <EmployeeForm
-                onSubmit={handleSubmit}
-                departments={departments}
-                employee={employee}
-                moveToConfrim={() => setIsConfirming(true)}
-                isDisabled={isDisabled}
-                isEditing={true}
-            />
+        contentToRender = (
+            <>
+                {error && !isConfirming && (
+                    <Alert className="edit-employee-modal__alert" type={ALERT.ERROR}>
+                        {error}
+                    </Alert>
+                )}
+                {isConfirming ? (
+                    <Confirm
+                        title="Вы уверены, что хотите удалить работника?"
+                        handleConfirm={handleDelete}
+                        handleDecline={() => setIsConfirming(false)}
+                    />
+                ) : (
+                    <EmployeeForm
+                        onSubmit={handleSubmit}
+                        departments={departments}
+                        clearError={() => setError(null)}
+                        employee={employee}
+                        moveToConfrim={() => setIsConfirming(true)}
+                        isDisabled={isDisabled}
+                        isEditing={true}
+                    />
+                )}
+            </>
         );
     }
 
