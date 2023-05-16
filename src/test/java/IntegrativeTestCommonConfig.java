@@ -16,6 +16,9 @@ import java.sql.SQLException;
 //        (basePackages = {}, excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = StudentRepositoryImpl.class)
 //        })
 
+/**
+ * Not in use right now
+ */
 @Configuration
 @Profile("test")
 public class IntegrativeTestCommonConfig {

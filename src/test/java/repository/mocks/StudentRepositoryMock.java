@@ -11,10 +11,10 @@ import java.util.List;
 
 
 @RequiredArgsConstructor
+//@Repository
 public class StudentRepositoryMock implements StudentRepository {
 
     private final JdbcTemplate jdbcTemplate;
-
     private List<StudentView> students;
 
     @PostConstruct

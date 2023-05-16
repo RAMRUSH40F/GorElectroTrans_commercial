@@ -22,7 +22,6 @@ public class AppContext {
     @Value("${maria.db.password}")
     private String mariaDbPassword;
 
-
     @Bean("mariaDB")
     public DataSource mariaDataSource() throws SQLException {
         MariaDbDataSource mariaDbDataSource = new MariaDbDataSource();
