@@ -12,12 +12,14 @@ import project.exceptions.Validator;
 import project.model.Student;
 import project.model.StudentView;
 import project.model.Worker;
+import project.service.WorkerService;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository("StudentRepositoryBean")
 @RequiredArgsConstructor
@@ -26,7 +28,7 @@ public class StudentRepositoryImpl implements StudentRepository {
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final SubdepartmentRepository subdepartmentRepository;
-    private final WorkersRepository workersRepository;
+    private final WorkerService workerService;
 
 
     /**
@@ -42,16 +44,16 @@ public class StudentRepositoryImpl implements StudentRepository {
     public StudentView addNewStudent(int departmentId, StudentView studentView) {
         Validator.validateStudentId(studentView.getStudentId());
         if (studentView.getFullName() == null) {
-            Worker worker = workersRepository.getWorkerById(studentView.getStudentId());
-            if (worker == null) {
+            Optional<Worker> worker = workerService.getWorkerById(studentView.getStudentId());
+            if (worker.isEmpty()) {
                 throw new InvalidStudentIdException("",
                         "Информации о работнике с таким табельным номером еще нет в системе. " +
                                 "Повторите запрос, введя Фамилию и инициалы рабочего");
             }
-            studentView.setFullName(worker.getName());
+            studentView.setFullName(worker.get().getName());
         } else {
             try {
-                workersRepository.addNewWorker(
+                workerService.addNewWorker(
                         Worker.builder()
                                 .id(studentView.getStudentId())
                                 .name(studentView.getFullName())

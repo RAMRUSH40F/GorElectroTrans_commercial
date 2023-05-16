@@ -5,7 +5,7 @@ import project.model.StudentView;
 
 import java.util.List;
 
-public interface StudentRepository {
+public interface StudentRepository{
     StudentView addNewStudent(int departmentId, StudentView studentView);
 
     List<StudentView> getStudentsView(int departmentID, Integer page, Integer pageSize);
