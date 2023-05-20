@@ -43,8 +43,12 @@ const Plan: React.FC = () => {
 
     useEffect(() => {
         const cancelToken = axios.CancelToken.source();
-        setIsFetching(true);
         setError(null);
+        if (plans.length === 0) {
+            setIsLoading(true);
+        } else {
+            setIsFetching(true);
+        }
 
         const fetchPlans = async () => {
             try {
@@ -60,22 +64,28 @@ const Plan: React.FC = () => {
                 const totalPages = totalPlans ? Math.ceil(totalPlans / LIMIT) : 1;
                 setPlans(response.data);
                 setTotalPages(totalPages);
+                setIsFetching(false);
+                setIsLoading(false);
             } catch (error) {
                 const err = error as any;
+                if (axios.isCancel(err)) {
+                    setIsFetching(true);
+                    return;
+                }
+                setIsFetching(false);
+                setIsLoading(false);
                 if (err?.response?.status === 401) {
                     logout();
                 } else {
                     setError(err?.response?.data?.message ?? "Не удалось получить данные с сервера");
                 }
-            } finally {
-                setIsLoading(false);
-                setIsFetching(false);
             }
         };
 
         fetchPlans();
 
         return () => cancelToken.cancel();
+        // eslint-disable-next-line
     }, [page, setPlans, divisionId, searchQuery, logout]);
 
     const handleOpenEditing = (event: MouseEvent<HTMLTableRowElement>, plan: IPlan) => {
