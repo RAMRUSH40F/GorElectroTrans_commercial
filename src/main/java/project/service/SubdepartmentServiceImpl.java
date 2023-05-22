@@ -1,13 +1,12 @@
 package project.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import project.model.Subdepartment;
 import project.repository.SubdepartmentJpaRepository;
 
 import java.util.Map;
 
-@Service
+//@Service not in use at the moment
 @RequiredArgsConstructor
 public class SubdepartmentServiceImpl {
 

@@ -1,8 +1,6 @@
 package project.repositoryManager.config;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import project.repository.SubdepartmentJpaRepository;
 import project.repositoryManager.DynamicEntityManagerRepositoryFactory;
@@ -10,13 +8,15 @@ import project.repositoryManager.DynamicEntityManagerRepositoryFactory;
 import java.util.HashMap;
 import java.util.Map;
 
-@Configuration
+
+// Not in use at the moment
+//@Configuration
 @RequiredArgsConstructor
 public class SubdepartmentRepositoryConfig {
 
     private final Map<Short, LocalContainerEntityManagerFactoryBean> entityManagerFactoryMap;
 
-    @Bean
+//    @Bean
     public Map<Short, SubdepartmentJpaRepository> subdepartmentJpaRepositoryMap() {
         Map<Short, SubdepartmentJpaRepository> subdepartmentJpaRepositoryMap = new HashMap<>();
         for (Map.Entry<Short, LocalContainerEntityManagerFactoryBean> entry : entityManagerFactoryMap.entrySet()) {
