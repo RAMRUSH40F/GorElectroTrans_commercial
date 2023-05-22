@@ -26,14 +26,21 @@ public class DataSourceConfig {
 
     @SneakyThrows
     @Bean
-    public Map<Short, DataSource> dataSourceMap() {
-        Map<Short, DataSource> dataSourceMap = new HashMap<>();
+    public Map<String, DataSource> dataSourceMap() {
+        Map<String, DataSource> dataSourceMap = new HashMap<>();
 
         for (short i = 1; i <= DATABASE_COUNT; i++) {
-            short databaseName = i;
-            DataSource mariaDbDataSource = createDataSource("DEP"+i);
+            String databaseName = "DEP_"+i;
+            DataSource mariaDbDataSource = createDataSource(databaseName);
             dataSourceMap.put(databaseName, mariaDbDataSource);
         }
+        DataSource mariaWorkersDataSource = createDataSource("WORKERS");
+        dataSourceMap.put("WORKERS", mariaWorkersDataSource);
+
+        DataSource mariaAuthorisationDataSource = createDataSource("USERS");
+        dataSourceMap.put("USERS", mariaAuthorisationDataSource);
+
+        dataSourceMap.forEach((s, dataSource) -> System.out.println(s));
         return dataSourceMap;
     }
 
