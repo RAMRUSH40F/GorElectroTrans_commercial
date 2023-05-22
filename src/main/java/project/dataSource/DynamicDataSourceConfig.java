@@ -1,9 +1,10 @@
-package project.repositoryManager.config;
+package project.dataSource;
 
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.sql.DataSource;
@@ -11,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-public class DataSourceConfig {
+public class DynamicDataSourceConfig {
 
     private static final int DATABASE_COUNT = 15;
 
@@ -26,8 +27,8 @@ public class DataSourceConfig {
 
     @SneakyThrows
     @Bean
-    public Map<String, DataSource> dataSourceMap() {
-        Map<String, DataSource> dataSourceMap = new HashMap<>();
+    public Map<Object, Object> dataSourceMap() {
+        Map<Object, Object> dataSourceMap = new HashMap<>();
 
         for (short i = 1; i <= DATABASE_COUNT; i++) {
             String databaseName = "DEP_"+i;
@@ -39,8 +40,6 @@ public class DataSourceConfig {
 
         DataSource mariaAuthorisationDataSource = createDataSource("USERS");
         dataSourceMap.put("USERS", mariaAuthorisationDataSource);
-
-        dataSourceMap.forEach((s, dataSource) -> System.out.println(s));
         return dataSourceMap;
     }
 
@@ -52,5 +51,18 @@ public class DataSourceConfig {
         dataSource.setPassword(databasePassword);
         return dataSource;
     }
+
+    @Bean
+    @Primary
+    public DataSource dataSource() {
+
+        DynamicDataSource dataSource = new DynamicDataSource();
+        dataSource.setTargetDataSources(dataSourceMap());
+        dataSource.setDefaultTargetDataSource(dataSourceMap().get("DEP_1"));
+
+        return dataSource;
+    }
+
+
 
 }
