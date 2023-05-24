@@ -1,20 +1,63 @@
 package project.service;
 
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.stereotype.Service;
+import project.dataSource.DynamicDataSourceContextHolder;
 import project.model.Subdepartment;
 import project.repository.SubdepartmentJpaRepository;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
-//@Service not in use at the moment
+@Service
 @RequiredArgsConstructor
 public class SubdepartmentServiceImpl {
 
-    private final Map<Short, SubdepartmentJpaRepository> subdepartmentRepositoryMap;
+    private final SubdepartmentJpaRepository repository;
 
-    public Iterable<Subdepartment> getAll(short department){
-        SubdepartmentJpaRepository repository = subdepartmentRepositoryMap.get(department);
-        return repository.findAll();
+    public @NonNull List<Subdepartment> findAll(int departmentId) {
+        DynamicDataSourceContextHolder.setCurrentDataSource("DEP_" + departmentId);
+        Iterable<Subdepartment> entities = repository.findAll();
+        List<Subdepartment> result = new ArrayList<>();
+        entities.forEach(result::add);
+        return result;
 
     }
+
+    public boolean deleteById(int departmentId, short id) {
+        try {
+            DynamicDataSourceContextHolder.setCurrentDataSource("DEP_" + departmentId);
+            repository.deleteById(id);
+            return true;
+        }catch (EmptyResultDataAccessException e){
+            return false;
+        }
+    }
+
+    public @NonNull Subdepartment updateName(int departmentId, Subdepartment subdepartment) {
+        DynamicDataSourceContextHolder.setCurrentDataSource("DEP_" + departmentId);
+        repository.updateNameByName(subdepartment.getName(), subdepartment.getId());
+        return subdepartment;
+    }
+
+    public @NonNull Subdepartment save(int departmentId, Subdepartment subdepartment) {
+        DynamicDataSourceContextHolder.setCurrentDataSource("DEP_" + departmentId);
+        return repository.save(subdepartment);
+    }
+
+    public @Nullable Subdepartment getById(int departmentId, short SubdepartmentId) {
+        DynamicDataSourceContextHolder.setCurrentDataSource("DEP_" + departmentId);
+        return repository.findById(SubdepartmentId).orElse(null);
+
+    }
+
+    public @Nullable Subdepartment getByName(int departmentId, String subdepartmentName) {
+        DynamicDataSourceContextHolder.setCurrentDataSource("DEP_" + departmentId);
+        return repository.findByName(subdepartmentName).orElse(null);
+    }
+
+
 }

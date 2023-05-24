@@ -12,6 +12,7 @@ import project.exceptions.Validator;
 import project.model.Student;
 import project.model.StudentView;
 import project.model.Worker;
+import project.service.SubdepartmentServiceImpl;
 import project.service.WorkerService;
 
 import java.sql.ResultSet;
@@ -27,7 +28,7 @@ public class StudentRepositoryImpl implements StudentRepository {
 
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-    private final SubdepartmentRepository subdepartmentRepository;
+    private final SubdepartmentServiceImpl subdepartmentService;
     private final WorkerService workerService;
 
 
@@ -68,8 +69,8 @@ public class StudentRepositoryImpl implements StudentRepository {
             }
         }
         // Для добавления нужен SubDepartmentId, а с фронта приходит SubDepartmentName
-        Short newSubDepartmentId = subdepartmentRepository
-                .getSubdepartmentByName(departmentId, studentView.getSubDepartment())
+        Short newSubDepartmentId = subdepartmentService
+                .getByName(departmentId, studentView.getSubDepartment())
                 .getId();
         Map<String, Object> studentData = new HashMap<>();
         studentData.put("studentId", studentView.getStudentId());
@@ -143,8 +144,8 @@ public class StudentRepositoryImpl implements StudentRepository {
      */
     @Override
     public void updateStudent(int departmentId, StudentView studentView) {
-        Short newSubDepartmentId = subdepartmentRepository
-                .getSubdepartmentByName(departmentId, studentView.getSubDepartment())
+        Short newSubDepartmentId = subdepartmentService
+                .getByName(departmentId, studentView.getSubDepartment())
                 .getId();
         if (newSubDepartmentId == null) {
             throw new InvalidSubdepartmentException(studentView.getSubDepartment());

@@ -4,14 +4,13 @@ package project.repository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.stereotype.Repository;
 import project.model.Subdepartment;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Repository(value = "SubdepartmentJdbcRepositoryBean")
+//@Repository(value = "SubdepartmentJdbcRepositoryBean")
 @RequiredArgsConstructor
 public class SubdepartmentRepository {
 
@@ -69,6 +68,7 @@ public class SubdepartmentRepository {
         return subdepartment;
     }
 
+    //throws EmptyResultDataAccessException
     public void deleteSubdepartmentById(Integer departmentId, short id) {
         Map<String, Object> requestParams = new HashMap<>();
         requestParams.put("id", id);
