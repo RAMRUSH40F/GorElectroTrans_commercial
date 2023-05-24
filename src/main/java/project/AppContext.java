@@ -22,7 +22,9 @@ public class AppContext {
     @Value("${maria.db.password}")
     private String mariaDbPassword;
 
-    @Bean("mariaDB")
+
+    @Deprecated
+    @Bean("mariaDBdatasource")
     public DataSource mariaDataSource() throws SQLException {
         MariaDbDataSource mariaDbDataSource = new MariaDbDataSource();
         mariaDbDataSource.setUrl(mariaDbUrl);

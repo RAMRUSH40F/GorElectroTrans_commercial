@@ -1,17 +1,18 @@
 package project.repository.multiplier;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import project.model.Subdepartment;
-import project.repository.SubdepartmentRepository;
+import project.service.SubdepartmentServiceImpl;
 
 import java.util.HashMap;
 import java.util.Map;
 
-//@Service("SubdepartmentMultiplierBean")
+@Service("SubdepartmentMultiplierBean")
 @RequiredArgsConstructor
 public class SubdepartmentMultiplier {
 
-    private final SubdepartmentRepository subdepartmentRepository;
+    private final SubdepartmentServiceImpl service;
 
     public void addAllSubDepartments() {
         Map<Integer, String> subDepartmentNames = new HashMap<>();
@@ -32,7 +33,7 @@ public class SubdepartmentMultiplier {
                         .name(name)
                         .id(id)
                         .build();
-                subdepartmentRepository.addNewSubdepartment(i, subdepartment);
+                service.save(i, subdepartment);
             }
         }
         System.out.println("SubdepartmentMultiplier ended its work!");

@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 import project.model.Subdepartment;
-import project.repository.SubdepartmentRepository;
 import project.security.JwtAuthorizationService;
+import project.service.SubdepartmentServiceImpl;
 
 import java.util.List;
 
@@ -16,8 +16,8 @@ import static project.exceptions.Validator.validateDepartmentId;
 @RestController("SubdepartmentControllerBean")
 public class SubdepartmentController {
 
-    private final SubdepartmentRepository subdepartmentRepository;
     private final JwtAuthorizationService auth;
+    private final SubdepartmentServiceImpl service;
 
     @GetMapping("/dep_{N}/subdep/data")
     public List<Subdepartment> getAll(@PathVariable("N") String depId,
@@ -25,7 +25,7 @@ public class SubdepartmentController {
         Integer departmentId = validateDepartmentId(depId);
         auth.authorize(jwtToken, departmentId);
 
-        return subdepartmentRepository.getAll(departmentId);
+        return service.findAll(departmentId);
     }
 
     @PostMapping("/dep_{N}/subdep/data")
@@ -35,7 +35,7 @@ public class SubdepartmentController {
         Integer departmentId = validateDepartmentId(depId);
         auth.authorize(jwtToken, departmentId);
 
-        return subdepartmentRepository.addNewSubdepartment(departmentId, subdepartment);
+        return service.save(departmentId, subdepartment);
 
     }
 
@@ -46,7 +46,7 @@ public class SubdepartmentController {
         Integer departmentId = validateDepartmentId(depId);
         auth.authorize(jwtToken, departmentId);
 
-        return subdepartmentRepository.updateSubdepartmentName(departmentId, subdepartment);
+        return service.updateName(departmentId, subdepartment);
     }
 
     @DeleteMapping("/dep_{N}/subdep/{id}")
@@ -56,7 +56,7 @@ public class SubdepartmentController {
         Integer departmentId = validateDepartmentId(depId);
         auth.authorize(jwtToken, departmentId);
 
-        subdepartmentRepository.deleteSubdepartmentById(departmentId, id);
+        service.deleteById(departmentId, id);
     }
 
 
