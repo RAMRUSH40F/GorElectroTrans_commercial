@@ -1,4 +1,4 @@
-package repository;
+package temporaryFiles;
 
 import org.springframework.boot.test.context.TestConfiguration;
 

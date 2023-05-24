@@ -1,4 +1,4 @@
-package repository.mocks;
+package temporaryFiles.mocks;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;

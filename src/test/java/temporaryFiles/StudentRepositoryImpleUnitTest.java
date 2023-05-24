@@ -1,4 +1,4 @@
-package repository;
+package temporaryFiles;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -14,7 +14,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import project.model.StudentView;
 import project.repository.StudentRepositoryImpl;
-import project.repository.SubdepartmentRepository;
+import project.service.SubdepartmentServiceImpl;
 import project.service.WorkerService;
 
 import static org.mockito.Mockito.when;
@@ -31,7 +31,7 @@ public class StudentRepositoryImpleUnitTest {
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @MockBean
-    private SubdepartmentRepository subdepartmentRepository;
+    private SubdepartmentServiceImpl service;
 
     @MockBean
     private WorkerService workerService;

@@ -1,4 +1,4 @@
-package repository;
+package temporaryFiles;
 
 
 import org.springframework.context.annotation.*;
@@ -7,7 +7,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import project.AppContext;
 import project.repository.StudentRepository;
 import project.repository.StudentRepositoryImpl;
-import project.repository.SubdepartmentRepository;
+import project.service.SubdepartmentServiceImpl;
 import project.service.WorkerService;
 
 @Configuration
@@ -20,8 +20,8 @@ public class StudentRepositoryConfiguration {
     public StudentRepository createStudentRepository(JdbcTemplate jdbcTemplate,
                                                      NamedParameterJdbcTemplate namedParameterJdbcTemplate,
                                                      WorkerService workerService,
-                                                     SubdepartmentRepository subdepartmentRepository){
-        return new StudentRepositoryImpl(jdbcTemplate,namedParameterJdbcTemplate,subdepartmentRepository, workerService);
+                                                     SubdepartmentServiceImpl service){
+        return new StudentRepositoryImpl(jdbcTemplate,namedParameterJdbcTemplate,service, workerService);
     }
 
 
