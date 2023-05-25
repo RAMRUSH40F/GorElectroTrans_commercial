@@ -5,7 +5,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 import project.dataSource.DynamicDataSourceContextHolder;
 import project.model.Subdepartment;
-import project.security.JwtAuthorizationService;
 import project.service.SubdepartmentServiceImpl;
 
 import java.util.List;
@@ -17,15 +16,12 @@ import static project.exceptions.Validator.validateDepartmentId;
 @RestController("SubdepartmentControllerBean")
 public class SubdepartmentController {
 
-    private final JwtAuthorizationService auth;
     private final SubdepartmentServiceImpl service;
 
     @GetMapping("/dep_{N}/subdep/data")
     public List<Subdepartment> getAll(@PathVariable("N") String depId,
                                       @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
-        auth.authorize(jwtToken, departmentId);
-
         return service.findAll(departmentId);
     }
 
@@ -34,8 +30,6 @@ public class SubdepartmentController {
                                              @RequestBody Subdepartment subdepartment,
                                              @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
-        auth.authorize(jwtToken, departmentId);
-
         return service.save(departmentId, subdepartment);
 
     }
@@ -45,7 +39,6 @@ public class SubdepartmentController {
                                                  @RequestBody Subdepartment subdepartment,
                                                  @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
-        auth.authorize(jwtToken, departmentId);
         DynamicDataSourceContextHolder.setCurrentDataSource("DEP_" + departmentId);
         return service.updateName(departmentId, subdepartment);
     }
@@ -55,8 +48,6 @@ public class SubdepartmentController {
                                         @PathVariable("id") short id,
                                         @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
-        auth.authorize(jwtToken, departmentId);
-
         service.deleteById(departmentId, id);
     }
 
