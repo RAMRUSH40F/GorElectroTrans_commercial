@@ -17,7 +17,7 @@ public class DynamicDataSourceContextHolder {
         return dataSourceHolder.get();
     }
 
-    public static void clear() {
+    public static void clearDatasourceInfo() {
         dataSourceHolder.remove();
     }
 }
