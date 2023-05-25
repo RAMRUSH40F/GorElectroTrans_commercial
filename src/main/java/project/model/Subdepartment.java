@@ -6,9 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Data
 @AllArgsConstructor
@@ -18,6 +16,7 @@ import javax.persistence.Id;
 public class Subdepartment {
     @Id
     @JsonProperty("id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Short id;
 
     @Column
