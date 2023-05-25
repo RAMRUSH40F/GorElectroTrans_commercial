@@ -5,6 +5,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import project.repository.UserRepository;
@@ -77,7 +78,7 @@ public class JwtAuthorizationService {
     /**
      * @return jwt token out of authorities and username;
      */
-    private String createToken(User user) {
+    private String createToken(@NotNull User user) {
         Claims claims = Jwts.claims().setSubject(user.getUsername());
         claims.put("role", user.getAuthorities());
 
