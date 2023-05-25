@@ -1,46 +1,26 @@
 package project;
 
 import lombok.RequiredArgsConstructor;
-import org.mariadb.jdbc.MariaDbDataSource;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import javax.sql.DataSource;
-import java.sql.SQLException;
 
 @Configuration
 @RequiredArgsConstructor
 public class AppContext {
 
-    @Value("${maria.db.url}")
-    private String mariaDbUrl;
-    @Value("${maria.db.user}")
-    private String mariaDbUser;
-    @Value("${maria.db.password}")
-    private String mariaDbPassword;
 
-
-    @Deprecated
-    @Bean("mariaDBdatasource")
-    public DataSource mariaDataSource() throws SQLException {
-        MariaDbDataSource mariaDbDataSource = new MariaDbDataSource();
-        mariaDbDataSource.setUrl(mariaDbUrl);
-        mariaDbDataSource.setUser(mariaDbUser);
-        mariaDbDataSource.setPassword(mariaDbPassword);
-        return mariaDbDataSource;
+    @Bean
+    public JdbcTemplate myJdbcTemplate(DataSource mariaDbDynamicDataSource) {
+        return new JdbcTemplate(mariaDbDynamicDataSource);
     }
 
     @Bean
-    public JdbcTemplate myJdbcTemplate(DataSource mariaDataSource) {
-        return new JdbcTemplate(mariaDataSource);
-    }
-
-    @Bean
-    public NamedParameterJdbcTemplate myNamedParameterJdbcTemplate(DataSource mariaDataSource) {
-        return new NamedParameterJdbcTemplate(mariaDataSource);
+    public NamedParameterJdbcTemplate myNamedParameterJdbcTemplate(DataSource mariaDbDynamicDataSource) {
+        return new NamedParameterJdbcTemplate(mariaDbDynamicDataSource);
     }
 
     /**
