@@ -56,7 +56,7 @@ public class LessonContentController {
         auth.authorize(jwtToken, departmentId);
 
         try {
-            repository.create(LessonContent.builder()
+            repository.save(LessonContent.builder()
                     .lessonId(Integer.valueOf(lessonId))
                     .fileName(file.getOriginalFilename())
                     .file(file.getBytes())

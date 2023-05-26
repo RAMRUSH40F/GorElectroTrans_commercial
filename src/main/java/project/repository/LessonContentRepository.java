@@ -13,14 +13,11 @@ import project.repository.mapper.LessonContentInfoMapper;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import static project.exceptions.Validator.validateDepartmentId;
-
 @Repository
 @RequiredArgsConstructor
 public class LessonContentRepository {
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-    private final JdbcTemplate jdbcTemplate;
     private final LessonContentInfoMapper mapper = new LessonContentInfoMapper();
 
     public byte[] getFileByName(String fileName, Integer departmentId) {
@@ -33,13 +30,6 @@ public class LessonContentRepository {
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
-    }
-
-    public List<LessonContent> getAllContentInfoPaged(int department, int page, int size) {
-        String sqlQuery = "SELECT * FROM DEP_" + department + ".Materials_view" +
-                " ORDER BY date DESC LIMIT " + ((page - 1) * size) + "," + size;
-        return namedParameterJdbcTemplate.query(sqlQuery, mapper);
-
     }
 
     public List<String> getFileNamesByLessonId(int department, int id) {
@@ -58,10 +48,9 @@ public class LessonContentRepository {
             throw new NoSuchElementException("Такого файла в базе нет");
         }
 
-
     }
 
-    public boolean create(LessonContent content, Integer departmentId) {
+    public boolean save(LessonContent content, Integer departmentId) {
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("departmentId", departmentId);
         parameters.addValue("file_name", content.getFileName());
@@ -92,10 +81,5 @@ public class LessonContentRepository {
 
     }
 
-    public Integer getLessonContentCount(Integer departmentId) {
-        String databaseName = "DEP_" + departmentId;
-        return jdbcTemplate.queryForObject("SELECT COUNT(file_name) FROM " +
-                databaseName + ".lesson_content AS COUNT", Integer.class);
-    }
 
 }
