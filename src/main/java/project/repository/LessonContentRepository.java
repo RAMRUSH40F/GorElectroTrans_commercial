@@ -32,10 +32,10 @@ public class LessonContentRepository {
         }
     }
 
-    public List<String> getFileNamesByLessonId(int department, int id) {
+    public List<LessonContent> getFileNamesByLessonId(int department, int id) {
         return namedParameterJdbcTemplate.query(
                 "SELECT file_name FROM DEP_" + department + ".lesson_content WHERE lesson_id=" + id,
-                (rs, rowNum) -> rs.getString("file_name"));
+                (rs, rowNum) -> LessonContent.builder().fileName(rs.getString("file_name")).build());
 
     }
 

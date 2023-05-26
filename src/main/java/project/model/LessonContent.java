@@ -2,16 +2,27 @@ package project.model;
 
 import lombok.*;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 @AllArgsConstructor
 @Getter
 @Setter
 @Builder
 @RequiredArgsConstructor
+@Entity
+@Table(name = "lesson_content")
 public class LessonContent {
-
+    @Id
+    @Column(name = "file_name")
     private String fileName;
+
+    @Column
     private byte[] file;
 
+    @Column(name = "lesson_id")
     private Integer lessonId;
 
     @Override

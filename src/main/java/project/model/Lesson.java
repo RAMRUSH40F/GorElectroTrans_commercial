@@ -5,7 +5,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Date;
-import java.util.List;
+import java.util.Collection;
 
 
 @Builder
@@ -45,9 +45,11 @@ public class Lesson {
     private boolean isHeld;
 
 
-    @OneToMany (mappedBy="address", fetch=FetchType.EAGER)
+//    @OneToMany (mappedBy="address", fetch=FetchType.EAGER)
+    @OneToMany
+    @JoinColumn(name = "lesson_id")
     @JsonProperty("lessonContent")
-    private List<String> lessonContent;
+    private Collection<LessonContent> lessonContent;
 
     @Override
     public boolean equals(Object o) {
