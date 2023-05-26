@@ -1,6 +1,8 @@
 package project.repository.multiplier;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Service;
 import project.model.Attendance;
 import project.model.Lesson;
 import project.model.Student;
@@ -13,7 +15,8 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 
-//@Service("AttendanceMultiplierBean")
+@Service("AttendanceMultiplierBean")
+@Lazy
 @RequiredArgsConstructor
 public class AttendanceMultiplier {
 
