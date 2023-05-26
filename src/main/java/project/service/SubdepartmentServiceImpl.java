@@ -43,7 +43,6 @@ public class SubdepartmentServiceImpl {
     }
 
     public @NonNull Subdepartment updateName(int departmentId, Subdepartment subdepartment) {
-        // Setting datasource in controller
         setCurrentDataSource("DEP_"+departmentId);
         repository.save(subdepartment);
         return subdepartment;
