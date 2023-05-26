@@ -40,12 +40,12 @@ public class LessonContentRepository {
     }
 
     public LessonContent getContentInfoByFileName(int department, String fileName) {
-        String sqlQuery = "SELECT * FROM DEP_" + department + ".Materials_view" +
-                " WHERE file_name='" + fileName + "' ORDER BY date DESC";
+        String sqlQuery = "SELECT * FROM DEP_" + department + ".lesson_content" +
+                " WHERE file_name='" + fileName + "'";
         try {
             return namedParameterJdbcTemplate.query(sqlQuery, mapper).get(0);
         } catch (IndexOutOfBoundsException e) {
-            throw new NoSuchElementException("Такого файла в базе нет");
+            throw new NoSuchElementException("Такого файла в базе нет. Или слишком длинное название у файла");
         }
 
     }

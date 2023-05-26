@@ -1,32 +1,43 @@
 package project.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import java.sql.Date;
-
-@Data
-@Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
+@Builder
+@RequiredArgsConstructor
 public class LessonContent {
 
-
-    private Date date;
-
-    private String topic;
+    private String fileName;
+    private byte[] file;
 
     private Integer lessonId;
 
-    private String fileName;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-    private byte[] file;
+        LessonContent that = (LessonContent) o;
 
+        return getFileName().equals(that.getFileName());
+    }
 
+    @Override
+    public int hashCode() {
+        return getFileName().hashCode();
+    }
 
-    public static boolean isEmpty(LessonContent content){
-        return content.getFile() != null && content.getLessonId() != null;
+    @Override
+    public String toString() {
+        return "LessonContent{" +
+                "fileName='" + fileName + '\'' +
+                ", lessonId=" + lessonId +
+                '}';
     }
 }
+
+
+
+

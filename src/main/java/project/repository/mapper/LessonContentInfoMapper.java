@@ -11,8 +11,6 @@ public class LessonContentInfoMapper implements RowMapper<LessonContent> {
     public LessonContent mapRow(ResultSet rs, int rowNum) throws SQLException {
         return LessonContent.builder()
                 .fileName(rs.getString("file_name"))
-                .date(rs.getDate("date"))
-                .topic(rs.getString("topic"))
                 .lessonId(rs.getInt("lesson_id"))
                 .build();
     }
