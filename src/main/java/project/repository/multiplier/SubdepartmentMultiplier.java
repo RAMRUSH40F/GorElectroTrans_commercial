@@ -1,6 +1,7 @@
 package project.repository.multiplier;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import project.model.Subdepartment;
 import project.service.SubdepartmentServiceImpl;
@@ -9,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service("SubdepartmentMultiplierBean")
+@Lazy
 @RequiredArgsConstructor
 public class SubdepartmentMultiplier {
 

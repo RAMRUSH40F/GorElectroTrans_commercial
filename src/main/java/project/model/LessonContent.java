@@ -1,40 +1,43 @@
 package project.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import javax.persistence.CascadeType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import java.sql.Date;
-
-@Data
-@Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
+@Builder
+@RequiredArgsConstructor
 public class LessonContent {
 
-    @ManyToOne(optional=false, cascade= CascadeType.ALL)
-    @JoinColumn(name="person_id")
-    private Date date;
-
-    @ManyToOne(optional=false, cascade= CascadeType.ALL)
-    @JoinColumn(name="person_id")
-    private String topic;
-
-    @ManyToOne(optional=false, cascade= CascadeType.ALL)
-    @JoinColumn(name="person_id")
-    private Integer lessonId;
-
     private String fileName;
-
     private byte[] file;
 
+    private Integer lessonId;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-    public static boolean isEmpty(LessonContent content){
-        return content.getFile() != null && content.getLessonId() != null;
+        LessonContent that = (LessonContent) o;
+
+        return getFileName().equals(that.getFileName());
+    }
+
+    @Override
+    public int hashCode() {
+        return getFileName().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "LessonContent{" +
+                "fileName='" + fileName + '\'' +
+                ", lessonId=" + lessonId +
+                '}';
     }
 }
+
+
+
+

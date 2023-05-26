@@ -1,12 +1,15 @@
 package project.repository.multiplier;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Service;
 import project.model.Student;
 import project.repository.StudentRepository;
 
 import java.util.Random;
 
-//@Service("StudentMultiplierBean")
+@Service("StudentMultiplierBean")
+@Lazy
 @RequiredArgsConstructor
 public class StudentMultiplier {
     private final StudentRepository studentRepository;

@@ -1,6 +1,7 @@
 package project.repository.multiplier;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import project.model.Worker;
 import project.service.WorkerService;
@@ -10,6 +11,7 @@ import java.util.Random;
 
 @Service("WorkersMultiplierBean")
 @RequiredArgsConstructor
+@Lazy
 public class WorkersMultiplier {
 
     private final WorkerService workerService;

@@ -13,14 +13,11 @@ import project.repository.mapper.LessonContentInfoMapper;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import static project.exceptions.Validator.validateDepartmentId;
-
 @Repository
 @RequiredArgsConstructor
 public class LessonContentRepository {
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-    private final JdbcTemplate jdbcTemplate;
     private final LessonContentInfoMapper mapper = new LessonContentInfoMapper();
 
     public byte[] getFileByName(String fileName, Integer departmentId) {
@@ -35,13 +32,6 @@ public class LessonContentRepository {
         }
     }
 
-    public List<LessonContent> getAllContentInfoPaged(int department, int page, int size) {
-        String sqlQuery = "SELECT * FROM DEP_" + department + ".Materials_view" +
-                " ORDER BY date DESC LIMIT " + ((page - 1) * size) + "," + size;
-        return namedParameterJdbcTemplate.query(sqlQuery, mapper);
-
-    }
-
     public List<String> getFileNamesByLessonId(int department, int id) {
         return namedParameterJdbcTemplate.query(
                 "SELECT file_name FROM DEP_" + department + ".lesson_content WHERE lesson_id=" + id,
@@ -50,18 +40,17 @@ public class LessonContentRepository {
     }
 
     public LessonContent getContentInfoByFileName(int department, String fileName) {
-        String sqlQuery = "SELECT * FROM DEP_" + department + ".Materials_view" +
-                " WHERE file_name='" + fileName + "' ORDER BY date DESC";
+        String sqlQuery = "SELECT * FROM DEP_" + department + ".lesson_content" +
+                " WHERE file_name='" + fileName + "'";
         try {
             return namedParameterJdbcTemplate.query(sqlQuery, mapper).get(0);
         } catch (IndexOutOfBoundsException e) {
-            throw new NoSuchElementException("Такого файла в базе нет");
+            throw new NoSuchElementException("Такого файла в базе нет. Или слишком длинное название у файла");
         }
-
 
     }
 
-    public boolean create(LessonContent content, Integer departmentId) {
+    public boolean save(LessonContent content, Integer departmentId) {
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("departmentId", departmentId);
         parameters.addValue("file_name", content.getFileName());
@@ -92,10 +81,5 @@ public class LessonContentRepository {
 
     }
 
-    public Integer getLessonContentCount(Integer departmentId) {
-        String databaseName = "DEP_" + departmentId;
-        return jdbcTemplate.queryForObject("SELECT COUNT(file_name) FROM " +
-                databaseName + ".lesson_content AS COUNT", Integer.class);
-    }
 
 }

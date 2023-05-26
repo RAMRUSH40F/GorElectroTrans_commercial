@@ -1,13 +1,14 @@
 package project.repository.multiplier;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import project.model.Lesson;
 import project.repository.LessonRepository;
 import project.service.reportService.TeacherProfession;
 
 import java.sql.Date;
 
-//@Service("LessonMultiplierBean")
+@Service("LessonMultiplierBean")
 @RequiredArgsConstructor
 public class LessonMultiplier {
 
