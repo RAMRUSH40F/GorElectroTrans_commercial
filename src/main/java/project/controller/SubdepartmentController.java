@@ -3,7 +3,6 @@ package project.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
-import project.dataSource.DynamicDataSourceContextHolder;
 import project.model.Subdepartment;
 import project.service.SubdepartmentServiceImpl;
 
@@ -39,7 +38,6 @@ public class SubdepartmentController {
                                                  @RequestBody Subdepartment subdepartment,
                                                  @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
-        DynamicDataSourceContextHolder.setCurrentDataSource("DEP_" + departmentId);
         return service.updateName(departmentId, subdepartment);
     }
 

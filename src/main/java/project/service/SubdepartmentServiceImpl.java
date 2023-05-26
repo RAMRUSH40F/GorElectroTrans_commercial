@@ -5,14 +5,14 @@ import lombok.RequiredArgsConstructor;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import project.model.Subdepartment;
 import project.repository.SubdepartmentJpaRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static project.dataSource.DynamicDataSourceContextHolder.*;
+import static project.dataSource.DynamicDataSourceContextHolder.clearDatasourceInfo;
+import static project.dataSource.DynamicDataSourceContextHolder.setCurrentDataSource;
 
 @Service
 @RequiredArgsConstructor
@@ -42,10 +42,10 @@ public class SubdepartmentServiceImpl {
         }
     }
 
-    @Transactional
     public @NonNull Subdepartment updateName(int departmentId, Subdepartment subdepartment) {
         // Setting datasource in controller
-        repository.updateNameByName(subdepartment.getName(), subdepartment.getId());
+        setCurrentDataSource("DEP_"+departmentId);
+        repository.save(subdepartment);
         return subdepartment;
     }
 
