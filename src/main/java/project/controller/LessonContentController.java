@@ -14,10 +14,8 @@ import project.repository.LessonContentRepository;
 import project.security.JwtAuthorizationService;
 
 import java.io.IOException;
-import java.util.List;
 
 import static project.exceptions.Validator.validateDepartmentId;
-import static project.exceptions.Validator.validatePaginationParams;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,22 +24,6 @@ public class LessonContentController {
     private final LessonContentRepository repository;
     private final JwtAuthorizationService auth;
 
-    @GetMapping("/dep_{N}/content/data")
-    public ResponseEntity<List<LessonContent>> getPagedLessons(@PathVariable("N") String depId,
-                                                               @RequestParam String page,
-                                                               @RequestParam String size,
-                                                               @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
-        Integer departmentId = validateDepartmentId(depId);
-        validatePaginationParams(page, size);
-        auth.authorize(jwtToken, departmentId);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("content_count", String.valueOf(repository.getLessonContentCount(departmentId)));
-        return ResponseEntity
-                .ok()
-                .headers(headers)
-                .body(repository.getAllContentInfoPaged(departmentId, Integer.parseInt(page), Integer.parseInt(size)));
-    }
 
     @GetMapping("/dep_{N}/content/data/{file_name}")
     public ResponseEntity<ByteArrayResource> getFileByName(@PathVariable("N") String depId,
@@ -85,7 +67,6 @@ public class LessonContentController {
             throw new FileSizeLimitExceededException();
         }
         return repository.getContentInfoByFileName(departmentId, file.getOriginalFilename());
-
 
     }
 
