@@ -39,11 +39,6 @@ public class LessonRepository {
                         " :teacher, :peoplePlanned,:isHeld,:teacherPost);", parameters);
     }
 
-    public void deleteAllLessons(int department) {
-        String databaseName = "DEP_" + department;
-        jdbcTemplate.update(
-                "DELETE FROM " + databaseName + ".lesson ;");
-    }
 
     public List<Lesson> getLessonsIdList(int department) {
         String databaseName = "DEP_" + department;

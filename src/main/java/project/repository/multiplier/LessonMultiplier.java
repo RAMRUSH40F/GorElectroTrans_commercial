@@ -24,7 +24,6 @@ public class LessonMultiplier {
                 {"Ремонт нового подвижного состава трамваев", 2.6f, new Date(1683014400L), "Левицкий Леонид Константинович.", 52, TeacherProfession.MASTER.getProfession()},
                 {"Ремонт усов троллейбуса", 2.4f, new Date(1684041600L), "Яшин А.С.", 40, "Лучший механик месяца"}
         };
-        lessonRepository.deleteAllLessons(departmentId);
 
         for (int i = 0; i < 6; i++) {
             Lesson lesson = Lesson.builder()
