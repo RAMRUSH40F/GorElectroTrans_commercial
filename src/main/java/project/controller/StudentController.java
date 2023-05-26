@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.model.StudentView;
 import project.repository.StudentRepository;
-import project.security.JwtAuthorizationService;
 
 import java.util.List;
 
@@ -17,16 +16,14 @@ import static project.exceptions.Validator.*;
 public class StudentController {
 
     private final StudentRepository studentRepositoryImpl;
-    private final JwtAuthorizationService auth;
 
     @GetMapping("/dep_{N}/students/data")
     public ResponseEntity<List<StudentView>> getStudentPage(@PathVariable("N") String depId,
                                                             @RequestParam(value = "page") String page,
                                                             @RequestParam(value = "size") String pageSize,
                                                             @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
-        Integer departmentId = validateDepartmentId(depId);
+        int departmentId = validateDepartmentId(depId);
         validatePaginationParams(page, pageSize);
-        auth.authorize(jwtToken, departmentId);
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("students_count", String.valueOf(studentRepositoryImpl.getStudentsCount(departmentId)));
@@ -42,7 +39,6 @@ public class StudentController {
                                        @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
         validateStudentId(studentId);
-        auth.authorize(jwtToken, departmentId);
 
         return studentRepositoryImpl.getStudentById(departmentId, studentId);
     }
@@ -52,7 +48,6 @@ public class StudentController {
                                      @RequestBody StudentView student,
                                      @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
-        auth.authorize(jwtToken, departmentId);
 
         return studentRepositoryImpl.addNewStudent(departmentId, student);
     }
@@ -63,7 +58,6 @@ public class StudentController {
                               @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
         validateStudentId(student.getStudentId());
-        auth.authorize(jwtToken, departmentId);
 
         studentRepositoryImpl.updateStudent(departmentId, student);
     }
@@ -75,7 +69,6 @@ public class StudentController {
 
         Integer departmentId = validateDepartmentId(depId);
         validateStudentId(studentId);
-        auth.authorize(jwtToken, departmentId);
 
         studentRepositoryImpl.deleteStudentById(departmentId, studentId);
     }

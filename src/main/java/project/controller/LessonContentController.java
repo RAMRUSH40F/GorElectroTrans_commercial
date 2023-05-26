@@ -11,7 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 import project.exceptions.FileSizeLimitExceededException;
 import project.model.LessonContent;
 import project.repository.LessonContentRepository;
-import project.security.JwtAuthorizationService;
 
 import java.io.IOException;
 
@@ -22,7 +21,6 @@ import static project.exceptions.Validator.validateDepartmentId;
 public class LessonContentController {
 
     private final LessonContentRepository repository;
-    private final JwtAuthorizationService auth;
 
 
     @GetMapping("/dep_{N}/content/data/{file_name}")
@@ -30,7 +28,6 @@ public class LessonContentController {
                                                            @PathVariable("file_name") String fileName,
                                                            @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
-        auth.authorize(jwtToken, departmentId);
         byte[] file = repository.getFileByName(fileName, departmentId);
 
         ByteArrayResource resource = new ByteArrayResource(file);
@@ -53,7 +50,6 @@ public class LessonContentController {
                                        @RequestParam("lessonId") String lessonId,
                                        @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
-        auth.authorize(jwtToken, departmentId);
 
         try {
             repository.save(LessonContent.builder()
@@ -76,7 +72,6 @@ public class LessonContentController {
                                     @PathVariable("file_name") String fileName,
                                     @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
-        auth.authorize(jwtToken, departmentId);
 
         return repository.deleteFileByName(departmentId, fileName);
     }

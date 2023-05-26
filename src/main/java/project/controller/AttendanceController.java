@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import project.model.Attendance;
 import project.model.AttendanceView;
 import project.repository.AttendanceRepository;
-import project.security.JwtAuthorizationService;
 
 import java.util.List;
 
@@ -19,7 +18,6 @@ import static project.exceptions.Validator.validatePaginationParams;
 public class AttendanceController {
 
     private final AttendanceRepository attendanceRepository;
-    private final JwtAuthorizationService auth;
 
     @GetMapping("/dep_{N}/attendance/data")
     public ResponseEntity<List<AttendanceView>> getAllRecords(@PathVariable("N") String depId,
@@ -29,7 +27,6 @@ public class AttendanceController {
                                                               @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
         validatePaginationParams(page, pageSize);
-        auth.authorize(jwtToken, departmentId);
 
 
         List<AttendanceView> body;
@@ -55,7 +52,6 @@ public class AttendanceController {
                                                          @RequestBody Attendance attendance,
                                                          @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
-        auth.authorize(jwtToken, departmentId);
 
         return attendanceRepository.getAttendanceView(departmentId, attendance);
 
@@ -66,7 +62,6 @@ public class AttendanceController {
                                                  @RequestBody Attendance attendance,
                                                  @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
-        auth.authorize(jwtToken, departmentId);
 
         return attendanceRepository.addNewRecord(departmentId, attendance);
     }
@@ -76,7 +71,6 @@ public class AttendanceController {
                                        @RequestBody Attendance attendance,
                                        @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
-        auth.authorize(jwtToken, departmentId);
 
         attendanceRepository.updateRecordAttendance(departmentId, attendance);
     }
@@ -86,7 +80,6 @@ public class AttendanceController {
                                  @RequestBody Attendance attendance,
                                  @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
-        auth.authorize(jwtToken, departmentId);
 
         attendanceRepository.deleteRecordById(departmentId, attendance);
     }

@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.model.Lesson;
 import project.repository.LessonRepository;
-import project.security.JwtAuthorizationService;
 
 import java.util.List;
 
@@ -18,7 +17,6 @@ import static project.exceptions.Validator.validatePaginationParams;
 public class LessonController {
 
     private final LessonRepository lessonRepository;
-    private final JwtAuthorizationService auth;
 
     @GetMapping("/dep_{N}/work_plan/data")
     public ResponseEntity<List<Lesson>> getLessonsPaginated(@PathVariable("N") String depId,
@@ -28,7 +26,6 @@ public class LessonController {
                                                             @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
         validatePaginationParams(page, size);
-        auth.authorize(jwtToken, departmentId);
         HttpHeaders headers = new HttpHeaders();
 
         List<Lesson> body;
@@ -53,7 +50,6 @@ public class LessonController {
                          @RequestBody Lesson lesson,
                          @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
-        auth.authorize(jwtToken, departmentId);
         lessonRepository.addNewLesson(departmentId, lesson);
 
         return lessonRepository.getMaxId(departmentId);
@@ -64,7 +60,6 @@ public class LessonController {
                                        @PathVariable("id") int id,
                                        @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
-        auth.authorize(jwtToken, departmentId);
         return lessonRepository.getLessonById(departmentId, id);
     }
 
@@ -74,17 +69,14 @@ public class LessonController {
                              @RequestBody Lesson lesson,
                              @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
-        auth.authorize(jwtToken, departmentId);
         lessonRepository.changeLesson(departmentId, id, lesson);
     }
 
     @DeleteMapping("/dep_{N}/work_plan/{id}")
-
     public void deleteLessonById(@PathVariable("N") String depId,
                                  @PathVariable("id") int id,
                                  @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
-        auth.authorize(jwtToken, departmentId);
         lessonRepository.deleteLessonById(departmentId, id);
     }
 

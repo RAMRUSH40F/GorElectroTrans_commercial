@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import project.exceptions.Validator;
 import project.model.QuarterDateModel;
-import project.security.JwtAuthorizationService;
 import project.service.reportService.ReportService;
 
 import java.time.LocalDate;
@@ -25,13 +24,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReportController {
     private final ReportService reportService;
-    private final JwtAuthorizationService auth;
 
     @GetMapping("/dep_{N}/report/stats")
     public ResponseEntity<ByteArrayResource> getReport(@RequestParam int quarter, @RequestParam int year,
                                                        @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Validator.validateInterval(quarter);
-        auth.authorize(jwtToken, 100);
         final String fileName = "/report_template.xls";
         HSSFWorkbook workbook = reportService.readWorkbook(fileName);
         reportService.formLessonReport(workbook, fileName, quarter, year);
