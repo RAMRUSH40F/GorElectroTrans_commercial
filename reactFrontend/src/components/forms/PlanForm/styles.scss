@@ -27,6 +27,9 @@
     &__row {
         display: flex;
         gap: 0.6rem;
+        &--mb {
+            margin-bottom: 0.6rem;
+        }
         @media (max-width: $mobileMiddle) {
             flex-wrap: wrap;
         }
