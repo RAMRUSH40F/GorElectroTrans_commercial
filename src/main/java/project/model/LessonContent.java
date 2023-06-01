@@ -8,10 +8,11 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @AllArgsConstructor
+@RequiredArgsConstructor
 @Getter
 @Setter
 @Builder
-@RequiredArgsConstructor
+
 @Entity
 @Table(name = "lesson_content")
 public class LessonContent {

@@ -18,9 +18,12 @@ public interface LessonJpaRepository extends PagingAndSortingRepository<Lesson, 
     Integer countAllLessons();
 
     @Query("select l from Lesson l " +
-            "where l.topic like :key or l.teacher like :key or l.date = :key " +
+            "where l.topic like CONCAT('%', :key, '%') " +
+            "or l.teacher like CONCAT('%', :key, '%') " +
+            "or l.date like CONCAT('%', :key, '%') " +
             "order by l.date DESC")
     List<Lesson> findAllByKey(@Param("key") @Nullable String key);
+
 
     @Override
     Optional<Lesson> findById(@NonNull Integer integer);

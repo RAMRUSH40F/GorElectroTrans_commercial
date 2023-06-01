@@ -3,14 +3,13 @@ package project.repository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.stereotype.Repository;
 import project.model.Lesson;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Repository("LessonRepositoryBean")
+//@Repository("LessonRepositoryBean")
 @RequiredArgsConstructor
 public class LessonRepository {
 
