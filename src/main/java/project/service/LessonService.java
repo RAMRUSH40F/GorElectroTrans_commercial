@@ -2,6 +2,8 @@ package project.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import project.model.Lesson;
@@ -40,7 +42,7 @@ public class LessonService {
 
     public Integer getLessonsCount(int department) {
         setCurrentDataSource("DEP_" + department);
-        return lessonJpaRepository.getCount();
+        return lessonJpaRepository.countAllLessons();
     }
 
     public List<Lesson> getLessonByKeyword(int department, String key) {
@@ -57,21 +59,12 @@ public class LessonService {
     public List<Lesson> getPagedLessons(int department, int page, int size) {
         setCurrentDataSource("DEP_" + department);
 
-        List<Lesson> lessonList = lessonJpaRepository.findAllOrderByDateDesc(PageRequest.of(page, size));
+        Pageable sortedByDatePaginatedRequest = PageRequest.of(page-1, size, Sort.by("date").descending());
+        List<Lesson> lessonList = lessonJpaRepository.findAll(sortedByDatePaginatedRequest).toList();
 
-        for (Lesson x : lessonList) {
-            x.setLessonContent(lessonContentRepository.getFileNamesByLessonId(department, x.getId()));
-        }
-        return lessonList;
-    }
-
-    public List<Lesson> getLessonById(int department, int id) {
-        setCurrentDataSource("DEP_" + department);
-        List<Lesson> lessonList = lessonJpaRepository.findByIdOrderByDateDesc(id);
-
-        for (Lesson x : lessonList) {
-            x.setLessonContent(lessonContentRepository.getFileNamesByLessonId(department, x.getId()));
-        }
+//        for (Lesson x : lessonList) {
+//            x.setLessonContent(lessonContentRepository.getFileNamesByLessonId(department, x.getId()));
+//        }
         return lessonList;
     }
 
