@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import project.model.Lesson;
 import project.repository.LessonContentRepository;
@@ -17,8 +16,6 @@ import static project.dataSource.DynamicDataSourceContextHolder.setCurrentDataSo
 @RequiredArgsConstructor
 @Service
 public class LessonService {
-
-    private final JdbcTemplate jdbcTemplate;
 
     private final LessonContentRepository lessonContentRepository;
     private final LessonJpaRepository lessonJpaRepository;
@@ -59,24 +56,13 @@ public class LessonService {
     public List<Lesson> getPagedLessons(int department, int page, int size) {
         setCurrentDataSource("DEP_" + department);
 
-        Pageable sortedByDatePaginatedRequest = PageRequest.of(page-1, size, Sort.by("date").descending());
+        Pageable sortedByDatePaginatedRequest = PageRequest.of(page - 1, size, Sort.by("date").descending());
         List<Lesson> lessonList = lessonJpaRepository.findAll(sortedByDatePaginatedRequest).toList();
 
-//        for (Lesson x : lessonList) {
-//            x.setLessonContent(lessonContentRepository.getFileNamesByLessonId(department, x.getId()));
-//        }
+        for (Lesson x : lessonList) {
+            x.setLessonContent(lessonContentRepository.getFileNamesByLessonId(department, x.getId()));
+        }
         return lessonList;
     }
 
-
-    //MultiplierAttendance заменить на findALl просто.
-    public List<Lesson> getLessonsIdList(int department) {
-        setCurrentDataSource("DEP_" + department);
-        String databaseName = "DEP_" + department;
-        List<Lesson> lessonsIdList = jdbcTemplate.query("SELECT id FROM " +
-                databaseName + ".lesson", (rs, rowNum) -> Lesson.builder()
-                .id(rs.getInt("id"))
-                .build());
-        return lessonsIdList;
-    }
 }

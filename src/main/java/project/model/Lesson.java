@@ -5,7 +5,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Date;
-import java.util.Collection;
+import java.util.List;
 
 
 @Builder
@@ -13,43 +13,47 @@ import java.util.Collection;
 @RequiredArgsConstructor
 @Getter
 @Setter
+
 @Entity
 @Table
 public class Lesson {
 
-    @JsonProperty("id")
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty("id")
     private Integer id;
+
     @Column
     @JsonProperty("topic")
     private String topic;
+
+    @Column
     @JsonProperty("duration")
-    @Column
     private Float duration;
-    // Объект класса sql.date
+
+    @Column
     @JsonProperty("date")
-    @Column
     private Date date;
+
+    @Column
     @JsonProperty("teacher")
-    @Column
     private String teacher;
+
+    @Column(name = "teacherpost")
     @JsonProperty("teacherPost")
-    @Column
     private String teacherPost;
-    @Column
+
+    @Column(name = "people_planned")
     @JsonProperty("peoplePlanned")
     private int peoplePlanned;
-    @Column
+
+    @Column(name = "isheld")
     @JsonProperty("isHeld")
     private boolean isHeld;
 
-
-//    @OneToMany (mappedBy="address", fetch=FetchType.EAGER)
-    @OneToMany
-    @JoinColumn(name = "lesson_id")
-    @JsonProperty("lessonContent")
-    private Collection<LessonContent> lessonContent;
+    @Transient
+    private List<String> lessonContent;
 
     @Override
     public boolean equals(Object o) {
@@ -92,6 +96,7 @@ public class Lesson {
                 ", teacherPost='" + teacherPost + '\'' +
                 ", peoplePlanned=" + peoplePlanned +
                 ", isHeld=" + isHeld +
+                ", lessonContent=" + lessonContent +
                 '}';
     }
 }

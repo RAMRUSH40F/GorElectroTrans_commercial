@@ -3,7 +3,6 @@ package project.repository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -32,10 +31,10 @@ public class LessonContentRepository {
         }
     }
 
-    public List<LessonContent> getFileNamesByLessonId(int department, int id) {
+    public List<String> getFileNamesByLessonId(int department, int id) {
         return namedParameterJdbcTemplate.query(
                 "SELECT file_name FROM DEP_" + department + ".lesson_content WHERE lesson_id=" + id,
-                (rs, rowNum) -> LessonContent.builder().fileName(rs.getString("file_name")).build());
+                (rs, rowNum) -> rs.getString("file_name"));
 
     }
 
