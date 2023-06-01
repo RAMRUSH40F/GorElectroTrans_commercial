@@ -33,8 +33,8 @@ const PlanEditing: React.FC<Props> = ({ plan, closeEditing, openMaterialsEditing
         const changedPlan: IPlan = {
             date: day,
             id: plan.id,
-            duration: parseInt(duration),
-            peoplePlanned: parseInt(peoplePlanned),
+            duration: Number(duration),
+            peoplePlanned: Number(peoplePlanned),
             teacher: teacher.trim(),
             topic: topic.trim(),
             isHeld: !!Number(status.value),
