@@ -1,25 +1,62 @@
 package project.security.model;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
+import javax.persistence.*;
 import java.util.Set;
 
-@Data
+
 @Builder
 @RequiredArgsConstructor
+@AllArgsConstructor
+@Setter
+@Getter
 
+
+@Entity
+@Table(name = "users")
 public class User {
 
-    private final String username;
+    @Id
+    private String username;
 
+    @Column
+    private String password;
 
-    private final String password;
+    @Column(name = "enabled")
+    private boolean isActive;
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "username")
+    private Set<Authority> authorities;
 
-    private final boolean isActive;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-    private final Set<String> authorities;
+        User user = (User) o;
 
+        if (isActive() != user.isActive()) return false;
+        if (!getUsername().equals(user.getUsername())) return false;
+        return getPassword() != null ? getPassword().equals(user.getPassword()) : user.getPassword() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getUsername().hashCode();
+        result = 31 * result + (getPassword() != null ? getPassword().hashCode() : 0);
+        result = 31 * result + (isActive() ? 1 : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", isActive=" + isActive +
+                ", authorities=" + authorities +
+                '}';
+    }
 }
