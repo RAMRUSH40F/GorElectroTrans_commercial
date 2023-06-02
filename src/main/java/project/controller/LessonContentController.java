@@ -45,7 +45,7 @@ public class LessonContentController {
     @SneakyThrows
     public LessonContent addNewContent(@RequestParam("file") MultipartFile file,
                                        @PathVariable("N") String depId,
-                                       @RequestParam("lesson") String lessonId,
+                                       @RequestParam("lessonId") String lessonId,
                                        @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
 
