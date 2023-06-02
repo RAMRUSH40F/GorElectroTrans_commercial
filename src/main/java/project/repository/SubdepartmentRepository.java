@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 //@Repository(value = "SubdepartmentJdbcRepositoryBean")
+@Deprecated
 @RequiredArgsConstructor
 public class SubdepartmentRepository {
 

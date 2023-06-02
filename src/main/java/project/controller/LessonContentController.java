@@ -1,18 +1,15 @@
 package project.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import project.exceptions.FileSizeLimitExceededException;
 import project.model.LessonContent;
-import project.repository.LessonContentRepository;
-
-import java.io.IOException;
+import project.service.LessonContentService;
 
 import static project.exceptions.Validator.validateDepartmentId;
 
@@ -20,7 +17,7 @@ import static project.exceptions.Validator.validateDepartmentId;
 @RequiredArgsConstructor
 public class LessonContentController {
 
-    private final LessonContentRepository repository;
+    private final LessonContentService service;
 
 
     @GetMapping("/dep_{N}/content/data/{file_name}")
@@ -28,7 +25,7 @@ public class LessonContentController {
                                                            @PathVariable("file_name") String fileName,
                                                            @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
-        byte[] file = repository.getFileByName(fileName, departmentId);
+        byte[] file = service.getFileByName(departmentId, fileName);
 
         ByteArrayResource resource = new ByteArrayResource(file);
 
@@ -45,24 +42,20 @@ public class LessonContentController {
     }
 
     @PostMapping("/dep_{N}/content/data")
+    @SneakyThrows
     public LessonContent addNewContent(@RequestParam("file") MultipartFile file,
                                        @PathVariable("N") String depId,
-                                       @RequestParam("lessonId") String lessonId,
+                                       @RequestParam("lesson") String lessonId,
                                        @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
 
-        try {
-            repository.save(LessonContent.builder()
-                    .lessonId(Integer.valueOf(lessonId))
-                    .fileName(file.getOriginalFilename())
-                    .file(file.getBytes())
-                    .build(), departmentId);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (DataIntegrityViolationException e) {
-            throw new FileSizeLimitExceededException();
-        }
-        return repository.getContentInfoByFileName(departmentId, file.getOriginalFilename());
+        LessonContent content = LessonContent.builder()
+                .lessonId(Integer.valueOf(lessonId))
+                .fileName(file.getOriginalFilename())
+                .file(file.getBytes())
+                .build();
+        service.save(departmentId, content);
+        return service.getContentByFileName(departmentId, file.getOriginalFilename());
 
     }
 
@@ -73,7 +66,7 @@ public class LessonContentController {
                                     @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
 
-        return repository.deleteFileByName(departmentId, fileName);
+        return service.deleteFileByName(departmentId, fileName);
     }
 
 }

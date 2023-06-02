@@ -12,7 +12,8 @@ import project.repository.mapper.LessonContentInfoMapper;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-@Repository
+@Deprecated
+//@Repository
 @RequiredArgsConstructor
 public class LessonContentRepository {
 

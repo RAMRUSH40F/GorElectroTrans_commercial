@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 //@Repository("LessonRepositoryBean")
+@Deprecated
 @RequiredArgsConstructor
 public class LessonRepository {
 
