@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Builder
@@ -24,11 +25,15 @@ public class User {
     private String password;
 
     @Column(name = "enabled")
-    private boolean isActive;
+    private boolean isActive = true;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "username")
     private Set<Authority> authorities;
+
+    public Set<String> getAuthorities() {
+        return authorities.stream().map(Authority::getAuthority).collect(Collectors.toSet());
+    }
 
     @Override
     public boolean equals(Object o) {

@@ -7,7 +7,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import project.exceptions.FileSizeLimitExceededException;
 import project.model.LessonContent;
-import project.model.Projection.LessonContentInfo;
+import project.model.projection.LessonContentInfo;
 import project.repository.LessonContentJpaRepository;
 
 import java.util.List;

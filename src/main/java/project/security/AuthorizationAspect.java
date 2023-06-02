@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
+import project.security.service.JwtAuthorizationService;
 
 @Aspect
 @Component
@@ -17,15 +18,15 @@ public class AuthorizationAspect {
         auth.authorize(jwtToken, Integer.parseInt(depId));
     }
 
-    @Before("execution(* project.controller.LessonContentController.*(..)) && args(jwtToken)")
-    public void authorizeRequestsLessonContent(String jwtToken) {
-        auth.authorize(jwtToken, 100);
+    @Before("execution(* project.controller.LessonContentController.*(..)) && args(depId, jwtToken)")
+    public void authorizeRequestsLessonContent(String jwtToken, String depId) {
+        auth.authorize(jwtToken, Integer.parseInt(depId));
     }
 
 
-    @Before("execution(* project.controller.ReportController.*(..)) && args(depId, jwtToken)")
-    public void authorizeRequestsReportController(String jwtToken, String depId) {
-        auth.authorize(jwtToken, Integer.parseInt(depId));
+    @Before("execution(* project.controller.ReportController.*(..)) && args(jwtToken)")
+    public void authorizeRequestsReportController(String jwtToken) {
+        auth.authorize(jwtToken, 100);
     }
 
 

@@ -11,7 +11,6 @@ import project.repository.SubdepartmentJpaRepository;
 import java.util.ArrayList;
 import java.util.List;
 
-import static project.dataSource.DynamicDataSourceContextHolder.clearDatasourceInfo;
 import static project.dataSource.DynamicDataSourceContextHolder.setCurrentDataSource;
 
 @Service
@@ -25,7 +24,6 @@ public class SubdepartmentServiceImpl {
         Iterable<Subdepartment> entities = repository.findAll();
         List<Subdepartment> result = new ArrayList<>();
         entities.forEach(result::add);
-        clearDatasourceInfo();
         return result;
 
     }
@@ -34,7 +32,6 @@ public class SubdepartmentServiceImpl {
         try {
             setCurrentDataSource("DEP_" + departmentId);
             repository.deleteById(id);
-            clearDatasourceInfo();
 
             return true;
         } catch (EmptyResultDataAccessException e) {
@@ -43,7 +40,7 @@ public class SubdepartmentServiceImpl {
     }
 
     public @NonNull Subdepartment updateName(int departmentId, Subdepartment subdepartment) {
-        setCurrentDataSource("DEP_"+departmentId);
+        setCurrentDataSource("DEP_" + departmentId);
         repository.save(subdepartment);
         return subdepartment;
     }
