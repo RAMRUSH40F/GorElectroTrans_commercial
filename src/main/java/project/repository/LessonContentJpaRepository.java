@@ -4,7 +4,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 import project.model.LessonContent;
-import project.model.Projection.LessonContentInfo;
+import project.model.projection.LessonContentInfo;
 
 import java.util.List;
 

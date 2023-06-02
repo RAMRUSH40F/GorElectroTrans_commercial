@@ -1,4 +1,4 @@
-package project.controller;
+package project.security.controller;
 
 
 import lombok.RequiredArgsConstructor;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
-import project.security.JwtAuthorizationService;
+import project.security.service.JwtAuthorizationService;
 import project.security.exception.AuthenticationException;
 import project.security.model.User;
 
@@ -27,7 +27,7 @@ public class AuthorisationController {
     @PostMapping("/auth/login")
     public ResponseEntity<Boolean> authenticate(@RequestBody User user, HttpServletResponse response) {
         try {
-            String jwtToken = jwtAuthorizationService.authenticate(user.getUsername(), user.getPassword());
+            String jwtToken = jwtAuthorizationService.authenticate(user);
             response.addHeader(HttpHeaders.AUTHORIZATION, jwtToken);
             return new ResponseEntity<>(true, HttpStatus.OK);
         } catch (Exception e) {
@@ -42,7 +42,7 @@ public class AuthorisationController {
         if (jwtAuthorizationService.validateToken(jwtToken)){
             return true;
         }
-        throw new AuthenticationException("Ваша прошлая сессия истекла. +" +
+        throw new AuthenticationException("Ваша прошлая сессия истекла. " +
                 "Войдите в аккаунт заново");
     }
 
@@ -55,6 +55,5 @@ public class AuthorisationController {
             throw new AuthenticationException(e, "Не получилось выйти из аккаунта");
         }
     }
-
 
 }

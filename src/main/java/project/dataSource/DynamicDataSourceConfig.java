@@ -31,7 +31,7 @@ public class DynamicDataSourceConfig {
         Map<Object, Object> dataSourceMap = new HashMap<>();
 
         for (short i = 1; i <= DATABASE_COUNT; i++) {
-            String databaseName = "DEP_"+i;
+            String databaseName = "DEP_" + i;
             DataSource mariaDbDataSource = createDataSource(databaseName);
             dataSourceMap.put(databaseName, mariaDbDataSource);
         }
@@ -58,11 +58,12 @@ public class DynamicDataSourceConfig {
 
         DynamicDataSource dataSource = new DynamicDataSource();
         dataSource.setTargetDataSources(dataSourceMap());
-        dataSource.setDefaultTargetDataSource(dataSourceMap().get("DEP_1"));
+
+
+        //dataSource.setDefaultTargetDataSource(dataSourceMap().get("DEP_1")); <- does not influence
 
         return dataSource;
     }
-
 
 
 }

@@ -1,4 +1,4 @@
-package project.model.Projection;
+package project.model.projection;
 
 /**
  * A Projection for the {@link project.model.LessonContent} entity
