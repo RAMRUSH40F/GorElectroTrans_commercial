@@ -6,7 +6,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import project.model.Lesson;
-import project.repository.LessonContentRepository;
 import project.repository.LessonJpaRepository;
 
 import java.util.List;
@@ -17,7 +16,7 @@ import static project.dataSource.DynamicDataSourceContextHolder.setCurrentDataSo
 @Service
 public class LessonService {
 
-    private final LessonContentRepository lessonContentRepository;
+    private final LessonContentService service;
     private final LessonJpaRepository lessonJpaRepository;
 
 
@@ -47,7 +46,7 @@ public class LessonService {
         List<Lesson> lessons = lessonJpaRepository.findAllByKey(key);
 
         for (Lesson x : lessons) {
-            x.setLessonContent(lessonContentRepository.getFileNamesByLessonId(department, x.getId()));
+            x.setLessonContent(service.getFileNamesByLessonId(department, x.getId()));
         }
         return lessons;
     }
@@ -60,7 +59,7 @@ public class LessonService {
         List<Lesson> lessonList = lessonJpaRepository.findAll(sortedByDatePaginatedRequest).toList();
 
         for (Lesson x : lessonList) {
-            x.setLessonContent(lessonContentRepository.getFileNamesByLessonId(department, x.getId()));
+            x.setLessonContent(service.getFileNamesByLessonId(department, x.getId()));
         }
         return lessonList;
     }
