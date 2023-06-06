@@ -6,6 +6,7 @@ import project.model.Worker;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+@Deprecated
 public class WorkerMapper implements RowMapper<Worker> {
     @Override
     public Worker mapRow(ResultSet rs, int rowNum) throws SQLException {
