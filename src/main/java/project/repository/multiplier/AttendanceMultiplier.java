@@ -8,7 +8,7 @@ import project.model.Lesson;
 import project.model.Student;
 import project.repository.AttendanceRepository;
 import project.service.LessonService;
-import project.service.StudentService;
+import project.service.StudentServiceImpl;
 
 import java.util.List;
 import java.util.Random;
@@ -22,7 +22,7 @@ public class AttendanceMultiplier {
 
     private final AttendanceRepository attendanceRepository;
     private final LessonService lessonService;
-    private final StudentService studentRepository;
+    private final StudentServiceImpl studentRepository;
 
 
     public void addAllAttendance(int departmentId) {

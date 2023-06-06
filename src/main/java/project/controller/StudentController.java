@@ -5,7 +5,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.model.Student;
-import project.service.StudentService;
+import project.service.StudentServiceImpl;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ import static project.exceptions.Validator.*;
 @RequiredArgsConstructor
 public class StudentController {
 
-    private final StudentService studentService;
+    private final StudentServiceImpl studentService;
 
     @GetMapping("/dep_{N}/students/data")
     public ResponseEntity<List<Student>> findStudents(@PathVariable("N") String depId,

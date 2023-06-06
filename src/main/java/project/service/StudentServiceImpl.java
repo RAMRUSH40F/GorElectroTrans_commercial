@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import project.exceptions.InvalidSubdepartmentException;
 import project.model.Student;
@@ -16,21 +17,13 @@ import static project.dataSource.DynamicDataSourceContextHolder.setCurrentDataSo
 
 @Service
 @RequiredArgsConstructor
-public class StudentService {
+public class StudentServiceImpl {
 
     private final StudentJpaRepository repository;
     private final SubdepartmentServiceImpl subdepartmentService;
 
-    /**
-     * @param student: studentId, studentName, departmentId
-     * @logic: if studentName is null supposing that studentName
-     * already exists in DB(WorkerRepository), then
-     * if StudentName really exists we add successfully,
-     * if not - we throw back an exception
-     * if studentName is not null we add with editing current
-     * data.
-     */
-    public Student addNewStudent(int departmentId, Student student) {
+
+    public @NonNull Student addNewStudent(int departmentId, @NonNull Student student) {
         setCurrentDataSource("DEP_" + departmentId);
         Short newSubDepartmentId = subdepartmentService
                 .getByName(departmentId, student.getSubDepartmentName())
@@ -42,7 +35,7 @@ public class StudentService {
 
     }
 
-    public List<Student> findAllPaginated(int departmentId, Integer page, Integer size) {
+    public @NonNull List<Student> findAllPaginated(int departmentId, @NonNull Integer page, @NonNull Integer size) {
         setCurrentDataSource("DEP_" + departmentId);
         Pageable paginatedRequest = PageRequest.of(page - 1, size, Sort.by("name").descending());
         return repository.findAll(paginatedRequest).toList();
@@ -57,7 +50,7 @@ public class StudentService {
     /**
      * Метод для смены отдела какого-то студента.
      */
-    public Student updateStudent(int departmentId, Student student) {
+    public @NonNull Student updateStudent(int departmentId, @NonNull Student student) {
         setCurrentDataSource("DEP_" + departmentId);
         Short newSubDepartmentId = subdepartmentService
                 .getByName(departmentId, student.getSubDepartmentName())
@@ -68,7 +61,7 @@ public class StudentService {
         return repository.save(createStudent(student, newSubDepartmentId));
     }
 
-    public Student addNewStudentByDepId(int departmentId, Student student) {
+    public @NonNull Student addNewStudentByDepId(int departmentId, @NonNull Student student) {
         setCurrentDataSource("DEP_" + departmentId);
         return repository.save(student);
     }
@@ -76,18 +69,18 @@ public class StudentService {
     /**
      * Метод для внутреннего использование классов Multiplier.
      */
-    public List<Student> getStudentsIdList(int departmentId) {
+    public @NonNull List<Student> getStudentsIdList(int departmentId) {
         setCurrentDataSource("DEP_" + departmentId);
         return (List<Student>) repository.findAll();
     }
 
-    public Integer getStudentsCount(int departmentId) {
+    public @NonNull Integer getStudentsCount(int departmentId) {
         setCurrentDataSource("DEP_" + departmentId);
         return repository.countAllStudents();
 
     }
 
-    public static Student createStudent(Student student, Short subDepartmentId) {
+    public static @NonNull Student createStudent(Student student, @NonNull Short subDepartmentId) {
         return Student.builder()
                 .studentId(student.getStudentId())
                 .name(student.getName())

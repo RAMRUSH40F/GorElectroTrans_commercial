@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import project.model.Student;
-import project.service.StudentService;
+import project.service.StudentServiceImpl;
 
 import java.util.List;
 import java.util.Random;
@@ -13,7 +13,7 @@ import java.util.Random;
 @Lazy
 @RequiredArgsConstructor
 public class StudentMultiplier {
-    private final StudentService studentService;
+    private final StudentServiceImpl studentService;
 
     public void addAllStudents(int departmentId) {
 
