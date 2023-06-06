@@ -12,9 +12,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import project.model.StudentView;
-import project.repository.StudentRepositoryImpl;
 import project.service.SubdepartmentServiceImpl;
-import project.service.WorkerService;
 
 import java.util.List;
 

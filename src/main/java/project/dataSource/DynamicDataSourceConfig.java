@@ -35,8 +35,6 @@ public class DynamicDataSourceConfig {
             DataSource mariaDbDataSource = createDataSource(databaseName);
             dataSourceMap.put(databaseName, mariaDbDataSource);
         }
-        DataSource mariaWorkersDataSource = createDataSource("WORKERS");
-        dataSourceMap.put("WORKERS", mariaWorkersDataSource);
 
         DataSource mariaAuthorisationDataSource = createDataSource("USERS");
         dataSourceMap.put("USERS", mariaAuthorisationDataSource);

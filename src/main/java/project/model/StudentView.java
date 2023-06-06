@@ -8,6 +8,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 @Builder
+@Deprecated
 public class StudentView {
     @JsonProperty("studentId")
     private String studentId;
