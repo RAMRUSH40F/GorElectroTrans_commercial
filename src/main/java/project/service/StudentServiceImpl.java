@@ -26,19 +26,25 @@ public class StudentServiceImpl {
     public @NonNull Student addNewStudent(int departmentId, @NonNull Student student) {
         setCurrentDataSource("DEP_" + departmentId);
         Short newSubDepartmentId = subdepartmentService
-                .getByName(departmentId, student.getSubDepartmentName())
+                .getByName(departmentId, student.getSubdepartmentName())
                 .getId();
         if (newSubDepartmentId == null) {
-            throw new InvalidSubdepartmentException(student.getSubDepartmentName());
+            throw new InvalidSubdepartmentException(student.getSubdepartmentName());
         }
-        return repository.save(createStudent(student, newSubDepartmentId));
+        Student result = repository.save(createStudent(student, newSubDepartmentId));
+        result.setSubdepartmentName(student.getSubdepartmentName());
+        return result;
 
     }
 
     public @NonNull List<Student> findAllPaginated(int departmentId, @NonNull Integer page, @NonNull Integer size) {
         setCurrentDataSource("DEP_" + departmentId);
         Pageable paginatedRequest = PageRequest.of(page - 1, size, Sort.by("name").descending());
-        return repository.findAll(paginatedRequest).toList();
+        List<Student> studentList = repository.findAll(paginatedRequest).toList();
+        for (Student s : studentList) {
+            s.setSubdepartmentName(s.getSubdepartment().getName());
+        }
+        return studentList;
     }
 
     // У рабочих общая на всю компанию таблица с рабочими.
@@ -53,12 +59,14 @@ public class StudentServiceImpl {
     public @NonNull Student updateStudent(int departmentId, @NonNull Student student) {
         setCurrentDataSource("DEP_" + departmentId);
         Short newSubDepartmentId = subdepartmentService
-                .getByName(departmentId, student.getSubDepartmentName())
+                .getByName(departmentId, student.getSubdepartmentName())
                 .getId();
         if (newSubDepartmentId == null) {
-            throw new InvalidSubdepartmentException(student.getSubDepartmentName());
+            throw new InvalidSubdepartmentException(student.getSubdepartmentName());
         }
-        return repository.save(createStudent(student, newSubDepartmentId));
+        Student result = repository.save(createStudent(student, newSubDepartmentId));
+        result.setSubdepartmentName(result.getSubdepartmentName());
+        return result;
     }
 
     public @NonNull Student addNewStudentByDepId(int departmentId, @NonNull Student student) {
@@ -84,7 +92,7 @@ public class StudentServiceImpl {
         return Student.builder()
                 .studentId(student.getStudentId())
                 .name(student.getName())
-                .subDepartmentId(subDepartmentId)
+                .subdepartmentId(subDepartmentId)
                 .build();
     }
 }

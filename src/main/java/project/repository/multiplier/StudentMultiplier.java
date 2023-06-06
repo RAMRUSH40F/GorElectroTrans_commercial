@@ -35,7 +35,7 @@ public class StudentMultiplier {
                     student = Student.builder()
                             .name(studentName)
                             .studentId(idBuilder.toString())
-                            .subDepartmentId(SubdepartmentId)
+                            .subdepartmentId(SubdepartmentId)
                             .build();
                     studentService.addNewStudentByDepId(departmentId, student);
                 }
