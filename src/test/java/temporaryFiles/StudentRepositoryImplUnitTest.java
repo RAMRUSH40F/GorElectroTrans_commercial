@@ -2,7 +2,6 @@ package temporaryFiles;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -17,12 +16,14 @@ import project.repository.StudentRepositoryImpl;
 import project.service.SubdepartmentServiceImpl;
 import project.service.WorkerService;
 
+import java.util.List;
+
 import static org.mockito.Mockito.when;
 
 @SpringJUnitConfig
 @ExtendWith(MockitoExtension.class)
 @ContextConfiguration(classes = StudentRepositoryConfiguration.class)
-public class StudentRepositoryImpleUnitTest {
+public class StudentRepositoryImplUnitTest {
 
     @MockBean
     private JdbcTemplate jdbcTemplate;
@@ -41,21 +42,12 @@ public class StudentRepositoryImpleUnitTest {
 
 
     @Test
-    public void StudentRepositoryUnitTest_getByIdReturnIdWhenExists() {
-
-        StudentView studentView = studentRepository.getStudentById(1,"00001");
-
-        Assertions.assertNotNull(studentView);
-    }
-
-
-    @Test
     public void testMocking() {
-        when(studentRepository.getStudentById(1, "faf")).thenReturn(null);
+        when(studentRepository.getStudentsView(1, 1, 1)).thenReturn(null);
 
-        StudentView studentView = studentRepository.getStudentById(1, "00001");
+        List<StudentView> result = studentRepository.getStudentsView(1, 1, 1);
 
-        Assert.assertEquals(null, studentView);
-        Mockito.verify(studentRepository).getStudentById(1, "00001");
+        Assert.assertEquals(null, result);
+        Mockito.verify(studentRepository).getStudentsView(1, 1, 1);
     }
 }

@@ -10,7 +10,6 @@ public interface StudentRepository{
 
     List<StudentView> getStudentsView(int departmentID, Integer page, Integer pageSize);
 
-    StudentView getStudentById(int departmentId, String studentId);
 
     void deleteStudentById(int departmentId, String studentId);
 

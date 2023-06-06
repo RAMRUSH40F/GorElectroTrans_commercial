@@ -33,15 +33,6 @@ public class StudentController {
                 .body(studentRepositoryImpl.getStudentsView(departmentId, Integer.parseInt(page), Integer.parseInt(pageSize)));
     }
 
-    @GetMapping("/dep_{N}/students/{id}")
-    public StudentView findStudentById(@PathVariable("N") String depId,
-                                       @PathVariable("id") String studentId,
-                                       @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
-        Integer departmentId = validateDepartmentId(depId);
-        validateStudentId(studentId);
-
-        return studentRepositoryImpl.getStudentById(departmentId, studentId);
-    }
 
     @PostMapping("/dep_{N}/students/data")
     public StudentView addNewStudent(@PathVariable("N") String depId,

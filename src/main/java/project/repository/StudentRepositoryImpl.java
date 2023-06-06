@@ -106,26 +106,6 @@ public class StudentRepositoryImpl implements StudentRepository {
 
     }
 
-    @Override
-    public StudentView getStudentById(int departmentId, String studentId) {
-        String query = new StringBuilder()
-                .append("SELECT * FROM DEP_")
-                .append(departmentId)
-                .append(".Student_view WHERE student_id=")
-                .append(studentId)
-                .toString();
-        try {
-            return jdbcTemplate.query(query, (rs, rowNum) ->
-                    StudentView.builder()
-                            .studentId(rs.getString("student_id"))
-                            .subDepartment(rs.getString("subdepartment"))
-                            .fullName(rs.getString("name"))
-                            .build()).get(0);
-        } catch (IndexOutOfBoundsException e) {
-            return null;
-        }
-
-    }
 
     @Override
     public void deleteStudentById(int departmentId, String studentId) {
