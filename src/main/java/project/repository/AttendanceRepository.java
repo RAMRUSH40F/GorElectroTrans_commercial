@@ -63,23 +63,6 @@ public class AttendanceRepository {
         return jdbcTemplate.query(query, mapper);
     }
 
-    public AttendanceView getAttendanceView(int departmentId, Attendance attendance) {
-
-        String query = new StringBuilder()
-                .append("SELECT * FROM DEP_")
-                .append(departmentId)
-                .append(".Attendance_view WHERE student_id=")
-                .append(attendance.getStudentId())
-                .append(" AND lesson_id=")
-                .append(attendance.getLessonId())
-                .toString();
-
-        try {
-            return jdbcTemplate.query(query, mapper).get(0);
-        } catch (IndexOutOfBoundsException e) {
-            return null;
-        }
-    }
 
 
     public void updateRecordAttendance(int departmentId, Attendance attendance) {

@@ -47,15 +47,6 @@ public class AttendanceController {
                 .body(body);
     }
 
-    @GetMapping("/dep_{N}/attendance/")
-    public AttendanceView getRecordAttendanceByStudentId(@PathVariable("N") String depId,
-                                                         @RequestBody Attendance attendance,
-                                                         @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
-        Integer departmentId = validateDepartmentId(depId);
-
-        return attendanceRepository.getAttendanceView(departmentId, attendance);
-
-    }
 
     @PostMapping("/dep_{N}/attendance/data")
     public AttendanceView addNewRecordAttendance(@PathVariable("N") String depId,
