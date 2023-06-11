@@ -50,13 +50,13 @@ public class SubdepartmentServiceImpl {
         return repository.save(subdepartment);
     }
 
-    public @Nullable Subdepartment getById(int departmentId, short SubdepartmentId) {
+    public @Nullable Subdepartment findById(int departmentId, short SubdepartmentId) {
         setCurrentDataSource("DEP_" + departmentId);
         return repository.findById(SubdepartmentId).orElse(null);
 
     }
 
-    public @Nullable Subdepartment getByName(int departmentId, String subdepartmentName) {
+    public @Nullable Subdepartment findByName(int departmentId, String subdepartmentName) {
         setCurrentDataSource("DEP_" + departmentId);
         return repository.findByName(subdepartmentName).orElse(null);
     }

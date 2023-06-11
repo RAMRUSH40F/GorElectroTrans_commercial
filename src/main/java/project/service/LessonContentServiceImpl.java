@@ -19,16 +19,16 @@ import static project.dataSource.DynamicDataSourceContextHolder.setCurrentDataSo
 
 @Service
 @RequiredArgsConstructor
-public class LessonContentService {
+public class LessonContentServiceImpl {
     private final LessonContentJpaRepository repository;
 
-    public @Nullable byte[] getFileByName(Integer departmentId, String fileName) {
+    public @Nullable byte[] findByName(Integer departmentId, String fileName) {
         setCurrentDataSource("DEP_" + departmentId);
         Optional<LessonContent> lessonContent = repository.findById(fileName);
         return lessonContent.map(LessonContent::getFile).orElse(null);
     }
 
-    public @NonNull List<String> getFileNamesByLessonId(Integer departmentId, int id) {
+    public @NonNull List<String> findAllFileNamesByLessonId(Integer departmentId, int id) {
         setCurrentDataSource("DEP_" + departmentId);
         List<LessonContentInfo> lessonContentList = repository.findByLessonId(id);
         return lessonContentList.stream()
@@ -38,7 +38,7 @@ public class LessonContentService {
 
     }
 
-    public @NonNull LessonContent getContentByFileName(int departmentId, String fileName) {
+    public @NonNull LessonContent findByFileName(int departmentId, String fileName) {
         setCurrentDataSource("DEP_" + departmentId);
         Optional<LessonContent> lessonContent = repository.findById(fileName);
         if (lessonContent.isEmpty())

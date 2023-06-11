@@ -3,7 +3,7 @@ package project.repository.multiplier;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import project.model.Lesson;
-import project.service.LessonService;
+import project.service.LessonServiceImpl;
 import project.service.reportService.TeacherProfession;
 
 import java.sql.Date;
@@ -12,7 +12,7 @@ import java.sql.Date;
 @RequiredArgsConstructor
 public class LessonMultiplier {
 
-    private final LessonService lessonService;
+    private final LessonServiceImpl lessonService;
 
     public void addAllLessons(int departmentId) {
 

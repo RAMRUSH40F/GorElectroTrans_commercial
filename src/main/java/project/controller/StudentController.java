@@ -30,7 +30,7 @@ public class StudentController {
         return ResponseEntity
                 .ok()
                 .headers(headers)
-                .body(studentService.findAllPaginated(departmentId, Integer.parseInt(page), Integer.parseInt(pageSize)));
+                .body(studentService.findAllWithPagination(departmentId, Integer.parseInt(page), Integer.parseInt(pageSize)));
     }
 
 

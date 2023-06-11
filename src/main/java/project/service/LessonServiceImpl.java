@@ -14,9 +14,9 @@ import static project.dataSource.DynamicDataSourceContextHolder.setCurrentDataSo
 
 @RequiredArgsConstructor
 @Service
-public class LessonService {
+public class LessonServiceImpl {
 
-    private final LessonContentService service;
+    private final LessonContentServiceImpl lessonContentService;
     private final LessonJpaRepository lessonJpaRepository;
 
 
@@ -36,32 +36,32 @@ public class LessonService {
     }
 
 
-    public Integer getLessonsCount(int department) {
-        setCurrentDataSource("DEP_" + department);
-        return lessonJpaRepository.countAllLessons();
-    }
-
-    public List<Lesson> getLessonByKeyword(int department, String key) {
+    public List<Lesson> findAllByKeyword(int department, String key) {
         setCurrentDataSource("DEP_" + department);
         List<Lesson> lessons = lessonJpaRepository.findAllByKey(key);
 
         for (Lesson x : lessons) {
-            x.setLessonContent(service.getFileNamesByLessonId(department, x.getId()));
+            x.setLessonContent(lessonContentService.findAllFileNamesByLessonId(department, x.getId()));
         }
         return lessons;
     }
 
 
-    public List<Lesson> getPagedLessons(int department, int page, int size) {
+    public List<Lesson> findAllWithPagination(int department, int page, int size) {
         setCurrentDataSource("DEP_" + department);
 
         Pageable sortedByDatePaginatedRequest = PageRequest.of(page - 1, size, Sort.by("date").descending());
         List<Lesson> lessonList = lessonJpaRepository.findAll(sortedByDatePaginatedRequest).toList();
 
         for (Lesson x : lessonList) {
-            x.setLessonContent(service.getFileNamesByLessonId(department, x.getId()));
+            x.setLessonContent(lessonContentService.findAllFileNamesByLessonId(department, x.getId()));
         }
         return lessonList;
+    }
+
+    public Integer getLessonsCount(int department) {
+        setCurrentDataSource("DEP_" + department);
+        return lessonJpaRepository.countAllLessons();
     }
 
 }

@@ -5,7 +5,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.model.Lesson;
-import project.service.LessonService;
+import project.service.LessonServiceImpl;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ import static project.exceptions.Validator.validatePaginationParams;
 @RequiredArgsConstructor
 public class LessonController {
 
-    private final LessonService lessonService;
+    private final LessonServiceImpl lessonService;
 
     @GetMapping("/dep_{N}/work_plan/data")
     public ResponseEntity<List<Lesson>> getLessonsPaginated(@PathVariable("N") String depId,
@@ -30,10 +30,10 @@ public class LessonController {
 
         List<Lesson> responseList;
         if (keyWord == null) {
-            responseList = lessonService.getPagedLessons(departmentId, Integer.parseInt(page), Integer.parseInt(size));
+            responseList = lessonService.findAllWithPagination(departmentId, Integer.parseInt(page), Integer.parseInt(size));
             headers.add("lessons_count", String.valueOf(lessonService.getLessonsCount(departmentId)));
         } else {
-            responseList = lessonService.getLessonByKeyword(departmentId, keyWord);
+            responseList = lessonService.findAllByKeyword(departmentId, keyWord);
             headers.add("lessons_count", String.valueOf(responseList.size()));
             int start = (Integer.parseInt(page) - 1) * Integer.parseInt(size);
             int end = Integer.parseInt(page) * Integer.parseInt(size);

@@ -19,7 +19,7 @@ import static project.dataSource.DynamicDataSourceContextHolder.setCurrentDataSo
 
 @Service
 @RequiredArgsConstructor
-public class AttendanceService {
+public class AttendanceServiceImpl {
 
     private final AttendanceJpaRepository repository;
 
@@ -45,15 +45,15 @@ public class AttendanceService {
         attendance.setStudent(student);
     }
 
-    public List<Attendance> findAllPaginated(int departmentId, Integer page, Integer pageSize) {
+    public List<Attendance> findAllWithPagination(int departmentId, Integer page, Integer pageSize) {
         setCurrentDataSource("DEP_" + departmentId);
         Pageable sortedByDatePaginatedRequest = PageRequest.of(page - 1, pageSize, Sort.by("lesson_id").ascending());
         return repository.findAll(sortedByDatePaginatedRequest).toList();
     }
 
-    public List<Attendance> getByKeyword(int departmentId, String key) {
+    public List<Attendance> findAllByKeyword(int departmentId, String key) {
         setCurrentDataSource("DEP_" + departmentId);
-        return repository.getByKey(key, PageRequest.of(1, 20));
+        return repository.getByKey(key);
     }
 
     public void updateEntity(int departmentId, Attendance attendance) {

@@ -75,7 +75,7 @@ class SubdepartmentServiceAndRepositoryImplTest {
         subdepartment.setName(newName);
         service.updateName(departmentId, subdepartment);
 
-        Subdepartment result = service.getById(departmentId, subdepartment.getId());
+        Subdepartment result = service.findById(departmentId, subdepartment.getId());
 
         Assertions.assertAll(
                 () -> assertEquals(new Subdepartment(subdepartment.getId(), subdepartment.getName()),

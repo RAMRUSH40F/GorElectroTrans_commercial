@@ -5,7 +5,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.model.Attendance;
-import project.service.AttendanceService;
+import project.service.AttendanceServiceImpl;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ import static project.exceptions.Validator.validatePaginationParams;
 @RestController("AttendanceControllerBean")
 public class AttendanceController {
 
-    private final AttendanceService attendanceService;
+    private final AttendanceServiceImpl attendanceService;
 
     // Todo : refactor lots of logic here. Pagination must be in logic
     @GetMapping("/dep_{N}/attendance/data")
@@ -30,10 +30,10 @@ public class AttendanceController {
         List<Attendance> body;
         HttpHeaders headers = new HttpHeaders();
         if (keyWord == null) {
-            body = attendanceService.findAllPaginated(departmentId, Integer.valueOf(page), Integer.valueOf(pageSize));
+            body = attendanceService.findAllWithPagination(departmentId, Integer.valueOf(page), Integer.valueOf(pageSize));
             headers.add("attendance_count", String.valueOf(attendanceService.getCount(departmentId)));
         } else {
-            body = attendanceService.getByKeyword(departmentId, keyWord);
+            body = attendanceService.findAllByKeyword(departmentId, keyWord);
             headers.add("attendance_count", String.valueOf(body.size()));
             int start = (Integer.parseInt(page) - 1) * Integer.parseInt(pageSize);
             int end = Integer.parseInt(page) * Integer.parseInt(pageSize);

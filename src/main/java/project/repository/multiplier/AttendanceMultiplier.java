@@ -7,7 +7,7 @@ import project.model.Attendance;
 import project.model.Lesson;
 import project.model.Student;
 import project.repository.AttendanceRepository;
-import project.service.LessonService;
+import project.service.LessonServiceImpl;
 import project.service.StudentServiceImpl;
 
 import java.util.List;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class AttendanceMultiplier {
 
     private final AttendanceRepository attendanceRepository;
-    private final LessonService lessonService;
+    private final LessonServiceImpl lessonService;
     private final StudentServiceImpl studentRepository;
 
 
@@ -30,7 +30,7 @@ public class AttendanceMultiplier {
         Random random = new Random();
 
         // Достаем из БД все записи об уроках и об учениках и оставляем каждый шестой id студента.
-        List<Lesson> lessons = lessonService.getPagedLessons(departmentId,1,99);
+        List<Lesson> lessons = lessonService.findAllWithPagination(departmentId,1,99);
         List<Integer> lessIds = lessons.stream()
                 .map(Lesson::getId)
                 .filter(id -> random.nextInt(6) == 1)

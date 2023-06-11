@@ -1,6 +1,5 @@
 package project.repository;
 
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
@@ -25,6 +24,6 @@ public interface AttendanceJpaRepository extends PagingAndSortingRepository<Atte
             "or a.student.subdepartment.name like CONCAT('%', :key, '%') " +
             "or a.student.name like CONCAT('%', :key, '%') " +
             "order by a.lessonId")
-    List<Attendance> getByKey(@Param("key") @NonNull String key, Pageable pageable);
+    List<Attendance> getByKey(@Param("key") @NonNull String key);
 
 }

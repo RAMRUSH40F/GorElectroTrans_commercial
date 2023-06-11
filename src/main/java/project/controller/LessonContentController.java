@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import project.model.LessonContent;
-import project.service.LessonContentService;
+import project.service.LessonContentServiceImpl;
 
 import static project.exceptions.Validator.validateDepartmentId;
 
@@ -17,7 +17,7 @@ import static project.exceptions.Validator.validateDepartmentId;
 @RequiredArgsConstructor
 public class LessonContentController {
 
-    private final LessonContentService service;
+    private final LessonContentServiceImpl service;
 
 
     @GetMapping("/dep_{N}/content/data/{file_name}")
@@ -25,7 +25,7 @@ public class LessonContentController {
                                                            @PathVariable("file_name") String fileName,
                                                            @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
-        byte[] file = service.getFileByName(departmentId, fileName);
+        byte[] file = service.findByName(departmentId, fileName);
 
         ByteArrayResource resource = new ByteArrayResource(file);
 
@@ -55,7 +55,7 @@ public class LessonContentController {
                 .file(file.getBytes())
                 .build();
         service.save(departmentId, content);
-        return service.getContentByFileName(departmentId, file.getOriginalFilename());
+        return service.findByFileName(departmentId, file.getOriginalFilename());
 
     }
 

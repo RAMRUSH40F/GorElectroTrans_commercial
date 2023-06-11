@@ -26,7 +26,7 @@ public class StudentServiceImpl {
     public @NonNull Student addNewStudent(int departmentId, @NonNull Student student) {
         setCurrentDataSource("DEP_" + departmentId);
         Short newSubDepartmentId = subdepartmentService
-                .getByName(departmentId, student.getSubdepartmentName())
+                .findByName(departmentId, student.getSubdepartmentName())
                 .getId();
         if (newSubDepartmentId == null) {
             throw new InvalidSubdepartmentException(student.getSubdepartmentName());
@@ -37,7 +37,7 @@ public class StudentServiceImpl {
 
     }
 
-    public @NonNull List<Student> findAllPaginated(int departmentId, @NonNull Integer page, @NonNull Integer size) {
+    public @NonNull List<Student> findAllWithPagination(int departmentId, @NonNull Integer page, @NonNull Integer size) {
         setCurrentDataSource("DEP_" + departmentId);
         Pageable paginatedRequest = PageRequest.of(page - 1, size, Sort.by("name").descending());
         List<Student> studentList = repository.findAll(paginatedRequest).toList();
@@ -59,7 +59,7 @@ public class StudentServiceImpl {
     public @NonNull Student updateStudent(int departmentId, @NonNull Student student) {
         setCurrentDataSource("DEP_" + departmentId);
         Short newSubDepartmentId = subdepartmentService
-                .getByName(departmentId, student.getSubdepartmentName())
+                .findByName(departmentId, student.getSubdepartmentName())
                 .getId();
         if (newSubDepartmentId == null) {
             throw new InvalidSubdepartmentException(student.getSubdepartmentName());

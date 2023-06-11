@@ -14,10 +14,10 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class LessonServiceSimpleTest {
+class LessonServiceImplSimpleTest {
 
     @Autowired
-    LessonService lessonService;
+    LessonServiceImpl lessonService;
 
     @BeforeAll
     static void setDataBaseToCancelException() {
@@ -26,7 +26,7 @@ class LessonServiceSimpleTest {
 
     @Test
     void getPagedLessons_returnNotNull() {
-        List<Lesson> lessonList = lessonService.getPagedLessons(1, 1, 15);
+        List<Lesson> lessonList = lessonService.findAllWithPagination(1, 1, 15);
         System.out.println(lessonList);
 
         assertNotNull(lessonList);
@@ -42,7 +42,7 @@ class LessonServiceSimpleTest {
 
     @Test
     void getLessonByKeyword_returnNotNull() {
-        List<Lesson> lessonList = lessonService.getLessonByKeyword(1, "gag");
+        List<Lesson> lessonList = lessonService.findAllByKeyword(1, "gag");
         System.out.println(lessonList);
 
         assertNotNull(lessonList);
