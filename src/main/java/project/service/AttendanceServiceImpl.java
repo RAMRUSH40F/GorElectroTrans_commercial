@@ -1,9 +1,11 @@
 package project.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.lang.Nullable;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.stereotype.Service;
 import project.exceptions.BoundedEntityNotFound;
@@ -12,8 +14,6 @@ import project.model.AttendanceId;
 import project.model.Lesson;
 import project.model.Student;
 import project.repository.AttendanceJpaRepository;
-
-import java.util.List;
 
 import static project.dataSource.DynamicDataSourceContextHolder.setCurrentDataSource;
 
@@ -45,15 +45,23 @@ public class AttendanceServiceImpl {
         attendance.setStudent(student);
     }
 
-    public List<Attendance> findAllWithPagination(int departmentId, Integer page, Integer pageSize) {
+    public Page<Attendance> findAllByKeywordWithPagination(int departmentId, @Nullable String keyWord, Integer page, Integer pageSize) {
         setCurrentDataSource("DEP_" + departmentId);
-        Pageable sortedByDatePaginatedRequest = PageRequest.of(page - 1, pageSize, Sort.by("lesson_id").ascending());
-        return repository.findAll(sortedByDatePaginatedRequest).toList();
+        Page<Attendance> attendancePage;
+        if (keyWord == null) {
+            attendancePage = findAllWithPagination(departmentId, Integer.valueOf(page), Integer.valueOf(pageSize));
+        } else {
+            Pageable sortedByLessonIdPagination = PageRequest.of(page - 1, pageSize, Sort.by("lessonId").ascending());
+            attendancePage = repository.findByKeyword(keyWord, sortedByLessonIdPagination);
+        }
+        return attendancePage;
     }
 
-    public List<Attendance> findAllByKeyword(int departmentId, String key) {
+
+    public Page<Attendance> findAllWithPagination(int departmentId, Integer page, Integer pageSize) {
         setCurrentDataSource("DEP_" + departmentId);
-        return repository.getByKey(key);
+        Pageable sortedByLessonIdPagination = PageRequest.of(page - 1, pageSize, Sort.by("lessonId").ascending());
+        return repository.findAll(sortedByLessonIdPagination);
     }
 
     public void updateEntity(int departmentId, Attendance attendance) {
@@ -66,15 +74,4 @@ public class AttendanceServiceImpl {
         AttendanceId id = new AttendanceId(attendance.getLessonId(), attendance.getStudentId());
         repository.deleteById(id);
     }
-
-    /**
-     * @param departmentId
-     * @return how many records are in database
-     */
-    public Integer getCount(int departmentId) {
-        setCurrentDataSource("DEP_" + departmentId);
-        return repository.countAll();
-    }
-
-
 }
