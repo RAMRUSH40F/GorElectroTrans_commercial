@@ -6,6 +6,7 @@ import project.model.LessonContent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+@Deprecated
 public class LessonContentInfoMapper implements RowMapper<LessonContent> {
     @Override
     public LessonContent mapRow(ResultSet rs, int rowNum) throws SQLException {

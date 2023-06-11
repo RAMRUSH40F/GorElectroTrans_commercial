@@ -1,6 +1,7 @@
 package project.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,13 +25,13 @@ public class StudentController {
                                                       @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         int departmentId = validateDepartmentId(depId);
         validatePaginationParams(page, pageSize);
-
+        Page<Student> studentPage = studentService.findAllWithPagination(departmentId, Integer.parseInt(page), Integer.parseInt(pageSize));
         HttpHeaders headers = new HttpHeaders();
-        headers.add("students_count", String.valueOf(studentService.getStudentsCount(departmentId)));
+        headers.add("students_count", String.valueOf(studentPage.getTotalElements()));
         return ResponseEntity
                 .ok()
                 .headers(headers)
-                .body(studentService.findAllWithPagination(departmentId, Integer.parseInt(page), Integer.parseInt(pageSize)));
+                .body(studentPage.getContent());
     }
 
 

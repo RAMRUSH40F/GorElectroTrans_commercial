@@ -6,7 +6,8 @@ import project.model.AttendanceView;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class AttendanceMapper implements RowMapper<AttendanceView>{
+@Deprecated
+public class AttendanceMapper implements RowMapper<AttendanceView> {
     @Override
     public AttendanceView mapRow(ResultSet rs, int rowNum) throws SQLException {
         return AttendanceView.builder()
