@@ -31,6 +31,30 @@ public class RequestExceptionHandlingController {
         return new ResponseEntity<>(responseException, responseException.httpStatus);
     }
 
+    // Security
+    @ExceptionHandler(value = {AuthenticationException.class})
+    public ResponseEntity<ResponseException> authException(RuntimeException e) {
+        System.out.println(e.getCause());
+        ResponseException responseException = ResponseException.builder()
+                .message(e.getMessage())
+                .timeStamp(ZonedDateTime.now(ZoneId.of("UTC+3")))
+                .httpStatus(HttpStatus.UNAUTHORIZED)
+                .build();
+        return new ResponseEntity<>(responseException, responseException.httpStatus);
+    }
+
+    @ExceptionHandler(value = {AuthorizationException.class})
+    public ResponseEntity<ResponseException> authorizationException(RuntimeException e) {
+        System.out.println(e.getCause());
+        ResponseException responseException = ResponseException.builder()
+                .message(e.getMessage())
+                .timeStamp(ZonedDateTime.now(ZoneId.of("UTC+3")))
+                .httpStatus(HttpStatus.FORBIDDEN)
+                .build();
+        return new ResponseEntity<>(responseException, responseException.httpStatus);
+    }
+
+    // Database
     @ExceptionHandler(value = {DataIntegrityViolationException.class})
     public ResponseEntity<ResponseException> handleSqlExceptions(RuntimeException e) {
         System.out.println(e.getCause());
@@ -67,24 +91,15 @@ public class RequestExceptionHandlingController {
         return new ResponseEntity<>(responseException, responseException.httpStatus);
     }
 
-    @ExceptionHandler(value = {AuthenticationException.class})
-    public ResponseEntity<ResponseException> authException(RuntimeException e) {
-        System.out.println(e.getCause());
-        ResponseException responseException = ResponseException.builder()
-                .message(e.getMessage())
-                .timeStamp(ZonedDateTime.now(ZoneId.of("UTC+3")))
-                .httpStatus(HttpStatus.UNAUTHORIZED)
-                .build();
-        return new ResponseEntity<>(responseException, responseException.httpStatus);
-    }
+    // Jpa DataBase exceptions
 
-    @ExceptionHandler(value = {AuthorizationException.class})
-    public ResponseEntity<ResponseException> authorizationException(RuntimeException e) {
+    @ExceptionHandler(value = {BoundedEntityNotFound.class})
+    public ResponseEntity<ResponseException> noEntityWithSuchId(BoundedEntityNotFound e) {
         System.out.println(e.getCause());
         ResponseException responseException = ResponseException.builder()
-                .message(e.getMessage())
+                .message(e.getCustomMessage())
                 .timeStamp(ZonedDateTime.now(ZoneId.of("UTC+3")))
-                .httpStatus(HttpStatus.FORBIDDEN)
+                .httpStatus(HttpStatus.BAD_REQUEST)
                 .build();
         return new ResponseEntity<>(responseException, responseException.httpStatus);
     }

@@ -11,7 +11,7 @@ public class InvalidDepartmentException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return messageTemplate+receivedId;
+        return messageTemplate + receivedId;
     }
 
 }
