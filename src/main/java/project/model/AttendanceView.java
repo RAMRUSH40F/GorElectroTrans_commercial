@@ -12,6 +12,7 @@ import java.sql.Date;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Deprecated
 public class AttendanceView {
     @JsonProperty("name")
     private String name;

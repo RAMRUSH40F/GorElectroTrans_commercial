@@ -1,6 +1,7 @@
 package project.repository;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -17,6 +18,8 @@ import java.util.NoSuchElementException;
 
 @Repository("AttendanceRepositoryBean")
 @RequiredArgsConstructor
+@Deprecated
+@Lazy
 public class AttendanceRepository {
 
     private final JdbcTemplate jdbcTemplate;
@@ -89,6 +92,23 @@ public class AttendanceRepository {
         return jdbcTemplate.queryForObject("SELECT COUNT(student_id) FROM " +
                 databaseName + ".attendance AS COUNT", Integer.class);
 
+    }
+    public AttendanceView getAttendanceView(int departmentId, Attendance attendance) {
+
+        String query = new StringBuilder()
+                .append("SELECT * FROM DEP_")
+                .append(departmentId)
+                .append(".Attendance_view WHERE student_id=")
+                .append(attendance.getStudentId())
+                .append(" AND lesson_id=")
+                .append(attendance.getLessonId())
+                .toString();
+
+        try {
+            return jdbcTemplate.query(query, mapper).get(0);
+        } catch (IndexOutOfBoundsException e) {
+            return null;
+        }
     }
 
     public List<AttendanceView> getAttendanceByKeyword(int departmentId, String key) {
