@@ -1,11 +1,16 @@
 package project.model;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import project.model.projection.LessonContentNoFileProjection;
 
 import javax.persistence.*;
 import java.sql.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Builder
@@ -52,8 +57,17 @@ public class Lesson {
     @JsonProperty("isHeld")
     private boolean isHeld;
 
-    @Transient
-    private List<String> lessonContent;
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "lesson_id", insertable = false, updatable = false)
+    @Fetch(FetchMode.JOIN)
+    private List<LessonContentNoFileProjection> lessonContentProjection;
+
+    @JsonGetter("lessonContent")
+    public List<String> getLessonFileNames() {
+        return lessonContentProjection.stream()
+                .map(LessonContentNoFileProjection::getFileName)
+                .collect(Collectors.toList());
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -96,7 +110,7 @@ public class Lesson {
                 ", teacherPost='" + teacherPost + '\'' +
                 ", peoplePlanned=" + peoplePlanned +
                 ", isHeld=" + isHeld +
-                ", lessonContent=" + lessonContent +
+                ", lessonFileNames=" + getLessonFileNames() +
                 '}';
     }
 }

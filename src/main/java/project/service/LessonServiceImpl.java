@@ -40,9 +40,6 @@ public class LessonServiceImpl {
         setCurrentDataSource("DEP_" + department);
         List<Lesson> lessons = lessonJpaRepository.findAllByKey(key);
 
-        for (Lesson x : lessons) {
-            x.setLessonContent(lessonContentService.findAllFileNamesByLessonId(department, x.getId()));
-        }
         return lessons;
     }
 
@@ -52,10 +49,7 @@ public class LessonServiceImpl {
 
         Pageable sortedByDatePaginatedRequest = PageRequest.of(page - 1, size, Sort.by("date").descending());
         List<Lesson> lessonList = lessonJpaRepository.findAll(sortedByDatePaginatedRequest).toList();
-
-        for (Lesson x : lessonList) {
-            x.setLessonContent(lessonContentService.findAllFileNamesByLessonId(department, x.getId()));
-        }
+        lessonList.forEach(s -> System.out.println(s.getLessonContentProjection()));
         return lessonList;
     }
 

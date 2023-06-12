@@ -7,13 +7,10 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import project.exceptions.FileSizeLimitExceededException;
 import project.model.LessonContent;
-import project.model.projection.LessonContentProjection;
 import project.repository.LessonContentJpaRepository;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static project.dataSource.DynamicDataSourceContextHolder.setCurrentDataSource;
 
@@ -28,15 +25,7 @@ public class LessonContentServiceImpl {
         return lessonContent.map(LessonContent::getFile).orElse(null);
     }
 
-    public @NonNull List<String> findAllFileNamesByLessonId(Integer departmentId, int id) {
-        setCurrentDataSource("DEP_" + departmentId);
-        List<LessonContentProjection> lessonContentList = repository.findByLessonId(id);
-        return lessonContentList.stream()
-                .map(LessonContentProjection::getFileName)
-                .collect(Collectors.toList());
 
-
-    }
 
     public @NonNull LessonContent findByFileName(int departmentId, String fileName) {
         setCurrentDataSource("DEP_" + departmentId);
