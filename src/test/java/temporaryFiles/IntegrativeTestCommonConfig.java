@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import temporaryFiles.mocks.StudentRepositoryMock;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
@@ -30,11 +29,7 @@ public class IntegrativeTestCommonConfig {
     @Value("${maria.db.password}")
     private String mariaDbPassword;
 
-    @Primary
-    @Bean
-    public StudentRepository studentRepository(JdbcTemplate jdbcTemplate) {
-        return new StudentRepositoryMock(jdbcTemplate);
-    }
+
 
     @Primary
     @Bean("mariaDB")

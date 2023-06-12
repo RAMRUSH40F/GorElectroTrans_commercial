@@ -52,7 +52,7 @@ class LessonServiceImplSimpleTest {
     @Test
     void addNewLesson_lessonCountPlusOneResult() {
         Integer num = lessonService.getLessonsCount(4);
-        Object[] res = new Object[]{"Ремонт нового подвижного состава трамваев_тест", 2.6f, new Date(1683014400L), "Левицкий Леонид Константинович.", 52, TeacherProfession.MASTER.getProfession()};
+        Object[] res = new Object[]{"Р РµРјРѕРЅС‚ РЅРѕРІРѕРіРѕ РїРѕРґРІРёР¶РЅРѕРіРѕ СЃРѕСЃС‚Р°РІР° С‚СЂР°РјРІР°РµРІ_С‚РµСЃС‚", 2.6f, new Date(1683014400L), "Р›РµРІРёС†РєРёР№ Р›РµРѕРЅРёРґ РљРѕРЅСЃС‚Р°РЅС‚РёРЅРѕРІРёС‡.", 52, TeacherProfession.MASTER.getProfession()};
 
         lessonService.addNewLesson(4,
                 Lesson.builder()

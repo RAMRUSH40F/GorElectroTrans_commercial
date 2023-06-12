@@ -1,11 +1,11 @@
 package temporaryFiles;
 
 
-import org.springframework.context.annotation.*;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.PropertySource;
 import project.AppContext;
-import project.service.SubdepartmentServiceImpl;
 
 @Configuration
 @ComponentScan("project.repository")
@@ -13,13 +13,6 @@ import project.service.SubdepartmentServiceImpl;
 @PropertySource("classpath*: application.properties")
 public class StudentRepositoryConfiguration {
 
-    @Bean
-    public StudentRepository createStudentRepository(JdbcTemplate jdbcTemplate,
-                                                     NamedParameterJdbcTemplate namedParameterJdbcTemplate,
-                                                     WorkerService workerService,
-                                                     SubdepartmentServiceImpl service){
-        return new StudentRepositoryImpl(jdbcTemplate,namedParameterJdbcTemplate,service, workerService);
-    }
 
 
 }
