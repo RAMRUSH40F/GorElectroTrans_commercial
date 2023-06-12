@@ -2,6 +2,7 @@ package project.model;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -67,6 +68,11 @@ public class Lesson {
         return lessonContentProjection.stream()
                 .map(LessonContentNoFileProjection::getFileName)
                 .collect(Collectors.toList());
+    }
+
+    @JsonSetter("lessonContent")
+    public void getLessonFileNames(List<String> fileNames) {
+        //Receiving List of fileNames. No actions yet
     }
 
     @Override
