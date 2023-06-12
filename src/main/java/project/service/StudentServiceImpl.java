@@ -24,13 +24,16 @@ public class StudentServiceImpl {
     private final SubdepartmentServiceImpl subdepartmentService;
 
 
-    public @NonNull Student addNewStudent(int departmentId, @NonNull Student student) {
+    public @NonNull Student addNewStudentBySubdepartmentName(int departmentId, @NonNull Student student) {
         setCurrentDataSource("DEP_" + departmentId);
         Short newSubDepartmentId = subdepartmentService
                 .findByName(departmentId, student.getSubdepartmentName())
                 .getId();
         if (newSubDepartmentId == null) {
             throw new InvalidSubdepartmentException(student.getSubdepartmentName());
+        }
+        if (repository.existsById(student.getStudentId())) {
+            throw new IllegalArgumentException("Рабочий с таким номером уже есть в базе.");
         }
         Student result = repository.save(createStudent(student, newSubDepartmentId));
         result.setSubdepartmentName(student.getSubdepartmentName());

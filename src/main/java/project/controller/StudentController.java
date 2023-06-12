@@ -40,7 +40,7 @@ public class StudentController {
                                  @RequestBody Student student,
                                  @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
-        return studentService.addNewStudent(departmentId, student);
+        return studentService.addNewStudentBySubdepartmentName(departmentId, student);
     }
 
     @PutMapping("/dep_{N}/students/data")

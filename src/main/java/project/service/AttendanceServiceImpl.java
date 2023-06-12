@@ -28,6 +28,10 @@ public class AttendanceServiceImpl {
 
         try {
             boundLessonAndStudentToAttendance(attendance);
+            AttendanceId attendanceId = new AttendanceId(attendance.getLessonId(), attendance.getStudentId());
+            if (repository.existsById(attendanceId)) {
+                throw new IllegalArgumentException("Посещаемость этого рабочего на этом уроке уже учтена.");
+            }
             return repository.save(attendance);
         } catch (JpaObjectRetrievalFailureException e) {
             throw new BoundedEntityNotFound(e);
