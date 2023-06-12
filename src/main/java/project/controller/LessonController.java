@@ -1,6 +1,7 @@
 package project.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,23 +27,17 @@ public class LessonController {
                                                             @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
         validatePaginationParams(page, size);
-        HttpHeaders headers = new HttpHeaders();
 
-        List<Lesson> responseList;
-        if (keyWord == null) {
-            responseList = lessonService.findAllWithPagination(departmentId, Integer.parseInt(page), Integer.parseInt(size));
-            headers.add("lessons_count", String.valueOf(lessonService.getLessonsCount(departmentId)));
-        } else {
-            responseList = lessonService.findAllByKeyword(departmentId, keyWord);
-            headers.add("lessons_count", String.valueOf(responseList.size()));
-            int start = (Integer.parseInt(page) - 1) * Integer.parseInt(size);
-            int end = Integer.parseInt(page) * Integer.parseInt(size);
-            responseList = responseList.subList(Math.min(start, responseList.size()), Math.min(end, responseList.size()));
-        }
+        Page<Lesson> lessonPage =
+                lessonService.findAllByNullableKeywordWithPagination(departmentId, keyWord, Integer.parseInt(page), Integer.parseInt(size));
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("lessons_count", String.valueOf(lessonPage.getTotalElements()));
+
         return ResponseEntity
                 .ok()
                 .headers(headers)
-                .body(responseList);
+                .body(lessonPage.getContent());
     }
 
     @PostMapping("/dep_{N}/work_plan/data")

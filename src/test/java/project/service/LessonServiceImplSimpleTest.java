@@ -26,7 +26,7 @@ class LessonServiceImplSimpleTest {
 
     @Test
     void getPagedLessons_returnNotNull() {
-        List<Lesson> lessonList = lessonService.findAllWithPagination(1, 1, 15);
+        List<Lesson> lessonList = lessonService.findAllWithPagination(1, 1, 15).toList();
         System.out.println(lessonList);
 
         assertNotNull(lessonList);
@@ -42,7 +42,7 @@ class LessonServiceImplSimpleTest {
 
     @Test
     void getLessonByKeyword_returnNotNull() {
-        List<Lesson> lessonList = lessonService.findAllByKeyword(1, "gag");
+        List<Lesson> lessonList = lessonService.findAllByNullableKeywordWithPagination(1, "gag",1,1).toList();
         System.out.println(lessonList);
 
         assertNotNull(lessonList);

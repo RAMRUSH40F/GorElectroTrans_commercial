@@ -30,7 +30,7 @@ public class AttendanceMultiplier {
         Random random = new Random();
 
         // Достаем из БД все записи об уроках и об учениках и оставляем каждый шестой id студента.
-        List<Lesson> lessons = lessonService.findAllWithPagination(departmentId,1,99);
+        List<Lesson> lessons = lessonService.findAllWithPagination(departmentId,1,99).toList();
         List<Integer> lessIds = lessons.stream()
                 .map(Lesson::getId)
                 .filter(id -> random.nextInt(6) == 1)

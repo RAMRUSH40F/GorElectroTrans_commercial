@@ -1,7 +1,6 @@
 package project.model.projection;
 
 import lombok.*;
-import project.model.LessonContent;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -29,7 +28,7 @@ public class LessonContentNoFileProjection {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        LessonContent that = (LessonContent) o;
+        LessonContentNoFileProjection that = (LessonContentNoFileProjection) o;
 
         return getFileName().equals(that.getFileName());
     }

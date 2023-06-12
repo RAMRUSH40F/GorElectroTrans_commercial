@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 import project.model.Attendance;
 import project.service.AttendanceServiceImpl;
@@ -23,7 +24,7 @@ public class AttendanceController {
     public ResponseEntity<List<Attendance>> findAllByKeyWordWithPagination(@PathVariable("N") String depId,
                                                                            @RequestParam(value = "page") String page,
                                                                            @RequestParam(value = "size") String pageSize,
-                                                                           @RequestParam(value = "key", required = false) String keyWord,
+                                                                           @RequestParam(value = "key", required = false) @Nullable String keyWord,
                                                                            @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
         validatePaginationParams(page, pageSize);
