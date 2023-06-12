@@ -103,7 +103,7 @@ const PlanForm: React.FC<Props> = ({
                         />
                         {errors.topic && touched.topic && <FormErrorMessage>{errors.topic}</FormErrorMessage>}
                     </Label>
-                    <div className="plan-form__row">
+                    <div className="plan-form__row plan-form__row--mb">
                         <Label className="plan-form__label" text="Дата">
                             <DateInput
                                 className="plan-form__input"
@@ -131,7 +131,7 @@ const PlanForm: React.FC<Props> = ({
                                 value={values.duration}
                                 disabled={isSubmitting || isDisabled}
                                 placeholder="Длительность"
-                                decimalScale={2}
+                                decimalScale={1}
                                 allowNegative={false}
                                 autoComplete="none"
                             />
@@ -139,7 +139,7 @@ const PlanForm: React.FC<Props> = ({
                                 <FormErrorMessage>{errors.duration}</FormErrorMessage>
                             )}
                         </Label>
-                        <Label className="plan-form__label plan-form__label--mb" text="Кол-во людей">
+                        <Label className="plan-form__label" text="Кол-во людей">
                             <InputNumber
                                 className="plan-form__input"
                                 name="peoplePlanned"
