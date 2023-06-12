@@ -10,7 +10,7 @@ import project.model.projection.LessonContentNoFileProjection;
 
 import javax.persistence.*;
 import java.sql.Date;
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -61,18 +61,18 @@ public class Lesson {
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "lesson_id", insertable = false, updatable = false)
     @Fetch(FetchMode.JOIN)
-    private List<LessonContentNoFileProjection> lessonContentProjection;
+    private Set<LessonContentNoFileProjection> lessonContentProjection;
 
     @JsonGetter("lessonContent")
-    public List<String> getLessonFileNames() {
+    public Set<String> getLessonFileNames() {
         return lessonContentProjection.stream()
                 .map(LessonContentNoFileProjection::getFileName)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
     @JsonSetter("lessonContent")
-    public void getLessonFileNames(List<String> fileNames) {
-        //Receiving List of fileNames. No actions yet
+    public void getLessonFileNames(Set<String> fileNames) {
+        //Receiving Set of fileNames. No actions yet
     }
 
     @Override
