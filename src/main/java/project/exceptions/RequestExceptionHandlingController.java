@@ -70,7 +70,7 @@ public class RequestExceptionHandlingController {
     @ExceptionHandler(value = {
             NoSuchElementException.class,
             IllegalArgumentException.class})
-    public ResponseEntity<ResponseException> handleNoSuchStudentSqlException(RuntimeException e) {
+    public ResponseEntity<ResponseException> handleNoSuchElementSqlException(RuntimeException e) {
         System.out.println(e.getMessage());
         ResponseException responseException = ResponseException.builder()
                 .message(e.getMessage())

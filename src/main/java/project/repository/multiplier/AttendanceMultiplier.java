@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import project.model.Attendance;
 import project.model.Lesson;
 import project.model.Student;
-import project.repository.AttendanceRepository;
+import project.service.AttendanceServiceImpl;
 import project.service.LessonServiceImpl;
 import project.service.StudentServiceImpl;
 
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AttendanceMultiplier {
 
-    private final AttendanceRepository attendanceRepository;
+    private final AttendanceServiceImpl attendanceService;
     private final LessonServiceImpl lessonService;
     private final StudentServiceImpl studentRepository;
 
@@ -54,7 +54,7 @@ public class AttendanceMultiplier {
                         .studentId(studId)
                         .success(random.nextInt(2))
                         .build();
-                attendanceRepository.addNewRecord(departmentId, attendance);
+                attendanceService.save(departmentId, attendance);
             }
         }
         System.out.printf("Attendance multiplier ended work on %d department \n", departmentId);
