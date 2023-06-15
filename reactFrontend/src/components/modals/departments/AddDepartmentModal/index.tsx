@@ -13,7 +13,6 @@ import { useDepartmentsContext } from "../../../../context/departmentsContext";
 import { ALERT } from "../../../../constants/alertTypes";
 import ModalContent from "../../ModalLayout/ModalContent";
 import Alert from "../../../Alert";
-import { useUserContext } from "../../../../context/userContext";
 
 import "./styles.scss";
 
@@ -26,7 +25,7 @@ const AddDepartmentModal: React.FC<Props> = ({ closeModal }) => {
     useClickOutside(modalRef, closeModal);
     useEscape(closeModal);
 
-    const { logout } = useUserContext();
+    // const { logout } = useUserContext();
     const { addDepartment } = useDepartmentsContext();
     const { divisionId = "" } = useParams();
     const [error, setError] = useState<string | null>(null);
@@ -44,7 +43,7 @@ const AddDepartmentModal: React.FC<Props> = ({ closeModal }) => {
         } catch (error) {
             const err = error as any;
             if (err.response.status === 401) {
-                logout();
+                // logout();
             } else {
                 setError(err?.response?.data?.message ?? "Не удалось добавить отдел");
             }

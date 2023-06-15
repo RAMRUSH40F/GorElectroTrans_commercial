@@ -14,7 +14,6 @@ import ModalHeader from "../../ModalLayout/ModalHeader";
 import { ALERT } from "../../../../constants/alertTypes";
 import Alert from "../../../Alert";
 import ModalContent from "../../ModalLayout/ModalContent";
-import { useUserContext } from "../../../../context/userContext";
 
 import "./styles.scss";
 
@@ -30,7 +29,7 @@ const EditDepartmentModal: React.FC<Props> = ({ closeModal, department }) => {
 
     const { divisionId = "" } = useParams();
 
-    const { logout } = useUserContext();
+    // const { logout } = useUserContext();
     const { deleteDepartment, updateDepartment } = useDepartmentsContext();
     const [error, setError] = useState<string | null>(null);
     const [isConfirming, setIsConfirming] = useState(false);
@@ -52,7 +51,7 @@ const EditDepartmentModal: React.FC<Props> = ({ closeModal, department }) => {
         } catch (error) {
             const err = error as any;
             if (err.response.status === 401) {
-                logout();
+                // logout();
             } else {
                 setError(err?.response?.data?.message ?? "Не удалось сохранить изменения");
             }
@@ -72,7 +71,7 @@ const EditDepartmentModal: React.FC<Props> = ({ closeModal, department }) => {
         } catch (error) {
             const err = error as any;
             if (err.response.status === 401) {
-                logout();
+                // logout();
             } else {
                 setError(err?.response?.data?.message ?? "Не удалось удалить отдел");
             }

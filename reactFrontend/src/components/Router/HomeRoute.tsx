@@ -1,13 +1,14 @@
 import React from "react";
-import { useUserContext } from "../../context/userContext";
 import { Navigate, useLocation } from "react-router-dom";
 import { ROLES } from "../../constants/roles";
 import { DIVISIONS_ROUTE, LOGIN_ROUTE, UNAUTHORIZED_ROUTE } from "../../constants/routesPathnames";
 import { getDivisionRoute } from "../../helpers/getDivisionRoute";
+import { $isAuth, $roles } from "../../shared/auth";
+import { useUnit } from "effector-react";
 
 const HomeRoute: React.FC = () => {
-    const { roles, isAuth } = useUserContext();
     const location = useLocation();
+    const [isAuth, roles] = useUnit([$isAuth, $roles]);
 
     if (!isAuth) return <Navigate to={LOGIN_ROUTE.PATH} state={{ from: location }} replace />;
 

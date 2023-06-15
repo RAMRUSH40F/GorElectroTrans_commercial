@@ -1,0 +1,34 @@
+.tableWrapper {
+    margin-bottom: 1rem;
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    margin-bottom: 1rem;
+
+    tbody.opacity {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+}
+
+.nameCell {
+    min-width: 11rem;
+}
+
+.topicCell {
+    min-width: 13.75rem;
+}
+
+.subdepartmentCell {
+    min-width: 12.5rem;
+}
+
+.pagination {
+    justify-content: flex-end;
+}
+
+.loader {
+    margin: 2rem auto 0;
+}

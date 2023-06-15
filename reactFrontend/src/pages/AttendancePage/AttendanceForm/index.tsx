@@ -1,25 +1,34 @@
-import React from "react";
-import Label from "../../formElements/Label";
-import { TAttendanceDto } from "../../../models/Attendance";
-import { ATTENDACE_RESULT_VALUE, ATTENDANCE_RESULT } from "../../../constants/attendanceResult";
-import useFocus from "../../../hooks/useFocus";
+import React, { useRef } from "react";
+import Label from "components/formElements/Label";
+import { TAttendanceDto } from "models/Attendance";
+import {
+    ATTENDACE_RESULT_VALUE,
+    ATTENDANCE_RESULT,
+} from "constants/attendanceResult";
+import useFocus from "hooks/useFocus";
 import { Formik } from "formik";
-import FormErrorMessage from "../../formElements/FormErrorMessage";
-import ActionButton from "../../buttons/ActionButton";
+import FormErrorMessage from "components/formElements/FormErrorMessage";
+import ActionButton from "components/buttons/ActionButton";
 import { attendanceFormScheme } from "./attendanceFormSheme";
-import InputNumber from "../../formElements/InputNumber";
-import Dropdown, { DropdownOption } from "../../formElements/Dropdown";
+import InputNumber from "components/formElements/InputNumber";
+import Dropdown, { DropdownOption } from "components/formElements/Dropdown";
 
-import "./styles.scss";
+import styles from "./styles.module.scss";
 
 const options: DropdownOption[] = [
-    { label: ATTENDACE_RESULT_VALUE[ATTENDANCE_RESULT.SUCCESS], value: String(ATTENDANCE_RESULT.SUCCESS) },
-    { label: ATTENDACE_RESULT_VALUE[ATTENDANCE_RESULT.FAIL], value: String(ATTENDANCE_RESULT.FAIL) },
+    {
+        label: ATTENDACE_RESULT_VALUE[ATTENDANCE_RESULT.SUCCESS],
+        value: String(ATTENDANCE_RESULT.SUCCESS),
+    },
+    {
+        label: ATTENDACE_RESULT_VALUE[ATTENDANCE_RESULT.FAIL],
+        value: String(ATTENDANCE_RESULT.FAIL),
+    },
 ];
 
 type Props = {
     onSubmit: (values: AttendanceFormState) => Promise<void>;
-    attendance?: TAttendanceDto;
+    attendance?: TAttendanceDto | null;
     moveToConfrim?: (event: React.MouseEvent<HTMLButtonElement>) => void;
     isDisabled?: boolean;
     isEditing?: boolean;
@@ -40,12 +49,16 @@ const AttendanceForm: React.FC<Props> = ({
     isEditing,
     clearError,
 }) => {
-    const inputRef = React.useRef<HTMLInputElement | null>(null);
+    const inputRef = useRef<HTMLInputElement | null>(null);
     useFocus(inputRef, true);
 
     const getInitialSuccessOption = (): DropdownOption => {
         if (attendance) {
-            return options.find((option) => option.value === String(attendance.success)) ?? options[0];
+            return (
+                options.find(
+                    (option) => option.value === String(attendance.success)
+                ) ?? options[0]
+            );
         }
         return options[0];
     };
@@ -57,14 +70,30 @@ const AttendanceForm: React.FC<Props> = ({
     };
 
     return (
-        <Formik initialValues={initialState} onSubmit={onSubmit} validationSchema={attendanceFormScheme}>
-            {({ handleSubmit, handleChange, handleBlur, values, errors, touched, isSubmitting, setFieldValue }) => (
-                <form className="attendance-form" onSubmit={handleSubmit} onChange={clearError}>
+        <Formik
+            initialValues={initialState}
+            onSubmit={onSubmit}
+            validationSchema={attendanceFormScheme}
+        >
+            {({
+                handleSubmit,
+                handleChange,
+                handleBlur,
+                values,
+                errors,
+                touched,
+                isSubmitting,
+                setFieldValue,
+            }) => (
+                <form onSubmit={handleSubmit} onChange={clearError}>
                     {!isEditing && (
                         <>
-                            <Label className="attendance-form__label" text="Табельный номер">
+                            <Label
+                                className={styles.label}
+                                text="Табельный номер"
+                            >
                                 <InputNumber
-                                    className="attendance-form__input"
+                                    className={styles.input}
                                     getInputRef={inputRef}
                                     placeholder="Номер"
                                     name="studentId"
@@ -79,12 +108,17 @@ const AttendanceForm: React.FC<Props> = ({
                                     decimalScale={0}
                                 />
                                 {errors.studentId && touched.studentId && (
-                                    <FormErrorMessage>{errors.studentId}</FormErrorMessage>
+                                    <FormErrorMessage>
+                                        {errors.studentId}
+                                    </FormErrorMessage>
                                 )}
                             </Label>
-                            <Label className="attendance-form__label" text="Номер занятия">
+                            <Label
+                                className={styles.label}
+                                text="Номер занятия"
+                            >
                                 <InputNumber
-                                    className="attendance-form__input"
+                                    className={styles.input}
                                     placeholder="Номер"
                                     name="lessonId"
                                     onBlur={handleBlur}
@@ -97,14 +131,15 @@ const AttendanceForm: React.FC<Props> = ({
                                     decimalScale={0}
                                 />
                                 {errors.lessonId && touched.lessonId && (
-                                    <FormErrorMessage>{errors.lessonId}</FormErrorMessage>
+                                    <FormErrorMessage>
+                                        {errors.lessonId}
+                                    </FormErrorMessage>
                                 )}
                             </Label>
                         </>
                     )}
-                    <Label className="attendance-form__label" text="Зачет/Незачет">
+                    <Label className={styles.label} text="Зачет/Незачет">
                         <Dropdown
-                            className="attendance-form__select"
                             options={options}
                             initialOption={values.success}
                             onChange={(option) => {
@@ -114,10 +149,14 @@ const AttendanceForm: React.FC<Props> = ({
                             disabled={isSubmitting || isDisabled}
                         />
                     </Label>
-                    <div className="attendance-form__actions">
+                    <div className={styles.actions}>
                         {moveToConfrim && attendance ? (
                             <>
-                                <ActionButton disabled={isSubmitting || isDisabled} type="submit" colorType="success">
+                                <ActionButton
+                                    disabled={isSubmitting || isDisabled}
+                                    type="submit"
+                                    colorType="success"
+                                >
                                     Сохранить
                                 </ActionButton>
                                 <ActionButton
@@ -130,7 +169,11 @@ const AttendanceForm: React.FC<Props> = ({
                                 </ActionButton>
                             </>
                         ) : (
-                            <ActionButton disabled={isSubmitting || isDisabled} type="submit" colorType="success">
+                            <ActionButton
+                                disabled={isSubmitting || isDisabled}
+                                type="submit"
+                                colorType="success"
+                            >
                                 Добавить
                             </ActionButton>
                         )}

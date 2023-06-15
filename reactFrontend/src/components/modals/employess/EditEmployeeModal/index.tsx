@@ -16,7 +16,6 @@ import { ALERT } from "../../../../constants/alertTypes";
 import ModalContent from "../../ModalLayout/ModalContent";
 import Alert from "../../../Alert";
 import Loader from "../../../Loader";
-import { useUserContext } from "../../../../context/userContext";
 
 import "./styles.scss";
 
@@ -32,7 +31,7 @@ const EditEmployeeModal: React.FC<Props> = ({ closeModal, employee }) => {
 
     const { divisionId = "" } = useParams();
 
-    const { logout } = useUserContext();
+    // const { logout } = useUserContext();
     const { deleteEmployee, updateEmployee } = useEmployeesContext();
     const [error, setError] = useState<string | null>(null);
     const [isConfirming, setIsConfirming] = useState(false);
@@ -59,7 +58,7 @@ const EditEmployeeModal: React.FC<Props> = ({ closeModal, employee }) => {
         } catch (error) {
             const err = error as any;
             if (err.response.status === 401) {
-                logout();
+                // logout();
             } else {
                 setError(err?.response?.data?.message ?? "Не удалось сохранить изменения");
             }
@@ -79,7 +78,7 @@ const EditEmployeeModal: React.FC<Props> = ({ closeModal, employee }) => {
         } catch (error) {
             const err = error as any;
             if (err.response.status === 401) {
-                logout();
+                // logout();
             } else {
                 setError("Не удалось удалить запись");
             }

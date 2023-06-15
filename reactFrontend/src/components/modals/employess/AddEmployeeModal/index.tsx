@@ -15,7 +15,6 @@ import Loader from "../../../Loader";
 import ModalContent from "../../ModalLayout/ModalContent";
 import Alert from "../../../Alert";
 import { useFetchDepartmentsList } from "../../../../hooks/useFetchDepartmentsList";
-import { useUserContext } from "../../../../context/userContext";
 
 import "./styles.scss";
 
@@ -30,7 +29,7 @@ const AddEmployeeModal: React.FC<Props> = ({ closeModal }) => {
 
     const { divisionId = "" } = useParams();
 
-    const { logout } = useUserContext();
+    // const { logout } = useUserContext();
     const { addEmployee } = useEmployeesContext();
     const [error, setError] = useState<string | null>(null);
 
@@ -54,7 +53,7 @@ const AddEmployeeModal: React.FC<Props> = ({ closeModal }) => {
         } catch (error) {
             const err = error as any;
             if (err.response.status === 401) {
-                logout();
+                // logout();
             } else {
                 setError(err?.response?.data?.message ?? "Не удалось добавить работника");
             }
