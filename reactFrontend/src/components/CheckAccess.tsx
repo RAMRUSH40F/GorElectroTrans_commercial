@@ -1,6 +1,7 @@
 import React from "react";
 import { ROLES } from "../constants/roles";
-import { useUserContext } from "../context/userContext";
+import { useUnit } from "effector-react";
+import { $roles } from "../models/auth";
 
 type Props = {
     children: React.ReactNode;
@@ -8,7 +9,7 @@ type Props = {
 };
 
 const CheckAccess: React.FC<Props> = ({ children, allowedRoles }) => {
-    const { roles } = useUserContext();
+    const roles = useUnit($roles);
     const isAllowedRole = roles.some((role) => allowedRoles.includes(role));
     return isAllowedRole ? <>{children}</> : null;
 };

@@ -5,7 +5,6 @@ import { useAttendanceContext } from "../../../../context/attendanceContext";
 import { showNotion } from "../../../../helpers/showNotion";
 import useClickOutside from "../../../../hooks/useClickOutside";
 import useEscape from "../../../../hooks/useEscape";
-import { IAttendance } from "../../../../models/Attendance";
 import AttendanceService from "../../../../services/AttendanceService";
 import Confirm from "../../../Comfirm";
 import AttendanceForm, { AttendanceFormState } from "../../../forms/AttendanceForm";
@@ -15,6 +14,7 @@ import { ALERT } from "../../../../constants/alertTypes";
 import ModalContent from "../../ModalLayout/ModalContent";
 import Alert from "../../../Alert";
 import { useUserContext } from "../../../../context/userContext";
+import { IAttendance } from "../../../../types/Attendance";
 
 import "./styles.scss";
 

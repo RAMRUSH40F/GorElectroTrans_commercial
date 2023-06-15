@@ -1,4 +1,4 @@
-import { IAttendanceCredentials, TAttendanceDto } from "../../models/Attendance";
+import { IAttendanceCredentials, TAttendanceDto } from "../../types/Attendance";
 
 interface Params {
     depId: string;

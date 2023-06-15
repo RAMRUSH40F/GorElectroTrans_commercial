@@ -17,8 +17,14 @@
     }
     // .attendance-page__search
     &__search {
-        @media(max-width: $mobileSmall) {
+        @media (max-width: $mobileSmall) {
             width: 80%;
+        }
+    }
+    // .attendance-page__add-btn
+    &__add-btn {
+        @media (max-width: $mobileSmall) {
+            width: 100%;
         }
     }
 }

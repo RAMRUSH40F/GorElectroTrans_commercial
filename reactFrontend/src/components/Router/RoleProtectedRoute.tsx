@@ -1,8 +1,9 @@
 import React from "react";
 import { ROLES } from "../../constants/roles";
-import { useUserContext } from "../../context/userContext";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { LOGIN_ROUTE, UNAUTHORIZED_ROUTE } from "../../constants/routesPathnames";
+import { useUnit } from "effector-react";
+import { $isAuth, $roles } from "../../models/auth";
 
 type Props = {
     allowedRoles: ROLES[];
@@ -10,7 +11,7 @@ type Props = {
 
 const RoleProtectedRoute: React.FC<Props> = ({ allowedRoles }) => {
     const location = useLocation();
-    const { roles, isAuth } = useUserContext();
+    const [isAuth, roles] = useUnit([$isAuth, $roles]);
 
     if (isAuth) {
         const isAllowedRole = roles.some((role) => allowedRoles.includes(role));

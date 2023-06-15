@@ -4,7 +4,6 @@ import { ROLES } from "../../constants/roles";
 interface UserState {
     roles: ROLES[];
     setRoles: Dispatch<SetStateAction<ROLES[]>>;
-    isAuth: boolean;
     setIsAuth: Dispatch<SetStateAction<boolean>>;
     isLoading: boolean;
     error: string | null;

@@ -7,6 +7,8 @@ import UserContextProvider from "./context/userContext/UserContextProvider";
 import "react-toastify/dist/ReactToastify.css";
 import "./assets/styles/index.scss";
 
+import "./models/init";
+
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 root.render(
     <BrowserRouter>

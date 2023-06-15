@@ -9,7 +9,7 @@ import AttendanceService from "../../../../services/AttendanceService";
 import AttendanceForm, { AttendanceFormState } from "../../../forms/AttendanceForm";
 import ModalLayout from "../../ModalLayout";
 import ModalHeader from "../../ModalLayout/ModalHeader";
-import { TAttendanceDto } from "../../../../models/Attendance";
+import { TAttendanceDto } from "../../../../types/Attendance";
 import { ALERT } from "../../../../constants/alertTypes";
 import Alert from "../../../Alert";
 import ModalContent from "../../ModalLayout/ModalContent";

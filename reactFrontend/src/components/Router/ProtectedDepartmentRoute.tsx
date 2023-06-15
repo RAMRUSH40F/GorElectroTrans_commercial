@@ -1,13 +1,14 @@
 import React from "react";
 import { Outlet, Navigate, useParams, useLocation } from "react-router-dom";
-import { useUserContext } from "../../context/userContext";
 import { LOGIN_ROUTE, UNAUTHORIZED_ROUTE } from "../../constants/routesPathnames";
 import { ROLES } from "../../constants/roles";
+import { useUnit } from "effector-react";
+import { $isAuth, $roles } from "../../models/auth";
 
 const ProtectedDepartmentRoute: React.FC = () => {
     const location = useLocation();
-    const { roles, isAuth } = useUserContext();
     const { divisionId } = useParams();
+    const [isAuth, roles] = useUnit([$isAuth, $roles]);
 
     if (isAuth) {
         const isAllowedRole = roles.some((role) => role === divisionId || role === ROLES.ADMIN);

@@ -1,6 +1,6 @@
 import React from "react";
 import Label from "../../formElements/Label";
-import { TAttendanceDto } from "../../../models/Attendance";
+import { TAttendanceDto } from "../../../types/Attendance";
 import { ATTENDACE_RESULT_VALUE, ATTENDANCE_RESULT } from "../../../constants/attendanceResult";
 import useFocus from "../../../hooks/useFocus";
 import { Formik } from "formik";

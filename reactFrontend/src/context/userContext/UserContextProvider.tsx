@@ -50,13 +50,13 @@ const UserContextProvider: React.FC<Props> = ({ children }) => {
                 setIsLoading(false);
             }
         };
-
-        if (localStorage.getItem("accessToken")) authenticateUser();
-        else setIsLoading(false);
+        setIsLoading(false);
+        // if (localStorage.getItem("accessToken")) authenticateUser();
+        // else setIsLoading(false);
     }, [logout]);
 
     return (
-        <UserContext.Provider value={{ roles, setRoles, isAuth, setIsAuth, isLoading, error, login, logout }}>
+        <UserContext.Provider value={{ roles, setRoles, setIsAuth, isLoading, error, login, logout }}>
             {children}
         </UserContext.Provider>
     );

@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, createContext, useContext } from "react";
-import { IAttendance, IAttendanceCredentials, TAttendanceDto } from "../../models/Attendance";
+import { IAttendance, IAttendanceCredentials, TAttendanceDto } from "../../types/Attendance";
 
 interface AttendanceState {
     attendances: IAttendance[];

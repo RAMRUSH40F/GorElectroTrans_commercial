@@ -1,6 +1,6 @@
 import React from "react";
 import { AttendanceContext } from ".";
-import { IAttendance, IAttendanceCredentials, TAttendanceDto } from "../../models/Attendance";
+import { IAttendance, IAttendanceCredentials, TAttendanceDto } from "../../types/Attendance";
 
 type Props = {
     children: React.ReactNode;

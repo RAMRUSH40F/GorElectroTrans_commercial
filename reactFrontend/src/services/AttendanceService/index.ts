@@ -1,7 +1,7 @@
 import { AxiosRequestConfig, AxiosResponse } from "axios";
 import { authApi } from "../../api";
-import { IAttendance } from "../../models/Attendance";
 import { DeleteParams, PostParams, PutParams } from "./attendanceParams";
+import { IAttendance } from "../../types/Attendance";
 
 export default class AttendanceService {
     static fetch = (depId: string, config?: AxiosRequestConfig): Promise<AxiosResponse<IAttendance[]>> => {
