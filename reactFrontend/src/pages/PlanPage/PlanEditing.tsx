@@ -8,7 +8,6 @@ import PlanService from "../../services/PlanService";
 import { showNotion } from "../../helpers/showNotion";
 import { NOTION } from "../../constants/notion";
 import Confirm from "../../components/Comfirm";
-import { useUserContext } from "../../context/userContext";
 
 type Props = {
     plan: IPlan;
@@ -20,7 +19,7 @@ type Props = {
 const PlanEditing: React.FC<Props> = ({ plan, closeEditing, openMaterialsEditing, setError }) => {
     const { divisionId = "" } = useParams();
 
-    const { logout } = useUserContext();
+    // const { logout } = useUserContext();
     const { updatePlans, deletePlan } = usePlansContext();
     const [isConfirming, setIsConfirming] = useState(false);
     const [isDisabled, setIsDisabled] = useState(false);
@@ -50,7 +49,7 @@ const PlanEditing: React.FC<Props> = ({ plan, closeEditing, openMaterialsEditing
         } catch (error) {
             const err = error as any;
             if (err.response.status === 401) {
-                logout();
+                // logout();
             } else {
                 setError(err?.response?.data?.message ?? "Не удалось сохранить изменения");
             }
@@ -71,7 +70,7 @@ const PlanEditing: React.FC<Props> = ({ plan, closeEditing, openMaterialsEditing
         } catch (error) {
             const err = error as any;
             if (err.response.status === 401) {
-                logout();
+                // logout();
             } else {
                 setError(err?.response?.data?.message ?? "Не удалось удалить запись");
             }

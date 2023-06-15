@@ -1,24 +1,56 @@
 import { AxiosRequestConfig, AxiosResponse } from "axios";
-import { authApi } from "../../api";
+import { authApi } from "../../shared/api";
 import { IPlan } from "../../models/Plan";
-import { PostParams, PutParams, DeleteParams, FileParams, PostFileParams } from "./planParams";
+import {
+    PostParams,
+    PutParams,
+    DeleteParams,
+    FileParams,
+    PostFileParams,
+} from "./planParams";
 import { IMaterial } from "../../models/Material";
 import { IQuarter } from "../../models/Quarter";
 
 export default class PlanService {
-    static fetch = (depId: string, config?: AxiosRequestConfig): Promise<AxiosResponse<IPlan[]>> => {
+    static fetch = (
+        depId: string,
+        config?: AxiosRequestConfig
+    ): Promise<AxiosResponse<IPlan[]>> => {
         return authApi.get<IPlan[]>(`/dep_${depId}/work_plan/data`, config);
     };
-    static post = ({ depId, plan }: PostParams, config?: AxiosRequestConfig): Promise<AxiosResponse<number>> => {
-        return authApi.post<number>(`/dep_${depId}/work_plan/data`, plan, config);
+    static post = (
+        { depId, plan }: PostParams,
+        config?: AxiosRequestConfig
+    ): Promise<AxiosResponse<number>> => {
+        return authApi.post<number>(
+            `/dep_${depId}/work_plan/data`,
+            plan,
+            config
+        );
     };
-    static put = ({ depId, plan }: PutParams, config?: AxiosRequestConfig): Promise<AxiosResponse<void>> => {
-        return authApi.put<void>(`/dep_${depId}/work_plan/${plan.id}`, plan, config);
+    static put = (
+        { depId, plan }: PutParams,
+        config?: AxiosRequestConfig
+    ): Promise<AxiosResponse<void>> => {
+        return authApi.put<void>(
+            `/dep_${depId}/work_plan/${plan.id}`,
+            plan,
+            config
+        );
     };
-    static delete = ({ depId, planId }: DeleteParams, config?: AxiosRequestConfig): Promise<AxiosResponse<void>> => {
-        return authApi.delete<void>(`/dep_${depId}/work_plan/${planId}`, config);
+    static delete = (
+        { depId, planId }: DeleteParams,
+        config?: AxiosRequestConfig
+    ): Promise<AxiosResponse<void>> => {
+        return authApi.delete<void>(
+            `/dep_${depId}/work_plan/${planId}`,
+            config
+        );
     };
-    static fetchFile = ({ depId, fileName }: FileParams, config?: AxiosRequestConfig): Promise<AxiosResponse<Blob>> => {
+    static fetchFile = (
+        { depId, fileName }: FileParams,
+        config?: AxiosRequestConfig
+    ): Promise<AxiosResponse<Blob>> => {
         return authApi.get<Blob>(`/dep_${depId}/content/data/${fileName}`, {
             responseType: "blob",
             headers: { "Content-Type": "application/octet-stream" },
@@ -40,12 +72,21 @@ export default class PlanService {
         { depId, fileName }: FileParams,
         config?: AxiosRequestConfig
     ): Promise<AxiosResponse<void>> => {
-        return authApi.delete<void>(`/dep_${depId}/content/data/${fileName}`, config);
+        return authApi.delete<void>(
+            `/dep_${depId}/content/data/${fileName}`,
+            config
+        );
     };
-    static fetchQuarters = (depId: string, config?: AxiosRequestConfig): Promise<AxiosResponse<IQuarter[]>> => {
+    static fetchQuarters = (
+        depId: string,
+        config?: AxiosRequestConfig
+    ): Promise<AxiosResponse<IQuarter[]>> => {
         return authApi.get<IQuarter[]>(`/dep_${depId}/report/date`, config);
     };
-    static fetchReport = (depId: string, config?: AxiosRequestConfig): Promise<AxiosResponse<Blob>> => {
+    static fetchReport = (
+        depId: string,
+        config?: AxiosRequestConfig
+    ): Promise<AxiosResponse<Blob>> => {
         return authApi.get<Blob>(`/dep_${depId}/report/stats`, {
             responseType: "blob",
             headers: { "Content-Type": "application/octet-stream" },

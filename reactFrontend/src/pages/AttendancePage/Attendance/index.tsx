@@ -1,40 +1,37 @@
 import React from "react";
 import { useSearchParams } from "react-router-dom";
-import Alert from "../../../components/Alert";
-import Loader from "../../../components/Loader";
-import EditAttendanceModal from "../../../components/modals/attendance/EditAttendanceModal";
-import Pagination from "../../../components/Pagination";
-import Table from "../../../components/Table";
-import TableBodyRow from "../../../components/Table/TableBodyRow";
-import TableBodyCell from "../../../components/Table/TableBodyRow/TableBodyCell";
-import TableHead from "../../../components/Table/TableHead";
-import TableHeadCell from "../../../components/Table/TableHead/TableHeadCell";
-import { ALERT } from "../../../constants/alertTypes";
-import { ATTENDACE_RESULT_VALUE } from "../../../constants/attendanceResult";
-import { formatDate } from "../../../helpers/formatDate";
-import useLockedBody from "../../../hooks/useLockedBody";
+import Alert from "components/Alert";
+import Loader from "components/Loader";
+import Pagination from "components/Pagination";
+import Table from "components/Table";
+import TableBodyRow from "components/Table/TableBodyRow";
+import TableBodyCell from "components/Table/TableBodyRow/TableBodyCell";
+import TableHead from "components/Table/TableHead";
+import TableHeadCell from "components/Table/TableHead/TableHeadCell";
+import { ALERT } from "constants/alertTypes";
+import { ATTENDACE_RESULT_VALUE } from "constants/attendanceResult";
+import { formatDate } from "helpers/formatDate";
 import { useUnit } from "effector-react";
+import { modalOpened } from "../EditAttendance/model";
+import EditAttendance from "../EditAttendance";
 import {
     $attendances,
-    $editingAttendance,
     $error,
-    $isEditingModalActive,
     $isFetching,
     $isLoading,
     $page,
     $totalPages,
-    editingModalClosed,
-    editingModalOpened,
     pageChanged,
-} from "../../../models/attendance";
+} from "../model";
+import cn from "classnames";
 
-import "./styles.scss";
+import styles from "./styles.module.scss";
 
 const Attendance: React.FC = () => {
     return (
         <>
-            <EditingModal />
-            <div className="attendance">
+            <EditAttendance />
+            <div>
                 <ErrorAlert />
                 <EmptyAlert />
                 <Loading />
@@ -48,12 +45,17 @@ const Attendance: React.FC = () => {
 export default Attendance;
 
 function TableContent() {
-    const [attendances, isLoading, isFetching, error] = useUnit([$attendances, $isLoading, $isFetching, $error]);
+    const [attendances, isLoading, isFetching, error] = useUnit([
+        $attendances,
+        $isLoading,
+        $isFetching,
+        $error,
+    ]);
     if (isLoading || error || attendances.length === 0) return null;
 
     return (
-        <div className="attendance__table-wrapper">
-            <Table className="attendance__table">
+        <div className={styles.tableWrapper}>
+            <Table className={styles.table}>
                 <TableHead>
                     <TableHeadCell>Номер занятия</TableHeadCell>
                     <TableHeadCell>ФИО</TableHeadCell>
@@ -64,58 +66,38 @@ function TableContent() {
                     <TableHeadCell>Отдел</TableHeadCell>
                     <TableHeadCell>Преподаватель</TableHeadCell>
                 </TableHead>
-                <tbody className={`attendance__table-body ${isFetching && "attendance__table-body--opacity"}`}>
+                <tbody className={cn(isFetching && styles.opacity)}>
                     {attendances.map((attendance) => (
                         <TableBodyRow
                             key={`${attendance.studentId}${attendance.lessonId}`}
-                            onClick={() => editingModalOpened(attendance)}
+                            onClick={() => modalOpened(attendance)}
                         >
                             <TableBodyCell>{attendance.lessonId}</TableBodyCell>
-                            <TableBodyCell className="attendance__table-name-cell">{attendance.name}</TableBodyCell>
-                            <TableBodyCell>{formatDate(attendance.date)}</TableBodyCell>
+                            <TableBodyCell className={styles.nameCell}>
+                                {attendance.name}
+                            </TableBodyCell>
+                            <TableBodyCell>
+                                {formatDate(attendance.date)}
+                            </TableBodyCell>
                             <TableBodyCell>{attendance.duration}</TableBodyCell>
-                            <TableBodyCell>{ATTENDACE_RESULT_VALUE[attendance.success]}</TableBodyCell>
-                            <TableBodyCell className="attendance__table-topic-cell">{attendance.topic}</TableBodyCell>
-                            <TableBodyCell className="attendance__table-subdepartment-cell">
+                            <TableBodyCell>
+                                {ATTENDACE_RESULT_VALUE[attendance.success]}
+                            </TableBodyCell>
+                            <TableBodyCell className={styles.topicCell}>
+                                {attendance.topic}
+                            </TableBodyCell>
+                            <TableBodyCell className={styles.subdepartmentCell}>
                                 {attendance.subDepartment}
                             </TableBodyCell>
-                            <TableBodyCell className="attendance__table-name-cell">{attendance.teacher}</TableBodyCell>
+                            <TableBodyCell className={styles.nameCell}>
+                                {attendance.teacher}
+                            </TableBodyCell>
                         </TableBodyRow>
                     ))}
                 </tbody>
             </Table>
         </div>
     );
-}
-
-function EditingModal() {
-    const [isModalActive, editingAtendance] = useUnit([$isEditingModalActive, $editingAttendance]);
-    useLockedBody(isModalActive);
-    return (
-        <>
-            {isModalActive && editingAtendance && (
-                <EditAttendanceModal closeEditing={() => editingModalClosed()} attendance={editingAtendance} />
-            )}
-        </>
-    );
-}
-
-function EmptyAlert() {
-    const [attendances, isLoading, error] = useUnit([$attendances, $isLoading, $error]);
-    if (!error && !isLoading && attendances.length < 1) {
-        return <Alert type={ALERT.INFO}>На текущий момент нет ни одной записи.</Alert>;
-    }
-    return null;
-}
-
-function ErrorAlert() {
-    const error = useUnit($error);
-    return error ? <Alert type={ALERT.ERROR}>{error}</Alert> : null;
-}
-
-function Loading() {
-    const isLoading = useUnit($isLoading);
-    return isLoading ? <Loader className="attendance__loader" /> : null;
 }
 
 function PaginationController() {
@@ -130,7 +112,7 @@ function PaginationController() {
 
     return totalPages > 1 ? (
         <Pagination
-            className="attendance__pagination"
+            className={styles.pagination}
             pageCount={totalPages}
             onPageChange={handlePageChange}
             renderOnZeroPageCount={() => null}
@@ -138,4 +120,30 @@ function PaginationController() {
             forcePage={page - 1}
         />
     ) : null;
+}
+
+function EmptyAlert() {
+    const [attendances, isLoading, error] = useUnit([
+        $attendances,
+        $isLoading,
+        $error,
+    ]);
+    if (!error && !isLoading && attendances.length < 1) {
+        return (
+            <Alert type={ALERT.INFO}>
+                На текущий момент нет ни одной записи.
+            </Alert>
+        );
+    }
+    return null;
+}
+
+function ErrorAlert() {
+    const error = useUnit($error);
+    return error ? <Alert type={ALERT.ERROR}>{error}</Alert> : null;
+}
+
+function Loading() {
+    const isLoading = useUnit($isLoading);
+    return isLoading ? <Loader className={styles.loader} /> : null;
 }

@@ -11,7 +11,6 @@ import Confirm from "../../../components/Comfirm";
 import { downloadFile } from "../../../helpers/downloadFile";
 import { ALERT } from "../../../constants/alertTypes";
 import Alert from "../../../components/Alert";
-import { useUserContext } from "../../../context/userContext";
 import Loader from "../../../components/Loader";
 
 import "./styles.scss";
@@ -31,7 +30,7 @@ const Materials: React.FC<Props> = ({ closeMaterialsEditing, lessonId, fileNames
     const [isFileLoading, setIsFileLoading] = useState<boolean[]>(new Array(fileNames.length).fill(false));
     const [error, setError] = useState<string | null>(null);
     const { addFile, deleteFile } = usePlansContext();
-    const { logout } = useUserContext();
+    // const { logout } = useUserContext();
 
     const { divisionId = "" } = useParams();
 
@@ -61,7 +60,7 @@ const Materials: React.FC<Props> = ({ closeMaterialsEditing, lessonId, fileNames
         } catch (error) {
             const err = error as any;
             if (err?.response?.status === 401) {
-                logout();
+                // logout();
             } else {
                 setError(err?.response?.data?.message ?? "Не удалось добавить файл");
             }
@@ -86,7 +85,7 @@ const Materials: React.FC<Props> = ({ closeMaterialsEditing, lessonId, fileNames
         } catch (error) {
             const err = error as any;
             if (err?.response?.status === 401) {
-                logout();
+                // logout();
             } else {
                 setError(err?.response?.data?.message ?? "Не удалось удалить файл");
             }
@@ -106,7 +105,7 @@ const Materials: React.FC<Props> = ({ closeMaterialsEditing, lessonId, fileNames
         } catch (error) {
             const err = error as any;
             if (err?.response?.status === 401) {
-                logout();
+                // logout();
             } else {
                 setError(err?.response?.data?.message ?? "Не удалось скачать файл");
             }

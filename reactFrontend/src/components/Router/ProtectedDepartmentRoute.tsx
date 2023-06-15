@@ -3,7 +3,7 @@ import { Outlet, Navigate, useParams, useLocation } from "react-router-dom";
 import { LOGIN_ROUTE, UNAUTHORIZED_ROUTE } from "../../constants/routesPathnames";
 import { ROLES } from "../../constants/roles";
 import { useUnit } from "effector-react";
-import { $isAuth, $roles } from "../../models/auth";
+import { $isAuth, $roles } from "../../shared/auth";
 
 const ProtectedDepartmentRoute: React.FC = () => {
     const location = useLocation();

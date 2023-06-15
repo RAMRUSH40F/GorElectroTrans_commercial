@@ -14,7 +14,6 @@ import ModalHeader from "../../ModalLayout/ModalHeader";
 import { ALERT } from "../../../../constants/alertTypes";
 import ModalContent from "../../ModalLayout/ModalContent";
 import Alert from "../../../Alert";
-import { useUserContext } from "../../../../context/userContext";
 
 import "./styles.scss";
 
@@ -31,7 +30,7 @@ const AddPlanModal: React.FC<Props> = ({ closeModal }) => {
 
     const [error, setError] = useState<string | null>(null);
     const { addPlan } = usePlansContext();
-    const { logout } = useUserContext();
+    // const { logout } = useUserContext();
 
     const handleSubmit = async (values: PlanFormValues) => {
         setError(null);
@@ -57,7 +56,7 @@ const AddPlanModal: React.FC<Props> = ({ closeModal }) => {
         } catch (error) {
             const err = error as any;
             if (err.response.status === 401) {
-                logout();
+                // logout();
             } else {
                 setError(err?.response?.data?.message ?? "Не удалось добавить запись");
             }

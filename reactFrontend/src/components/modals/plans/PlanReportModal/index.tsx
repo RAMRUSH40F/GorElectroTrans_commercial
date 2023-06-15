@@ -9,7 +9,6 @@ import { ALERT } from "../../../../constants/alertTypes";
 import { useParams } from "react-router-dom";
 import PlanService from "../../../../services/PlanService";
 import PlanReportForm from "../../../forms/PlanReportForm";
-import { useUserContext } from "../../../../context/userContext";
 import { downloadFile } from "../../../../helpers/downloadFile";
 import Loader from "../../../Loader";
 import { IQuarter } from "../../../../models/Quarter";
@@ -29,7 +28,7 @@ const PlanReportModal: React.FC<Props> = ({ closeModal }) => {
 
     const { divisionId = "" } = useParams();
 
-    const { logout } = useUserContext();
+    // const { logout } = useUserContext();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -53,7 +52,7 @@ const PlanReportModal: React.FC<Props> = ({ closeModal }) => {
             } catch (error) {
                 const err = error as any;
                 if (err.response.status === 401) {
-                    logout();
+                    // logout();
                 } else {
                     setQuartersError(err?.response?.data?.message ?? "Не удалось получить данные с сервера");
                 }
@@ -64,7 +63,7 @@ const PlanReportModal: React.FC<Props> = ({ closeModal }) => {
         fetchQuarters();
 
         return () => cancelToken.cancel();
-    }, [divisionId, logout]);
+    }, [divisionId]);
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>, quarter: string) => {
         event.preventDefault();
@@ -81,7 +80,7 @@ const PlanReportModal: React.FC<Props> = ({ closeModal }) => {
         } catch (error) {
             const err = error as any;
             if (err.response.status === 401) {
-                logout();
+                // logout();
             } else {
                 setError(err?.response?.data?.message ?? "Не удалось скачать отчет");
             }

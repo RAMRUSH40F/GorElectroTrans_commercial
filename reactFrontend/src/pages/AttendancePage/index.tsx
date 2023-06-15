@@ -1,24 +1,15 @@
 import React from "react";
 import { useParams, useSearchParams } from "react-router-dom";
-import Search from "../../components/Search";
-import SectionHeader from "../../components/SectionHeader";
-import { getDivisionRoute } from "../../helpers/getDivisionRoute";
+import Search from "components/Search";
+import SectionHeader from "components/SectionHeader";
+import { getDivisionRoute } from "helpers/getDivisionRoute";
 import Attendance from "./Attendance";
 import { useGate, useUnit } from "effector-react";
-import {
-    $isAddingModalActive,
-    $search,
-    attendanceGate,
-    addingModalClosed,
-    addingModalOpened,
-    searchChanged,
-} from "../../models/attendance";
-import { useDeboucedCallback } from "../../hooks/useDebouncedCallback";
-import ActionButton from "../../components/buttons/ActionButton";
-import useLockedBody from "../../hooks/useLockedBody";
-import AddAttendanceModal from "../../components/modals/attendance/AddAttendanceModal";
+import { $search, attendanceGate, searchChanged } from "./model";
+import { useDeboucedCallback } from "hooks/useDebouncedCallback";
+import NewAttendance from "./NewAttendance";
 
-import "./styles.scss";
+import styles from "./styles.module.scss";
 
 const AttendancePage: React.FC = () => {
     const { divisionId = "" } = useParams();
@@ -32,10 +23,13 @@ const AttendancePage: React.FC = () => {
     });
 
     return (
-        <div className="attendance-page">
-            <section className="attendance-page__info">
-                <SectionHeader title="Журнал посещаемости" subtitle={division?.name ?? "Подразделение"} />
-                <div className="attendance-page__wrapper">
+        <div className={styles.page}>
+            <section className={styles.section}>
+                <SectionHeader
+                    title="Журнал посещаемости"
+                    subtitle={division?.name ?? "Подразделение"}
+                />
+                <div className={styles.wrapper}>
                     <AttendanceSearch />
                     <NewAttendance />
                 </div>
@@ -66,18 +60,11 @@ function AttendanceSearch() {
         searchChanged(event.target.value);
     };
 
-    return <Search className="attendance-page__search" value={search} handleChange={handleChange} />;
-}
-
-function NewAttendance() {
-    const isModalActive = useUnit($isAddingModalActive);
-    useLockedBody(isModalActive);
     return (
-        <>
-            {isModalActive && <AddAttendanceModal closeModal={() => addingModalClosed()} />}
-            <ActionButton className="attendance-page__add-btn" colorType="info" onClick={() => addingModalOpened()}>
-                Добавить +
-            </ActionButton>
-        </>
+        <Search
+            className={styles.search}
+            value={search}
+            handleChange={handleChange}
+        />
     );
 }

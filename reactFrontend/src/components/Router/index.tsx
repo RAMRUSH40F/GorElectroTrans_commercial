@@ -11,7 +11,6 @@ import {
     MISSING_ROUTE,
     LOGIN_ROUTE,
 } from "../../constants/routesPathnames";
-import AttendanceContextProvider from "../../context/attendanceContext/AttendanceContextProvider";
 import DepartmentsContextProvider from "../../context/departmentsContext/DepartmentsContextProvider";
 import PlansContextProvider from "../../context/plansContext/PlansContextProvider";
 import EmployeesContextProvider from "../../context/employeesContext/EmployeesContextProvider";
@@ -36,8 +35,15 @@ const Router: React.FC = () => {
             <Route element={<MainLayout />}>
                 <Route path={LOGIN_ROUTE.PATH} element={<LoginPage />} />
 
-                <Route element={<RoleProtectedRoute allowedRoles={[ROLES.ADMIN]} />}>
-                    <Route path={DIVISIONS_ROUTE.PATH} element={<DivisionsPage />} />
+                <Route
+                    element={
+                        <RoleProtectedRoute allowedRoles={[ROLES.ADMIN]} />
+                    }
+                >
+                    <Route
+                        path={DIVISIONS_ROUTE.PATH}
+                        element={<DivisionsPage />}
+                    />
                 </Route>
 
                 <Route element={<ProtectedDepartmentRoute />}>
@@ -68,17 +74,16 @@ const Router: React.FC = () => {
                         />
                         <Route
                             path={ATTENDANCE_ROUTE.PATH}
-                            element={
-                                <AttendanceContextProvider>
-                                    <AttendancePage />
-                                </AttendanceContextProvider>
-                            }
+                            element={<AttendancePage />}
                         />
                     </Route>
                 </Route>
             </Route>
             <Route path={ROOT_ROUTE.PATH} element={<HomeRoute />} />
-            <Route path={UNAUTHORIZED_ROUTE.PATH} element={<UnauthorizedPage />} />
+            <Route
+                path={UNAUTHORIZED_ROUTE.PATH}
+                element={<UnauthorizedPage />}
+            />
             <Route path={MISSING_ROUTE.PATH} element={<MissingPage />} />
         </Routes>
     );

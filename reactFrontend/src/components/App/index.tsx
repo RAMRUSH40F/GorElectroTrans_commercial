@@ -3,17 +3,17 @@ import Router from "../Router";
 import Loader from "../Loader";
 import Alert from "../Alert";
 import { ALERT } from "../../constants/alertTypes";
-import { useUnit } from "effector-react";
-import { $error, $isLoading, AuthGate } from "../../models/auth";
+import { useGate, useUnit } from "effector-react";
+import { $error, $isLoading, AuthGate } from "../../shared/auth";
 
 import styles from "./styles.module.scss";
 
 const App: React.FC = () => {
     const [isLoading, error] = useUnit([$isLoading, $error]);
+    useGate(AuthGate);
 
     return (
         <>
-            <AuthGate />
             {isLoading || error ? (
                 <div className={styles.page}>
                     {isLoading && <Loader />}

@@ -4,7 +4,7 @@ import logoSrc from "../../../../assets/img/logo.svg";
 import { LOGIN_ROUTE } from "../../../../constants/routesPathnames";
 import Container from "../../../Container";
 import ActionButton from "../../../buttons/ActionButton";
-import { logoutFx } from "../../../../models/auth";
+import { logoutFx } from "../../../../shared/auth";
 
 import "./styles.scss";
 

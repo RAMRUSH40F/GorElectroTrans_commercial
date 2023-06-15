@@ -18,7 +18,6 @@ import { useParams, useSearchParams } from "react-router-dom";
 import Loader from "../../../components/Loader";
 import { PLAN_STATUS_VALUE } from "../../../constants/planStatus";
 import cn from "classnames";
-import { useUserContext } from "../../../context/userContext";
 
 import "./styles.scss";
 
@@ -31,7 +30,7 @@ const Plan: React.FC = () => {
     const { divisionId = "" } = useParams();
     const [searchParams, setSearchParams] = useSearchParams();
 
-    const { logout } = useUserContext();
+    // const { logout } = useUserContext();
     const { plans, setPlans } = usePlansContext();
     const [isLoading, setIsLoading] = useState(true);
     const [isFetching, setIsFetching] = useState(true);
@@ -75,7 +74,7 @@ const Plan: React.FC = () => {
                 setIsFetching(false);
                 setIsLoading(false);
                 if (err?.response?.status === 401) {
-                    logout();
+                    // logout();
                 } else {
                     setError(err?.response?.data?.message ?? "Не удалось получить данные с сервера");
                 }
@@ -86,7 +85,7 @@ const Plan: React.FC = () => {
 
         return () => cancelToken.cancel();
         // eslint-disable-next-line
-    }, [page, setPlans, divisionId, searchQuery, logout]);
+    }, [page, setPlans, divisionId, searchQuery]);
 
     const handleOpenEditing = (event: MouseEvent<HTMLTableRowElement>, plan: IPlan) => {
         event.stopPropagation();

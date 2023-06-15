@@ -3,7 +3,7 @@ import { ROLES } from "../../constants/roles";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { LOGIN_ROUTE, UNAUTHORIZED_ROUTE } from "../../constants/routesPathnames";
 import { useUnit } from "effector-react";
-import { $isAuth, $roles } from "../../models/auth";
+import { $isAuth, $roles } from "../../shared/auth";
 
 type Props = {
     allowedRoles: ROLES[];

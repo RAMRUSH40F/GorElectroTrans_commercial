@@ -14,7 +14,6 @@ import { useDepartmentsContext } from "../../../context/departmentsContext";
 import useLockedBody from "../../../hooks/useLockedBody";
 import { IDepartment } from "../../../models/Department";
 import DepartmentService from "../../../services/DepartmentService";
-import { useUserContext } from "../../../context/userContext";
 
 import "./styles.scss";
 
@@ -23,7 +22,7 @@ const Departments: React.FC = () => {
     useLockedBody(!!editingDepartment);
 
     const { divisionId = "" } = useParams();
-    const { logout } = useUserContext();
+    // const { logout } = useUserContext();
 
     const { departments, setDepartments } = useDepartmentsContext();
     const [isLoading, setIsLoading] = useState(true);
@@ -42,7 +41,7 @@ const Departments: React.FC = () => {
             } catch (error) {
                 const err = error as any;
                 if (err?.response?.status === 401) {
-                    logout();
+                    // logout();
                 } else {
                     setError(err?.response?.data?.message ?? "Не удалось получить данные с сервера");
                 }
@@ -54,7 +53,7 @@ const Departments: React.FC = () => {
         fetchDepartments();
 
         return () => cancelToken.cancel();
-    }, [divisionId, setDepartments, logout]);
+    }, [divisionId, setDepartments]);
 
     return (
         <div className="departments">

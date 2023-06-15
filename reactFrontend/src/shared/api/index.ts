@@ -20,10 +20,21 @@ export const authApi = axios.create({
 });
 
 authApi.interceptors.request.use((config) => {
-    config.headers.authorization = localStorage.getItem("accessToken");
+    config.headers.authorization =
+        localStorage.getItem("accessToken") ?? "accesstoken123";
     return config;
 });
 
-export const requestFx = createEffect<AxiosRequestConfig, any>((config) => api(config));
+export const requestFx = createEffect<AxiosRequestConfig, any>((config) =>
+    api(config)
+);
 
-export const authRequestFx = createEffect<AxiosRequestConfig, any, AuthError>((config) => authApi(config));
+export const authRequestFx = createEffect<AxiosRequestConfig, any, AuthError>(
+    (config) =>
+        api({
+            headers: {
+                authorization: localStorage.getItem("accessToken"),
+            },
+            ...config,
+        })
+);
