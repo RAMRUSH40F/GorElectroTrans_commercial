@@ -1,6 +1,7 @@
 package project.model;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.*;
@@ -61,6 +62,7 @@ public class Lesson {
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "lesson_id", insertable = false, updatable = false)
     @Fetch(FetchMode.JOIN)
+    @JsonIgnore
     private Set<LessonContentNoFileProjection> lessonContentProjection;
 
     @JsonGetter("lessonContent")

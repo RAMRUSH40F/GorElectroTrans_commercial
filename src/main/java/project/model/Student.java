@@ -1,5 +1,6 @@
 package project.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.hibernate.annotations.Fetch;
@@ -32,6 +33,7 @@ public class Student {
     @ManyToOne
     @JoinColumn(insertable = false, updatable = false)
     @Fetch(FetchMode.JOIN)
+    @JsonIgnore
     private Subdepartment subdepartment;
 
     @Transient

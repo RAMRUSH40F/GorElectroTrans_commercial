@@ -1,6 +1,7 @@
 package project.model;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.hibernate.annotations.Fetch;
@@ -37,11 +38,13 @@ public class Attendance {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "lesson_id", insertable = false, updatable = false)
     @Fetch(FetchMode.JOIN)
+    @JsonIgnore
     private Lesson lesson;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "student_id", insertable = false, updatable = false)
     @Fetch(FetchMode.JOIN)
+    @JsonIgnore
     private Student student;
 
     @JsonGetter("name")
