@@ -9,34 +9,49 @@ import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.AbstractMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import static project.dataSource.DynamicDataSourceContextHolder.setCurrentDataSource;
 
 
 @Service("ReportServiceBean")
 @RequiredArgsConstructor
 public class ReportService {
     private final JdbcTemplate jdbcTemplate;
-/*
-Метод чтения файла
-*/
-public HSSFWorkbook readWorkbook(String filename) {
-    try(InputStream inputStream = getClass().getResourceAsStream(filename)) {
-        return new HSSFWorkbook(new POIFSFileSystem(inputStream));
-    } catch (IOException e) {
-        throw new RuntimeException("Файл шаблона не был загружен в корневую папку проекта или " +
-                "произошла другая ошибка связанная с чтением шаблонной таблицы", e);
+
+    public @NotNull HSSFWorkbook createReport(int quarter, int year, String fileName) {
+        HSSFWorkbook workbook = readWorkbook(fileName);
+        formLessonReport(workbook, fileName, quarter, year);
+        formWorkerReport(workbook, fileName, quarter, year);
+        formTeacherReport(workbook, fileName, quarter, year);
+        return workbook;
     }
-}
+
     /*
-    * Метод записи файла
+    Метод чтения файла
     */
+    public HSSFWorkbook readWorkbook(String filename) {
+        try (InputStream inputStream = getClass().getResourceAsStream(filename)) {
+            return new HSSFWorkbook(new POIFSFileSystem(inputStream));
+        } catch (IOException e) {
+            throw new RuntimeException("Файл шаблона не был загружен в корневую папку проекта или " +
+                    "произошла другая ошибка связанная с чтением шаблонной таблицы", e);
+        }
+    }
+
+
+    /*
+     * Метод записи файла
+     */
     public void writeWorkbook(HSSFWorkbook workbook, String fileName) {
         try {
             FileOutputStream fileOut = new FileOutputStream(fileName);
@@ -47,17 +62,18 @@ public HSSFWorkbook readWorkbook(String filename) {
                     "Произошла другая ошибка связанная с записью в таблицу", e);
         }
     }
+
     /*
      * Метод формирования отчетов
      */
-    public void formLessonReport(HSSFWorkbook workbook, String fileName, int quarter,int year) {
+    public void formLessonReport(HSSFWorkbook workbook, String fileName, int quarter, int year) {
         final HSSFSheet sheet = workbook.getSheet("Лист1");
         final HSSFRow row1 = sheet.getRow(2);
         final HSSFRow row2 = sheet.getRow(3);
         final HSSFRow row3 = sheet.getRow(4);
         final HSSFRow row4 = sheet.getRow(5);
         final int lastCell = 31;
-        final Map.Entry<Integer, Integer> yearMonthPair = calculateDate(quarter,year);
+        final Map.Entry<Integer, Integer> yearMonthPair = calculateDate(quarter, year);
 
         formLesson(row1, lastCell, yearMonthPair);
         formHeldLesson(row2, lastCell, yearMonthPair);
@@ -70,6 +86,7 @@ public HSSFWorkbook readWorkbook(String filename) {
         setResultingColumnValues(row4);
         writeWorkbook(workbook, fileName);
     }
+
     /*
      * Сбор данных о всех уроках
      */
@@ -77,10 +94,10 @@ public HSSFWorkbook readWorkbook(String filename) {
         HSSFCell cell;
         CellStyle style = applyClassicStyle(row1.getSheet().getWorkbook());
         for (int column = 1; column < lastCell; column += 2) {
+            setCurrentDataSource("DEP_" + (column / 2 + 1));
             cell = row1.getCell(column);
             cell.setCellStyle(style);
-            cell.setCellValue(jdbcTemplate.query("SELECT COUNT(1) FROM DEP_" + (column / 2 + 1)
-                            + ".lesson WHERE `date` BETWEEN '"
+            cell.setCellValue(jdbcTemplate.query("SELECT COUNT(1) FROM lesson WHERE `date` BETWEEN '"
                             + yearMonthPair.getKey() + "-"
                             + yearMonthPair.getValue()
                             + "-01' AND '"
@@ -89,6 +106,7 @@ public HSSFWorkbook readWorkbook(String filename) {
                     (rs, rowNum) -> rs.getInt("COUNT(1)")).get(0));
         }
     }
+
     /*
      * Сбор данных о проведенных уроках
      */
@@ -97,11 +115,11 @@ public HSSFWorkbook readWorkbook(String filename) {
         CellStyle style = applyClassicStyle(row.getSheet().getWorkbook());
 
         for (int column = 1; column < lastCell - 1; column += 2) {
+            setCurrentDataSource("DEP_" + (column / 2 + 1));
             cell = row.getCell(column);
             cell.setCellStyle(style);
-            cell.setCellValue(jdbcTemplate.query("SELECT COUNT(1) FROM DEP_"
-                            + (column / 2 + 1)
-                            + ".lesson WHERE `date` BETWEEN '"
+            cell.setCellValue(jdbcTemplate.query("SELECT COUNT(1) FROM "
+                            + "lesson WHERE `date` BETWEEN '"
                             + yearMonthPair.getKey() + "-0"
                             + yearMonthPair.getValue()
                             + "-01' AND '"
@@ -111,6 +129,7 @@ public HSSFWorkbook readWorkbook(String filename) {
                     (rs, rowNum) -> rs.getInt("COUNT(1)")).get(0));
         }
     }
+
     /*
      * Подсчет общего количества записей
      */
@@ -135,18 +154,18 @@ public HSSFWorkbook readWorkbook(String filename) {
     /*
      * Формирования данных о всех работниках
      */
-    public void formWorkerReport(HSSFWorkbook workbook, String filename,int quarter,int year) {
+    public void formWorkerReport(HSSFWorkbook workbook, String filename, int quarter, int year) {
         final HSSFSheet sheet = workbook.getSheet("Лист1");
         final HSSFRow row = sheet.getRow(6);
         final Map.Entry<Integer, Integer> yearMonthPair = calculateDate(quarter, year);
         int lastCell = 31;
         formAllWorker(row, yearMonthPair, lastCell);
-        formSuccessWorker(sheet.getRow(7),yearMonthPair,lastCell);
-        formWorkerStatsByProfession(WorkerProfessions.VODITELYTR.getProfession(), sheet.getRow(8),yearMonthPair);
-        formWorkerStatsByProfession(WorkerProfessions.VODITELYT.getProfession(), sheet.getRow(9),yearMonthPair);
-        formWorkerStatsByProfession(WorkerProfessions.SLESARY.getProfession(), sheet.getRow(10),yearMonthPair);
-        formWorkerStatsByProfession(WorkerProfessions.DISPETCHERS.getProfession(), sheet.getRow(11),yearMonthPair);
-        formWorkerStatsByProfession(WorkerProfessions.SPECIALISTS.getProfession(), sheet.getRow(12),yearMonthPair);
+        formSuccessWorker(sheet.getRow(7), yearMonthPair, lastCell);
+        formWorkerStatsByProfession(WorkerProfessions.VODITELYTR.getProfession(), sheet.getRow(8), yearMonthPair);
+        formWorkerStatsByProfession(WorkerProfessions.VODITELYT.getProfession(), sheet.getRow(9), yearMonthPair);
+        formWorkerStatsByProfession(WorkerProfessions.SLESARY.getProfession(), sheet.getRow(10), yearMonthPair);
+        formWorkerStatsByProfession(WorkerProfessions.DISPETCHERS.getProfession(), sheet.getRow(11), yearMonthPair);
+        formWorkerStatsByProfession(WorkerProfessions.SPECIALISTS.getProfession(), sheet.getRow(12), yearMonthPair);
 
 
         formStatsForOthersCategory(sheet.getRow(13), 7, 12, 1, row.getLastCellNum(), sheet);
@@ -158,11 +177,11 @@ public HSSFWorkbook readWorkbook(String filename) {
         HSSFCell cell;
         CellStyle style = applyClassicStyle(row.getSheet().getWorkbook());
         for (int column = 1; column < lastCell - 1; column += 2) {
+            setCurrentDataSource("DEP_" + (column / 2 + 1));
             cell = row.getCell(column);
             cell.setCellStyle(style);
-            cell.setCellValue(jdbcTemplate.query("SELECT COUNT(1) FROM DEP_"
-                            + (column / 2 + 1)
-                            + ".Attendance_view WHERE `date` BETWEEN '"
+            cell.setCellValue(jdbcTemplate.query("SELECT COUNT(1) FROM "
+                            + "Attendance_view WHERE `date` BETWEEN '"
                             + yearMonthPair.getKey() + "-0"
                             + yearMonthPair.getValue()
                             + "-01' AND '"
@@ -172,15 +191,16 @@ public HSSFWorkbook readWorkbook(String filename) {
                     (rs, rowNum) -> rs.getInt("COUNT(1)")).get(0));
         }
     }
+
     private void formSuccessWorker(HSSFRow row, Map.Entry<Integer, Integer> yearMonthPair, int lastCell) {
         HSSFCell cell;
         CellStyle style = applyClassicStyle(row.getSheet().getWorkbook());
         for (int column = 1; column < lastCell - 1; column += 2) {
+            setCurrentDataSource("DEP_" + (column / 2 + 1));
             cell = row.getCell(column);
             cell.setCellStyle(style);
-            cell.setCellValue(jdbcTemplate.query("SELECT COUNT(1) FROM DEP_"
-                            + (column / 2 + 1)
-                            + ".Attendance_view WHERE `date` BETWEEN '"
+            cell.setCellValue(jdbcTemplate.query("SELECT COUNT(1) FROM "
+                            + "Attendance_view WHERE `date` BETWEEN '"
                             + yearMonthPair.getKey() + "-0"
                             + yearMonthPair.getValue()
                             + "-01' AND '"
@@ -194,7 +214,7 @@ public HSSFWorkbook readWorkbook(String filename) {
     /*
      * Формирования данных о работниках по специальности
      */
-    private void formWorkerStatsByProfession(String profession, HSSFRow row,Map.Entry<Integer, Integer> yearMonthPair) {
+    private void formWorkerStatsByProfession(String profession, HSSFRow row, Map.Entry<Integer, Integer> yearMonthPair) {
         if (profession == null || row == null) {
             return;
         }
@@ -202,21 +222,22 @@ public HSSFWorkbook readWorkbook(String filename) {
         HSSFCell cell;
         CellStyle style = applyClassicStyle(row.getSheet().getWorkbook());
         for (int column = 1; column < lastCell; column += 2) {
+            setCurrentDataSource("DEP_" + (column / 2 + 1));
             cell = row.getCell(column);
             cell.setCellStyle(style);
-            cell.setCellValue(jdbcTemplate.query("SELECT COUNT(1) FROM DEP_"
-                    + (column / 2 + 1)
-                    + ".Attendance_view WHERE `date` BETWEEN '"
-                    + yearMonthPair.getKey() + "-0"
-                    + yearMonthPair.getValue()
-                    + "-01' AND '"
-                    + yearMonthPair.getKey() + "-0"
-                    + (yearMonthPair.getValue() + 3)
-                    + "-01' and success=1 and subdepartment LIKE '"+profession+"'",
+            cell.setCellValue(jdbcTemplate.query("SELECT COUNT(1) FROM "
+                            + "Attendance_view WHERE `date` BETWEEN '"
+                            + yearMonthPair.getKey() + "-0"
+                            + yearMonthPair.getValue()
+                            + "-01' AND '"
+                            + yearMonthPair.getKey() + "-0"
+                            + (yearMonthPair.getValue() + 3)
+                            + "-01' and success=1 and subdepartment LIKE '" + profession + "'",
                     (rs, rowNum) -> rs.getInt("COUNT(1)")).get(0));
         }
         setResultingColumnValues(row);
     }
+
     /*
      * Формирования данных об учителях
      */
@@ -240,7 +261,7 @@ public HSSFWorkbook readWorkbook(String filename) {
     /*
      * Формирования данных об учителях определенной должности
      */
-    private void formTeacherStatsByProfession(String profession, HSSFRow row,Map.Entry<Integer, Integer> yearMonthPair) {
+    private void formTeacherStatsByProfession(String profession, HSSFRow row, Map.Entry<Integer, Integer> yearMonthPair) {
         if (profession == null || row == null) {
             return;
         }
@@ -248,10 +269,11 @@ public HSSFWorkbook readWorkbook(String filename) {
         HSSFCell cell;
         CellStyle style = applyClassicStyle(row.getSheet().getWorkbook());
         for (int column = 1; column < lastCell; column += 2) {
+            setCurrentDataSource("DEP_" + (column / 2 + 1));
             cell = row.getCell(column);
             cell.setCellStyle(style);
-            cell.setCellValue(jdbcTemplate.query("SELECT COUNT(1) FROM DEP_" + (column / 2 + 1)
-                            + ".lesson WHERE `date` BETWEEN '"
+            cell.setCellValue(jdbcTemplate.query("SELECT COUNT(1) FROM "
+                            + "lesson WHERE `date` BETWEEN '"
                             + yearMonthPair.getKey() + "-"
                             + yearMonthPair.getValue()
                             + "-01' AND '"
@@ -263,6 +285,7 @@ public HSSFWorkbook readWorkbook(String filename) {
         }
         setResultingColumnValues(row);
     }
+
     /*
      * Формирования данных о специальностях, которые не попали в перечень в шаблоне
      */
@@ -285,16 +308,18 @@ public HSSFWorkbook readWorkbook(String filename) {
         }
         setResultingColumnValues(destination);
     }
+
     /*
      * Расчет интервала
      */
-    private Map.Entry<Integer, Integer> calculateDate(int quarter,int year) {
+    private Map.Entry<Integer, Integer> calculateDate(int quarter, int year) {
         int month;
-            month = (quarter - 1) * 3 + 1;
+        month = (quarter - 1) * 3 + 1;
         return new AbstractMap.SimpleImmutableEntry<>(year, month);
     }
+
     /*
-     * формирование стиля
+     * Формирование стиля
      */
     private CellStyle applyClassicStyle(HSSFWorkbook workbook) {
         CellStyle style = workbook.createCellStyle();
