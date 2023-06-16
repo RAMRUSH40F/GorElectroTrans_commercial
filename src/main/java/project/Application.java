@@ -12,7 +12,7 @@ import project.dataSource.DynamicDataSourceContextHolder;
 public class Application {
 
     public static void main(String[] args) {
-        DynamicDataSourceContextHolder.setCurrentDataSource("DEP_1");
+        DynamicDataSourceContextHolder.setCurrentDataSource("USERS");
         ConfigurableApplicationContext context = SpringApplication.run(Application.class, args);
     }
 
