@@ -41,18 +41,9 @@ public class StudentServiceImpl {
         return result;
 
     }
-
-    public @NonNull Page<Student> findAllWithPagination(List<List<String>> paramDirectionSortPair, int departmentId, @NonNull Integer page, @NonNull Integer size) {
+    public @NonNull Page<Student> findAllWithPagination(Pageable pageable,int departmentId) {
         setCurrentDataSource("DEP_" + departmentId);
-        List<Sort.Order> orders = new ArrayList<>();
-
-        for (List<String> pair : paramDirectionSortPair) {
-            orders.add(new Sort.Order(Sort.Direction.fromString(pair.get(1)), pair.get(0)));
-        }
-
-        Pageable paginatedRequest = PageRequest.of(page - 1, size, Sort.by(orders));
-        Page<Student> studentPage = repository.findAll(paginatedRequest);
-
+        Page<Student> studentPage = repository.findAll(pageable);
         for (Student s : studentPage.getContent()) {
             s.setSubdepartmentName(s.getSubdepartment().getName());
         }

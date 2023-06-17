@@ -2,6 +2,7 @@ package project.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,17 +23,12 @@ public class StudentController {
 
     @GetMapping("/dep_{N}/students/data")
     public ResponseEntity<List<Student>> findStudents(@PathVariable("N") String depId,
-                                                      @RequestParam(required = false, defaultValue = "studentId,asc") List<String> firstParamDirectorySortPair,
-                                                      @RequestParam(required = false) Optional<List<String>> secondParamDirectorySortPair,
-                                                      @RequestParam(value = "page", defaultValue = "1") String page,
-                                                      @RequestParam(value = "size", defaultValue = "12") String pageSize,
+                                                       Pageable pageable,
+                                                      /*@RequestParam(value = "key",required = false) String key,*/
                                                       @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
-        int departmentId = validateDepartmentId(depId);
-        validatePaginationParams(page, pageSize);
-        List<List<String>> paramDirectoryPairs = new ArrayList<>();
-        paramDirectoryPairs.add(firstParamDirectorySortPair);
-        secondParamDirectorySortPair.ifPresent(paramDirectoryPairs::add);
-        Page<Student> studentPage = studentService.findAllWithPagination(paramDirectoryPairs, departmentId, Integer.parseInt(page), Integer.parseInt(pageSize));
+       int departmentId = validateDepartmentId(depId);
+        Page<Student> studentPage = studentService.findAllWithPagination(pageable,departmentId);
+
         HttpHeaders headers = new HttpHeaders();
         headers.add("students_count", String.valueOf(studentPage.getTotalElements()));
         return ResponseEntity
