@@ -6,6 +6,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.model.Student;
+import project.model.StudentSortModel;
 import project.service.StudentServiceImpl;
 
 import java.util.List;
@@ -20,12 +21,13 @@ public class StudentController {
 
     @GetMapping("/dep_{N}/students/data")
     public ResponseEntity<List<Student>> findStudents(@PathVariable("N") String depId,
+                                                      @RequestBody StudentSortModel[] studentSortModel,
                                                       @RequestParam(value = "page") String page,
-                                                      @RequestParam(value = "size") String pageSize,
-                                                      @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
+                                                      @RequestParam(value = "size") String pageSize
+                                                      /*@RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken*/) {
         int departmentId = validateDepartmentId(depId);
         validatePaginationParams(page, pageSize);
-        Page<Student> studentPage = studentService.findAllWithPagination(departmentId, Integer.parseInt(page), Integer.parseInt(pageSize));
+        Page<Student> studentPage = studentService.findAllWithPagination(studentSortModel,departmentId, Integer.parseInt(page), Integer.parseInt(pageSize));
         HttpHeaders headers = new HttpHeaders();
         headers.add("students_count", String.valueOf(studentPage.getTotalElements()));
         return ResponseEntity
