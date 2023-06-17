@@ -11,6 +11,7 @@ import project.model.Subdepartment;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @SpringBootTest
 class SubdepartmentServiceAndRepositoryImplTest {
@@ -42,7 +43,7 @@ class SubdepartmentServiceAndRepositoryImplTest {
         Assertions.assertAll(
                 () -> assertEquals(("DEP_" + departmentId).intern(), DynamicDataSourceContextHolder.getCurrentDataSource()),
 //                () -> assertDoesNotThrow(() -> service.deleteById(departmentId, notExistingId)),
-                () -> assertEquals(false, result)
+                () -> assertFalse(result)
         );
     }
 
@@ -75,7 +76,7 @@ class SubdepartmentServiceAndRepositoryImplTest {
         subdepartment.setName(newName);
         service.updateName(departmentId, subdepartment);
 
-        Subdepartment result = service.findById(departmentId, subdepartment.getId());
+        Subdepartment result = service.findById(departmentId, subdepartment.getId()).get();
 
         Assertions.assertAll(
                 () -> assertEquals(new Subdepartment(subdepartment.getId(), subdepartment.getName()),

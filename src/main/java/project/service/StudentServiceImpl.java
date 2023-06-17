@@ -28,10 +28,8 @@ public class StudentServiceImpl {
         setCurrentDataSource("DEP_" + departmentId);
         Short newSubDepartmentId = subdepartmentService
                 .findByName(departmentId, student.getSubdepartmentName())
+                .orElseThrow(() -> new InvalidSubdepartmentException(student.getSubdepartmentName()))
                 .getId();
-        if (newSubDepartmentId == null) {
-            throw new InvalidSubdepartmentException(student.getSubdepartmentName());
-        }
         if (repository.existsById(student.getStudentId())) {
             throw new IllegalArgumentException("Рабочий с таким номером уже есть в базе.");
         }
@@ -64,10 +62,8 @@ public class StudentServiceImpl {
         setCurrentDataSource("DEP_" + departmentId);
         Short newSubDepartmentId = subdepartmentService
                 .findByName(departmentId, student.getSubdepartmentName())
+                .orElseThrow(() -> new InvalidSubdepartmentException(student.getSubdepartmentName()))
                 .getId();
-        if (newSubDepartmentId == null) {
-            throw new InvalidSubdepartmentException(student.getSubdepartmentName());
-        }
         Student result = repository.save(createStudent(student, newSubDepartmentId));
         result.setSubdepartmentName(result.getSubdepartmentName());
         return result;

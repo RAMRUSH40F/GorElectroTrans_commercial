@@ -1,15 +1,15 @@
 package project.service;
 
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import project.model.Subdepartment;
 import project.repository.SubdepartmentJpaRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static project.dataSource.DynamicDataSourceContextHolder.setCurrentDataSource;
 
@@ -50,15 +50,15 @@ public class SubdepartmentServiceImpl {
         return repository.save(subdepartment);
     }
 
-    public @Nullable Subdepartment findById(int departmentId, short SubdepartmentId) {
+    public @NonNull Optional<Subdepartment> findById(int departmentId, short SubdepartmentId) {
         setCurrentDataSource("DEP_" + departmentId);
-        return repository.findById(SubdepartmentId).orElse(null);
+        return repository.findById(SubdepartmentId);
 
     }
 
-    public @Nullable Subdepartment findByName(int departmentId, String subdepartmentName) {
+    public @NonNull Optional<Subdepartment> findByName(int departmentId, String subdepartmentName) {
         setCurrentDataSource("DEP_" + departmentId);
-        return repository.findByName(subdepartmentName).orElse(null);
+        return repository.findByName(subdepartmentName);
     }
 
 
