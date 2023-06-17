@@ -1,11 +1,11 @@
 import { ATTENDANCE_RESULT } from "../constants/attendanceResult";
 
-export interface IAttendanceCredentials {
+export interface AttendanceId {
     lessonId: number;
     studentId: string;
 }
 
-export interface IAttendance extends IAttendanceCredentials {
+export interface IAttendance extends AttendanceId {
     date: string;
     duration: number;
     name: string;
@@ -15,4 +15,4 @@ export interface IAttendance extends IAttendanceCredentials {
     topic: string;
 }
 
-export type TAttendanceDto = Pick<IAttendance, "lessonId" | "studentId" | "success">;
+export type AttendanceDto = Pick<IAttendance, "lessonId" | "studentId" | "success">;

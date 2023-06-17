@@ -9,7 +9,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { $error, errorReset } from "./model";
 import { useUnit } from "effector-react";
 import { loginFx } from "shared/auth";
-import { ICredentials } from "shared/api/userApi";
+import { ICredentials } from "shared/api/userApi/login";
 
 import "./styles.scss";
 
@@ -39,7 +39,6 @@ const LoginPage: React.FC = () => {
                 }
             }
         } catch (error) {}
-
     };
 
     return (

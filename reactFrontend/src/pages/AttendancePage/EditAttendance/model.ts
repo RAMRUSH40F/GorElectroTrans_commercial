@@ -1,50 +1,68 @@
-import { createEvent, createStore, sample } from "effector";
+import { createDomain, sample } from "effector";
 import { IAttendance } from "models/Attendance";
-import { removeAttendanceFx, updateAttendanceFx } from "../model";
+import {
+    attendanceGate,
+    removeAttendanceFx,
+    updateAttendanceFx,
+} from "../model";
 import { NOTICE, showNoticeFx } from "helpers/notice";
 
-export const errorReset = createEvent();
+const domain = createDomain();
 
-export const modalOpened = createEvent<IAttendance>();
-export const modalClosed = createEvent();
+export const errorReset = domain.createEvent();
 
-export const confirmingClosed = createEvent();
-export const confirmingOpened = createEvent();
-export const movedToConfirm = createEvent();
-export const confirmButtonClicked = createEvent();
+export const modalOpened = domain.createEvent<IAttendance>();
+export const modalClosed = domain.createEvent();
 
-export const $error = createStore<string | null>(null);
-export const $isDisabled = createStore<boolean>(false);
+export const confirmingClosed = domain.createEvent();
+export const confirmingOpened = domain.createEvent();
+export const movedToConfirm = domain.createEvent();
+export const confirmButtonClicked = domain.createEvent();
 
-export const $isModalActive = createStore<boolean>(false);
-export const $editingAttendance = createStore<IAttendance | null>(null);
+export const $error = domain.createStore<string | null>(null);
+export const $isDisabled = domain.createStore<boolean>(false);
 
-export const $isConfirming = createStore<boolean>(false);
+export const $isModalActive = domain.createStore<boolean>(false);
+export const $editingAttendance = domain.createStore<IAttendance | null>(null);
 
-// Setting an attendance for editing
+export const $isConfirming = domain.createStore<boolean>(false);
+
+// Set an attendance for editing
 sample({
     clock: modalOpened,
     target: $editingAttendance,
 });
 
-// Move to confirm modal window when delete button is clicked
+// Move to confirm modal window when delete button was clicked
 sample({
     clock: movedToConfirm,
     target: [errorReset, confirmingOpened],
 });
 
+// Delete attendance when confirm button was clicked
 sample({
     clock: confirmButtonClicked,
     source: $editingAttendance,
     filter: (attendance) => attendance !== null,
     fn: (attendance) => ({
-        lessonId: attendance?.lessonId || 1,
-        studentId: attendance?.studentId || "",
+        data: {
+            lessonId: attendance?.lessonId || 1,
+            studentId: attendance?.studentId || "",
+        },
+        controller: new AbortController(),
     }),
     target: removeAttendanceFx,
 });
 
-// Show notice and close modal window when attendance successfully updated
+// Cancel delete request when modal was closed
+sample({
+    clock: attendanceGate.close,
+    source: removeAttendanceFx,
+}).watch(({ controller }) => {
+    controller.abort();
+});
+
+// Show notice and close modal window when attendance was successfully updated
 sample({
     clock: updateAttendanceFx.done,
     fn: (_) => ({
@@ -54,17 +72,30 @@ sample({
     target: [showNoticeFx, modalClosed],
 });
 
-// show notice and close modal window when attendance successfully deleted
+// Cancel update request when modal was closed
+sample({
+    clock: attendanceGate.close,
+    source: updateAttendanceFx,
+}).watch(({ controller }) => {
+    controller.abort();
+});
+
+// show notice and close modal window when attendance was successfully deleted
 sample({
     clock: removeAttendanceFx.doneData,
     fn: (_) => ({ type: NOTICE.SUCCESS, message: "Запись успешно удалена" }),
     target: [showNoticeFx, modalClosed],
 });
 
+// Reset all stores when component unmountes
+domain.onCreateStore(($store) => {
+    $store.reset(attendanceGate.close, modalClosed, modalOpened);
+});
+
 $error
     .on(
         [updateAttendanceFx.failData, removeAttendanceFx.failData],
-        (_, error) => error.message
+        (_, error) => (error.isCanceled ? null : error.message)
     )
     .reset(errorReset, updateAttendanceFx, removeAttendanceFx);
 
