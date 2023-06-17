@@ -9,9 +9,9 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import project.exceptions.InvalidSubdepartmentException;
 import project.model.Student;
-import project.model.StudentSortModel;
 import project.repository.StudentJpaRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static project.dataSource.DynamicDataSourceContextHolder.setCurrentDataSource;
@@ -42,11 +42,16 @@ public class StudentServiceImpl {
 
     }
 
-    public @NonNull Page<Student> findAllWithPagination(StudentSortModel[] studentsSortModel, int departmentId, @NonNull Integer page, @NonNull Integer size) {
+    public @NonNull Page<Student> findAllWithPagination(List<List<String>> paramDirectionSortPair, int departmentId, @NonNull Integer page, @NonNull Integer size) {
         setCurrentDataSource("DEP_" + departmentId);
-        Pageable paginatedRequest = PageRequest.of(page - 1, size, Sort.by("name").descending());
-        Sort sort=Sort.by(studentsSortModel[0].getSortDirection(),studentsSortModel[0].getSortParam());
-        Page<Student> studentPage = repository.findAll(sort,paginatedRequest);
+        List<Sort.Order> orders = new ArrayList<>();
+
+        for (List<String> pair : paramDirectionSortPair) {
+            orders.add(new Sort.Order(Sort.Direction.fromString(pair.get(1)), pair.get(0)));
+        }
+
+        Pageable paginatedRequest = PageRequest.of(page - 1, size, Sort.by(orders));
+        Page<Student> studentPage = repository.findAll(paginatedRequest);
 
         for (Student s : studentPage.getContent()) {
             s.setSubdepartmentName(s.getSubdepartment().getName());

@@ -10,5 +10,5 @@ import project.model.Student;
 
 @Repository
 public interface StudentJpaRepository extends PagingAndSortingRepository<Student, String> {
-Page<Student> findAll(Sort sort, Pageable pageable);
+    //Page<Student> findAll(Sort sort, Pageable pageable);
 }
