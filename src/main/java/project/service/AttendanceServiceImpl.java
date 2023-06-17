@@ -39,6 +39,19 @@ public class AttendanceServiceImpl {
         }
     }
 
+    public @NonNull Attendance updateEntity(int departmentId, Attendance attendance) {
+        setCurrentDataSource("DEP_" + departmentId);
+        boundLessonAndStudentToAttendance(attendance);
+        return repository.save(attendance);
+    }
+
+    /**
+     * В Spring Jpa пока не нашли способа на .save() метод
+     * получать entity сразу с Join entity, поэтому
+     * добавляем их в ручную
+     *
+     * @param attendance
+     */
     private static void boundLessonAndStudentToAttendance(Attendance attendance) {
         Integer lessonId = attendance.getLessonId();
         String studentId = attendance.getStudentId();
@@ -69,10 +82,6 @@ public class AttendanceServiceImpl {
         return repository.findAll(sortedByLessonIdPagination);
     }
 
-    public @NonNull Attendance updateEntity(int departmentId, Attendance attendance) {
-        setCurrentDataSource("DEP_" + departmentId);
-        return repository.save(attendance);
-    }
 
     public void deleteById(int departmentId, Attendance attendance) {
         setCurrentDataSource("DEP_" + departmentId);

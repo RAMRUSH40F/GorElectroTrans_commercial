@@ -23,7 +23,7 @@ public class Student {
     private String studentId;
 
     @Column(name = "subdepartment_id")
-    @JsonProperty("subdepartmentId")
+    @JsonIgnore
     private Short subdepartmentId;
 
     @Column

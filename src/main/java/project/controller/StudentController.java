@@ -44,12 +44,12 @@ public class StudentController {
     }
 
     @PutMapping("/dep_{N}/students/data")
-    public void updateStudent(@PathVariable("N") String depId,
-                              @RequestBody Student student,
-                              @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
+    public Student updateStudent(@PathVariable("N") String depId,
+                                 @RequestBody Student student,
+                                 @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
         validateStudentId(student.getStudentId());
-        studentService.updateStudent(departmentId, student);
+        return studentService.updateStudent(departmentId, student);
     }
 
     @DeleteMapping("/dep_{N}/students/{id}")
