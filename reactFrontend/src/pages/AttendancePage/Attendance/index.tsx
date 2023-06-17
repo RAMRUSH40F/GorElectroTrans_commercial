@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import Alert from "components/Alert";
 import Loader from "components/Loader";
@@ -104,17 +104,16 @@ function PaginationController() {
     const [page, totalPages] = useUnit([$page, $totalPages]);
     const [searchParams, setSearchParams] = useSearchParams();
 
-    const handlePageChange = (selectedItem: { selected: number }) => {
-        pageChanged(selectedItem.selected + 1);
-        searchParams.set("page", String(selectedItem.selected + 1));
+    useEffect(() => {
+        searchParams.set("page", String(page));
         setSearchParams(searchParams);
-    };
+    }, [page, searchParams, setSearchParams]);
 
     return totalPages > 1 ? (
         <Pagination
             className={styles.pagination}
             pageCount={totalPages}
-            onPageChange={handlePageChange}
+            onPageChange={(page) => pageChanged(page.selected + 1)}
             renderOnZeroPageCount={() => null}
             disableInitialCallback={true}
             forcePage={page - 1}
@@ -123,12 +122,13 @@ function PaginationController() {
 }
 
 function EmptyAlert() {
-    const [attendances, isLoading, error] = useUnit([
+    const [attendances, isLoading, isFetching, error] = useUnit([
         $attendances,
         $isLoading,
+        $isFetching,
         $error,
     ]);
-    if (!error && !isLoading && attendances.length < 1) {
+    if (!error && !isLoading && !isFetching && attendances.length < 1) {
         return (
             <Alert type={ALERT.INFO}>
                 На текущий момент нет ни одной записи.

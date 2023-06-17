@@ -1,17 +1,11 @@
 import { merge, attach, createDomain, sample } from "effector";
-import { createGate } from "effector-react";
-import { fetchAttendanceFx } from "shared/api/attendanceApi/fetchAttendance";
-import {
-    IAttendance,
-    IAttendanceCredentials,
-    TAttendanceDto,
-} from "models/Attendance";
 import { debounce } from "patronum";
-import { postAttendanceFx } from "shared/api/attendanceApi/postAttendance";
-import { putAttendanceFx } from "shared/api/attendanceApi/putAttendance";
-import { deleteAttendanceFx } from "shared/api/attendanceApi/deleteAttendance";
+import { createGate } from "effector-react";
+import attendanceApi from "shared/api/attendanceApi";
+import { IAttendance, AttendanceId, AttendanceDto } from "models/Attendance";
+import { AbortParams } from "shared/api";
 
-export interface GateProps {
+interface GateProps {
     depId: string;
     search: string;
     page: number;
@@ -20,7 +14,9 @@ export interface GateProps {
 export const attendanceGate = createGate<GateProps>();
 const attendanceDomain = createDomain();
 
-export const getAttendanceFx = attach({ effect: fetchAttendanceFx });
+export const getAttendanceFx = attach({
+    effect: attendanceApi.fetchFx,
+});
 
 // #region Events
 export const loadingStarted = attendanceDomain.createEvent();
@@ -55,33 +51,39 @@ export const $depId = attendanceDomain.createStore<string>("");
 // #endregion
 
 export const addAttendanceFx = attach({
-    effect: postAttendanceFx,
+    effect: attendanceApi.postFx,
     source: $depId,
-    mapParams(attendanceResult: TAttendanceDto, depId) {
-        return { depId, attendanceResult };
+    mapParams({ data, controller }: AbortParams<AttendanceDto>, depId) {
+        return { depId, data, controller };
     },
 });
 
 export const updateAttendanceFx = attach({
-    effect: putAttendanceFx,
+    effect: attendanceApi.putFx,
     source: $depId,
-    mapParams(attendanceResult: TAttendanceDto, depId) {
-        return { depId, attendanceResult };
+    mapParams({ data, controller }: AbortParams<AttendanceDto>, depId) {
+        return { depId, data, controller };
     },
 });
 
 export const removeAttendanceFx = attach({
-    effect: deleteAttendanceFx,
+    effect: attendanceApi.deleteFx,
     source: $depId,
-    mapParams(attendanceCredentials: IAttendanceCredentials, depId) {
-        return { depId, attendanceCredentials };
+    mapParams({ controller, data }: AbortParams<AttendanceId>, depId) {
+        return {
+            depId,
+            data,
+            controller,
+        };
     },
 });
 
-// Reset all stores when component unmountes
-attendanceDomain.onCreateStore(($store) => {
-    $store.reset(attendanceGate.close);
-});
+const fetchStarted = merge([
+    getAttendanceFx.pending,
+    addAttendanceFx.pending,
+    updateAttendanceFx.pending,
+    removeAttendanceFx.pending,
+]);
 
 // Set department id when accessing page
 sample({
@@ -91,7 +93,7 @@ sample({
     target: depIdChanged,
 });
 
-// Setting search value from url search params when component is mounted
+// Set search value from url search params when component is mounted
 sample({
     clock: attendanceGate.open,
     source: attendanceGate.state,
@@ -107,7 +109,7 @@ debounce({
     timeout: 250,
 });
 
-// Setting page value from url search params when component is mounted
+// Set page value from url search params when component is mounted
 sample({
     clock: attendanceGate.open,
     source: attendanceGate.state,
@@ -116,23 +118,28 @@ sample({
     target: pageChanged,
 });
 
-// Fetching attendances data once when component is mounted
+// Fetch attendance data once when component is mounted
 sample({
     clock: attendanceGate.open,
     source: { depId: $depId, page: $page, size: $size, search: $search },
-    fn: (params) => ({ ...params, controller: new AbortController() }),
-    filter: ({ search, page }) =>
-        search === $search.defaultState && page === $page.defaultState,
+    fn: (params) => ({
+        ...params,
+        controller: new AbortController(),
+    }),
+    filter: ({ search, page, depId }) =>
+        search === $search.defaultState &&
+        page === $page.defaultState &&
+        depId !== "",
     target: getAttendanceFx,
 });
 
-// Canceling request when component is unmounted
+// Cancel fetch request when component is unmounted
 sample({
-    clock: [attendanceGate.close],
+    clock: attendanceGate.close,
     source: getAttendanceFx,
 }).watch(({ controller }) => controller.abort());
 
-// Canceling request when search or page change
+// Cancel fetch request when search or page change
 sample({
     clock: paramsChanged,
     source: getAttendanceFx,
@@ -140,15 +147,28 @@ sample({
     controller.abort();
 });
 
-// Fetching attendances data when search or page change
+// Decrease page when the last attendance on the page was deleted
 sample({
-    clock: paramsChanged,
+    clock: removeAttendanceFx.done,
+    source: { attendances: $attendances, page: $page },
+    filter: ({ attendances, page }) => attendances.length === 1 && page > 1,
+    fn: ({ page }) => page - 1,
+    target: pageChanged,
+});
+
+// Fetch attendance when search params were changed or attendance was deleted or updated
+sample({
+    clock: [paramsChanged, removeAttendanceFx.done, addAttendanceFx.done],
     source: { depId: $depId, page: $page, size: $size, search: $search },
-    fn: (params) => ({ ...params, controller: new AbortController() }),
+    filter: ({ depId }) => depId !== "",
+    fn: (params) => ({
+        ...params,
+        controller: new AbortController(),
+    }),
     target: getAttendanceFx,
 });
 
-// Setting loading state when data is fetching
+// Set loading state when data is fetching
 sample({
     clock: getAttendanceFx.pending,
     source: $attendances,
@@ -156,25 +176,29 @@ sample({
     target: loadingStarted,
 });
 
-// Setting loading state when request is finished
+// Set loading state when request is finished
 sample({
     clock: getAttendanceFx.finally,
     target: loadingEnded,
 });
 
+// Reset all stores when component unmountes
+attendanceDomain.onCreateStore(($store) => {
+    $store.reset(attendanceGate.close);
+});
+
 $isLoading.on(loadingStarted, () => true).on(loadingEnded, () => false);
 
-$isFetching.on(getAttendanceFx.pending, (_, pending) => pending);
+$isFetching.on(fetchStarted, (_, pending) => pending);
 
 $error
     .on(getAttendanceFx, () => null)
-    .on(getAttendanceFx.failData, (_, error) => error.message);
-
-updateAttendanceFx.doneData.watch((data) => console.log(data));
+    .on(getAttendanceFx.failData, (_, error) =>
+        error.isCanceled ? null : error.message
+    );
 
 $attendances
     .on(getAttendanceFx.doneData, (_, { attendances }) => attendances)
-    .on(addAttendanceFx.doneData, (attendances, data) => [data, ...attendances])
     .on(updateAttendanceFx.doneData, (attedances, data) => {
         return attedances.map((attendance) => {
             if (
@@ -185,18 +209,11 @@ $attendances
             }
             return attendance;
         });
-    })
-    .on(removeAttendanceFx, (attendances, { lessonId, studentId }) => {
-        return attendances.filter(
-            (attendance) =>
-                attendance.lessonId !== lessonId ||
-                attendance.studentId !== studentId
-        );
     });
 
 $totalPages.on(getAttendanceFx.doneData, (_, { totalPages }) => totalPages);
 
-$page.on(pageChanged, (_, page) => page);
+$page.on(pageChanged, (_, page) => page).reset(debouncedSearchChanged);
 
 $search
     .on(searchChanged, (_, value) => value)

@@ -13,7 +13,7 @@ import { useUnit } from "effector-react";
 import useClickOutside from "hooks/useClickOutside";
 import useEscape from "hooks/useEscape";
 import { addAttendanceFx } from "../model";
-import { TAttendanceDto } from "models/Attendance";
+import { AttendanceDto } from "models/Attendance";
 import {
     $isModalActive,
     errorReset,
@@ -52,12 +52,17 @@ function AttendanceModal() {
     const handleSubmit = async (values: AttendanceFormState) => {
         const { lessonId, studentId, success } = values;
 
-        const newAttendance: TAttendanceDto = {
+        const newAttendance: AttendanceDto = {
             studentId,
             lessonId: parseInt(lessonId),
             success: parseInt(success.value),
         };
-        await addAttendanceFx(newAttendance);
+        try {
+            await addAttendanceFx({
+                data: newAttendance,
+                controller: new AbortController(),
+            });
+        } catch (error) {}
     };
 
     if (!isModalActive) return null;

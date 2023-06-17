@@ -5,16 +5,17 @@ import {
     createStore,
     sample,
 } from "effector";
-import { ROLES } from "../constants/roles";
+import { ROLES } from "constants/roles";
 import { createGate } from "effector-react";
-import { loginUserFx, logoutUserFx, refreshUserFx } from "./api/userApi";
 import { authRequestFx } from "./api";
+import { NOTICE, showNoticeFx } from "helpers/notice";
+import userApi from "./api/userApi";
 
 export const AuthGate = createGate();
 
-export const loginFx = attach({ effect: loginUserFx });
-export const logoutFx = attach({ effect: logoutUserFx });
-export const refreshFx = attach({ effect: refreshUserFx });
+export const loginFx = attach({ effect: userApi.loginFx });
+export const logoutFx = attach({ effect: userApi.logoutFx });
+export const refreshFx = attach({ effect: userApi.refreshFx });
 
 export const checkAccessTokenFx = createEffect<void, boolean>(() => {
     return localStorage.getItem("accessToken") ? true : false;
@@ -63,6 +64,13 @@ sample({
 sample({
     clock: [logoutFx.doneData, loggedOut],
     target: removeTokenFromLocalStorageFx,
+});
+
+// Show notice when logout request was failed
+sample({
+    clock: logoutFx.fail,
+    fn: () => ({ type: NOTICE.ERROR, message: "Произошла техническая ошибка" }),
+    target: showNoticeFx,
 });
 
 $isLoading

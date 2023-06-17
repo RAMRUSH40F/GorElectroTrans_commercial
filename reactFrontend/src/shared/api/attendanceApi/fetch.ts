@@ -1,17 +1,17 @@
 import { createEffect } from "effector";
-import { AuthError, authRequestFx } from "..";
+import { AuthError, DepParams, authRequestFx } from "..";
 import { IAttendance } from "../../../models/Attendance";
+import { isCancel } from "axios";
 
 interface ApiError {
     message: string;
+    isCanceled: boolean;
 }
 
-interface FetchParams {
-    depId: string | null;
+interface FetchParams<T> extends Omit<DepParams<T>, "data"> {
     page: number;
     size: number;
     search: string;
-    controller: AbortController;
 }
 
 interface FetchResponse {
@@ -19,8 +19,8 @@ interface FetchResponse {
     totalPages: number;
 }
 
-export const fetchAttendanceFx = createEffect<
-    FetchParams,
+export const fetchFx = createEffect<
+    FetchParams<null>,
     FetchResponse,
     ApiError
 >(async ({ depId, page, size, search, controller }) => {
@@ -37,11 +37,19 @@ export const fetchAttendanceFx = createEffect<
             : 1;
         return { attendances: response.data as IAttendance[], totalPages };
     } catch (error) {
-        const err = error as AuthError;
-        const message =
-            err?.response?.data?.message ??
-            "Не удалось получить данные с сервера";
-        const customError: ApiError = { message };
-        throw customError;
+        if (isCancel(error)) {
+            const customError: ApiError = {
+                message: "Запрос отменен",
+                isCanceled: true,
+            };
+            throw customError;
+        } else {
+            const err = error as AuthError;
+            const message =
+                err?.response?.data?.message ??
+                "Не удалось получить данные с сервера";
+            const customError: ApiError = { message, isCanceled: false };
+            throw customError;
+        }
     }
 });

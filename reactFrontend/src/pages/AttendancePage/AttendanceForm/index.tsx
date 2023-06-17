@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import Label from "components/formElements/Label";
-import { TAttendanceDto } from "models/Attendance";
+import { AttendanceDto } from "models/Attendance";
 import {
     ATTENDACE_RESULT_VALUE,
     ATTENDANCE_RESULT,
@@ -28,7 +28,7 @@ const options: DropdownOption[] = [
 
 type Props = {
     onSubmit: (values: AttendanceFormState) => Promise<void>;
-    attendance?: TAttendanceDto | null;
+    attendance?: AttendanceDto | null;
     moveToConfrim?: (event: React.MouseEvent<HTMLButtonElement>) => void;
     isDisabled?: boolean;
     isEditing?: boolean;

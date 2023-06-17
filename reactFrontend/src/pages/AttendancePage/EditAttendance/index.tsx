@@ -89,9 +89,12 @@ function Form() {
         const lessonNumber = parseInt(lessonId);
         try {
             await updateAttendanceFx({
-                lessonId: lessonNumber,
-                studentId,
-                success: parseInt(success.value),
+                data: {
+                    lessonId: lessonNumber,
+                    studentId,
+                    success: parseInt(success.value),
+                },
+                controller: new AbortController(),
             });
         } catch (error) {}
     };
