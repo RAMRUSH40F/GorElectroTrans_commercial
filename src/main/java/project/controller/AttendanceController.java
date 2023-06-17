@@ -30,6 +30,7 @@ public class AttendanceController {
         validatePaginationParams(page, pageSize);
 
         Page<Attendance> attendancePage = attendanceService.findAllByKeywordWithPagination(departmentId, keyWord, Integer.valueOf(page), Integer.valueOf(pageSize));
+
         HttpHeaders headers = new HttpHeaders();
         headers.add("attendance_count", String.valueOf(attendancePage.getTotalElements()));
 
@@ -41,25 +42,25 @@ public class AttendanceController {
 
 
     @PostMapping("/dep_{N}/attendance/data")
-    public Attendance addNewRecordAttendance(@PathVariable("N") String depId,
-                                             @RequestBody Attendance attendance,
-                                             @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
+    public Attendance createAttendance(@PathVariable("N") String depId,
+                                       @RequestBody Attendance attendance,
+                                       @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
         return attendanceService.save(departmentId, attendance);
     }
 
     @PutMapping("/dep_{N}/attendance/data")
-    public void updateRecordAttendance(@PathVariable("N") String depId,
+    public Attendance updateAttendance(@PathVariable("N") String depId,
                                        @RequestBody Attendance attendance,
                                        @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
-        attendanceService.updateEntity(departmentId, attendance);
+        return attendanceService.updateEntity(departmentId, attendance);
     }
 
     @DeleteMapping("/dep_{N}/attendance/data")
-    public void deleteRecordById(@PathVariable("N") String depId,
-                                 @RequestBody Attendance attendance,
-                                 @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
+    public void deleteById(@PathVariable("N") String depId,
+                           @RequestBody Attendance attendance,
+                           @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
         attendanceService.deleteById(departmentId, attendance);
     }

@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import project.model.Lesson;
@@ -19,22 +20,18 @@ public class LessonServiceImpl {
     private final LessonJpaRepository lessonJpaRepository;
 
 
-    public Lesson addNewLesson(int department, Lesson lesson) {
+    public @NonNull Lesson addNewLesson(int department, Lesson lesson) {
         setCurrentDataSource("DEP_" + department);
         return lessonJpaRepository.save(lesson);
     }
 
-    public void changeLesson(int department, int id, Lesson changed_lesson) {
+    public @NonNull Lesson changeLesson(int department, Lesson modifiedLesson) {
         setCurrentDataSource("DEP_" + department);
-        lessonJpaRepository.save(changed_lesson);
+        return lessonJpaRepository.save(modifiedLesson);
     }
 
-    public void deleteLessonById(int department, int id) {
-        setCurrentDataSource("DEP_" + department);
-        lessonJpaRepository.deleteById(id);
-    }
 
-    public Page<Lesson> findAllByNullableKeywordWithPagination(int department, @Nullable String key, int page, int size) {
+    public @NonNull Page<Lesson> findAllByNullableKeywordWithPagination(int department, @Nullable String key, int page, int size) {
         setCurrentDataSource("DEP_" + department);
         Pageable sortedByDatePaginatedRequest = PageRequest.of(page - 1, size, Sort.by("date").descending());
         if (key == null) {
@@ -44,12 +41,18 @@ public class LessonServiceImpl {
     }
 
 
-    public Page<Lesson> findAllWithPagination(int department, int page, int size) {
+    public @NonNull Page<Lesson> findAllWithPagination(int department, int page, int size) {
         setCurrentDataSource("DEP_" + department);
         Pageable sortedByDatePaginatedRequest = PageRequest.of(page - 1, size, Sort.by("date").descending());
         return lessonJpaRepository.findAll(sortedByDatePaginatedRequest);
     }
-    public Integer getLessonsCount(int department) {
+
+    public void deleteLessonById(int department, int id) {
+        setCurrentDataSource("DEP_" + department);
+        lessonJpaRepository.deleteById(id);
+    }
+
+    public @NonNull Integer getLessonsCount(int department) {
         setCurrentDataSource("DEP_" + department);
         return lessonJpaRepository.countAllLessons();
     }

@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,7 @@ public class AttendanceServiceImpl {
 
     private final AttendanceJpaRepository repository;
 
-    public Attendance save(int departmentId, Attendance attendance) {
+    public @NonNull Attendance save(int departmentId, Attendance attendance) {
         setCurrentDataSource("DEP_" + departmentId);
 
         try {
@@ -49,11 +50,11 @@ public class AttendanceServiceImpl {
         attendance.setStudent(student);
     }
 
-    public Page<Attendance> findAllByKeywordWithPagination(int departmentId, @Nullable String keyWord, Integer page, Integer pageSize) {
+    public @NonNull Page<Attendance> findAllByKeywordWithPagination(int departmentId, @Nullable String keyWord, Integer page, Integer pageSize) {
         setCurrentDataSource("DEP_" + departmentId);
         Page<Attendance> attendancePage;
         if (keyWord == null) {
-            attendancePage = findAllWithPagination(departmentId, Integer.valueOf(page), Integer.valueOf(pageSize));
+            attendancePage = findAllWithPagination(departmentId, page, pageSize);
         } else {
             Pageable sortedByLessonIdPagination = PageRequest.of(page - 1, pageSize, Sort.by("lessonId").ascending());
             attendancePage = repository.findByKeyword(keyWord, sortedByLessonIdPagination);
@@ -62,15 +63,15 @@ public class AttendanceServiceImpl {
     }
 
 
-    public Page<Attendance> findAllWithPagination(int departmentId, Integer page, Integer pageSize) {
+    public @NonNull Page<Attendance> findAllWithPagination(int departmentId, Integer page, Integer pageSize) {
         setCurrentDataSource("DEP_" + departmentId);
         Pageable sortedByLessonIdPagination = PageRequest.of(page - 1, pageSize, Sort.by("lessonId").ascending());
         return repository.findAll(sortedByLessonIdPagination);
     }
 
-    public void updateEntity(int departmentId, Attendance attendance) {
+    public @NonNull Attendance updateEntity(int departmentId, Attendance attendance) {
         setCurrentDataSource("DEP_" + departmentId);
-        repository.save(attendance);
+        return repository.save(attendance);
     }
 
     public void deleteById(int departmentId, Attendance attendance) {

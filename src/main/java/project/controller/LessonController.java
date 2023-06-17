@@ -20,11 +20,11 @@ public class LessonController {
     private final LessonServiceImpl lessonService;
 
     @GetMapping("/dep_{N}/work_plan/data")
-    public ResponseEntity<List<Lesson>> getLessonsPaginated(@PathVariable("N") String depId,
-                                                            @RequestParam String page,
-                                                            @RequestParam String size,
-                                                            @RequestParam(value = "key", required = false) String keyWord,
-                                                            @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
+    public ResponseEntity<List<Lesson>> findLessonsWithPagination(@PathVariable("N") String depId,
+                                                                  @RequestParam String page,
+                                                                  @RequestParam String size,
+                                                                  @RequestParam(value = "key", required = false) String keyWord,
+                                                                  @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
         validatePaginationParams(page, size);
 
@@ -41,23 +41,21 @@ public class LessonController {
     }
 
     @PostMapping("/dep_{N}/work_plan/data")
-    public int addLesson(@PathVariable("N") String depId,
-                         @RequestBody Lesson lesson,
-                         @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
+    public Lesson createLesson(@PathVariable("N") String depId,
+                               @RequestBody Lesson lesson,
+                               @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
-
-        //На доработку. Сейчас фронт готовится принять lesson.id int
-        return lessonService.addNewLesson(departmentId, lesson).getId();
+        return lessonService.addNewLesson(departmentId, lesson);
     }
 
 
     @PutMapping("/dep_{N}/work_plan/{id}")
-    public void changeLesson(@PathVariable("N") String depId,
-                             @PathVariable("id") int id,
-                             @RequestBody Lesson lesson,
-                             @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
+    public Lesson changeLesson(@PathVariable("N") String depId,
+                               @PathVariable("id") int id,
+                               @RequestBody Lesson lesson,
+                               @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
-        lessonService.changeLesson(departmentId, id, lesson);
+        return lessonService.changeLesson(departmentId, lesson);
     }
 
     @DeleteMapping("/dep_{N}/work_plan/{id}")
