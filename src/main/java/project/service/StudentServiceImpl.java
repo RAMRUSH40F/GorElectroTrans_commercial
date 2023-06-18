@@ -11,6 +11,7 @@ import project.exceptions.InvalidSubdepartmentException;
 import project.model.Student;
 import project.repository.StudentJpaRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static project.dataSource.DynamicDataSourceContextHolder.setCurrentDataSource;
@@ -38,11 +39,9 @@ public class StudentServiceImpl {
         return result;
 
     }
-
-    public @NonNull Page<Student> findAllWithPagination(int departmentId, @NonNull Integer page, @NonNull Integer size) {
+    public @NonNull Page<Student> findAllWithPagination(Pageable pageable,int departmentId) {
         setCurrentDataSource("DEP_" + departmentId);
-        Pageable paginatedRequest = PageRequest.of(page - 1, size, Sort.by("name").descending());
-        Page<Student> studentPage = repository.findAll(paginatedRequest);
+        Page<Student> studentPage = repository.findAll(pageable);
         for (Student s : studentPage.getContent()) {
             s.setSubdepartmentName(s.getSubdepartment().getName());
         }

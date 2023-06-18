@@ -2,13 +2,16 @@ package project.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.model.Student;
 import project.service.StudentServiceImpl;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static project.exceptions.Validator.*;
 
@@ -20,12 +23,12 @@ public class StudentController {
 
     @GetMapping("/dep_{N}/students/data")
     public ResponseEntity<List<Student>> findStudents(@PathVariable("N") String depId,
-                                                      @RequestParam(value = "page") String page,
-                                                      @RequestParam(value = "size") String pageSize,
+                                                       Pageable pageable,
+                                                      /*@RequestParam(value = "key",required = false) String key,*/
                                                       @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
-        int departmentId = validateDepartmentId(depId);
-        validatePaginationParams(page, pageSize);
-        Page<Student> studentPage = studentService.findAllWithPagination(departmentId, Integer.parseInt(page), Integer.parseInt(pageSize));
+       int departmentId = validateDepartmentId(depId);
+        Page<Student> studentPage = studentService.findAllWithPagination(pageable,departmentId);
+
         HttpHeaders headers = new HttpHeaders();
         headers.add("students_count", String.valueOf(studentPage.getTotalElements()));
         return ResponseEntity
