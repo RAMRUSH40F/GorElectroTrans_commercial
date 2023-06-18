@@ -1,6 +1,7 @@
 package project.service;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import project.model.Student;
@@ -27,6 +29,9 @@ class StudentServiceImplIntegrationTest {
     @Autowired
     SubdepartmentServiceImpl subdepartmentService;
 
+    @Autowired
+    JdbcTemplate jdbcTemplate;
+
     @TestConfiguration
     public static class TestDataSourceConfig {
 
@@ -39,6 +44,16 @@ class StudentServiceImplIntegrationTest {
                     .build();
         }
     }
+
+    @BeforeEach
+    void cleanDatabase() {
+        // Clean the student table
+        jdbcTemplate.execute("DELETE FROM student");
+
+        // Clean the subdepartment table
+        jdbcTemplate.execute("DELETE FROM subdepartment");
+    }
+
 
     @Test
     void addNewStudentBySubdepartmentNameTest_OneStudentSavedWhenSubdepartmentExists() {
@@ -68,23 +83,22 @@ class StudentServiceImplIntegrationTest {
         );
     }
 
-
     @Test
-    void testH2database() {
+    void addNewStudentBySubdepartmentNameTest_ExceptionThrowsWhenStudentAlreadyExists() {
         // Configuration
-        int depId = 15;
+        int depId = 9;
         Subdepartment testSubdepartment = saveTestSubdepartmentAndReturn();
         Student testStudent = createTestStudent();
         testStudent.setSubdepartmentId(null);
         testStudent.setSubdepartmentName(testSubdepartment.getName());
 
-        studentService.addNewStudentByDepId(1, testStudent);
-        Pageable pageable = PageRequest.of(1, 999999);
-        List<Student> studentListBefore = studentService.findAllWithPagination(depId, pageable).getContent();
-        System.out.println(studentListBefore);
-        assert studentListBefore.size() != 0;
+
+        studentService.addNewStudentBySubdepartmentName(depId, testStudent);
+
+        Assertions.assertThrows(RuntimeException.class, () -> studentService.addNewStudentBySubdepartmentName(depId, testStudent));
 
     }
+
 
     // TODO: Обеспечить независимость от того, есть ли studentId, subdepId в БД.
     private Student createTestStudent() {
