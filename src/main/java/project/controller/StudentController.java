@@ -24,7 +24,9 @@ public class StudentController {
     public ResponseEntity<List<Student>> findStudents(@PathVariable("N") String depId,
                                                       Pageable paginationParams,
                                                       @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
-        int departmentId = validateDepartmentId(depId);
+        Integer departmentId = validateDepartmentId(depId);
+        // Pagination starts from page 1, not page 0
+        paginationParams = paginationParams.withPage(paginationParams.getPageNumber() + 1);
         Page<Student> studentPage = studentService.findAllWithPagination(departmentId, paginationParams);
 
         HttpHeaders headers = new HttpHeaders();
