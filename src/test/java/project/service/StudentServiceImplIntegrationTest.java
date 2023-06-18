@@ -13,11 +13,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+import project.exceptions.InvalidSubdepartmentException;
 import project.model.Student;
 import project.model.Subdepartment;
 
 import javax.sql.DataSource;
 import java.util.List;
+
+import static project.dataSource.DynamicDataSourceContextHolder.getCurrentDataSource;
 
 
 @SpringBootTest
@@ -31,6 +34,7 @@ class StudentServiceImplIntegrationTest {
 
     @Autowired
     JdbcTemplate jdbcTemplate;
+
 
     @TestConfiguration
     public static class TestDataSourceConfig {
@@ -52,9 +56,51 @@ class StudentServiceImplIntegrationTest {
 
         // Clean the subdepartment table
         jdbcTemplate.execute("DELETE FROM subdepartment");
+
+        // Clean the lesson table
+        jdbcTemplate.execute("DELETE FROM lesson");
+
+        // Clean the attendance table
+        jdbcTemplate.execute("DELETE FROM attendance");
+    }
+
+    @Test
+    void findAllWithPagination_getsRightAmountFromRightDatabase() {
+        // Configuration
+        int depId = 9;
+        Subdepartment testSubdepartment = saveTestSubdepartmentAndReturn();
+        Student testStudent = createTestStudent();
+        testStudent.setSubdepartmentId(null);
+        testStudent.setSubdepartmentName(testSubdepartment.getName());
+
+        studentService.addNewStudentBySubdepartmentName(depId, testStudent);
+        Pageable pageable = PageRequest.of(1, 999999);
+        List<Student> studentListAfter = studentService.findAllWithPagination(depId, pageable).getContent();
+
+
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(1, studentListAfter.size()),
+                () -> Assertions.assertEquals("DEP_" + depId, getCurrentDataSource())
+        );
+    }
+
+    @Test
+    void findAllWithPagination_getsEmptyListWhenNoStudents() {
+        // Configuration
+        int depId = 9;
+        Subdepartment testSubdepartment = saveTestSubdepartmentAndReturn();
+        Student testStudent = createTestStudent();
+        testStudent.setSubdepartmentId(null);
+        testStudent.setSubdepartmentName(testSubdepartment.getName());
+
+        Pageable pageable = PageRequest.of(1, 999999);
+        List<Student> studentListAfter = studentService.findAllWithPagination(depId, pageable).getContent();
+
+        Assertions.assertEquals(0, studentListAfter.size());
     }
 
 
+    // OK CASES
     @Test
     void addNewStudentBySubdepartmentNameTest_OneStudentSavedWhenSubdepartmentExists() {
         // Configuration
@@ -83,6 +129,7 @@ class StudentServiceImplIntegrationTest {
         );
     }
 
+    // NOT OK CASES
     @Test
     void addNewStudentBySubdepartmentNameTest_ExceptionThrowsWhenStudentAlreadyExists() {
         // Configuration
@@ -94,13 +141,40 @@ class StudentServiceImplIntegrationTest {
 
 
         studentService.addNewStudentBySubdepartmentName(depId, testStudent);
-
         Assertions.assertThrows(RuntimeException.class, () -> studentService.addNewStudentBySubdepartmentName(depId, testStudent));
 
     }
 
+    @Test
+    void addNewStudentBySubdepartmentNameTest_ExceptionThrowsWhenSubdepNameDoesNotExist() {
+        // Configuration
+        int depId = 9;
+        Subdepartment testSubdepartment = saveTestSubdepartmentAndReturn();
+        Student testStudent = createTestStudent();
+        testStudent.setSubdepartmentId(null);
+        testStudent.setSubdepartmentName(testSubdepartment.getName());
+        jdbcTemplate.execute("DELETE FROM subdepartment");
 
-    // TODO: Обеспечить независимость от того, есть ли studentId, subdepId в БД.
+
+        Assertions.assertThrows(InvalidSubdepartmentException.class, () -> studentService.addNewStudentBySubdepartmentName(depId, testStudent));
+
+    }
+
+    @Test
+    void addNewStudentBySubdepartmentNameTest_ExceptionThrowsWhenSubdepNameNull() {
+        // Configuration
+        int depId = 9;
+        Student testStudent = createTestStudent();
+        testStudent.setSubdepartmentId(null);
+        testStudent.setSubdepartmentName(null);
+        jdbcTemplate.execute("DELETE FROM subdepartment");
+
+
+        Assertions.assertThrows(InvalidSubdepartmentException.class, () -> studentService.addNewStudentBySubdepartmentName(depId, testStudent));
+
+    }
+
+
     private Student createTestStudent() {
         return Student.builder()
                 .studentId("56122")
