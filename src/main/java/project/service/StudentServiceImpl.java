@@ -31,19 +31,13 @@ public class StudentServiceImpl {
         if (repository.existsById(student.getStudentId())) {
             throw new IllegalArgumentException("Рабочий с таким номером уже есть в базе.");
         }
-        Student result = repository.save(createStudent(student, newSubDepartmentId));
-        result.setSubdepartmentName(student.getSubdepartmentName());
-        return result;
+        return repository.save(createStudent(student, newSubDepartmentId));
 
     }
 
     public @NonNull Page<Student> findAllWithPagination(int departmentId, Pageable pageable) {
         setCurrentDataSource("DEP_" + departmentId);
-        Page<Student> studentPage = repository.findAll(pageable);
-        for (Student s : studentPage.getContent()) {
-            s.setSubdepartmentName(s.getSubdepartment().getName());
-        }
-        return studentPage;
+        return repository.findAll(pageable);
     }
 
 
@@ -62,9 +56,7 @@ public class StudentServiceImpl {
                 .findByName(departmentId, student.getSubdepartmentName())
                 .orElseThrow(() -> new InvalidSubdepartmentException(student.getSubdepartmentName()))
                 .getId();
-        Student result = repository.save(createStudent(student, newSubDepartmentId));
-        result.setSubdepartmentName(result.getSubdepartmentName());
-        return result;
+        return repository.save(createStudent(student, newSubDepartmentId));
     }
 
     public @NonNull Student addNewStudentByDepId(int departmentId, @NonNull Student student) {
