@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 
@@ -36,17 +37,27 @@ public class Student {
     @JoinColumn(insertable = false, updatable = false)
     @Fetch(FetchMode.JOIN)
     @JsonIgnore
+    @Nullable
     private Subdepartment subdepartment;
 
     @JsonGetter("subdepartmentName")
+    @Nullable
     public String getSubdepartmentName() {
-        return subdepartment.getName();
+        if (subdepartment != null) {
+            return subdepartment.getName();
+        }
+        return null;
     }
 
     @JsonSetter("subdepartmentName")
     public void setSubdepartmentName(String name) {
+        if (subdepartment == null) {
+            subdepartment = new Subdepartment();
+            subdepartment.setName(name);
+        }
         subdepartment.setName(name);
     }
+
 
     @Override
     public String toString() {
