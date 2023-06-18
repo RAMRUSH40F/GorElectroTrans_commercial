@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import project.exceptions.InvalidSubdepartmentException;
 import project.model.Student;
@@ -13,6 +14,7 @@ import project.repository.StudentJpaRepository;
 import java.util.List;
 
 import static project.dataSource.DynamicDataSourceContextHolder.setCurrentDataSource;
+import static project.exceptions.Validator.validatePaginationParams;
 
 
 @Service
@@ -35,11 +37,14 @@ public class StudentServiceImpl {
 
     }
 
-    public @NonNull Page<Student> findAllWithPagination(int departmentId, Pageable pageable) {
+    public @NonNull Page<Student> findAllWithPagination(int departmentId, @Nullable String key, Pageable pageable) {
         setCurrentDataSource("DEP_" + departmentId);
         // Пагинация с первой(для пользователя), с 0-ой для сервера.
         pageable = pageable.withPage(pageable.getPageNumber() - 1);
-        return repository.findAll(pageable);
+        if(key==null) {
+            return repository.findAll(pageable);
+        }
+        return repository.findAllByKey(key,pageable);
     }
 
 

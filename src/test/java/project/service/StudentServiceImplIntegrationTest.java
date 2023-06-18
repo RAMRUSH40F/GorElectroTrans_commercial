@@ -75,7 +75,7 @@ class StudentServiceImplIntegrationTest {
 
         studentService.addNewStudentBySubdepartmentName(depId, testStudent);
         Pageable pageable = PageRequest.of(1, 999999);
-        List<Student> studentListAfter = studentService.findAllWithPagination(depId, pageable).getContent();
+        List<Student> studentListAfter = studentService.findAllWithPagination(depId,null, pageable).getContent();
 
 
         Assertions.assertAll(
@@ -94,7 +94,7 @@ class StudentServiceImplIntegrationTest {
         testStudent.setSubdepartmentName(testSubdepartment.getName());
 
         Pageable pageable = PageRequest.of(1, 999999);
-        List<Student> studentListAfter = studentService.findAllWithPagination(depId, pageable).getContent();
+        List<Student> studentListAfter = studentService.findAllWithPagination(depId,null, pageable).getContent();
 
         Assertions.assertEquals(0, studentListAfter.size());
     }
@@ -111,13 +111,13 @@ class StudentServiceImplIntegrationTest {
         testStudent.setSubdepartmentName(testSubdepartment.getName());
 
         Pageable pageable = PageRequest.of(1, 999999);
-        List<Student> studentListBefore = studentService.findAllWithPagination(depId, pageable).getContent();
+        List<Student> studentListBefore = studentService.findAllWithPagination(depId, null,pageable).getContent();
         boolean studentExistsBefore = studentListBefore
                 .stream()
                 .anyMatch(s -> testStudent.getStudentId().equals(s.getStudentId()));
 
         studentService.addNewStudentBySubdepartmentName(depId, testStudent);
-        List<Student> studentListAfter = studentService.findAllWithPagination(depId, pageable).getContent();
+        List<Student> studentListAfter = studentService.findAllWithPagination(depId,null, pageable).getContent();
 
         boolean studentExistsAfter = studentListAfter
                 .stream()

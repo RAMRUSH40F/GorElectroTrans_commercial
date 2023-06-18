@@ -12,8 +12,7 @@ import project.service.StudentServiceImpl;
 
 import java.util.List;
 
-import static project.exceptions.Validator.validateDepartmentId;
-import static project.exceptions.Validator.validateStudentId;
+import static project.exceptions.Validator.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,10 +22,12 @@ public class StudentController {
 
     @GetMapping("/dep_{N}/students/data")
     public ResponseEntity<List<Student>> findStudents(@PathVariable("N") String depId,
+                                                      @RequestParam(required = false) String key,
                                                       Pageable paginationParams,
                                                       @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         int departmentId = validateDepartmentId(depId);
-        Page<Student> studentPage = studentService.findAllWithPagination(departmentId, paginationParams);
+        validatePaginationParams(String.valueOf(paginationParams.getPageNumber()),String.valueOf(paginationParams.getPageSize()));
+        Page<Student> studentPage = studentService.findAllWithPagination(departmentId,key, paginationParams);
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("students_count", String.valueOf(studentPage.getTotalElements()));
