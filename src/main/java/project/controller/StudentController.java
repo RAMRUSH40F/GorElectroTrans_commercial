@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.model.Student;
@@ -37,11 +38,13 @@ public class StudentController {
 
 
     @PostMapping("/dep_{N}/students/data")
-    public Student addNewStudent(@PathVariable("N") String depId,
-                                 @RequestBody Student student,
-                                 @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
+    public ResponseEntity<Student> addNewStudent(@PathVariable("N") String depId,
+                                                 @RequestBody Student student,
+                                                 @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
-        return studentService.addNewStudentBySubdepartmentName(departmentId, student);
+        Student createdStudent = studentService.addNewStudentBySubdepartmentName(departmentId, student);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdStudent);
+
     }
 
     @PutMapping("/dep_{N}/students/data")

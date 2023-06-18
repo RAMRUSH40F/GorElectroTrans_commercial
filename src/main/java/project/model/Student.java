@@ -33,8 +33,8 @@ public class Student {
     @JsonProperty("fullName")
     private String name;
 
-    @ManyToOne
-    @JoinColumn(insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "subdepartment_id", insertable = false, updatable = false)
     @Fetch(FetchMode.JOIN)
     @JsonIgnore
     @Nullable
@@ -52,7 +52,6 @@ public class Student {
     public void setSubdepartmentName(String name) {
         if (subdepartment == null) {
             subdepartment = new Subdepartment();
-            subdepartment.setName(name);
         }
         subdepartment.setName(name);
     }
@@ -62,8 +61,9 @@ public class Student {
     public String toString() {
         return "Student{" +
                 "studentId='" + studentId + '\'' +
+                ", subdepartmentId=" + subdepartmentId +
                 ", name='" + name + '\'' +
-                ", subdepartment=" + subdepartment +
+                ", subdepartmentName=" + getSubdepartmentName() +
                 '}';
     }
 
