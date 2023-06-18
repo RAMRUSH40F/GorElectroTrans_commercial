@@ -2,6 +2,7 @@ package project.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,15 +22,14 @@ public class LessonController {
 
     @GetMapping("/dep_{N}/work_plan/data")
     public ResponseEntity<List<Lesson>> findLessonsWithPagination(@PathVariable("N") String depId,
-                                                                  @RequestParam String page,
-                                                                  @RequestParam String size,
+                                                                Pageable paginationParams,
                                                                   @RequestParam(value = "key", required = false) String keyWord,
                                                                   @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
-        validatePaginationParams(page, size);
+       // validatePaginationParams(page, size);
 
         Page<Lesson> lessonPage =
-                lessonService.findAllByNullableKeywordWithPagination(departmentId, keyWord, Integer.parseInt(page), Integer.parseInt(size));
+                lessonService.findAllByNullableKeywordWithPagination(departmentId, keyWord, paginationParams);
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("lessons_count", String.valueOf(lessonPage.getTotalElements()));

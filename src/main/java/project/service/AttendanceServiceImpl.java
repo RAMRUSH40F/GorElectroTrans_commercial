@@ -63,25 +63,18 @@ public class AttendanceServiceImpl {
         attendance.setStudent(student);
     }
 
-    public @NonNull Page<Attendance> findAllByKeywordWithPagination(int departmentId, @Nullable String keyWord, Integer page, Integer pageSize) {
+    public @NonNull Page<Attendance> findAllByKeywordWithPagination(int departmentId, @Nullable String keyWord, Pageable paginationParams) {
         setCurrentDataSource("DEP_" + departmentId);
         Page<Attendance> attendancePage;
+        paginationParams =paginationParams.withPage(paginationParams.getPageNumber()-1);
+        paginationParams.getSortOr(Sort.by(Sort.Direction.ASC,"lessonId"));
         if (keyWord == null) {
-            attendancePage = findAllWithPagination(departmentId, page, pageSize);
+           attendancePage= repository.findAll(paginationParams);
         } else {
-            Pageable sortedByLessonIdPagination = PageRequest.of(page - 1, pageSize, Sort.by("lessonId").ascending());
-            attendancePage = repository.findByKeyword(keyWord, sortedByLessonIdPagination);
+            attendancePage = repository.findByKeyword(keyWord, paginationParams);
         }
         return attendancePage;
     }
-
-
-    public @NonNull Page<Attendance> findAllWithPagination(int departmentId, Integer page, Integer pageSize) {
-        setCurrentDataSource("DEP_" + departmentId);
-        Pageable sortedByLessonIdPagination = PageRequest.of(page - 1, pageSize, Sort.by("lessonId").ascending());
-        return repository.findAll(sortedByLessonIdPagination);
-    }
-
 
     public void deleteById(int departmentId, Attendance attendance) {
         setCurrentDataSource("DEP_" + departmentId);

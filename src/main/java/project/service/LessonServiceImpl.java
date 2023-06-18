@@ -31,20 +31,14 @@ public class LessonServiceImpl {
     }
 
 
-    public @NonNull Page<Lesson> findAllByNullableKeywordWithPagination(int department, @Nullable String key, int page, int size) {
+    public @NonNull Page<Lesson> findAllByNullableKeywordWithPagination(int department, @Nullable String key, Pageable paginationParams) {
         setCurrentDataSource("DEP_" + department);
-        Pageable sortedByDatePaginatedRequest = PageRequest.of(page - 1, size, Sort.by("date").descending());
+        paginationParams =paginationParams.withPage(paginationParams.getPageNumber()-1);
+        paginationParams.getSortOr(Sort.by(Sort.Direction.DESC,"date"));
         if (key == null) {
-            return findAllWithPagination(department, page, size);
+            return  lessonJpaRepository.findAll(paginationParams);
         }
-        return lessonJpaRepository.findAllByKey(key, sortedByDatePaginatedRequest);
-    }
-
-
-    public @NonNull Page<Lesson> findAllWithPagination(int department, int page, int size) {
-        setCurrentDataSource("DEP_" + department);
-        Pageable sortedByDatePaginatedRequest = PageRequest.of(page - 1, size, Sort.by("date").descending());
-        return lessonJpaRepository.findAll(sortedByDatePaginatedRequest);
+        return lessonJpaRepository.findAllByKey(key, paginationParams);
     }
 
     public void deleteLessonById(int department, int id) {

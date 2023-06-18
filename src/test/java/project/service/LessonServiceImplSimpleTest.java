@@ -4,6 +4,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import project.dataSource.DynamicDataSourceContextHolder;
 import project.model.Lesson;
 import project.service.reportService.TeacherProfession;
@@ -11,7 +13,8 @@ import project.service.reportService.TeacherProfession;
 import java.sql.Date;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 class LessonServiceImplSimpleTest {
@@ -26,7 +29,8 @@ class LessonServiceImplSimpleTest {
 
     @Test
     void getPagedLessons_returnNotNull() {
-        List<Lesson> lessonList = lessonService.findAllWithPagination(1, 1, 15).toList();
+        Pageable pageable = PageRequest.of(1, 15);
+        List<Lesson> lessonList = lessonService.findAllByNullableKeywordWithPagination(1, null, pageable).toList();
         System.out.println(lessonList);
 
         assertNotNull(lessonList);
@@ -42,7 +46,8 @@ class LessonServiceImplSimpleTest {
 
     @Test
     void getLessonByKeyword_returnNotNull() {
-        List<Lesson> lessonList = lessonService.findAllByNullableKeywordWithPagination(1, "gag",1,1).toList();
+        Pageable pageable = PageRequest.of(1, 1);
+        List<Lesson> lessonList = lessonService.findAllByNullableKeywordWithPagination(1, "gag",pageable).toList();
         System.out.println(lessonList);
 
         assertNotNull(lessonList);
