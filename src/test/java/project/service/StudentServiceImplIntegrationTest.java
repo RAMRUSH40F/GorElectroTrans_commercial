@@ -28,7 +28,7 @@ class StudentServiceImplIntegrationTest {
     SubdepartmentServiceImpl subdepartmentService;
 
     @TestConfiguration
-    public class TestDataSourceConfig {
+    public static class TestDataSourceConfig {
 
         @Primary
         @Bean("TestDatasource")
@@ -61,10 +61,8 @@ class StudentServiceImplIntegrationTest {
         boolean studentExistsAfter = studentListAfter
                 .stream()
                 .anyMatch(s -> testStudent.getStudentId().equals(s.getStudentId()));
-
-
         Assertions.assertAll(
-                () -> Assertions.assertEquals(studentListAfter.size() - 1, studentListBefore.size()),
+                () -> Assertions.assertEquals(studentListBefore.size() + 1, studentListAfter.size()),
                 () -> Assertions.assertFalse(studentExistsBefore),
                 () -> Assertions.assertTrue(studentExistsAfter)
         );
@@ -92,6 +90,7 @@ class StudentServiceImplIntegrationTest {
     private Student createTestStudent() {
         return Student.builder()
                 .studentId("56122")
+                .subdepartment(new Subdepartment((short) 121, "SubdepName"))
                 .subdepartmentId((short) 121)
                 .name("Alex B.")
                 .build();
