@@ -37,6 +37,8 @@ public class StudentServiceImpl {
 
     public @NonNull Page<Student> findAllWithPagination(int departmentId, Pageable pageable) {
         setCurrentDataSource("DEP_" + departmentId);
+        // Пагинация с первой(для пользователя), с 0-ой для сервера.
+        pageable = pageable.withPage(pageable.getPageNumber() - 1);
         return repository.findAll(pageable);
     }
 

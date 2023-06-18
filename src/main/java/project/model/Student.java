@@ -41,8 +41,7 @@ public class Student {
     private Subdepartment subdepartment;
 
     @JsonGetter("subdepartmentName")
-    @Nullable
-    public String getSubdepartmentName() {
+    public @Nullable String getSubdepartmentName() {
         if (subdepartment != null) {
             return subdepartment.getName();
         }
