@@ -2,16 +2,13 @@ package project.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import project.exceptions.InvalidSubdepartmentException;
 import project.model.Student;
 import project.repository.StudentJpaRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static project.dataSource.DynamicDataSourceContextHolder.setCurrentDataSource;
@@ -39,7 +36,8 @@ public class StudentServiceImpl {
         return result;
 
     }
-    public @NonNull Page<Student> findAllWithPagination(Pageable pageable,int departmentId) {
+
+    public @NonNull Page<Student> findAllWithPagination(int departmentId, Pageable pageable) {
         setCurrentDataSource("DEP_" + departmentId);
         Page<Student> studentPage = repository.findAll(pageable);
         for (Student s : studentPage.getContent()) {
@@ -47,6 +45,7 @@ public class StudentServiceImpl {
         }
         return studentPage;
     }
+
 
     // У рабочих общая на всю компанию таблица с рабочими.
     public void deleteStudentById(int departmentId, String studentId) {

@@ -7,6 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import project.model.Student;
@@ -41,21 +43,20 @@ class StudentServiceImplIntegrationTest {
     @Test
     void addNewStudentBySubdepartmentNameTest_OneStudentSavedWhenSubdepartmentExists() {
         // Configuration
-        int depId = 99999;
+        int depId = 9;
         Subdepartment testSubdepartment = saveTestSubdepartmentAndReturn();
         Student testStudent = createTestStudent();
         testStudent.setSubdepartmentId(null);
         testStudent.setSubdepartmentName(testSubdepartment.getName());
 
-
-        List<Student> studentListBefore = studentService.findAllWithPagination(depId, 1, 999999999).getContent();
+        Pageable pageable = PageRequest.of(1, 999999);
+        List<Student> studentListBefore = studentService.findAllWithPagination(depId, pageable).getContent();
         boolean studentExistsBefore = studentListBefore
                 .stream()
                 .anyMatch(s -> testStudent.getStudentId().equals(s.getStudentId()));
 
         studentService.addNewStudentBySubdepartmentName(depId, testStudent);
-
-        List<Student> studentListAfter = studentService.findAllWithPagination(depId, 1, 999999999).getContent();
+        List<Student> studentListAfter = studentService.findAllWithPagination(depId, pageable).getContent();
 
         boolean studentExistsAfter = studentListAfter
                 .stream()
@@ -80,7 +81,8 @@ class StudentServiceImplIntegrationTest {
         testStudent.setSubdepartmentName(testSubdepartment.getName());
 
         studentService.addNewStudentByDepId(1, testStudent);
-        List<Student> studentListBefore = studentService.findAllWithPagination(depId, 1, 999999999).getContent();
+        Pageable pageable = PageRequest.of(1, 999999);
+        List<Student> studentListBefore = studentService.findAllWithPagination(depId, pageable).getContent();
         System.out.println(studentListBefore);
         assert studentListBefore.size() != 0;
 

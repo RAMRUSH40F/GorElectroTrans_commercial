@@ -9,11 +9,10 @@ import org.springframework.web.bind.annotation.*;
 import project.model.Student;
 import project.service.StudentServiceImpl;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-import static project.exceptions.Validator.*;
+import static project.exceptions.Validator.validateDepartmentId;
+import static project.exceptions.Validator.validateStudentId;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,11 +22,10 @@ public class StudentController {
 
     @GetMapping("/dep_{N}/students/data")
     public ResponseEntity<List<Student>> findStudents(@PathVariable("N") String depId,
-                                                       Pageable pageable,
-                                                      /*@RequestParam(value = "key",required = false) String key,*/
+                                                      Pageable paginationParams,
                                                       @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
-       int departmentId = validateDepartmentId(depId);
-        Page<Student> studentPage = studentService.findAllWithPagination(pageable,departmentId);
+        int departmentId = validateDepartmentId(depId);
+        Page<Student> studentPage = studentService.findAllWithPagination(departmentId, paginationParams);
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("students_count", String.valueOf(studentPage.getTotalElements()));
