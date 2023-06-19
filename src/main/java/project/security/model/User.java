@@ -25,7 +25,7 @@ public class User {
     private String password;
 
     @Column(name = "enabled")
-    private boolean isActive = true;
+    private boolean isActive;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "username")
