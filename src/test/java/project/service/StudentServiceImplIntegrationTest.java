@@ -1,8 +1,6 @@
 package project.service;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -24,6 +22,7 @@ import static project.dataSource.DynamicDataSourceContextHolder.getCurrentDataSo
 
 
 @SpringBootTest
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class StudentServiceImplIntegrationTest {
 
     @Autowired
@@ -62,6 +61,20 @@ class StudentServiceImplIntegrationTest {
 
         // Clean the attendance table
         jdbcTemplate.execute("DELETE FROM attendance");
+    }
+
+    @AfterAll
+    void deleteSchema() {
+        jdbcTemplate.execute("DROP VIEW Attendance_view");
+        jdbcTemplate.execute("DROP VIEW Materials_view");
+        jdbcTemplate.execute("DROP TABLE lesson");
+        jdbcTemplate.execute("DROP TABLE authorities");
+        jdbcTemplate.execute("DROP TABLE users");
+        jdbcTemplate.execute("DROP TABLE subdepartment");
+        jdbcTemplate.execute("DROP TABLE student");
+        jdbcTemplate.execute("DROP TABLE attendance");
+        jdbcTemplate.execute("DROP TABLE lesson_content");
+
     }
 
     @Test
