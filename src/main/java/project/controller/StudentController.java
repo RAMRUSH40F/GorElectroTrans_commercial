@@ -26,7 +26,6 @@ public class StudentController {
                                                       Pageable paginationParams,
                                                       @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         int departmentId = validateDepartmentId(depId);
-        validatePaginationParams(paginationParams.getPageNumber(),paginationParams.getPageSize());
         Page<Student> studentPage = studentService.findAllWithPagination(departmentId,key, paginationParams);
 
         HttpHeaders headers = new HttpHeaders();

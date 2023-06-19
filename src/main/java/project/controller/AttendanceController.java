@@ -27,10 +27,7 @@ public class AttendanceController {
                                                                            @RequestParam(value = "key", required = false) @Nullable String keyWord,
                                                                            @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
-        validatePaginationParams(paginationParams.getPageNumber(), paginationParams.getPageSize());
-
         Page<Attendance> attendancePage = attendanceService.findAllByKeywordWithPagination(departmentId, keyWord, paginationParams);
-
         HttpHeaders headers = new HttpHeaders();
         headers.add("attendance_count", String.valueOf(attendancePage.getTotalElements()));
 

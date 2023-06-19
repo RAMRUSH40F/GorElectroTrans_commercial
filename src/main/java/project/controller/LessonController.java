@@ -26,8 +26,6 @@ public class LessonController {
                                                                   @RequestParam(value = "key", required = false) String keyWord,
                                                                   @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
-       // validatePaginationParams(page, size);
-
         Page<Lesson> lessonPage =
                 lessonService.findAllByNullableKeywordWithPagination(departmentId, keyWord, paginationParams);
 
