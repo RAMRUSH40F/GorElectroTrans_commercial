@@ -36,7 +36,7 @@ public class JwtAuthorizationService {
     public @NonNull String authenticate(User user) {
         User userFromRepository = userService.getUserByUsername(user.getUsername());
         if (userFromRepository.getPassword().equals(user.getPassword())) {
-            if (user.isActive()) {
+            if (userFromRepository.isActive()) {
                 return createToken(userFromRepository);
             }
             throw new AuthenticationException("Этот аккаунт был отключен в базе данных, обратитесь к администратору.");
