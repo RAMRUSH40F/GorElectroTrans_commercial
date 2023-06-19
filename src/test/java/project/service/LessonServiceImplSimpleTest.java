@@ -12,6 +12,7 @@ import project.service.reportService.TeacherProfession;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -30,7 +31,7 @@ class LessonServiceImplSimpleTest {
     @Test
     void getPagedLessons_returnNotNull() {
         Pageable pageable = PageRequest.of(1, 15);
-        List<Lesson> lessonList = lessonService.findAllByNullableKeywordWithPagination(1, null, pageable).toList();
+        List<Lesson> lessonList = lessonService.findAllByNullableKeywordWithPagination(1, Optional.empty(), pageable).toList();
         System.out.println(lessonList);
 
         assertNotNull(lessonList);
@@ -47,7 +48,7 @@ class LessonServiceImplSimpleTest {
     @Test
     void getLessonByKeyword_returnNotNull() {
         Pageable pageable = PageRequest.of(1, 1);
-        List<Lesson> lessonList = lessonService.findAllByNullableKeywordWithPagination(1, "gag",pageable).toList();
+        List<Lesson> lessonList = lessonService.findAllByNullableKeywordWithPagination(1, Optional.of("gag"),pageable).toList();
         System.out.println(lessonList);
 
         assertNotNull(lessonList);

@@ -2,14 +2,14 @@ package project.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import project.model.Lesson;
 import project.repository.LessonJpaRepository;
+
+import java.util.Optional;
 
 import static project.dataSource.DynamicDataSourceContextHolder.setCurrentDataSource;
 
@@ -31,14 +31,14 @@ public class LessonServiceImpl {
     }
 
 
-    public @NonNull Page<Lesson> findAllByNullableKeywordWithPagination(int department, @Nullable String key, Pageable paginationParams) {
+    public @NonNull Page<Lesson> findAllByNullableKeywordWithPagination(int department, Optional<String> key, Pageable paginationParams) {
         setCurrentDataSource("DEP_" + department);
-        paginationParams =paginationParams.withPage(paginationParams.getPageNumber()-1);
-        paginationParams.getSortOr(Sort.by(Sort.Direction.DESC,"date"));
-        if (key == null) {
-            return  lessonJpaRepository.findAll(paginationParams);
+        paginationParams = paginationParams.withPage(paginationParams.getPageNumber() - 1);
+        paginationParams.getSortOr(Sort.by(Sort.Direction.DESC, "date"));
+        if (key.isEmpty()) {
+            return lessonJpaRepository.findAll(paginationParams);
         }
-        return lessonJpaRepository.findAllByKey(key, paginationParams);
+        return lessonJpaRepository.findAllByKey(key.get(), paginationParams);
     }
 
     public void deleteLessonById(int department, int id) {

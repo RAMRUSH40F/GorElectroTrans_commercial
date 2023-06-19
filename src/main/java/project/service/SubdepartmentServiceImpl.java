@@ -3,6 +3,7 @@ package project.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.NonNullApi;
 import org.springframework.stereotype.Service;
 import project.model.Subdepartment;
 import project.repository.SubdepartmentJpaRepository;
@@ -15,6 +16,7 @@ import static project.dataSource.DynamicDataSourceContextHolder.setCurrentDataSo
 
 @Service
 @RequiredArgsConstructor
+
 public class SubdepartmentServiceImpl {
 
     private final SubdepartmentJpaRepository repository;

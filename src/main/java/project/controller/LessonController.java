@@ -10,9 +10,9 @@ import project.model.Lesson;
 import project.service.LessonServiceImpl;
 
 import java.util.List;
+import java.util.Optional;
 
 import static project.exceptions.Validator.validateDepartmentId;
-import static project.exceptions.Validator.validatePaginationParams;
 
 @RestController("LessonControllerBean")
 @RequiredArgsConstructor
@@ -22,12 +22,12 @@ public class LessonController {
 
     @GetMapping("/dep_{N}/work_plan/data")
     public ResponseEntity<List<Lesson>> findLessonsWithPagination(@PathVariable("N") String depId,
-                                                                Pageable paginationParams,
-                                                                  @RequestParam(value = "key", required = false) String keyWord,
+                                                                  Pageable paginationParams,
+                                                                  Optional<String> key,
                                                                   @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
         Page<Lesson> lessonPage =
-                lessonService.findAllByNullableKeywordWithPagination(departmentId, keyWord, paginationParams);
+                lessonService.findAllByNullableKeywordWithPagination(departmentId, key, paginationParams);
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("lessons_count", String.valueOf(lessonPage.getTotalElements()));

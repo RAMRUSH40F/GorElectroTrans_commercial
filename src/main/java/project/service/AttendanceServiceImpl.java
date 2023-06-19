@@ -2,11 +2,9 @@ package project.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.stereotype.Service;
 import project.exceptions.BoundedEntityNotFound;
@@ -15,6 +13,8 @@ import project.model.AttendanceId;
 import project.model.Lesson;
 import project.model.Student;
 import project.repository.AttendanceJpaRepository;
+
+import java.util.Optional;
 
 import static project.dataSource.DynamicDataSourceContextHolder.setCurrentDataSource;
 
@@ -63,15 +63,15 @@ public class AttendanceServiceImpl {
         attendance.setStudent(student);
     }
 
-    public @NonNull Page<Attendance> findAllByKeywordWithPagination(int departmentId, @Nullable String keyWord, Pageable paginationParams) {
+    public @NonNull Page<Attendance> findAllByKeywordWithPagination(int departmentId, Optional<String> keyWord, Pageable paginationParams) {
         setCurrentDataSource("DEP_" + departmentId);
         Page<Attendance> attendancePage;
-        paginationParams =paginationParams.withPage(paginationParams.getPageNumber()-1);
-        paginationParams.getSortOr(Sort.by(Sort.Direction.ASC,"lessonId"));
-        if (keyWord == null) {
-           attendancePage= repository.findAll(paginationParams);
+        paginationParams = paginationParams.withPage(paginationParams.getPageNumber() - 1);
+        paginationParams.getSortOr(Sort.by(Sort.Direction.ASC, "lessonId"));
+        if (keyWord.isEmpty()) {
+            attendancePage = repository.findAll(paginationParams);
         } else {
-            attendancePage = repository.findByKeyword(keyWord, paginationParams);
+            attendancePage = repository.findByKeyword(keyWord.get(), paginationParams);
         }
         return attendancePage;
     }

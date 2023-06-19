@@ -1,16 +1,19 @@
 package project.controller;
 
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNullApi;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 import project.model.Attendance;
 import project.service.AttendanceServiceImpl;
 
 import java.util.List;
+import java.util.Optional;
 
 import static project.exceptions.Validator.validateDepartmentId;
 import static project.exceptions.Validator.validatePaginationParams;
@@ -24,10 +27,10 @@ public class AttendanceController {
     @GetMapping("/dep_{N}/attendance/data")
     public ResponseEntity<List<Attendance>> findAllByKeyWordWithPagination(@PathVariable("N") String depId,
                                                                            Pageable paginationParams,
-                                                                           @RequestParam(value = "key", required = false) @Nullable String keyWord,
+                                                                           Optional<String> key,
                                                                            @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
-        Page<Attendance> attendancePage = attendanceService.findAllByKeywordWithPagination(departmentId, keyWord, paginationParams);
+        Page<Attendance> attendancePage = attendanceService.findAllByKeywordWithPagination(departmentId, key, paginationParams);
         HttpHeaders headers = new HttpHeaders();
         headers.add("attendance_count", String.valueOf(attendancePage.getTotalElements()));
 

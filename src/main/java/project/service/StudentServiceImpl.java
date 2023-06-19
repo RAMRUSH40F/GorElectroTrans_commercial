@@ -12,6 +12,7 @@ import project.model.Subdepartment;
 import project.repository.StudentJpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 import static project.dataSource.DynamicDataSourceContextHolder.setCurrentDataSource;
 import static project.exceptions.Validator.validatePaginationParams;
@@ -37,14 +38,14 @@ public class StudentServiceImpl {
 
     }
 
-    public @NonNull Page<Student> findAllWithPagination(int departmentId, @Nullable String key, Pageable pageable) {
+    public @NonNull Page<Student> findAllWithPagination(int departmentId, Optional<String> key, Pageable pageable) {
         setCurrentDataSource("DEP_" + departmentId);
         // Пагинация с первой(для пользователя), с 0-ой для сервера.
         pageable = pageable.withPage(pageable.getPageNumber() - 1);
-        if(key==null) {
+        if(key.isEmpty()) {
             return repository.findAll(pageable);
         }
-        return repository.findAllByKey(key,pageable);
+        return repository.findAllByKey(key.get(),pageable);
     }
 
 

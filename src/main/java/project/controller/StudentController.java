@@ -11,6 +11,7 @@ import project.model.Student;
 import project.service.StudentServiceImpl;
 
 import java.util.List;
+import java.util.Optional;
 
 import static project.exceptions.Validator.*;
 
@@ -22,7 +23,7 @@ public class StudentController {
 
     @GetMapping("/dep_{N}/students/data")
     public ResponseEntity<List<Student>> findStudents(@PathVariable("N") String depId,
-                                                      @RequestParam(required = false) String key,
+                                                      Optional<String> key,
                                                       Pageable paginationParams,
                                                       @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         int departmentId = validateDepartmentId(depId);
@@ -42,8 +43,9 @@ public class StudentController {
                                                  @RequestBody Student student,
                                                  @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
+        HttpHeaders headers = new HttpHeaders();
         Student createdStudent = studentService.addNewStudentBySubdepartmentName(departmentId, student);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdStudent);
+        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(createdStudent);
 
     }
 
