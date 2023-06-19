@@ -41,11 +41,11 @@ public class Student {
     private Subdepartment subdepartment;
 
     @JsonGetter("subdepartmentName")
-    public @Nullable String getSubdepartmentName() {
+    public String getSubdepartmentName() {
         if (subdepartment != null) {
             return subdepartment.getName();
         }
-        return null;
+        return "";
     }
 
     @JsonSetter("subdepartmentName")
