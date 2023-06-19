@@ -11,6 +11,7 @@ import project.repository.LessonContentJpaRepository;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.OptionalInt;
 
 import static project.dataSource.DynamicDataSourceContextHolder.setCurrentDataSource;
 
@@ -39,7 +40,7 @@ public class LessonContentServiceImpl {
     public boolean save(Integer departmentId, LessonContent content) {
         setCurrentDataSource("DEP_" + departmentId);
         try {
-            return repository.save(content).getLessonId() == null;
+            return Optional.of(repository.save(content).getLessonId()).isPresent();
         }catch (DataIntegrityViolationException e) {
             throw new FileSizeLimitExceededException();
         }
