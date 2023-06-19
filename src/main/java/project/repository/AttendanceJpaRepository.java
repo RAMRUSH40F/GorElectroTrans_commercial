@@ -14,7 +14,7 @@ import project.model.AttendanceId;
 public interface AttendanceJpaRepository extends PagingAndSortingRepository<Attendance, AttendanceId> {
 
     @Query("select a from Attendance a " +
-            "where a.lesson.date like CONCAT('%', :key, '%') " +
+            "where DATE_FORMAT(a.lesson.date,'%d.%m.%Y') like CONCAT('%', :key, '%') " +
             "or a.lesson.topic like CONCAT('%', :key, '%') " +
             "or a.lesson.teacher like CONCAT('%', :key, '%') " +
             "or a.student.subdepartment.name like CONCAT('%', :key, '%') " +
