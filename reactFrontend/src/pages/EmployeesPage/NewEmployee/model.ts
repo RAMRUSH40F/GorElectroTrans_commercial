@@ -1,42 +1,75 @@
-import { createDomain, sample } from "effector";
+import { attach, createDomain, sample } from "effector";
 import { NOTICE, showNoticeFx } from "helpers/notice";
-// import { addAttendanceFx, attendanceGate } from "../model";
+import { $depId, addEmployeeFx, employeesGate } from "../model";
+import { IDepartment } from "models/Department";
+import departmentApi from "shared/api/departmentsApi";
 
 const domain = createDomain();
 
-export const errorReset = domain.createEvent();
 export const modalOpened = domain.createEvent();
 export const modalClosed = domain.createEvent();
+export const errorReset = domain.createEvent();
 
+export const $departments = domain.createStore<IDepartment[]>([]);
+export const $isLoading = domain.createStore<boolean>(true);
+export const $depError = domain.createStore<string | null>(null);
 export const $error = domain.createStore<string | null>(null);
 export const $isModalActive = domain.createStore(false);
 
-// Show notice when attendance was successfully added
-// sample({
-//     clock: addAttendanceFx.done,
-//     fn: (_) => ({ type: NOTICE.SUCCESS, message: "Запись успешно добавлена" }),
-//     target: showNoticeFx,
-// });
+const getDepartmentsFx = attach({ effect: departmentApi.fetchFx });
 
-// Cancel update request when modal window was closed
-// sample({
-//     clock: attendanceGate.close,
-//     source: addAttendanceFx,
-// }).watch(({ controller }) => {
-//     controller.abort();
-// });
+// Fetch departments when modal window opens
+sample({
+    clock: modalOpened,
+    source: $depId,
+    fn: (depId) => ({ depId, controller: new AbortController(), data: null }),
+    target: getDepartmentsFx,
+});
+
+// Cancel fetch departments request when modal window closes
+sample({
+    clock: modalClosed,
+    source: getDepartmentsFx,
+}).watch(({ controller }) => {
+    controller.abort();
+});
+
+// Show notice when employee was successfully added
+sample({
+    clock: addEmployeeFx.done,
+    fn: (_) => ({ type: NOTICE.SUCCESS, message: "Работник успешно добавлен" }),
+    target: showNoticeFx,
+});
+
+// Cancel update request when employees page was closed
+sample({
+    clock: employeesGate.close,
+    source: addEmployeeFx,
+}).watch(({ controller }) => {
+    controller.abort();
+});
 
 // Reset all stores when component mountes and unmounts
-// domain.onCreateStore(($store) => {
-//     $store.reset(modalOpened, modalClosed, attendanceGate.close);
-// });
+domain.onCreateStore(($store) => {
+    $store.reset(modalOpened, modalClosed, employeesGate.close);
+});
 
-// $error
-//     .on(addAttendanceFx.failData, (_, error) =>
-//         error.isCanceled ? null : error.message
-//     )
-//     .reset(errorReset, addAttendanceFx, modalClosed);
+$isLoading.on(getDepartmentsFx.pending, (_, pending) => pending);
 
-// $isModalActive
-//     .on(modalOpened, () => true)
-//     .on([modalClosed, addAttendanceFx.done], () => false);
+$departments.on(getDepartmentsFx.doneData, (_, data) => data);
+
+$depError
+    .on(getDepartmentsFx.failData, (_, { message, isCanceled }) =>
+        isCanceled ? null : message
+    )
+    .reset(modalClosed);
+
+$error
+    .on(addEmployeeFx.failData, (_, error) =>
+        error.isCanceled ? null : error.message
+    )
+    .reset(errorReset, addEmployeeFx, modalClosed);
+
+$isModalActive
+    .on(modalOpened, () => true)
+    .on([modalClosed, addEmployeeFx.done], () => false);

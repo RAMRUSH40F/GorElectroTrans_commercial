@@ -6,14 +6,14 @@ import {
     DIVISIONS_ROUTE,
     EMPLOYEES_ROUTE,
     WORK_PLAN_ROUTE,
-} from "../../../../constants/routesPathnames";
+} from "components/Router/routesPathnames";
 import cn from "classnames";
-import scheduleIconSrc from "../../../../assets/img/schedule-icon.svg";
-import checklistIconSrc from "../../../../assets/img/checklist-icon.svg";
-import buildingIconSrc from "../../../../assets/img/building-icon.svg";
-import workerIconSrc from "../../../../assets/img/worker.svg";
-import CheckAccess from "../../../CheckAccess";
-import { ROLES } from "../../../../constants/roles";
+import scheduleIconSrc from "assets/img/schedule-icon.svg";
+import checklistIconSrc from "assets/img/checklist-icon.svg";
+import buildingIconSrc from "assets/img/building-icon.svg";
+import workerIconSrc from "assets/img/worker.svg";
+import CheckAccess from "components/CheckAccess";
+import { ROLES } from "constants/roles";
 
 import styles from "./styles.module.scss";
 

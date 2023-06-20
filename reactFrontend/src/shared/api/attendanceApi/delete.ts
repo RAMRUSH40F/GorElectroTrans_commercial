@@ -14,6 +14,7 @@ export const deleteFx = createEffect<
             method: "DELETE",
             url: `/dep_${depId}/attendance/data`,
             signal: controller.signal,
+            data,
         });
         return data;
     } catch (error) {

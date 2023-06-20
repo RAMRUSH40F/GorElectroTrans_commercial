@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { ROOT_ROUTE } from "../../constants/routesPathnames";
+import { ROOT_ROUTE } from "components/Router/routesPathnames";
 
 import styles from "./styles.module.scss";
 

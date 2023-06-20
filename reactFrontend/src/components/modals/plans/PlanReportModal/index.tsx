@@ -4,10 +4,8 @@ import useEscape from "../../../../hooks/useEscape";
 import ModalLayout from "../../ModalLayout";
 import ModalHeader from "../../ModalLayout/ModalHeader";
 import ModalContent from "../../ModalLayout/ModalContent";
-import Alert from "../../../Alert";
-import { ALERT } from "../../../../constants/alertTypes";
+import Alert, { ALERT } from "../../../Alert";
 import { useParams } from "react-router-dom";
-import PlanService from "../../../../services/PlanService";
 import PlanReportForm from "../../../forms/PlanReportForm";
 import Loader from "../../../Loader";
 import { IQuarter } from "../../../../models/Quarter";
@@ -32,7 +30,7 @@ const PlanReportModal: React.FC<Props> = ({ closeModal }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [quartersError, setQuartersError] = useState<string | null>(null);
-    const [quarters, setQuarters] = useState<IQuarter[]>([]);
+    const [quarters] = useState<IQuarter[]>([]);
 
     const options: DropdownOption[] = quarters.map((quarter) => ({
         label: `Год: ${quarter.year}, квартал: ${quarter.quoter}`,
@@ -46,8 +44,8 @@ const PlanReportModal: React.FC<Props> = ({ closeModal }) => {
 
         const fetchQuarters = async () => {
             try {
-                const response = await PlanService.fetchQuarters(divisionId, { cancelToken: cancelToken.token });
-                setQuarters(response.data);
+                // const response = await PlanService.fetchQuarters(divisionId, { cancelToken: cancelToken.token });
+                // setQuarters(response.data);
             } catch (error) {
                 const err = error as any;
                 if (err.response.status === 401) {

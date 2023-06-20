@@ -1,9 +1,9 @@
 import { merge, attach, createDomain, sample } from "effector";
 import { debounce } from "patronum";
 import { createGate } from "effector-react";
-import attendanceApi from "shared/api/attendanceApi";
-import { AbortParams } from "shared/api/types";
 import { IEmployee } from "models/Employee";
+import employeeApi from "shared/api/employeesApi";
+import { AbortParams } from "shared/api/types";
 
 interface GateProps {
     depId: string;
@@ -46,44 +46,44 @@ export const $search = domain.createStore<string>("");
 export const $depId = domain.createStore<string>("");
 // #endregion
 
-export const getAttendanceFx = attach({
-    effect: attendanceApi.fetchFx,
+export const getEmployeesFx = attach({
+    effect: employeeApi.fetchFx,
 });
 
-// export const addAttendanceFx = attach({
-//     effect: attendanceApi.postFx,
-//     source: $depId,
-//     mapParams({ data, controller }: AbortParams<AttendanceDto>, depId) {
-//         return { depId, data, controller };
-//     },
-// });
+export const addEmployeeFx = attach({
+    effect: employeeApi.postFx,
+    source: $depId,
+    mapParams({ data, controller }: AbortParams<IEmployee>, depId) {
+        return { depId, data, controller };
+    },
+});
 
-// export const updateAttendanceFx = attach({
-//     effect: attendanceApi.putFx,
-//     source: $depId,
-//     mapParams({ data, controller }: AbortParams<AttendanceDto>, depId) {
-//         return { depId, data, controller };
-//     },
-// });
+export const updateEmployeeFx = attach({
+    effect: employeeApi.putFx,
+    source: $depId,
+    mapParams({ data, controller }: AbortParams<IEmployee>, depId) {
+        return { depId, data, controller };
+    },
+});
 
-// export const removeAttendanceFx = attach({
-//     effect: attendanceApi.deleteFx,
-//     source: $depId,
-//     mapParams({ controller, data }: AbortParams<AttendanceId>, depId) {
-//         return {
-//             depId,
-//             data,
-//             controller,
-//         };
-//     },
-// });
+export const removeEmployeeFx = attach({
+    effect: employeeApi.deleteFx,
+    source: $depId,
+    mapParams({ controller, data }: AbortParams<string>, depId) {
+        return {
+            depId,
+            data,
+            controller,
+        };
+    },
+});
 
-// const fetchStarted = merge([
-//     getAttendanceFx.pending,
-//     addAttendanceFx.pending,
-//     updateAttendanceFx.pending,
-//     removeAttendanceFx.pending,
-// ]);
+const fetchStarted = merge([
+    getEmployeesFx.pending,
+    addEmployeeFx.pending,
+    updateEmployeeFx.pending,
+    removeEmployeeFx.pending,
+]);
 
 // Set department id when accessing page
 sample({
@@ -130,55 +130,55 @@ sample({
         search === $search.defaultState &&
         page === $page.defaultState &&
         depId !== "",
-    target: getAttendanceFx,
+    target: getEmployeesFx,
 });
 
 // Cancel fetch request when component is unmounted
 sample({
     clock: employeesGate.close,
-    source: getAttendanceFx,
+    source: getEmployeesFx,
 }).watch(({ controller }) => controller.abort());
 
 // Cancel fetch request when search or page change
 sample({
     clock: paramsChanged,
-    source: getAttendanceFx,
+    source: getEmployeesFx,
 }).watch(({ controller }) => {
     controller.abort();
 });
 
-// Decrease page when the last attendance on the page was deleted
-// sample({
-//     clock: removeAttendanceFx.done,
-//     source: { attendances: $employees, page: $page },
-//     filter: ({ attendances, page }) => attendances.length === 1 && page > 1,
-//     fn: ({ page }) => page - 1,
-//     target: pageChanged,
-// });
+// Decrease page when the last employee on the page was deleted
+sample({
+    clock: removeEmployeeFx.done,
+    source: { employees: $employees, page: $page },
+    filter: ({ employees, page }) => employees.length === 1 && page > 1,
+    fn: ({ page }) => page - 1,
+    target: pageChanged,
+});
 
-// // Fetch attendance when search params were changed or attendance was deleted or updated
-// sample({
-//     clock: [paramsChanged, removeAttendanceFx.done, addAttendanceFx.done],
-//     source: { depId: $depId, page: $page, size: $size, search: $search },
-//     filter: ({ depId }) => depId !== "",
-//     fn: (params) => ({
-//         ...params,
-//         controller: new AbortController(),
-//     }),
-//     target: getAttendanceFx,
-// });
+// // Fetch employees when search params were changed or employee was deleted or updated
+sample({
+    clock: [paramsChanged, removeEmployeeFx.done, addEmployeeFx.done],
+    source: { depId: $depId, page: $page, size: $size, search: $search },
+    filter: ({ depId }) => depId !== "",
+    fn: (params) => ({
+        ...params,
+        controller: new AbortController(),
+    }),
+    target: getEmployeesFx,
+});
 
 // Set loading state when data is fetching
 sample({
-    clock: getAttendanceFx.pending,
+    clock: getEmployeesFx.pending,
     source: $employees,
-    filter: (attendances) => attendances.length === 0,
+    filter: (employees) => employees.length === 0,
     target: loadingStarted,
 });
 
 // Set loading state when request is finished
 sample({
-    clock: getAttendanceFx.finally,
+    clock: getEmployeesFx.finally,
     target: loadingEnded,
 });
 
@@ -189,29 +189,26 @@ domain.onCreateStore(($store) => {
 
 $isLoading.on(loadingStarted, () => true).on(loadingEnded, () => false);
 
-// $isFetching.on(fetchStarted, (_, pending) => pending);
+$isFetching.on(fetchStarted, (_, pending) => pending);
 
 $error
-    .on(getAttendanceFx, () => null)
-    .on(getAttendanceFx.failData, (_, error) =>
+    .on(getEmployeesFx, () => null)
+    .on(getEmployeesFx.failData, (_, error) =>
         error.isCanceled ? null : error.message
     );
 
-// $employees
-//     .on(getAttendanceFx.doneData, (_, { data }) => data)
-//     .on(updateAttendanceFx.doneData, (attedances, data) => {
-//         return attedances.map((attendance) => {
-//             if (
-//                 attendance.lessonId === data.lessonId &&
-//                 attendance.studentId === data.studentId
-//             ) {
-//                 return { ...attendance, ...data };
-//             }
-//             return attendance;
-//         });
-//     });
+$employees
+    .on(getEmployeesFx.doneData, (_, { data }) => data)
+    .on(updateEmployeeFx.doneData, (employees, data) =>
+        employees.map((employee) => {
+            if (employee.studentId === data.studentId) {
+                return { ...employee, ...data };
+            }
+            return employee;
+        })
+    );
 
-$totalPages.on(getAttendanceFx.doneData, (_, { totalPages }) => totalPages);
+$totalPages.on(getEmployeesFx.doneData, (_, { totalPages }) => totalPages);
 
 $page.on(pageChanged, (_, page) => page).reset(debouncedSearchChanged);
 

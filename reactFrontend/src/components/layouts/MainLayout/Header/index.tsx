@@ -1,10 +1,10 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
-import logoSrc from "../../../../assets/img/logo.svg";
-import { LOGIN_ROUTE } from "../../../../constants/routesPathnames";
-import Container from "../../../Container";
-import ActionButton from "../../../buttons/ActionButton";
-import { logoutFx } from "../../../../shared/auth";
+import logoSrc from "assets/img/logo.svg";
+import { LOGIN_ROUTE } from "components/Router/routesPathnames";
+import Container from "components/Container";
+import ActionButton from "components/buttons/ActionButton";
+import { logoutFx } from "shared/auth";
 
 import styles from "./styles.module.scss";
 

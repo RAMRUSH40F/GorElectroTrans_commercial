@@ -43,11 +43,12 @@ sample({
 sample({
     clock: confirmButtonClicked,
     source: $editingAttendance,
-    filter: (attendance) => attendance !== null,
+    filter: (attendance: IAttendance | null): attendance is IAttendance =>
+        attendance !== null,
     fn: (attendance) => ({
         data: {
-            lessonId: attendance?.lessonId || 1,
-            studentId: attendance?.studentId || "",
+            lessonId: attendance.lessonId,
+            studentId: attendance.studentId,
         },
         controller: new AbortController(),
     }),

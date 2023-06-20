@@ -1,31 +1,86 @@
-import React from "react";
-import ActionButton from "../../../components/buttons/ActionButton";
-import AddDepartmentModal from "../../../components/modals/departments/AddDepartmentModal";
-import useLockedBody from "../../../hooks/useLockedBody";
-import cn from "classnames";
+import React, { useRef } from "react";
+import ActionButton from "components/buttons/ActionButton";
+import { useUnit } from "effector-react";
+import { addDepartmentFx } from "../model";
+import Alert, { ALERT } from "components/Alert";
+import useClickOutside from "hooks/useClickOutside";
+import useLockedBody from "hooks/useLockedBody";
+import useEscape from "hooks/useEscape";
+import ModalLayout from "components/modals/ModalLayout";
+import ModalHeader from "components/modals/ModalLayout/ModalHeader";
+import ModalContent from "components/modals/ModalLayout/ModalContent";
+import DepartmentForm from "pages/DepartmentsPage/DepartmentForm";
+import { TDepartmentDto } from "models/Department";
+import {
+    $isModalActive,
+    $error,
+    errorReset,
+    modalClosed,
+    modalOpened,
+} from "./model";
 
-import "./styles.scss";
+import styles from "./styles.module.scss";
 
-type Props = {
-    className?: string;
-};
-
-const NewDepartment: React.FC<Props> = ({ className }) => {
-    const [isAdding, setIsAdding] = React.useState(false);
-    useLockedBody(isAdding);
-
+const NewDepartment: React.FC = () => {
     return (
         <>
-            {isAdding && <AddDepartmentModal closeModal={() => setIsAdding(false)} />}
+            <DepartmentModal />
             <ActionButton
-                className={cn("new-department-btn", className)}
+                className={styles.addBtn}
                 colorType="info"
-                onClick={() => setIsAdding(true)}
+                onClick={() => modalOpened()}
             >
-                Добавить +
+                Добавить
             </ActionButton>
         </>
     );
 };
 
 export default NewDepartment;
+
+function DepartmentModal() {
+    const isModalActive = useUnit($isModalActive);
+    const modalRef = useRef<HTMLDivElement | null>(null);
+
+    useClickOutside(modalRef, () => modalClosed());
+    useEscape(() => modalClosed());
+    useLockedBody(isModalActive);
+
+    if (!isModalActive) return null;
+
+    const handleSubmit = async (values: TDepartmentDto) => {
+        try {
+            await addDepartmentFx({
+                data: { name: values.name.trim() },
+                controller: new AbortController(),
+            });
+        } catch (error) {}
+    };
+
+    return (
+        <ModalLayout ref={modalRef}>
+            <ModalHeader closeModal={() => modalClosed()}>
+                Добавление
+            </ModalHeader>
+            <ModalContent>
+                <ErrorAlert />
+                <DepartmentForm
+                    clearError={() => errorReset()}
+                    onSubmit={handleSubmit}
+                />
+            </ModalContent>
+        </ModalLayout>
+    );
+}
+
+function ErrorAlert() {
+    const error = useUnit($error);
+    if (error) {
+        return (
+            <Alert className={styles.alert} type={ALERT.ERROR}>
+                {error}
+            </Alert>
+        );
+    }
+    return null;
+}
