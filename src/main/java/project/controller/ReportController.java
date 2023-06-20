@@ -2,6 +2,7 @@ package project.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -47,17 +48,8 @@ public class ReportController {
 
     @GetMapping("/dep_{N}/report/date")
     public List<QuarterDateModel> getAvailableQuarterYear() {
-        int year = Year.now().getValue();
-        int quarter = LocalDate.now().get(IsoFields.QUARTER_OF_YEAR);
-        List<QuarterDateModel> intervals = new ArrayList<>();
-        for (int i = 0; i < 4; i++) {
-            intervals.add(new QuarterDateModel(year, quarter));
-            quarter--;
-            if (quarter <= 0) {
-                quarter = 4;
-                year--;
-            }
-        }
-        return intervals;
+        return reportService.getQuarterDateModelList();
     }
+
+
 }
