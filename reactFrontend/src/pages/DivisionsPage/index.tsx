@@ -1,6 +1,6 @@
 import React from "react";
 import SectionHeader from "../../components/SectionHeader";
-import { DIVISIONS_ROUTES, DivisionRoute } from "constants/divisionsRoutes";
+import { DIVISIONS_ROUTES, DivisionRoute } from "./divisionsRoutes";
 import { Link } from "react-router-dom";
 
 import styles from "./styles.module.scss";

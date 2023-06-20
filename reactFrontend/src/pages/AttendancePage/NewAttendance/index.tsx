@@ -4,16 +4,15 @@ import ActionButton from "components/buttons/ActionButton";
 import ModalLayout from "components/modals/ModalLayout";
 import ModalHeader from "components/modals/ModalLayout/ModalHeader";
 import ModalContent from "components/modals/ModalLayout/ModalContent";
-import Alert from "components/Alert";
+import Alert, { ALERT } from "components/Alert";
 import AttendanceForm, {
     AttendanceFormState,
 } from "pages/AttendancePage/AttendanceForm";
-import { ALERT } from "constants/alertTypes";
 import { useUnit } from "effector-react";
 import useClickOutside from "hooks/useClickOutside";
 import useEscape from "hooks/useEscape";
-import { addAttendanceFx } from "../model";
 import { AttendanceDto } from "models/Attendance";
+import { addAttendanceFx } from "../model";
 import {
     $isModalActive,
     errorReset,

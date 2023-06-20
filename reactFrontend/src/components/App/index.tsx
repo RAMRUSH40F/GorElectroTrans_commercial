@@ -1,8 +1,7 @@
 import React from "react";
 import Router from "../Router";
 import Loader from "../Loader";
-import Alert from "../Alert";
-import { ALERT } from "../../constants/alertTypes";
+import Alert, { ALERT } from "../Alert";
 import { useGate, useUnit } from "effector-react";
 import { $error, $isLoading, AuthGate } from "../../shared/auth";
 

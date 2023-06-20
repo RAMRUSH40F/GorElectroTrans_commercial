@@ -10,23 +10,20 @@ import {
     UNAUTHORIZED_ROUTE,
     MISSING_ROUTE,
     LOGIN_ROUTE,
-} from "../../constants/routesPathnames";
-import DepartmentsContextProvider from "../../context/departmentsContext/DepartmentsContextProvider";
-import PlansContextProvider from "../../context/plansContext/PlansContextProvider";
-import EmployeesContextProvider from "../../context/employeesContext/EmployeesContextProvider";
-import AttendancePage from "../../pages/AttendancePage";
-import DepartmentsPage from "../../pages/DepartmentsPage";
-import DivisionsPage from "../../pages/DivisionsPage";
-import LoginPage from "../../pages/LoginPage";
-import EmployeesPage from "../../pages/EmployeesPage";
-import PlanPage from "../../pages/PlanPage";
+} from "./routesPathnames";
+import AttendancePage from "pages/AttendancePage";
+import DepartmentsPage from "pages/DepartmentsPage";
+import DivisionsPage from "pages/DivisionsPage";
+import LoginPage from "pages/LoginPage";
+import EmployeesPage from "pages/EmployeesPage";
+import PlanPage from "pages/PlanPage";
 import MainLayout from "../layouts/MainLayout";
 import MenuLayout from "../layouts/MenuLayout";
 import RoleProtectedRoute from "./RoleProtectedRoute";
-import { ROLES } from "../../constants/roles";
+import { ROLES } from "constants/roles";
 import ProtectedDepartmentRoute from "./ProtectedDepartmentRoute";
-import MissingPage from "../../pages/MissingPage";
-import UnauthorizedPage from "../../pages/UnauthorizedPage";
+import MissingPage from "pages/MissingPage";
+import UnauthorizedPage from "pages/UnauthorizedPage";
 import HomeRoute from "./HomeRoute";
 
 const Router: React.FC = () => {
@@ -34,7 +31,6 @@ const Router: React.FC = () => {
         <Routes>
             <Route element={<MainLayout />}>
                 <Route path={LOGIN_ROUTE.PATH} element={<LoginPage />} />
-
                 <Route
                     element={
                         <RoleProtectedRoute allowedRoles={[ROLES.ADMIN]} />
@@ -50,27 +46,15 @@ const Router: React.FC = () => {
                     <Route element={<MenuLayout />}>
                         <Route
                             path={WORK_PLAN_ROUTE.PATH}
-                            element={
-                                <PlansContextProvider>
-                                    <PlanPage />
-                                </PlansContextProvider>
-                            }
+                            element={<PlanPage />}
                         />
                         <Route
                             path={EMPLOYEES_ROUTE.PATH}
-                            element={
-                                <EmployeesContextProvider>
-                                    <EmployeesPage />
-                                </EmployeesContextProvider>
-                            }
+                            element={<EmployeesPage />}
                         />
                         <Route
                             path={DEPARTMENTS_ROUTE.PATH}
-                            element={
-                                <DepartmentsContextProvider>
-                                    <DepartmentsPage />
-                                </DepartmentsContextProvider>
-                            }
+                            element={<DepartmentsPage />}
                         />
                         <Route
                             path={ATTENDANCE_ROUTE.PATH}

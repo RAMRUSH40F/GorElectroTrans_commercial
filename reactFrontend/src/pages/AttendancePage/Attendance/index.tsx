@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import Alert from "components/Alert";
+import Alert, { ALERT } from "components/Alert";
 import Loader from "components/Loader";
 import Pagination from "components/Pagination";
 import Table from "components/Table";
@@ -8,12 +8,12 @@ import TableBodyRow from "components/Table/TableBodyRow";
 import TableBodyCell from "components/Table/TableBodyRow/TableBodyCell";
 import TableHead from "components/Table/TableHead";
 import TableHeadCell from "components/Table/TableHead/TableHeadCell";
-import { ALERT } from "constants/alertTypes";
 import { ATTENDACE_RESULT_VALUE } from "constants/attendanceResult";
 import { formatDate } from "helpers/formatDate";
 import { useUnit } from "effector-react";
 import { modalOpened } from "../EditAttendance/model";
 import EditAttendance from "../EditAttendance";
+import cn from "classnames";
 import {
     $attendances,
     $error,
@@ -23,7 +23,6 @@ import {
     $totalPages,
     pageChanged,
 } from "../model";
-import cn from "classnames";
 
 import styles from "./styles.module.scss";
 

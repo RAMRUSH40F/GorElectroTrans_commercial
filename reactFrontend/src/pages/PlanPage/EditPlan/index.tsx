@@ -1,11 +1,10 @@
 import React, { useRef, MouseEvent } from "react";
 import useClickOutside from "hooks/useClickOutside";
 import useEscape from "hooks/useEscape";
-import { ALERT } from "constants/alertTypes";
 import ModalLayout from "components/modals/ModalLayout";
 import ModalHeader from "components/modals/ModalLayout/ModalHeader";
 import ModalContent from "components/modals/ModalLayout/ModalContent";
-import Alert from "components/Alert";
+import Alert, { ALERT } from "components/Alert";
 import Confirm from "components/Comfirm";
 import PlanForm, { PlanFormValues } from "pages/PlanPage/PlanForm";
 import { updatePlanFx } from "../model";

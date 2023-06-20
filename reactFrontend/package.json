@@ -15,8 +15,6 @@
         "date-fns": "^2.29.3",
         "effector": "^22.8.6",
         "effector-react": "^22.5.3",
-        "eslint": "^8.42.0",
-        "eslint-plugin-effector": "^0.10.5",
         "formik": "^2.2.9",
         "jwt-decode": "^3.1.2",
         "patronum": "^1.18.0",

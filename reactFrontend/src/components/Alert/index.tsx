@@ -1,8 +1,14 @@
 import React from "react";
-import { ALERT } from "../../constants/alertTypes";
 import cn from "classnames";
 
 import styles from "./styles.module.scss";
+
+export enum ALERT {
+    WARNING = "warning",
+    SUCCESS = "success",
+    ERROR = "error",
+    INFO = "info",
+}
 
 type Props = {
     children: React.ReactNode;

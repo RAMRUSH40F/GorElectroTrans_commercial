@@ -1,17 +1,14 @@
-import React, { useState, useEffect, FC } from "react";
+import React, { useEffect, FC } from "react";
 import Pagination from "../../../components/Pagination";
 import Table from "../../../components/Table";
 import TableBodyRow from "../../../components/Table/TableBodyRow";
 import TableBodyCell from "../../../components/Table/TableBodyRow/TableBodyCell";
 import TableHead from "../../../components/Table/TableHead";
 import TableHeadCell from "../../../components/Table/TableHead/TableHeadCell";
-import useLockedBody from "../../../hooks/useLockedBody";
-import { IEmployee } from "../../../models/Employee";
 import { useSearchParams } from "react-router-dom";
-import Alert from "../../../components/Alert";
-import { ALERT } from "../../../constants/alertTypes";
+import Alert, { ALERT } from "../../../components/Alert";
 import Loader from "../../../components/Loader";
-import EditEmployeeModal from "../../../components/modals/employess/EditEmployeeModal";
+import EditEmployee from "../EditEmployee";
 import { useUnit } from "effector-react";
 import cn from "classnames";
 import {
@@ -25,27 +22,20 @@ import {
 } from "../model";
 
 import styles from "./styles.module.scss";
+import { modalOpened } from "../EditEmployee/model";
 
 const Employees: FC = () => {
-    const [editingEmployee, setEditingEmployee] = useState<IEmployee | null>(
-        null
-    );
-    useLockedBody(!!editingEmployee);
-
     return (
-        <div>
-            {editingEmployee && (
-                <EditEmployeeModal
-                    closeModal={() => setEditingEmployee(null)}
-                    employee={editingEmployee}
-                />
-            )}
-            <ErrorAlert />
-            <Loading />
-            <EmptyAlert />
-            <TableContent />
-            <PaginationController />
-        </div>
+        <>
+            <EditEmployee />
+            <div>
+                <ErrorAlert />
+                <Loading />
+                <EmptyAlert />
+                <TableContent />
+                <PaginationController />
+            </div>
+        </>
     );
 };
 
@@ -58,6 +48,7 @@ function TableContent() {
         $isFetching,
         $error,
     ]);
+
     if (isLoading || error || employees.length === 0) return null;
 
     return (
@@ -72,7 +63,7 @@ function TableContent() {
                     {employees.map((employee) => (
                         <TableBodyRow
                             key={employee.studentId}
-                            onClick={() => {}}
+                            onClick={() => modalOpened(employee)}
                         >
                             <TableBodyCell>{employee.studentId}</TableBodyCell>
                             <TableBodyCell className={styles.nameCell}>

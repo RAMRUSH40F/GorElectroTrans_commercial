@@ -1,10 +1,9 @@
 import React from "react";
 import LoginForm, { LoginFormState } from "pages/LoginPage/LoginForm";
-import { DIVISIONS_ROUTE } from "constants/routesPathnames";
+import { DIVISIONS_ROUTE } from "components/Router/routesPathnames";
 import { ROLES } from "constants/roles";
 import { getDivisionRoute } from "helpers/getDivisionRoute";
-import Alert from "components/Alert";
-import { ALERT } from "constants/alertTypes";
+import Alert, { ALERT } from "components/Alert";
 import { useLocation, useNavigate } from "react-router-dom";
 import { $error, errorReset } from "./model";
 import { useUnit } from "effector-react";
