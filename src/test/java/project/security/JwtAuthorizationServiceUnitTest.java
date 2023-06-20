@@ -18,13 +18,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class JwtAuthorizationServiceIntegrationTest {
+class JwtAuthorizationServiceUnitTest {
 
     @Autowired
     JwtAuthorizationService service;
 
     @Autowired
     JdbcTemplate jdbcTemplate;
+
 
     @TestConfiguration
     public static class TestDataSourceConfig {
@@ -38,6 +39,7 @@ class JwtAuthorizationServiceIntegrationTest {
                     .build();
         }
     }
+
 
     @BeforeEach
     void cleanDatabase() {
@@ -65,6 +67,51 @@ class JwtAuthorizationServiceIntegrationTest {
         jdbcTemplate.execute("DROP TABLE student");
         jdbcTemplate.execute("DROP TABLE attendance");
         jdbcTemplate.execute("DROP TABLE lesson_content");
+
+    }
+
+
+    @DisplayName("Validate valid token")
+    @Test
+    void testValidateToken_validToken() {
+        //Credentials of user with authority 1 from H2 database initial script
+        String username = "EthanHo";
+        String password = "12345678";
+
+        String token = service.authenticate(User.builder().username(username).password(password).build());
+
+        assertDoesNotThrow(() -> service.validateToken(token));
+    }
+
+
+    @DisplayName("Validate expired token")
+    @Test
+    void testValidateToken_expiredToken() {
+
+        //Credentials of user with authority 1 from H2 database initial script
+        String username = "EthanHo";
+        String password = "12345678";
+
+        String token = service.authenticate(User.builder().username(username).password(password).build());
+
+
+        // Состарить токен как-то
+
+//        assertThrows(RuntimeException.class, () -> service.validateToken(token));
+    }
+
+
+    @DisplayName("Validate invalid token, disabledUser")
+    @Test
+    void testValidateToken_tokenOfDisabledPerson() {
+        //Credentials of user with authority 14 from H2 database initial script
+        String username = "JamesLiu";
+        String password = "letmein123";
+
+        String token = service.authenticate(User.builder().username(username).password(password).build());
+        jdbcTemplate.execute("UPDATE users SET enabled=0 WHERE username='" + username + "'");
+
+        assertFalse(service.validateToken(token));
 
     }
 
