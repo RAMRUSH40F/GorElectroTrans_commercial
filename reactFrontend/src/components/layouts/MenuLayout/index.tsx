@@ -2,12 +2,12 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 import Menu from "./Menu";
 
-import "./styles.scss";
+import styles from "./styles.module.scss";
 
 const MenuLayout: React.FC = () => {
     return (
-        <div className="menu-layout">
-            <Menu className="menu-layout__menu" />
+        <div className={styles.layout}>
+            <Menu className={styles.menu} />
             <Outlet />
         </div>
     );

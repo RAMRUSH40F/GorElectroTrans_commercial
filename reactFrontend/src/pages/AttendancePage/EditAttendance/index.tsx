@@ -54,29 +54,6 @@ const EditAttendance: React.FC = () => {
 
 export default EditAttendance;
 
-function ErrorAlert() {
-    const error = useUnit($error);
-    if (!error) return null;
-    return (
-        <Alert className={styles.alert} type={ALERT.ERROR}>
-            {error}
-        </Alert>
-    );
-}
-
-function Confirming() {
-    const isConfirming = useUnit($isConfirming);
-    if (!isConfirming) return null;
-
-    return (
-        <Confirm
-            title="Вы уверены, что хотите удалить запись?"
-            handleConfirm={() => confirmButtonClicked()}
-            handleDecline={() => confirmingClosed()}
-        />
-    );
-}
-
 function Form() {
     const [attendance, isConfirming, isDisabled] = useUnit([
         $editingAttendance,
@@ -100,6 +77,7 @@ function Form() {
     };
 
     if (isConfirming) return null;
+
     return (
         <AttendanceForm
             onSubmit={handleSubmit}
@@ -108,6 +86,28 @@ function Form() {
             isDisabled={isDisabled}
             isEditing={true}
             clearError={() => errorReset()}
+        />
+    );
+}
+
+function ErrorAlert() {
+    const error = useUnit($error);
+    if (!error) return null;
+    return (
+        <Alert className={styles.alert} type={ALERT.ERROR}>
+            {error}
+        </Alert>
+    );
+}
+
+function Confirming() {
+    const isConfirming = useUnit($isConfirming);
+    if (!isConfirming) return null;
+    return (
+        <Confirm
+            title="Вы уверены, что хотите удалить запись?"
+            handleConfirm={() => confirmButtonClicked()}
+            handleDecline={() => confirmingClosed()}
         />
     );
 }

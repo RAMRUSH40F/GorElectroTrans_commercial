@@ -7,124 +7,132 @@ import TableHead from "../../../components/Table/TableHead";
 import TableHeadCell from "../../../components/Table/TableHead/TableHeadCell";
 import useLockedBody from "../../../hooks/useLockedBody";
 import { IEmployee } from "../../../models/Employee";
-import EmployeeService from "../../../services/EmployeeService";
-import axios from "axios";
-import { useParams, useSearchParams } from "react-router-dom";
-import { useEmployeesContext } from "../../../context/employeesContext";
+import { useSearchParams } from "react-router-dom";
 import Alert from "../../../components/Alert";
 import { ALERT } from "../../../constants/alertTypes";
 import Loader from "../../../components/Loader";
 import EditEmployeeModal from "../../../components/modals/employess/EditEmployeeModal";
-// import { useUserContext } from "../../../context/userContext";
+import { useUnit } from "effector-react";
+import cn from "classnames";
+import {
+    $employees,
+    $error,
+    $isFetching,
+    $isLoading,
+    $page,
+    $totalPages,
+    pageChanged,
+} from "../model";
 
-import "./styles.scss";
-
-const LIMIT = 20;
+import styles from "./styles.module.scss";
 
 const Employees: FC = () => {
-    const [editingEmployee, setEditingEmployee] = useState<IEmployee | null>(null);
+    const [editingEmployee, setEditingEmployee] = useState<IEmployee | null>(
+        null
+    );
     useLockedBody(!!editingEmployee);
 
-    const { divisionId = "" } = useParams();
-    const [searchParams, setSearchParams] = useSearchParams();
-    
-    // const { logout } = useUserContext();
-    const { employees, setEmployees } = useEmployeesContext();
-    const [isLoading, setIsLoading] = useState(true);
-    const [isFetching, setIsFetching] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-
-    const [page, setPage] = useState<number>(searchParams.get("page") ? Number(searchParams.get("page")) : 1);
-    const [totalPages, setTotalPages] = useState(0);
-
-    useEffect(() => {
-        const cancelToken = axios.CancelToken.source();
-        setIsFetching(true);
-        setError(null);
-
-        const fetchEmployees = async () => {
-            try {
-                const response = await EmployeeService.fetch(divisionId, {
-                    params: {
-                        page,
-                        size: LIMIT,
-                    },
-                    cancelToken: cancelToken.token,
-                });
-                const totalEmployees = response.headers["students_count"];
-                const totalPages = totalEmployees ? Math.ceil(totalEmployees / LIMIT) : 1;
-                setEmployees(response.data);
-                setTotalPages(totalPages);
-            } catch (error) {
-                const err = error as any;
-                if (err?.response?.status === 401) {
-                    // logout();
-                } else {
-                    setError(err?.response?.data?.message ?? "Не удалось получить данные с сервера");
-                }
-            } finally {
-                setIsLoading(false);
-                setIsFetching(false);
-            }
-        };
-        fetchEmployees();
-
-        return () => cancelToken.cancel();
-    }, [page, setEmployees, divisionId]);
-
-    const handlePageChange = (selectedItem: { selected: number }) => {
-        setPage(selectedItem.selected + 1);
-        searchParams.set("page", String(selectedItem.selected + 1));
-        setSearchParams(searchParams);
-    };
-
     return (
-        <div className="employees">
+        <div>
             {editingEmployee && (
-                <EditEmployeeModal closeModal={() => setEditingEmployee(null)} employee={editingEmployee} />
+                <EditEmployeeModal
+                    closeModal={() => setEditingEmployee(null)}
+                    employee={editingEmployee}
+                />
             )}
-            {error && <Alert type={ALERT.ERROR}>{error}</Alert>}
-            {isLoading && <Loader className="employees__loader" />}
-            {!error && !isLoading && employees.length < 1 && (
-                <Alert type={ALERT.INFO}>На текущий момент нет ни одной записи.</Alert>
-            )}
-            {!error && !isLoading && employees.length > 0 && (
-                <>
-                    <div className="employees__table-wrapper">
-                        <Table className="employees__table">
-                            <TableHead>
-                                <TableHeadCell>Табельный номер</TableHeadCell>
-                                <TableHeadCell>ФИО</TableHeadCell>
-                                <TableHeadCell>Отдел</TableHeadCell>
-                            </TableHead>
-                            <tbody
-                                className={`employees__table-body ${isFetching && "employees__table-body--opacity"}`}
-                            >
-                                {employees.map((employee) => (
-                                    <TableBodyRow key={employee.studentId} onClick={() => setEditingEmployee(employee)}>
-                                        <TableBodyCell>{employee.studentId}</TableBodyCell>
-                                        <TableBodyCell className="employees__table-name-cell">
-                                            {employee.fullName}
-                                        </TableBodyCell>
-                                        <TableBodyCell>{employee.subdepartmentName}</TableBodyCell>
-                                    </TableBodyRow>
-                                ))}
-                            </tbody>
-                        </Table>
-                    </div>
-                    {totalPages > 1 && (
-                        <Pagination
-                            className="employees__pagination"
-                            pageCount={totalPages}
-                            onPageChange={handlePageChange}
-                            renderOnZeroPageCount={() => null}
-                            initialPage={Number(page) - 1}
-                        />
-                    )}
-                </>
-            )}
+            <ErrorAlert />
+            <Loading />
+            <EmptyAlert />
+            <TableContent />
+            <PaginationController />
         </div>
     );
 };
 
 export default Employees;
+
+function TableContent() {
+    const [employees, isLoading, isFetching, error] = useUnit([
+        $employees,
+        $isLoading,
+        $isFetching,
+        $error,
+    ]);
+    if (isLoading || error || employees.length === 0) return null;
+
+    return (
+        <div className={styles.wrapper}>
+            <Table className={styles.table}>
+                <TableHead>
+                    <TableHeadCell>Табельный номер</TableHeadCell>
+                    <TableHeadCell>ФИО</TableHeadCell>
+                    <TableHeadCell>Отдел</TableHeadCell>
+                </TableHead>
+                <tbody className={cn(isFetching && styles.opacity)}>
+                    {employees.map((employee) => (
+                        <TableBodyRow
+                            key={employee.studentId}
+                            onClick={() => {}}
+                        >
+                            <TableBodyCell>{employee.studentId}</TableBodyCell>
+                            <TableBodyCell className={styles.nameCell}>
+                                {employee.fullName}
+                            </TableBodyCell>
+                            <TableBodyCell>
+                                {employee.subdepartmentName}
+                            </TableBodyCell>
+                        </TableBodyRow>
+                    ))}
+                </tbody>
+            </Table>
+        </div>
+    );
+}
+
+function PaginationController() {
+    const [page, totalPages] = useUnit([$page, $totalPages]);
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    useEffect(() => {
+        searchParams.set("page", String(page));
+        setSearchParams(searchParams);
+    }, [page, searchParams, setSearchParams]);
+
+    return totalPages > 1 ? (
+        <Pagination
+            className={styles.pagination}
+            pageCount={totalPages}
+            onPageChange={(page) => pageChanged(page.selected + 1)}
+            renderOnZeroPageCount={() => null}
+            disableInitialCallback={true}
+            forcePage={page - 1}
+        />
+    ) : null;
+}
+
+function EmptyAlert() {
+    const [employees, isLoading, isFetching, error] = useUnit([
+        $employees,
+        $isLoading,
+        $isFetching,
+        $error,
+    ]);
+    if (!error && !isLoading && !isFetching && employees.length < 1) {
+        return (
+            <Alert type={ALERT.INFO}>
+                На текущий момент нет ни одной записи.
+            </Alert>
+        );
+    }
+    return null;
+}
+
+function ErrorAlert() {
+    const error = useUnit($error);
+    return error ? <Alert type={ALERT.ERROR}>{error}</Alert> : null;
+}
+
+function Loading() {
+    const isLoading = useUnit($isLoading);
+    return isLoading ? <Loader className={styles.loader} /> : null;
+}

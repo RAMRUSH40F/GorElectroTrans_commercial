@@ -3,7 +3,7 @@ import { debounce } from "patronum";
 import { createGate } from "effector-react";
 import attendanceApi from "shared/api/attendanceApi";
 import { IAttendance, AttendanceId, AttendanceDto } from "models/Attendance";
-import { AbortParams } from "shared/api";
+import { AbortParams } from "shared/api/types";
 
 interface GateProps {
     depId: string;
@@ -12,43 +12,43 @@ interface GateProps {
 }
 
 export const attendanceGate = createGate<GateProps>();
-const attendanceDomain = createDomain();
-
-export const getAttendanceFx = attach({
-    effect: attendanceApi.fetchFx,
-});
+const domain = createDomain();
 
 // #region Events
-export const loadingStarted = attendanceDomain.createEvent();
-export const loadingEnded = attendanceDomain.createEvent();
+export const loadingStarted = domain.createEvent();
+export const loadingEnded = domain.createEvent();
 
-export const searchChanged = attendanceDomain.createEvent<string>();
-export const debouncedSearchChanged = attendanceDomain.createEvent<string>();
-export const initialSearchChanged = attendanceDomain.createEvent<string>();
+export const searchChanged = domain.createEvent<string>();
+export const debouncedSearchChanged = domain.createEvent<string>();
+export const initialSearchChanged = domain.createEvent<string>();
 
-export const pageChanged = attendanceDomain.createEvent<number>();
+export const pageChanged = domain.createEvent<number>();
 export const paramsChanged = merge([
     debouncedSearchChanged,
     pageChanged,
     initialSearchChanged,
 ]);
 
-export const depIdChanged = attendanceDomain.createEvent<string>();
+export const depIdChanged = domain.createEvent<string>();
 // #endregion
 
 // #region Stores
-export const $attendances = attendanceDomain.createStore<IAttendance[]>([]);
-export const $isLoading = attendanceDomain.createStore<boolean>(false);
-export const $isFetching = attendanceDomain.createStore<boolean>(false);
-export const $error = attendanceDomain.createStore<string | null>(null);
+export const $attendances = domain.createStore<IAttendance[]>([]);
+export const $isLoading = domain.createStore<boolean>(false);
+export const $isFetching = domain.createStore<boolean>(false);
+export const $error = domain.createStore<string | null>(null);
 
-export const $totalPages = attendanceDomain.createStore<number>(0);
-export const $page = attendanceDomain.createStore<number>(1);
-export const $size = attendanceDomain.createStore<number>(5);
-export const $search = attendanceDomain.createStore<string>("");
+export const $totalPages = domain.createStore<number>(0);
+export const $page = domain.createStore<number>(1);
+export const $size = domain.createStore<number>(5);
+export const $search = domain.createStore<string>("");
 
-export const $depId = attendanceDomain.createStore<string>("");
+export const $depId = domain.createStore<string>("");
 // #endregion
+
+export const getAttendanceFx = attach({
+    effect: attendanceApi.fetchFx,
+});
 
 export const addAttendanceFx = attach({
     effect: attendanceApi.postFx,
@@ -183,7 +183,7 @@ sample({
 });
 
 // Reset all stores when component unmountes
-attendanceDomain.onCreateStore(($store) => {
+domain.onCreateStore(($store) => {
     $store.reset(attendanceGate.close);
 });
 
@@ -198,7 +198,7 @@ $error
     );
 
 $attendances
-    .on(getAttendanceFx.doneData, (_, { attendances }) => attendances)
+    .on(getAttendanceFx.doneData, (_, { data }) => data)
     .on(updateAttendanceFx.doneData, (attedances, data) => {
         return attedances.map((attendance) => {
             if (

@@ -1,0 +1,51 @@
+@import "../../../assets/styles/vars.scss";
+
+.button {
+    height: 3.2rem;
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+    padding: 0.375rem 1.7rem;
+    border-radius: 3px;
+    transition: background-color 0.15s ease;
+    border: 1px solid transparent;
+    &:disabled {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+    &:focus {
+        border-color: $blue;
+    }
+    &.success {
+        background-color: $green;
+        color: $white;
+        &:hover {
+            background-color: darken($green, 5%);
+        }
+    }
+    &.danger {
+        background-color: $red;
+        color: $white;
+        &:hover {
+            background-color: darken($red, 10%);
+        }
+    }
+    &.info {
+        background-color: $cyan;
+        color: $white;
+        &:hover {
+            background-color: darken($cyan, 10%);
+        }
+    }
+    &.warning {
+        background-color: $yellow;
+        color: $black;
+        &:hover {
+            background-color: darken($yellow, 5%);
+        }
+    }
+    @media (max-width: $pcBig) {
+        height: 2.5rem;
+        font-size: 0.83rem;
+        padding: 0.375rem 1.5rem;
+    }
+}

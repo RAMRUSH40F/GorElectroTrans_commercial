@@ -1,0 +1,12 @@
+@import "../../../../assets/styles/vars.scss";
+
+.headCell {
+    font-size: 0.95rem;
+    line-height: 1.45;
+    padding: 0.5rem;
+    font-weight: 700;
+    border: 1px solid $grey;
+    @media (max-width: $pcBig) {
+        font-size: 0.75rem;
+    }
+}

@@ -42,9 +42,9 @@ const EditPlanModal: React.FC<Props> = ({ closeEditing, plan }) => {
                 )}
                 {isEditingMaterials ? (
                     <Materials
-                        fileNames={plan.lessonContent}
-                        lessonId={plan.id}
-                        closeMaterialsEditing={handleMoveToMaterials}
+                        // fileNames={plan.lessonContent}
+                        // lessonId={plan.id}
+                        // closeMaterialsEditing={handleMoveToMaterials}
                     />
                 ) : (
                     <PlanEditing

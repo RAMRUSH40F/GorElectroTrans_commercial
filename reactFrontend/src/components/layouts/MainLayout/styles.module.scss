@@ -1,0 +1,14 @@
+@import "../../../assets/styles/vars.scss";
+
+.layout {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    main {
+        flex-grow: 1;
+        padding: 3rem 0;
+        @media (max-width: $tablet) {
+            padding: 1.5rem 0;
+        }
+    }
+}

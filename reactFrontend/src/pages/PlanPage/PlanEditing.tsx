@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import PlanForm, { PlanFormValues } from "../../components/forms/PlanForm";
+import PlanForm, { PlanFormValues } from "./PlanForm";
 import { usePlansContext } from "../../context/plansContext";
 import { parseISO } from "../../helpers/parseISO";
 import { IPlan } from "../../models/Plan";
@@ -16,7 +16,12 @@ type Props = {
     setError: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
-const PlanEditing: React.FC<Props> = ({ plan, closeEditing, openMaterialsEditing, setError }) => {
+const PlanEditing: React.FC<Props> = ({
+    plan,
+    closeEditing,
+    openMaterialsEditing,
+    setError,
+}) => {
     const { divisionId = "" } = useParams();
 
     // const { logout } = useUserContext();
@@ -26,7 +31,15 @@ const PlanEditing: React.FC<Props> = ({ plan, closeEditing, openMaterialsEditing
 
     const handleSubmit = async (values: PlanFormValues) => {
         setError(null);
-        const { date, duration, peoplePlanned, teacher, topic, status, teacherPost } = values;
+        const {
+            date,
+            duration,
+            peoplePlanned,
+            teacher,
+            topic,
+            status,
+            teacherPost,
+        } = values;
         const { day } = parseISO(date);
 
         const changedPlan: IPlan = {
@@ -51,7 +64,10 @@ const PlanEditing: React.FC<Props> = ({ plan, closeEditing, openMaterialsEditing
             if (err.response.status === 401) {
                 // logout();
             } else {
-                setError(err?.response?.data?.message ?? "Не удалось сохранить изменения");
+                setError(
+                    err?.response?.data?.message ??
+                        "Не удалось сохранить изменения"
+                );
             }
         }
     };
@@ -72,7 +88,9 @@ const PlanEditing: React.FC<Props> = ({ plan, closeEditing, openMaterialsEditing
             if (err.response.status === 401) {
                 // logout();
             } else {
-                setError(err?.response?.data?.message ?? "Не удалось удалить запись");
+                setError(
+                    err?.response?.data?.message ?? "Не удалось удалить запись"
+                );
             }
         } finally {
             setIsDisabled(false);
@@ -103,8 +121,7 @@ const PlanEditing: React.FC<Props> = ({ plan, closeEditing, openMaterialsEditing
                     onSubmit={handleSubmit}
                     clearError={() => setError(null)}
                     plan={plan}
-                    moveToConfrim={moveToConfirm}
-                    openMaterialsEditing={openMaterialsEditing}
+                    // moveToConfrim={moveToConfirm}
                     isDisabled={isDisabled}
                     isEditing={true}
                 />

@@ -1,0 +1,32 @@
+@import "../../assets/styles/vars.scss";
+
+.page {
+    text-align: center;
+    padding: 100px 20px 20px;
+}
+
+.title {
+    font-size: 25px;
+    margin-bottom: 10px;
+    @media (max-width: $mobile) {
+        font-size: 19px;
+    }
+    p {
+        margin-bottom: 10px;
+    }
+}
+
+.message {
+    color: $darkblue;
+    @media (max-width: $mobile) {
+        font-size: 0.9rem;
+    }
+    a {
+        color: $blue;
+        text-decoration: underline;
+        white-space: nowrap;
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}

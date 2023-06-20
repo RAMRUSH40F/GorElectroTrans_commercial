@@ -1,27 +1,12 @@
 import { createEffect } from "effector";
-import { AuthError, DepParams, authRequestFx } from "..";
+import { authRequestFx } from "..";
 import { IAttendance } from "../../../models/Attendance";
 import { isCancel } from "axios";
-
-interface ApiError {
-    message: string;
-    isCanceled: boolean;
-}
-
-interface FetchParams<T> extends Omit<DepParams<T>, "data"> {
-    page: number;
-    size: number;
-    search: string;
-}
-
-interface FetchResponse {
-    attendances: IAttendance[];
-    totalPages: number;
-}
+import { ApiError, AuthError, FetchParams, FetchResponse } from "../types";
 
 export const fetchFx = createEffect<
     FetchParams<null>,
-    FetchResponse,
+    FetchResponse<IAttendance[]>,
     ApiError
 >(async ({ depId, page, size, search, controller }) => {
     try {
@@ -35,7 +20,7 @@ export const fetchFx = createEffect<
         const totalPages = totalAttendances
             ? Math.ceil(totalAttendances / size)
             : 1;
-        return { attendances: response.data as IAttendance[], totalPages };
+        return { data: response.data as IAttendance[], totalPages };
     } catch (error) {
         if (isCancel(error)) {
             const customError: ApiError = {

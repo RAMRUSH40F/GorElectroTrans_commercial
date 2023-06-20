@@ -1,12 +1,8 @@
 import { createEffect } from "effector";
 import { AttendanceDto } from "models/Attendance";
-import { AuthError, DepParams, authRequestFx } from "..";
+import { authRequestFx } from "..";
 import { isCancel } from "axios";
-
-interface ApiError {
-    message: string;
-    isCanceled: boolean;
-}
+import { ApiError, AuthError, DepParams } from "../types";
 
 export const putFx = createEffect<
     DepParams<AttendanceDto>,
@@ -16,7 +12,7 @@ export const putFx = createEffect<
     try {
         await authRequestFx({
             method: "PUT",
-            url: `/dep_${depId}/attendance/data1`,
+            url: `/dep_${depId}/attendance/data`,
             data,
             signal: controller.signal,
         });

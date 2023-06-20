@@ -1,166 +1,164 @@
-import React, { useState, MouseEvent, useEffect } from "react";
-import Table from "../../../components/Table";
-import TableBodyRow from "../../../components/Table/TableBodyRow";
-import TableBodyCell from "../../../components/Table/TableBodyRow/TableBodyCell";
-import TableHead from "../../../components/Table/TableHead";
-import TableHeadCell from "../../../components/Table/TableHead/TableHeadCell";
-import Pagination from "../../../components/Pagination";
-import EditPlanModal from "../../../components/modals/plans/EditPlanModal";
-import useLockedBody from "../../../hooks/useLockedBody";
-import axios from "axios";
-import PlanService from "../../../services/PlanService";
-import { IPlan } from "../../../models/Plan";
-import { formatDate } from "../../../helpers/formatDate";
-import Alert from "../../../components/Alert";
-import { ALERT } from "../../../constants/alertTypes";
-import { usePlansContext } from "../../../context/plansContext";
-import { useParams, useSearchParams } from "react-router-dom";
-import Loader from "../../../components/Loader";
-import { PLAN_STATUS_VALUE } from "../../../constants/planStatus";
+import React, { MouseEvent, useEffect } from "react";
+import Table from "components/Table";
+import TableBodyRow from "components/Table/TableBodyRow";
+import TableBodyCell from "components/Table/TableBodyRow/TableBodyCell";
+import TableHead from "components/Table/TableHead";
+import TableHeadCell from "components/Table/TableHead/TableHeadCell";
+import Pagination from "components/Pagination";
+import { formatDate } from "helpers/formatDate";
+import Alert from "components/Alert";
+import { ALERT } from "constants/alertTypes";
+import { useSearchParams } from "react-router-dom";
+import Loader from "components/Loader";
+import { PLAN_STATUS_VALUE } from "constants/planStatus";
+import { useUnit } from "effector-react";
+import EditPlan from "../EditPlan";
+import { modalOpened } from "../EditPlan/model";
+import Materials from "../Materials";
+import { IPlan } from "models/Plan";
 import cn from "classnames";
+import {
+    $error,
+    $isFetching,
+    $isLoading,
+    $page,
+    $plans,
+    $totalPages,
+    pageChanged,
+} from "../model";
 
-import "./styles.scss";
+import styles from "./styles.module.scss";
 
-const LIMIT = 20;
+const Plan: React.FC = () => (
+    <>
+        <EditPlan />
+        <Materials />
+        <div>
+            <ErrorAlert />
+            <Loading />
+            <EmptyAlert />
+            <TableContent />
+            <PaginationController />
+        </div>
+    </>
+);
 
-const Plan: React.FC = () => {
-    const [editingPlan, setEditingPlan] = useState<IPlan | null>(null);
-    useLockedBody(!!editingPlan);
+export default Plan;
 
-    const { divisionId = "" } = useParams();
-    const [searchParams, setSearchParams] = useSearchParams();
+function TableContent() {
+    const [plans, isLoading, isFetching, error] = useUnit([
+        $plans,
+        $isLoading,
+        $isFetching,
+        $error,
+    ]);
+    if (isLoading || error || plans.length === 0) return null;
 
-    // const { logout } = useUserContext();
-    const { plans, setPlans } = usePlansContext();
-    const [isLoading, setIsLoading] = useState(true);
-    const [isFetching, setIsFetching] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-
-    const [totalPages, setTotalPages] = useState(0);
-    const [page, setPage] = useState<number>(searchParams.get("page") ? Number(searchParams.get("page")) : 1);
-    const searchQuery = searchParams.get("key");
-
-    useEffect(() => {
-        const cancelToken = axios.CancelToken.source();
-        setError(null);
-        if (plans.length === 0) {
-            setIsLoading(true);
-        } else {
-            setIsFetching(true);
-        }
-
-        const fetchPlans = async () => {
-            try {
-                const response = await PlanService.fetch(divisionId, {
-                    params: {
-                        page,
-                        size: LIMIT,
-                        key: searchQuery,
-                    },
-                    cancelToken: cancelToken.token,
-                });
-                const totalPlans = response.headers["lessons_count"];
-                const totalPages = totalPlans ? Math.ceil(totalPlans / LIMIT) : 1;
-                setPlans(response.data);
-                setTotalPages(totalPages);
-                setIsFetching(false);
-                setIsLoading(false);
-            } catch (error) {
-                const err = error as any;
-                if (axios.isCancel(err)) {
-                    setIsFetching(true);
-                    return;
-                }
-                setIsFetching(false);
-                setIsLoading(false);
-                if (err?.response?.status === 401) {
-                    // logout();
-                } else {
-                    setError(err?.response?.data?.message ?? "Не удалось получить данные с сервера");
-                }
-            }
-        };
-
-        fetchPlans();
-
-        return () => cancelToken.cancel();
-        // eslint-disable-next-line
-    }, [page, setPlans, divisionId, searchQuery]);
-
-    const handleOpenEditing = (event: MouseEvent<HTMLTableRowElement>, plan: IPlan) => {
+    const handleOpenEditing = (
+        event: MouseEvent<HTMLTableRowElement>,
+        plan: IPlan
+    ) => {
         event.stopPropagation();
-        setEditingPlan(plan);
-    };
-
-    const handlePageChange = (selectedItem: { selected: number }) => {
-        setPage(selectedItem.selected + 1);
-        searchParams.set("page", String(selectedItem.selected + 1));
-        setSearchParams(searchParams);
+        modalOpened({ plan });
     };
 
     return (
-        <div className="plan">
-            {!!editingPlan && <EditPlanModal closeEditing={() => setEditingPlan(null)} plan={editingPlan} />}
-            {error && <Alert type={ALERT.ERROR}>{error}</Alert>}
-            {isLoading && <Loader className="plan__loader" />}
-            {!error && !isLoading && plans.length < 1 && (
-                <Alert type={ALERT.INFO}>На текущий момент нет ни одной записи.</Alert>
-            )}
-            {!error && !isLoading && plans.length > 0 && (
-                <>
-                    <div className="plan__table-wrapper">
-                        <Table className="plan__table">
-                            <TableHead>
-                                <TableHeadCell>Номер занятия</TableHeadCell>
-                                <TableHeadCell>Дата</TableHeadCell>
-                                <TableHeadCell>Длительность занятия</TableHeadCell>
-                                <TableHeadCell>Кол-во обучающихся</TableHeadCell>
-                                <TableHeadCell className="plan__table-topic-column">Тема занятия</TableHeadCell>
-                                <TableHeadCell>Преподаватель</TableHeadCell>
-                                <TableHeadCell>Статус</TableHeadCell>
-                            </TableHead>
-                            <tbody className={cn("plan__table-body", isFetching && "plan__table-body--opacity")}>
-                                {!error &&
-                                    plans.map((plan) => (
-                                        <TableBodyRow
-                                            className={cn(
-                                                "plan__table-row",
-                                                plan.lessonContent.length < 1 && "plan__table-row--empty"
-                                            )}
-                                            key={plan.id}
-                                            onClick={(event) => handleOpenEditing(event, plan)}
-                                        >
-                                            <TableBodyCell>{plan.id}</TableBodyCell>
-                                            <TableBodyCell className="plan__table-date-cell">
-                                                {formatDate(plan.date)}
-                                            </TableBodyCell>
-                                            <TableBodyCell>{plan.duration}</TableBodyCell>
-                                            <TableBodyCell>{plan.peoplePlanned}</TableBodyCell>
-                                            <TableBodyCell>{plan.topic}</TableBodyCell>
-                                            <TableBodyCell className="plan__table-name-cell">
-                                                {plan.teacher}
-                                            </TableBodyCell>
-                                            <TableBodyCell>
-                                                {plan.isHeld ? PLAN_STATUS_VALUE[1] : PLAN_STATUS_VALUE[0]}
-                                            </TableBodyCell>
-                                        </TableBodyRow>
-                                    ))}
-                            </tbody>
-                        </Table>
-                    </div>
-                    {totalPages > 1 && (
-                        <Pagination
-                            className="plan__pagination"
-                            pageCount={totalPages}
-                            onPageChange={handlePageChange}
-                            renderOnZeroPageCount={() => null}
-                            initialPage={Number(page) - 1}
-                        />
-                    )}
-                </>
-            )}
+        <div className={styles.wrapper}>
+            <Table className={styles.table}>
+                <TableHead>
+                    <TableHeadCell>Номер занятия</TableHeadCell>
+                    <TableHeadCell>Дата</TableHeadCell>
+                    <TableHeadCell>Длительность занятия</TableHeadCell>
+                    <TableHeadCell>Кол-во обучающихся</TableHeadCell>
+                    <TableHeadCell className={styles.topicColumn}>
+                        Тема занятия
+                    </TableHeadCell>
+                    <TableHeadCell>Преподаватель</TableHeadCell>
+                    <TableHeadCell>Статус</TableHeadCell>
+                </TableHead>
+                <tbody className={cn(isFetching && styles.opacity)}>
+                    {!error &&
+                        plans.map((plan) => (
+                            <TableBodyRow
+                                className={cn(
+                                    styles.row,
+                                    plan.lessonContent.length < 1 &&
+                                        styles.empty
+                                )}
+                                key={plan.id}
+                                onClick={(event) =>
+                                    handleOpenEditing(event, plan)
+                                }
+                            >
+                                <TableBodyCell>{plan.id}</TableBodyCell>
+                                <TableBodyCell className={styles.dateCell}>
+                                    {formatDate(plan.date)}
+                                </TableBodyCell>
+                                <TableBodyCell>{plan.duration}</TableBodyCell>
+                                <TableBodyCell>
+                                    {plan.peoplePlanned}
+                                </TableBodyCell>
+                                <TableBodyCell>{plan.topic}</TableBodyCell>
+                                <TableBodyCell className={styles.nameCell}>
+                                    {plan.teacher}
+                                </TableBodyCell>
+                                <TableBodyCell>
+                                    {plan.isHeld
+                                        ? PLAN_STATUS_VALUE[1]
+                                        : PLAN_STATUS_VALUE[0]}
+                                </TableBodyCell>
+                            </TableBodyRow>
+                        ))}
+                </tbody>
+            </Table>
         </div>
     );
-};
+}
 
-export default Plan;
+function PaginationController() {
+    const [page, totalPages] = useUnit([$page, $totalPages]);
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    useEffect(() => {
+        searchParams.set("page", String(page));
+        setSearchParams(searchParams);
+    }, [page, searchParams, setSearchParams]);
+
+    return totalPages > 1 ? (
+        <Pagination
+            className={styles.pagination}
+            pageCount={totalPages}
+            onPageChange={(page) => pageChanged(page.selected + 1)}
+            renderOnZeroPageCount={() => null}
+            disableInitialCallback={true}
+            forcePage={page - 1}
+        />
+    ) : null;
+}
+
+function EmptyAlert() {
+    const [plans, isLoading, isFetching, error] = useUnit([
+        $plans,
+        $isLoading,
+        $isFetching,
+        $error,
+    ]);
+    if (!error && !isLoading && !isFetching && plans.length < 1) {
+        return (
+            <Alert type={ALERT.INFO}>
+                На текущий момент нет ни одной записи.
+            </Alert>
+        );
+    }
+    return null;
+}
+
+function ErrorAlert() {
+    const error = useUnit($error);
+    return error ? <Alert type={ALERT.ERROR}>{error}</Alert> : null;
+}
+
+function Loading() {
+    const isLoading = useUnit($isLoading);
+    return isLoading ? <Loader className={styles.loader} /> : null;
+}

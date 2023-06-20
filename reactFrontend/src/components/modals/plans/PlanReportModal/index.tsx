@@ -9,7 +9,6 @@ import { ALERT } from "../../../../constants/alertTypes";
 import { useParams } from "react-router-dom";
 import PlanService from "../../../../services/PlanService";
 import PlanReportForm from "../../../forms/PlanReportForm";
-import { downloadFile } from "../../../../helpers/downloadFile";
 import Loader from "../../../Loader";
 import { IQuarter } from "../../../../models/Quarter";
 import axios from "axios";
@@ -71,12 +70,12 @@ const PlanReportModal: React.FC<Props> = ({ closeModal }) => {
         setError(null);
 
         try {
-            const year =
-                quarters.find((currQuarter) => currQuarter.quoter === parseInt(quarter))?.year ??
-                new Date().getFullYear();
-            const response = await PlanService.fetchReport(divisionId, { params: { quarter, year } });
-            const fileName = `Отчет_${quarter}кв_${year}.xls`;
-            downloadFile(response.data, fileName);
+            // const year =
+            //     quarters.find((currQuarter) => currQuarter.quoter === parseInt(quarter))?.year ??
+            //     new Date().getFullYear();
+            // const response = await PlanService.fetchReport(divisionId, { params: { quarter, year } });
+            // const fileName = `Отчет_${quarter}кв_${year}.xls`;
+            // downloadFile(response.data, fileName);
         } catch (error) {
             const err = error as any;
             if (err.response.status === 401) {

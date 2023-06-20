@@ -10,4 +10,9 @@ export interface IPlan {
     lessonContent: string[];
 }
 
-export type TPlanDto = Omit<IPlan, "id">;
+export type PlanDto = Omit<IPlan, "id">;
+
+export interface IMaterial {
+    lessonId: number;
+    fileName: string;
+}
