@@ -1,7 +1,7 @@
 import React from "react";
 import cn from "classnames";
 
-import "./styles.scss";
+import styles from "./styles.module.scss";
 
 interface Props extends React.LabelHTMLAttributes<HTMLLabelElement> {
     text?: string;
@@ -9,8 +9,8 @@ interface Props extends React.LabelHTMLAttributes<HTMLLabelElement> {
 
 const Label: React.FC<Props> = ({ children, text, className, ...rest }) => {
     return (
-        <label {...rest} className={cn("label", className)}>
-            {text && <p className="label__text">{text}</p>}
+        <label {...rest} className={cn(styles.label, className)}>
+            {text && <p className={styles.text}>{text}</p>}
             {children}
         </label>
     );

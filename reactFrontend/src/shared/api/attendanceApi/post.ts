@@ -1,12 +1,8 @@
 import { createEffect } from "effector";
 import { IAttendance, AttendanceDto } from "models/Attendance";
-import { AuthError, DepParams, authRequestFx } from "..";
+import { authRequestFx } from "..";
 import { isCancel } from "axios";
-
-interface ApiError {
-    message: string;
-    isCanceled: boolean;
-}
+import { ApiError, AuthError, DepParams } from "../types";
 
 export const postFx = createEffect<
     DepParams<AttendanceDto>,

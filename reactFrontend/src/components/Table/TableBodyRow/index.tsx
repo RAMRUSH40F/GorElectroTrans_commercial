@@ -1,7 +1,7 @@
 import React from "react";
 import cn from "classnames";
 
-import "./styles.scss";
+import styles from "./styles.module.scss";
 
 type Props = {
     children: React.ReactNode;
@@ -11,7 +11,7 @@ type Props = {
 
 const TableBodyRow: React.FC<Props> = ({ children, onClick, className }) => {
     return (
-        <tr onClick={onClick} className={cn("table-body-row", className)}>
+        <tr onClick={onClick} className={cn(styles.bodyRow, className)}>
             {children}
         </tr>
     );

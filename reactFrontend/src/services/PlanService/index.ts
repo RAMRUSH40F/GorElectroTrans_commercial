@@ -8,8 +8,9 @@ import {
     FileParams,
     PostFileParams,
 } from "./planParams";
-import { IMaterial } from "../../models/Material";
 import { IQuarter } from "../../models/Quarter";
+
+interface IMaterial {}
 
 export default class PlanService {
     static fetch = (

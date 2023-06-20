@@ -1,21 +1,6 @@
-import axios, { AxiosError, AxiosRequestConfig } from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 import { createEffect } from "effector";
-
-export interface AbortParams<T> {
-    data: T;
-    controller: AbortController;
-}
-
-export interface DepParams<T> extends AbortParams<T> {
-    depId: string;
-}
-
-interface AuthErrorResponse {
-    message?: string;
-    status: number;
-}
-
-export type AuthError = AxiosError<AuthErrorResponse>;
+import { AuthError } from "./types";
 
 // const API_URL = window.location.origin;
 const API_URL = "http://82.146.38.158:8081";
@@ -34,11 +19,12 @@ export const requestFx = createEffect<AxiosRequestConfig, any>((config) =>
 );
 
 export const authRequestFx = createEffect<AxiosRequestConfig, any, AuthError>(
-    (config) =>
+    ({ headers, ...rest }: AxiosRequestConfig) =>
         api({
             headers: {
                 authorization: localStorage.getItem("accessToken"),
+                ...headers,
             },
-            ...config,
+            ...rest,
         })
 );

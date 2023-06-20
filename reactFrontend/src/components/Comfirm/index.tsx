@@ -1,7 +1,7 @@
 import React from "react";
 import ActionButton from "../buttons/ActionButton";
 
-import "./styles.scss";
+import styles from "./styles.module.scss";
 
 type Props = {
     title: string;
@@ -11,16 +11,26 @@ type Props = {
 
 const Confirm: React.FC<Props> = ({ title, handleConfirm, handleDecline }) => {
     return (
-        <div className="confirm">
-            <div className="confirm__wrapper">
-                <h4 className="confirm__title">{title}</h4>
-                <p className="confirm__message">Отменить это действие будет невозможно.</p>
+        <div>
+            <div className={styles.wrapper}>
+                <h4 className={styles.title}>{title}</h4>
+                <p className={styles.message}>
+                    Отменить это действие будет невозможно.
+                </p>
             </div>
-            <div className="confirm__actions">
-                <ActionButton onClick={handleConfirm} type="button" colorType="warning">
+            <div className={styles.controls}>
+                <ActionButton
+                    onClick={handleConfirm}
+                    type="button"
+                    colorType="warning"
+                >
                     Подтвердить
                 </ActionButton>
-                <ActionButton onClick={handleDecline} type="button" colorType="danger">
+                <ActionButton
+                    onClick={handleDecline}
+                    type="button"
+                    colorType="danger"
+                >
                     Отмена
                 </ActionButton>
             </div>

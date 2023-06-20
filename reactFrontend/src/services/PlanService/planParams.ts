@@ -1,11 +1,11 @@
-import { IPlan, TPlanDto } from "../../models/Plan";
+import { IPlan, PlanDto } from "../../models/Plan";
 
 interface Params {
     depId: string;
 }
 
 export interface PostParams extends Params {
-    plan: TPlanDto;
+    plan: PlanDto;
 }
 
 export interface PutParams extends Params {

@@ -1,5 +1,5 @@
 import React from "react";
-import LoginForm, { LoginFormState } from "components/forms/LoginForm";
+import LoginForm, { LoginFormState } from "pages/LoginPage/LoginForm";
 import { DIVISIONS_ROUTE } from "constants/routesPathnames";
 import { ROLES } from "constants/roles";
 import { getDivisionRoute } from "helpers/getDivisionRoute";
@@ -11,7 +11,7 @@ import { useUnit } from "effector-react";
 import { loginFx } from "shared/auth";
 import { ICredentials } from "shared/api/userApi/login";
 
-import "./styles.scss";
+import styles from "./styles.module.scss";
 
 const LoginPage: React.FC = () => {
     const navigate = useNavigate();
@@ -42,9 +42,9 @@ const LoginPage: React.FC = () => {
     };
 
     return (
-        <div className="login-page">
-            <div className="login-page__body">
-                <h1 className="login-page__title">Авторизация</h1>
+        <div className={styles.page}>
+            <div className={styles.body}>
+                <h1>Авторизация</h1>
                 <ErrorAlert />
                 <LoginForm
                     onSubmit={handleSubmit}
@@ -61,7 +61,7 @@ function ErrorAlert() {
     const error = useUnit($error);
     if (error) {
         return (
-            <Alert className="login-page__alert" type={ALERT.ERROR}>
+            <Alert className={styles.alert} type={ALERT.ERROR}>
                 {error}
             </Alert>
         );

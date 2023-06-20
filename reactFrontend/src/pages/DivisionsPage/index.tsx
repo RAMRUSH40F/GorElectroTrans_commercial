@@ -1,18 +1,39 @@
 import React from "react";
 import SectionHeader from "../../components/SectionHeader";
-import Divisions from "./Divisions";
+import { DIVISIONS_ROUTES, DivisionRoute } from "constants/divisionsRoutes";
+import { Link } from "react-router-dom";
 
-import "./styles.scss";
+import styles from "./styles.module.scss";
 
 const DivisionsPage: React.FC = () => {
     return (
-        <div className="divisions-page">
-            <section className="divisions-page__content">
-                <SectionHeader className="divisions-page__section-header" title="Подразделения" />
-                <Divisions />
+        <div>
+            <section>
+                <SectionHeader
+                    className={styles.header}
+                    title="Подразделения"
+                />
+                <ul className={styles.divisions}>
+                    {DIVISIONS_ROUTES.map((division) => (
+                        <DivisionItem
+                            key={division.allowedRole}
+                            division={division}
+                        />
+                    ))}
+                </ul>
             </section>
         </div>
     );
 };
 
 export default DivisionsPage;
+
+function DivisionItem({ division }: { division: DivisionRoute }) {
+    return (
+        <li>
+            <Link to={division.path}>
+                <h5>{division.name}</h5>
+            </Link>
+        </li>
+    );
+}

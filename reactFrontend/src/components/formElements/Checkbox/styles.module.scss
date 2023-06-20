@@ -1,0 +1,20 @@
+@import "../../../assets/styles/mixins.scss";
+
+.checkbox {
+    @include flex-center(0.5rem, flex-start);
+    cursor: pointer;
+}
+
+.field {
+    display: block;
+    width: 0.8rem;
+    height: 0.8rem;
+    border: 1px solid grey;
+    &.checked {
+        background-color: $blue;
+    }
+}
+
+.text {
+    font-size: 0.87rem;
+}

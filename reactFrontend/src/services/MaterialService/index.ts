@@ -1,15 +1,17 @@
 import { AxiosRequestConfig, AxiosResponse } from "axios";
 import { authApi } from "../../shared/api";
-import { IMaterial } from "../../models/Material";
+// import { IMaterial } from "../../models/Material";
 import { FileParams, PostParams } from "./materialParams";
 
+interface IMaterial {}
+
 export default class MaterialService {
-    static fetch = (
-        depId: string,
-        config?: AxiosRequestConfig
-    ): Promise<AxiosResponse<IMaterial[]>> => {
-        return authApi.get<IMaterial[]>(`/dep_${depId}/content/data`, config);
-    };
+    // static fetch = (
+    //     depId: string,
+    //     config?: AxiosRequestConfig
+    // ): Promise<AxiosResponse<IMaterial[]>> => {
+    //     return authApi.get<IMaterial[]>(`/dep_${depId}/content/data`, config);
+    // };
     static fetchFile = (
         { depId, fileName }: FileParams,
         config?: AxiosRequestConfig

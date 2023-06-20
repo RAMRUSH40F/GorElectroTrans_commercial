@@ -6,9 +6,9 @@ import { parseISO } from "../../../../helpers/parseISO";
 import { showNotion } from "../../../../helpers/showNotion";
 import useClickOutside from "../../../../hooks/useClickOutside";
 import useEscape from "../../../../hooks/useEscape";
-import { TPlanDto } from "../../../../models/Plan";
+import { PlanDto } from "../../../../models/Plan";
 import PlanService from "../../../../services/PlanService";
-import PlanForm, { PlanFormValues } from "../../../forms/PlanForm";
+import PlanForm, { PlanFormValues } from "../../../../pages/PlanPage/PlanForm";
 import ModalLayout from "../../ModalLayout";
 import ModalHeader from "../../ModalLayout/ModalHeader";
 import { ALERT } from "../../../../constants/alertTypes";
@@ -34,10 +34,18 @@ const AddPlanModal: React.FC<Props> = ({ closeModal }) => {
 
     const handleSubmit = async (values: PlanFormValues) => {
         setError(null);
-        const { date, duration, peoplePlanned, teacher, topic, status, teacherPost } = values;
+        const {
+            date,
+            duration,
+            peoplePlanned,
+            teacher,
+            topic,
+            status,
+            teacherPost,
+        } = values;
         const { day } = parseISO(date);
 
-        const newPlan: TPlanDto = {
+        const newPlan: PlanDto = {
             date: day,
             duration: Number(duration),
             peoplePlanned: Number(peoplePlanned),
@@ -49,7 +57,10 @@ const AddPlanModal: React.FC<Props> = ({ closeModal }) => {
         };
 
         try {
-            const response = await PlanService.post({ depId: divisionId, plan: newPlan });
+            const response = await PlanService.post({
+                depId: divisionId,
+                plan: newPlan,
+            });
             addPlan({ ...newPlan, id: response.data });
             showNotion(NOTION.SUCCESS, "Запись успешно добавлена");
             closeModal();
@@ -58,7 +69,9 @@ const AddPlanModal: React.FC<Props> = ({ closeModal }) => {
             if (err.response.status === 401) {
                 // logout();
             } else {
-                setError(err?.response?.data?.message ?? "Не удалось добавить запись");
+                setError(
+                    err?.response?.data?.message ?? "Не удалось добавить запись"
+                );
             }
         }
     };
@@ -72,7 +85,10 @@ const AddPlanModal: React.FC<Props> = ({ closeModal }) => {
                         {error}
                     </Alert>
                 )}
-                <PlanForm onSubmit={handleSubmit} clearError={() => setError(null)} />
+                <PlanForm
+                    onSubmit={handleSubmit}
+                    clearError={() => setError(null)}
+                />
             </ModalContent>
         </ModalLayout>
     );

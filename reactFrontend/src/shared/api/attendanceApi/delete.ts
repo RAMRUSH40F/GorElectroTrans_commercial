@@ -1,12 +1,8 @@
 import { createEffect } from "effector";
 import { AttendanceId } from "models/Attendance";
-import { AuthError, DepParams, authRequestFx } from "..";
+import { authRequestFx } from "..";
 import { isCancel } from "axios";
-
-interface ApiError {
-    message: string;
-    isCanceled: boolean;
-}
+import { ApiError, AuthError, DepParams } from "../types";
 
 export const deleteFx = createEffect<
     DepParams<AttendanceId>,
@@ -16,8 +12,7 @@ export const deleteFx = createEffect<
     try {
         await authRequestFx({
             method: "DELETE",
-            url: `/dep_${depId}/attendance/data1`,
-            data,
+            url: `/dep_${depId}/attendance/data`,
             signal: controller.signal,
         });
         return data;

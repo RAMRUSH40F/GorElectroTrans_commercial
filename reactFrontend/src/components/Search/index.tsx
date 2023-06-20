@@ -2,7 +2,7 @@ import React, { ChangeEvent } from "react";
 import cn from "classnames";
 import Input from "../formElements/Input";
 
-import "./styles.scss";
+import styles from "./styles.module.scss";
 
 type Props = {
     value?: string;
@@ -12,10 +12,9 @@ type Props = {
 
 const Search: React.FC<Props> = ({ value, handleChange, className }) => {
     return (
-        <div className={cn("search", className)}>
-            <Input className="search__input" value={value} onChange={handleChange} placeholder="Поиск" />
+        <div className={cn(styles.search, className)}>
+            <Input value={value} onChange={handleChange} placeholder="Поиск" />
             <svg
-                className="search__icon"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 30 30"
                 width="30px"

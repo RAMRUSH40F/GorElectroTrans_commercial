@@ -18,7 +18,7 @@ sample({
     target: showNoticeFx,
 });
 
-// Cancel update request when modal was closed
+// Cancel update request when modal window was closed
 sample({
     clock: attendanceGate.close,
     source: addAttendanceFx,

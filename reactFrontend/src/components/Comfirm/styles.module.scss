@@ -1,0 +1,21 @@
+@import "../../assets/styles/mixins.scss";
+
+.title {
+    color: $black;
+    font-size: 18px;
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
+.message {
+    font-size: 0.95rem;
+    color: #727070;
+    text-align: center;
+}
+
+.controls {
+    @include flex-center(0.6rem, flex-end);
+    padding-top: 1rem;
+    margin-top: 1rem;
+    border-top: 1px solid $grey;
+}

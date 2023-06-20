@@ -1,7 +1,7 @@
 import React from "react";
 import cn from "classnames";
 
-import "./styles.scss";
+import styles from "./styles.module.scss";
 
 type Props = {
     children: React.ReactNode;
@@ -10,7 +10,7 @@ type Props = {
 
 const TableHeadCell: React.FC<Props> = ({ children, className }) => {
     return (
-        <th scope="col" className={cn("table-head-cell", className)}>
+        <th scope="col" className={cn(styles.headCell, className)}>
             {children}
         </th>
     );

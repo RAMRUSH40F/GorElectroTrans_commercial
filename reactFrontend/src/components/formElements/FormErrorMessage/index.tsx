@@ -1,7 +1,7 @@
 import React from "react";
 import cn from "classnames";
 
-import "./styles.scss";
+import styles from "./styles.module.scss";
 
 type Props = {
     children: React.ReactNode;
@@ -9,7 +9,7 @@ type Props = {
 };
 
 const FormErrorMessage: React.FC<Props> = ({ children, className }) => {
-    return <p className={cn("form-error-message", className)}>{children}</p>;
+    return <p className={cn(styles.message, className)}>{children}</p>;
 };
 
 export default FormErrorMessage;

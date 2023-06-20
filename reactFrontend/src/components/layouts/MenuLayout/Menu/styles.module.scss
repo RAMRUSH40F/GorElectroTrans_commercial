@@ -1,0 +1,73 @@
+@import "../../../../assets/styles/mixins.scss";
+
+.list {
+    display: flex;
+    flex-direction: column;
+    width: 20rem;
+    @media (max-width: $pcBig) {
+        width: 17.125rem;
+    }
+    @media (max-width: 1260px) {
+        flex-direction: row;
+        flex-wrap: wrap;
+        width: 100%;
+    }
+    li {
+        border-bottom: 1px solid $grey;
+        width: 100%;
+    }
+    a {
+        @include flex-center(9px, flex-start);
+        font-size: 1.15rem;
+        padding: 1.1rem 0.65rem 1.1rem 1rem;
+        line-height: 1.35;
+        color: inherit;
+        position: relative;
+        cursor: pointer;
+        @media (min-width: $tablet) {
+            &:hover {
+                background-color: rgba($grey, 0.4);
+            }
+        }
+        @media (max-width: $pcBig) {
+            padding: 0.95rem 0.5rem 0.95rem 1rem;
+            font-size: 1.05rem;
+        }
+        &.active {
+            color: $blue;
+            pointer-events: none;
+            &::before {
+                content: "";
+                display: block;
+                width: 5px;
+                height: 5px;
+                background-color: black;
+                border-radius: 100%;
+                @include position(51%, 4px);
+                transform: translateY(-50%);
+            }
+        }
+        &.back {
+            @include flex-center(0, flex-start);
+        }
+        img {
+            height: 1.2rem;
+            width: 1.2rem;
+        }
+        svg {
+            &:first-child {
+                rect {
+                    fill: red;
+                }
+            }
+            &:last-child {
+                margin-left: -9px;
+            }
+        }
+    }
+}
+
+.linkWrapper {
+    @include flex-center(0, flex-start);
+    margin-right: 5px;
+}

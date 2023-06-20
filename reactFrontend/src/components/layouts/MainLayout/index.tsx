@@ -5,14 +5,14 @@ import Footer from "./Footer";
 import Container from "../../Container";
 import { ToastContainer } from "react-toastify";
 
-import "./styles.scss";
+import styles from "./styles.module.scss";
 
 const MainLayout: React.FC = () => {
     return (
-        <div className="main-layout">
+        <div className={styles.layout}>
             <ToastContainer />
             <Header />
-            <main className="main-layout__content">
+            <main>
                 <Container>
                     <Outlet />
                 </Container>

@@ -6,14 +6,14 @@ import Container from "../../../Container";
 import ActionButton from "../../../buttons/ActionButton";
 import { logoutFx } from "../../../../shared/auth";
 
-import "./styles.scss";
+import styles from "./styles.module.scss";
 
 const Header: React.FC = () => {
     return (
-        <header className="header">
+        <header className={styles.header}>
             <Container>
-                <div className="header__wrapper">
-                    <img className="header__logo" src={logoSrc} alt="Logo" />
+                <div className={styles.wrapper}>
+                    <img src={logoSrc} alt="Logo" />
                     <LogoutButton />
                 </div>
             </Container>
@@ -28,7 +28,11 @@ function LogoutButton() {
     return (
         <>
             {location.pathname !== LOGIN_ROUTE.PATH && (
-                <ActionButton className="header__button" onClick={() => logoutFx()} colorType="info">
+                <ActionButton
+                    className={styles.loginBtn}
+                    onClick={() => logoutFx()}
+                    colorType="info"
+                >
                     Выйти
                 </ActionButton>
             )}

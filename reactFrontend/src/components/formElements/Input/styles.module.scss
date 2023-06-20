@@ -1,0 +1,6 @@
+@import "../../../assets/styles/mixins.scss";
+
+.input {
+    @include control;
+    height: 40px;
+}

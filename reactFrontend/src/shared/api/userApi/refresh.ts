@@ -1,7 +1,8 @@
 import { createEffect } from "effector";
-import { AuthError, authRequestFx } from "..";
 import decodeJwt from "jwt-decode";
 import { ROLES } from "constants/roles";
+import { authRequestFx } from "..";
+import { AuthError } from "../types";
 
 export interface ICredentials {
     username: string;

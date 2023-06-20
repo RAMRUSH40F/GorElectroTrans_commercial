@@ -16,12 +16,23 @@ const NewEmployee: React.FC<Props> = ({ className }) => {
 
     return (
         <>
-            {isAdding && <AddEmployeeModal closeModal={() => setIsAdding(false)} />}
-            <ActionButton className={cn("new-employee-btn", className)} colorType="info" onClick={() => setIsAdding(true)}>
-                Добавить +
+            <EmployeeModal />
+            {isAdding && (
+                <AddEmployeeModal closeModal={() => setIsAdding(false)} />
+            )}
+            <ActionButton
+                className={cn("new-employee-btn", className)}
+                colorType="info"
+                onClick={() => setIsAdding(true)}
+            >
+                Добавить
             </ActionButton>
         </>
     );
 };
 
 export default NewEmployee;
+
+function EmployeeModal() {
+    return null;
+}

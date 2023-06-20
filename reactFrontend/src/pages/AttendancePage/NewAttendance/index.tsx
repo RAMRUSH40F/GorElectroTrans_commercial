@@ -33,7 +33,7 @@ const NewAttendance: React.FC = () => {
                 colorType="info"
                 onClick={() => modalOpened()}
             >
-                Добавить +
+                Добавить
             </ActionButton>
         </>
     );
