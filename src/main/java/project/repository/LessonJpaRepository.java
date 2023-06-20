@@ -10,7 +10,10 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 import project.model.Lesson;
 
+import java.util.Date;
 import java.util.Optional;
+
+import static org.hibernate.loader.Loader.SELECT;
 
 @Repository
 public interface LessonJpaRepository extends PagingAndSortingRepository<Lesson, Integer> {
@@ -25,7 +28,10 @@ public interface LessonJpaRepository extends PagingAndSortingRepository<Lesson, 
 
     @Query("SELECT COUNT(l) FROM Lesson l")
     Integer countAllLessons();
-
+@Query("SELECT COUNT(l) FROM Lesson l WHERE l.date>=:dateFrom and l.date<:dateTo")
+    Integer findAllLessonsBetweenDates(@Param("dateFrom") Date from,@Param("dateTo") Date to);
+    @Query("SELECT COUNT(l) FROM Lesson l WHERE l.date>=:dateFrom and l.date<:dateTo and l.isHeld=true ")
+    Integer findAllLessonsBetweenDatesWithHeld(@Param("dateFrom") Date from,@Param("dateTo") Date to);
     @Override
     Optional<Lesson> findById(@NonNull Integer integer);
 }
