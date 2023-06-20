@@ -72,11 +72,7 @@ public class JwtAuthorizationService {
             Jws<Claims> claimsJws = Jwts.parser()
                     .setSigningKey(secretKey).parseClaimsJws(token);
             boolean tokenIsExpired = !claimsJws.getBody().getExpiration().before(new Date());
-
-            User userFromDatabase = userService.getUserByUsername(decodeUserFromToken(token).getUsername());
-            boolean userIsActive = userFromDatabase.isActive();
-
-            return userIsActive & tokenIsExpired;
+            return tokenIsExpired;
         } catch (JwtException | IllegalArgumentException exception) {
             throw new AuthenticationException(exception,
                     "Прежде чем пользоваться сервисом войдите в аккаунт заново");

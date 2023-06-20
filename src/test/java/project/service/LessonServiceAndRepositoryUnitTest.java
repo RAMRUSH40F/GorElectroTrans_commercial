@@ -17,12 +17,13 @@ import project.service.reportService.TeacherProfession;
 import javax.sql.DataSource;
 import java.sql.Date;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class LessonServiceImplIntegrationTest {
+class LessonServiceAndRepositoryUnitTest {
 
     @Autowired
     LessonServiceImpl lessonService;
@@ -78,7 +79,7 @@ class LessonServiceImplIntegrationTest {
     void getPagedLessons_returnNotNull() {
 
         Pageable pageable = PageRequest.of(1, 15);
-        List<Lesson> lessonList = lessonService.findAllByNullableKeywordWithPagination(1, null, pageable).toList();
+        List<Lesson> lessonList = lessonService.findAllByNullableKeywordWithPagination(1, Optional.empty(), pageable).toList();
 
         assertNotNull(lessonList);
         assertTrue(lessonList.isEmpty());

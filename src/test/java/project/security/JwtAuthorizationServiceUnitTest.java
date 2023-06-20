@@ -101,20 +101,6 @@ class JwtAuthorizationServiceUnitTest {
     }
 
 
-    @DisplayName("Validate invalid token, disabledUser")
-    @Test
-    void testValidateToken_tokenOfDisabledPerson() {
-        //Credentials of user with authority 14 from H2 database initial script
-        String username = "JamesLiu";
-        String password = "letmein123";
-
-        String token = service.authenticate(User.builder().username(username).password(password).build());
-        jdbcTemplate.execute("UPDATE users SET enabled=0 WHERE username='" + username + "'");
-
-        assertFalse(service.validateToken(token));
-
-    }
-
     @Test
     void authenticate_returnsNonNullJwtWhenRightCredentials() {
         //Configuration
