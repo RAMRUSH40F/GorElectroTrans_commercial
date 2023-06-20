@@ -7,6 +7,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - name: Increase buffer limit
+      run: |
+          echo "::set-env name=ACTIONS_STEP_DEBUG::true"
+          echo "::set-env name=NODE_OPTIONS::--max-old-space-size=4096"
     - name: Deploy to Server
       uses: easingthemes/ssh-deploy@main
       env:
