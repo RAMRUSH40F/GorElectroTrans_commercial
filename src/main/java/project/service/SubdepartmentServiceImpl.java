@@ -3,7 +3,6 @@ package project.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.lang.NonNull;
-import org.springframework.lang.NonNullApi;
 import org.springframework.stereotype.Service;
 import project.model.Subdepartment;
 import project.repository.SubdepartmentJpaRepository;
@@ -47,9 +46,6 @@ public class SubdepartmentServiceImpl {
     }
 
     public @NonNull Subdepartment save(int departmentId, Subdepartment subdepartment) {
-        if (repository.existsByName(subdepartment.getName())) {
-            throw new IllegalArgumentException("Отдел с таким именем уже есть в базе.");
-        }
         setCurrentDataSource("DEP_" + departmentId);
         return repository.save(subdepartment);
     }
