@@ -1,7 +1,6 @@
 import React from "react";
-import { ROLES } from "../constants/roles";
 import { useUnit } from "effector-react";
-import { $roles } from "../shared/auth";
+import { $roles, ROLES } from "../shared/auth";
 
 type Props = {
     children: React.ReactNode;

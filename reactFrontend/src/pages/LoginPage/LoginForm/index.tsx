@@ -1,9 +1,9 @@
 import { Formik } from "formik";
 import React from "react";
-import ActionButton from "../../../components/buttons/ActionButton";
-import FormErrorMessage from "../../../components/formElements/FormErrorMessage";
-import Input from "../../../components/formElements/Input";
-import Label from "../../../components/formElements/Label";
+import ActionButton from "components/buttons/ActionButton";
+import FormErrorMessage from "components/formElements/FormErrorMessage";
+import Input from "components/formElements/Input";
+import Label from "components/formElements/Label";
 import { loginFormScheme } from "./loginFormScheme";
 
 import styles from "./styles.module.scss";

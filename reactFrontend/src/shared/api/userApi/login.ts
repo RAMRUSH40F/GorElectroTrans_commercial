@@ -1,7 +1,7 @@
 import { createEffect } from "effector";
 import { requestFx } from "..";
 import decodeJwt from "jwt-decode";
-import { ROLES } from "constants/roles";
+import { ROLES } from "shared/auth";
 
 export interface ICredentials {
     username: string;

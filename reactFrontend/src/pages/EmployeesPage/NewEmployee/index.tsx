@@ -14,7 +14,6 @@ import useClickOutside from "hooks/useClickOutside";
 import useEscape from "hooks/useEscape";
 import { IEmployee } from "models/Employee";
 import { addEmployeeFx } from "../model";
-import cn from "classnames";
 import {
     $depError,
     $departments,
@@ -28,16 +27,12 @@ import {
 
 import styles from "./styles.module.scss";
 
-type Props = {
-    className?: string;
-};
-
-const NewEmployee: React.FC<Props> = ({ className }) => {
+const NewEmployee: React.FC = () => {
     return (
         <>
             <EmployeeModal />
             <ActionButton
-                className={cn(styles.addBtn, className)}
+                className={styles.addBtn}
                 colorType="info"
                 onClick={() => modalOpened()}
             >

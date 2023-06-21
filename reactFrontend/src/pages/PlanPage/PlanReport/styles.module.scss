@@ -1,6 +1,6 @@
 @import "../../../assets/styles/vars.scss";
 
-.plan-report-btn {
+.reportBtn {
     background-color: $darkyellow;
     color: $black;
     &:hover {
@@ -9,4 +9,12 @@
     @media (max-width: $mobileSmall) {
         width: 100%;
     }
+}
+
+.alert {
+    margin-bottom: 1rem;
+}
+
+.loader {
+    margin: 1rem auto;
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import useClickOutside from "../../../../hooks/useClickOutside";
 import useEscape from "../../../../hooks/useEscape";
 import ModalLayout from "../../ModalLayout";
@@ -6,11 +6,10 @@ import ModalHeader from "../../ModalLayout/ModalHeader";
 import ModalContent from "../../ModalLayout/ModalContent";
 import Alert, { ALERT } from "../../../Alert";
 import { useParams } from "react-router-dom";
-import PlanReportForm from "../../../forms/PlanReportForm";
+import PlanReportForm from "../../../../pages/PlanPage/PlanReport/PlanReportForm";
 import Loader from "../../../Loader";
-import { IQuarter } from "../../../../models/Quarter";
-import axios from "axios";
 import { DropdownOption } from "../../../formElements/Dropdown";
+import { IReportPeriod } from "pages/PlanPage/PlanReport/PlanReportForm/model";
 
 import "./styles.scss";
 
@@ -30,48 +29,29 @@ const PlanReportModal: React.FC<Props> = ({ closeModal }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [quartersError, setQuartersError] = useState<string | null>(null);
-    const [quarters] = useState<IQuarter[]>([]);
+    const [quarters] = useState<IReportPeriod[]>([]);
 
     const options: DropdownOption[] = quarters.map((quarter) => ({
         label: `Год: ${quarter.year}, квартал: ${quarter.quoter}`,
         value: String(quarter.quoter),
     }));
 
-    useEffect(() => {
-        const cancelToken = axios.CancelToken.source();
-        setIsLoading(true);
-        setError(null);
-
-        const fetchQuarters = async () => {
-            try {
-                // const response = await PlanService.fetchQuarters(divisionId, { cancelToken: cancelToken.token });
-                // setQuarters(response.data);
-            } catch (error) {
-                const err = error as any;
-                if (err.response.status === 401) {
-                    // logout();
-                } else {
-                    setQuartersError(err?.response?.data?.message ?? "Не удалось получить данные с сервера");
-                }
-            } finally {
-                setIsLoading(false);
-            }
-        };
-        fetchQuarters();
-
-        return () => cancelToken.cancel();
-    }, [divisionId]);
-
-    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>, quarter: string) => {
+    const handleSubmit = async (
+        event: React.FormEvent<HTMLFormElement>,
+        quarter: string
+    ) => {
         event.preventDefault();
         setIsSubmitting(true);
         setError(null);
 
         try {
             // const year =
-            //     quarters.find((currQuarter) => currQuarter.quoter === parseInt(quarter))?.year ??
-            //     new Date().getFullYear();
-            // const response = await PlanService.fetchReport(divisionId, { params: { quarter, year } });
+            //     quarters.find(
+            //         (currQuarter) => currQuarter.quoter === parseInt(quarter)
+            //     )?.year ?? new Date().getFullYear();
+            // const response = await PlanService.fetchReport(divisionId, {
+            //     params: { quarter, year },
+            // });
             // const fileName = `Отчет_${quarter}кв_${year}.xls`;
             // downloadFile(response.data, fileName);
         } catch (error) {
@@ -79,7 +59,9 @@ const PlanReportModal: React.FC<Props> = ({ closeModal }) => {
             if (err.response.status === 401) {
                 // logout();
             } else {
-                setError(err?.response?.data?.message ?? "Не удалось скачать отчет");
+                setError(
+                    err?.response?.data?.message ?? "Не удалось скачать отчет"
+                );
             }
         } finally {
             setIsSubmitting(false);
@@ -100,16 +82,14 @@ const PlanReportModal: React.FC<Props> = ({ closeModal }) => {
         contentToRender = (
             <>
                 {error && (
-                    <Alert className="plan-report-modal__alert" type={ALERT.ERROR}>
+                    <Alert
+                        className="plan-report-modal__alert"
+                        type={ALERT.ERROR}
+                    >
                         {error}
                     </Alert>
                 )}
-                <PlanReportForm
-                    options={options}
-                    handleSubmit={handleSubmit}
-                    clearError={() => setError(null)}
-                    isSubmitting={isSubmitting}
-                />
+                <PlanReportForm />
             </>
         );
     }
