@@ -6,6 +6,9 @@ public class DynamicDataSourceContextHolder {
 
     private static final ThreadLocal<String> dataSourceHolder = new ThreadLocal<>();
 
+    private DynamicDataSourceContextHolder() {
+    }
+
     public static void setCurrentDataSource(String dataSource) {
         dataSourceHolder.set(dataSource);
     }

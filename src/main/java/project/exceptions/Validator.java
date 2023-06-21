@@ -2,6 +2,8 @@ package project.exceptions;
 
 
 public class Validator {
+    private Validator() {
+    }
 
     public static Integer validateDepartmentId(String id) {
         try {

@@ -59,7 +59,7 @@ public class AttendanceMultiplier {
                 attendanceService.save(departmentId, attendance);
             }
         }
-        System.out.printf("Attendance multiplier ended work on %d department \n", departmentId);
+        System.out.printf("Attendance multiplier ended work on %d department %n", departmentId);
     }
 
 

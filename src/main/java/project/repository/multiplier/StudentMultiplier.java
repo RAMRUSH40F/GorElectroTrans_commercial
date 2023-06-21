@@ -31,7 +31,7 @@ public class StudentMultiplier {
                     idBuilder.delete(0, 5);
                     idBuilder.append(0).append(secondN).append("3").append(thirdN).append(fourthN);
                     String studentName = randomNameList.get(randomizer.nextInt(20));
-                    SubdepartmentId = (short) ((randomizer.nextInt(6) + 1));
+                    SubdepartmentId = (short) (randomizer.nextInt(6) + 1);
                     student = Student.builder()
                             .name(studentName)
                             .studentId(idBuilder.toString())
@@ -42,6 +42,6 @@ public class StudentMultiplier {
             }
 
         }
-        System.out.printf("Student Multiplier ended work on %d department \n ", departmentId);
+        System.out.printf("Student Multiplier ended work on %d department %n ", departmentId);
     }
 }
