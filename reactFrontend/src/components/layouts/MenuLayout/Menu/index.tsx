@@ -13,7 +13,7 @@ import checklistIconSrc from "assets/img/checklist-icon.svg";
 import buildingIconSrc from "assets/img/building-icon.svg";
 import workerIconSrc from "assets/img/worker.svg";
 import CheckAccess from "components/CheckAccess";
-import { ROLES } from "constants/roles";
+import { ROLES } from "shared/auth";
 
 import styles from "./styles.module.scss";
 

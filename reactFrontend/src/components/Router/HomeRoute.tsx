@@ -1,13 +1,12 @@
 import React from "react";
 import { Navigate, useLocation } from "react-router-dom";
-import { ROLES } from "constants/roles";
 import {
     DIVISIONS_ROUTE,
     LOGIN_ROUTE,
     UNAUTHORIZED_ROUTE,
 } from "components/Router/routesPathnames";
 import { getDivisionRoute } from "helpers/getDivisionRoute";
-import { $isAuth, $roles } from "shared/auth";
+import { $isAuth, $roles, ROLES } from "shared/auth";
 import { useUnit } from "effector-react";
 
 const HomeRoute: React.FC = () => {

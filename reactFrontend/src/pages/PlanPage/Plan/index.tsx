@@ -9,12 +9,11 @@ import { formatDate } from "helpers/formatDate";
 import Alert, { ALERT } from "components/Alert";
 import { useSearchParams } from "react-router-dom";
 import Loader from "components/Loader";
-import { PLAN_STATUS_VALUE } from "constants/planStatus";
 import { useUnit } from "effector-react";
 import EditPlan from "../EditPlan";
 import { modalOpened } from "../EditPlan/model";
 import Materials from "../Materials";
-import { IPlan } from "models/Plan";
+import { IPlan, PLAN_STATUS_VALUE } from "models/Plan";
 import cn from "classnames";
 import {
     $error,

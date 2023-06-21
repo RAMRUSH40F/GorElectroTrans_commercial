@@ -20,7 +20,7 @@ import PlanPage from "pages/PlanPage";
 import MainLayout from "../layouts/MainLayout";
 import MenuLayout from "../layouts/MenuLayout";
 import RoleProtectedRoute from "./RoleProtectedRoute";
-import { ROLES } from "constants/roles";
+import { ROLES } from "shared/auth";
 import ProtectedDepartmentRoute from "./ProtectedDepartmentRoute";
 import MissingPage from "pages/MissingPage";
 import UnauthorizedPage from "pages/UnauthorizedPage";

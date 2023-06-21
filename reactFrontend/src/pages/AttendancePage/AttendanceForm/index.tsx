@@ -1,10 +1,10 @@
 import React, { useRef } from "react";
 import Label from "components/formElements/Label";
-import { AttendanceDto } from "models/Attendance";
 import {
     ATTENDACE_RESULT_VALUE,
     ATTENDANCE_RESULT,
-} from "constants/attendanceResult";
+    AttendanceDto,
+} from "models/Attendance";
 import useFocus from "hooks/useFocus";
 import { Formik } from "formik";
 import FormErrorMessage from "components/formElements/FormErrorMessage";

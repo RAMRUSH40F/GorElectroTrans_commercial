@@ -8,11 +8,11 @@ import TableBodyRow from "components/Table/TableBodyRow";
 import TableBodyCell from "components/Table/TableBodyRow/TableBodyCell";
 import TableHead from "components/Table/TableHead";
 import TableHeadCell from "components/Table/TableHead/TableHeadCell";
-import { ATTENDACE_RESULT_VALUE } from "constants/attendanceResult";
 import { formatDate } from "helpers/formatDate";
 import { useUnit } from "effector-react";
 import { modalOpened } from "../EditAttendance/model";
 import EditAttendance from "../EditAttendance";
+import { ATTENDACE_RESULT_VALUE } from "models/Attendance";
 import cn from "classnames";
 import {
     $attendances,

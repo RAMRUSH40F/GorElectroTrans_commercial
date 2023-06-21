@@ -1,24 +1,21 @@
 import React, { FC, useRef, useState, MouseEvent } from "react";
-import useFocus from "../../../hooks/useFocus";
-import { IPlan } from "../../../models/Plan";
-import Input from "../../../components/formElements/Input";
-import Label from "../../../components/formElements/Label";
-import Textarea from "../../../components/formElements/Textarea";
-import DateInput from "../../../components/formElements/DateInput";
+import useFocus from "hooks/useFocus";
+import { IPlan, PLAN_STATUS, PLAN_STATUS_VALUE } from "models/Plan";
+import Input from "components/formElements/Input";
+import Label from "components/formElements/Label";
+import Textarea from "components/formElements/Textarea";
+import DateInput from "components/formElements/DateInput";
 import { Formik } from "formik";
-import ActionButton from "../../../components/buttons/ActionButton";
+import ActionButton from "components/buttons/ActionButton";
 import { planFormScheme } from "./planFormScheme";
-import FormErrorMessage from "../../../components/formElements/FormErrorMessage";
-import InputNumber from "../../../components/formElements/InputNumber";
-import { PLAN_STATUS, PLAN_STATUS_VALUE } from "../../../constants/planStatus";
-import Dropdown, {
-    DropdownOption,
-} from "../../../components/formElements/Dropdown";
+import FormErrorMessage from "components/formElements/FormErrorMessage";
+import InputNumber from "components/formElements/InputNumber";
+import Dropdown, { DropdownOption } from "components/formElements/Dropdown";
 import { modalOpened } from "pages/PlanPage/Materials/model";
+import { movedToConfirm } from "../EditPlan/model";
 import cn from "classnames";
 
 import styles from "./styles.module.scss";
-import { movedToConfirm } from "../EditPlan/model";
 
 const teacherOptions: DropdownOption[] = [
     { label: "Руководитель/зам.руководителя", value: "post-1" },

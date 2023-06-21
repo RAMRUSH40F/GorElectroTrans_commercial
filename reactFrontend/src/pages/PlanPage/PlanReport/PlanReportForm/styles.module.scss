@@ -1,0 +1,33 @@
+@import "../../../../assets/styles/mixins.scss";
+
+.label {
+    width: 100%;
+}
+
+.select {
+    width: 100%;
+}
+
+.placeholder {
+    color: $black;
+    font-size: 1rem;
+}
+
+.controls {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 1rem;
+    margin-top: 1rem;
+    border-top: 1px solid $grey;
+}
+
+.submitBtn {
+    align-self: flex-end;
+    @media (max-width: $mobileSmall) {
+        width: 100%;
+    }
+}
+
+.alert {
+    margin-bottom: 1rem;
+}

@@ -4,9 +4,8 @@ import {
     LOGIN_ROUTE,
     UNAUTHORIZED_ROUTE,
 } from "components/Router/routesPathnames";
-import { ROLES } from "constants/roles";
 import { useUnit } from "effector-react";
-import { $isAuth, $roles } from "shared/auth";
+import { $isAuth, $roles, ROLES } from "shared/auth";
 
 const ProtectedDepartmentRoute: React.FC = () => {
     const location = useLocation();
