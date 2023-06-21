@@ -7,11 +7,14 @@ public class BoundedEntityNotFound extends RuntimeException {
 
     public BoundedEntityNotFound(JpaObjectRetrievalFailureException e) {
         String exceptionMessage = e.getMessage();
-        if (exceptionMessage.contains("Lesson")) {
-            customMessage = "Урока с таким номером нет в базе.";
-        } else if (exceptionMessage.contains("Student")) {
-            customMessage = "Рабочего с таким номером нет в базе.";
+        if (exceptionMessage != null) {
+            if (exceptionMessage.contains("Lesson")) {
+                customMessage = "Урока с таким номером нет в базе.";
+            } else if (exceptionMessage.contains("Student")) {
+                customMessage = "Рабочего с таким номером нет в базе.";
+            }
         }
+        customMessage = "Нарушение условий на добавление данных в базу данных";
 
     }
 

@@ -6,8 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNullApi;
-import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 import project.model.Attendance;
 import project.service.AttendanceServiceImpl;
@@ -16,7 +14,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static project.exceptions.Validator.validateDepartmentId;
-import static project.exceptions.Validator.validatePaginationParams;
 
 @RequiredArgsConstructor
 @RestController

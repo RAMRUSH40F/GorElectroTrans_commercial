@@ -26,13 +26,14 @@ public class AttendanceMultiplier {
     private final LessonServiceImpl lessonService;
     private final StudentServiceImpl studentRepository;
 
+    private final Random random = new Random();
 
     public void addAllAttendance(int departmentId) {
 
-        Random random = new Random();
+
         Pageable pageable = PageRequest.of(1, 100);
         // Достаем из БД все записи об уроках и об учениках и оставляем каждый шестой id студента.
-        List<Lesson> lessons = lessonService.findAllByNullableKeywordWithPagination(departmentId,null,pageable).toList();
+        List<Lesson> lessons = lessonService.findAllByNullableKeywordWithPagination(departmentId, null, pageable).toList();
         List<Integer> lessIds = lessons.stream()
                 .map(Lesson::getId)
                 .filter(id -> random.nextInt(6) == 1)
