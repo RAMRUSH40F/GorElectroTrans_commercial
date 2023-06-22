@@ -6,7 +6,7 @@ import Label from "components/formElements/Label";
 import Textarea from "components/formElements/Textarea";
 import DateInput from "components/formElements/DateInput";
 import { Formik } from "formik";
-import ActionButton from "components/buttons/ActionButton";
+import ActionButton from "components/ActionButton";
 import { planFormScheme } from "./planFormScheme";
 import FormErrorMessage from "components/formElements/FormErrorMessage";
 import InputNumber from "components/formElements/InputNumber";

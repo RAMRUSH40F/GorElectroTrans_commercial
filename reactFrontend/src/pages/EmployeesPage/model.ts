@@ -4,6 +4,15 @@ import { createGate } from "effector-react";
 import { IEmployee } from "models/Employee";
 import employeeApi from "shared/api/employeesApi";
 import { AbortParams } from "shared/api/types";
+import { SortOrder } from "components/SortButton";
+import { transformSortToString } from "helpers/transformSortToString";
+
+// type Sort = Record<keyof Omit<IEmployee, "studentId">, SortOrder>;
+
+interface Sort {
+    name: SortOrder;
+    subdepartment: SortOrder;
+}
 
 interface GateProps {
     depId: string;
@@ -21,12 +30,14 @@ export const loadingEnded = domain.createEvent();
 export const searchChanged = domain.createEvent<string>();
 export const debouncedSearchChanged = domain.createEvent<string>();
 export const initialSearchChanged = domain.createEvent<string>();
+export const sortToggled = domain.createEvent<keyof Sort>();
 
 export const pageChanged = domain.createEvent<number>();
 export const paramsChanged = merge([
     debouncedSearchChanged,
     pageChanged,
     initialSearchChanged,
+    sortToggled,
 ]);
 
 export const depIdChanged = domain.createEvent<string>();
@@ -40,8 +51,12 @@ export const $error = domain.createStore<string | null>(null);
 
 export const $totalPages = domain.createStore<number>(0);
 export const $page = domain.createStore<number>(1);
-export const $size = domain.createStore<number>(5);
+export const $size = domain.createStore<number>(15);
 export const $search = domain.createStore<string>("");
+export const $sort = domain.createStore<Sort>({
+    name: "disabled",
+    subdepartment: "disabled",
+});
 
 export const $depId = domain.createStore<string>("");
 // #endregion
@@ -121,10 +136,17 @@ sample({
 // Fetch attendance data once when component is mounted
 sample({
     clock: employeesGate.open,
-    source: { depId: $depId, page: $page, size: $size, search: $search },
+    source: {
+        depId: $depId,
+        page: $page,
+        size: $size,
+        search: $search,
+        sort: $sort,
+    },
     fn: (params) => ({
         ...params,
         controller: new AbortController(),
+        sort: transformSortToString({ ...params.sort }),
     }),
     filter: ({ search, page, depId }) =>
         search === $search.defaultState &&
@@ -159,11 +181,18 @@ sample({
 // // Fetch employees when search params were changed or employee was deleted or updated
 sample({
     clock: [paramsChanged, removeEmployeeFx.done, addEmployeeFx.done],
-    source: { depId: $depId, page: $page, size: $size, search: $search },
+    source: {
+        depId: $depId,
+        page: $page,
+        size: $size,
+        search: $search,
+        sort: $sort,
+    },
     filter: ({ depId }) => depId !== "",
     fn: (params) => ({
         ...params,
         controller: new AbortController(),
+        sort: transformSortToString({ ...params.sort }),
     }),
     target: getEmployeesFx,
 });
@@ -176,9 +205,16 @@ sample({
     target: loadingStarted,
 });
 
-// Set loading state when request is finished
+// Stop loading state when request completes
 sample({
-    clock: getEmployeesFx.finally,
+    clock: getEmployeesFx.done,
+    target: loadingEnded,
+});
+
+// Stop loading state when request fails
+sample({
+    clock: getEmployeesFx.failData,
+    filter: ({ isCanceled }) => !isCanceled,
     target: loadingEnded,
 });
 
@@ -215,5 +251,16 @@ $page.on(pageChanged, (_, page) => page).reset(debouncedSearchChanged);
 $search
     .on(searchChanged, (_, value) => value)
     .on(initialSearchChanged, (_, value) => value);
+
+$sort.on(sortToggled, (sort, property) => {
+    switch (sort[property]) {
+        case "disabled":
+            return { ...sort, [property]: "desc" };
+        case "desc":
+            return { ...sort, [property]: "asc" };
+        default:
+            return { ...sort, [property]: "disabled" };
+    }
+});
 
 $depId.on(depIdChanged, (_, id) => id);

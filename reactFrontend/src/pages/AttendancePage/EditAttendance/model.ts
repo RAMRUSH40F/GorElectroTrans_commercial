@@ -1,11 +1,11 @@
 import { createDomain, sample } from "effector";
 import { IAttendance } from "models/Attendance";
+import { NOTICE, showNoticeFx } from "helpers/notice";
 import {
     attendanceGate,
     removeAttendanceFx,
     updateAttendanceFx,
 } from "../model";
-import { NOTICE, showNoticeFx } from "helpers/notice";
 
 const domain = createDomain();
 

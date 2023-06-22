@@ -176,9 +176,16 @@ sample({
     target: loadingStarted,
 });
 
-// Set loading state when request is finished
+// Stop loading state when request completes
 sample({
-    clock: getAttendanceFx.finally,
+    clock: getAttendanceFx.done,
+    target: loadingEnded,
+});
+
+// Stop loading state when request fails
+sample({
+    clock: getAttendanceFx.failData,
+    filter: ({ isCanceled }) => !isCanceled,
     target: loadingEnded,
 });
 

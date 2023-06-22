@@ -1,5 +1,12 @@
 import React from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
+import scheduleIconSrc from "assets/img/nav/schedule-icon.svg";
+import checklistIconSrc from "assets/img/nav/checklist-icon.svg";
+import buildingIconSrc from "assets/img/nav/building-icon.svg";
+import workerIconSrc from "assets/img/nav/worker.svg";
+import CheckAccess from "components/CheckAccess";
+import { ROLES } from "shared/auth";
+import cn from "classnames";
 import {
     ATTENDANCE_ROUTE,
     DEPARTMENTS_ROUTE,
@@ -7,13 +14,6 @@ import {
     EMPLOYEES_ROUTE,
     WORK_PLAN_ROUTE,
 } from "components/Router/routesPathnames";
-import cn from "classnames";
-import scheduleIconSrc from "assets/img/schedule-icon.svg";
-import checklistIconSrc from "assets/img/checklist-icon.svg";
-import buildingIconSrc from "assets/img/building-icon.svg";
-import workerIconSrc from "assets/img/worker.svg";
-import CheckAccess from "components/CheckAccess";
-import { ROLES } from "shared/auth";
 
 import styles from "./styles.module.scss";
 

@@ -8,7 +8,7 @@ import {
 import useFocus from "hooks/useFocus";
 import { Formik } from "formik";
 import FormErrorMessage from "components/formElements/FormErrorMessage";
-import ActionButton from "components/buttons/ActionButton";
+import ActionButton from "components/ActionButton";
 import { attendanceFormScheme } from "./attendanceFormSheme";
 import InputNumber from "components/formElements/InputNumber";
 import Dropdown, { DropdownOption } from "components/formElements/Dropdown";

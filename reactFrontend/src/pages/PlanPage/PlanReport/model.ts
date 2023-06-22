@@ -1,7 +1,7 @@
 import { attach, createDomain, sample } from "effector";
 import { $depId, planGate } from "../model";
 import reportApi from "shared/api/reportApi";
-import { IReportPeriod } from "pages/PlanPage/PlanReport/PlanReportForm/model";
+import { IReportPeriod } from "./PlanReportForm/model";
 
 const domain = createDomain();
 

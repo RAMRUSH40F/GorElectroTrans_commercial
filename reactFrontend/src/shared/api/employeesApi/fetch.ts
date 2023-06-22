@@ -8,11 +8,11 @@ export const fetchFx = createEffect<
     FetchParams<null>,
     FetchResponse<IEmployee[]>,
     ApiError
->(async ({ depId, page, size, search, controller }) => {
+>(async ({ depId, page, size, search, controller, sort }) => {
     try {
         const response = await authRequestFx({
             method: "GET",
-            url: `/dep_${depId}/students/data`,
+            url: `/dep_${depId}/students/data?${sort}`,
             params: { page, size, key: search || null },
             signal: controller.signal,
         });

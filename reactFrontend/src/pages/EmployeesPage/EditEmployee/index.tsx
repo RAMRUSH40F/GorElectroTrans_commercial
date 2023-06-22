@@ -3,9 +3,9 @@ import { useUnit } from "effector-react";
 import Confirm from "components/Comfirm";
 import Alert, { ALERT } from "components/Alert";
 import Loader from "components/Loader";
-import ModalLayout from "components/modals/ModalLayout";
-import ModalHeader from "components/modals/ModalLayout/ModalHeader";
-import ModalContent from "components/modals/ModalLayout/ModalContent";
+import ModalLayout from "components/ModalLayout";
+import ModalHeader from "components/ModalLayout/ModalHeader";
+import ModalContent from "components/ModalLayout/ModalContent";
 import EmployeeForm, {
     EmployeeFormState,
 } from "pages/EmployeesPage/EmployeeForm";

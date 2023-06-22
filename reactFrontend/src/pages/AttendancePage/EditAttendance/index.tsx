@@ -1,9 +1,9 @@
 import { useUnit } from "effector-react";
 import React, { useRef } from "react";
 import useLockedBody from "hooks/useLockedBody";
-import ModalLayout from "components/modals/ModalLayout";
-import ModalHeader from "components/modals/ModalLayout/ModalHeader";
-import ModalContent from "components/modals/ModalLayout/ModalContent";
+import ModalLayout from "components/ModalLayout";
+import ModalHeader from "components/ModalLayout/ModalHeader";
+import ModalContent from "components/ModalLayout/ModalContent";
 import Alert, { ALERT } from "components/Alert";
 import Confirm from "components/Comfirm";
 import AttendanceForm, { AttendanceFormState } from "../AttendanceForm";

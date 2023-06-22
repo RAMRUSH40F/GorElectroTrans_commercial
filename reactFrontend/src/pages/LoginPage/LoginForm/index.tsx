@@ -1,6 +1,6 @@
 import { Formik } from "formik";
 import React from "react";
-import ActionButton from "components/buttons/ActionButton";
+import ActionButton from "components/ActionButton";
 import FormErrorMessage from "components/formElements/FormErrorMessage";
 import Input from "components/formElements/Input";
 import Label from "components/formElements/Label";

@@ -1,15 +1,16 @@
 import React, { useEffect, FC } from "react";
-import Pagination from "../../../components/Pagination";
-import Table from "../../../components/Table";
-import TableBodyRow from "../../../components/Table/TableBodyRow";
-import TableBodyCell from "../../../components/Table/TableBodyRow/TableBodyCell";
-import TableHead from "../../../components/Table/TableHead";
-import TableHeadCell from "../../../components/Table/TableHead/TableHeadCell";
+import Pagination from "components/Pagination";
+import Table from "components/Table";
+import TableBodyRow from "components/Table/TableBodyRow";
+import TableBodyCell from "components/Table/TableBodyRow/TableBodyCell";
+import TableHead from "components/Table/TableHead";
+import TableHeadCell from "components/Table/TableHead/TableHeadCell";
 import { useSearchParams } from "react-router-dom";
-import Alert, { ALERT } from "../../../components/Alert";
-import Loader from "../../../components/Loader";
+import Alert, { ALERT } from "components/Alert";
+import Loader from "components/Loader";
 import EditEmployee from "../EditEmployee";
 import { useUnit } from "effector-react";
+import { modalOpened } from "../EditEmployee/model";
 import cn from "classnames";
 import {
     $employees,
@@ -17,12 +18,13 @@ import {
     $isFetching,
     $isLoading,
     $page,
+    $sort,
     $totalPages,
     pageChanged,
+    sortToggled,
 } from "../model";
 
 import styles from "./styles.module.scss";
-import { modalOpened } from "../EditEmployee/model";
 
 const Employees: FC = () => {
     return (
@@ -42,11 +44,12 @@ const Employees: FC = () => {
 export default Employees;
 
 function TableContent() {
-    const [employees, isLoading, isFetching, error] = useUnit([
+    const [employees, isLoading, isFetching, error, sort] = useUnit([
         $employees,
         $isLoading,
         $isFetching,
         $error,
+        $sort,
     ]);
 
     if (isLoading || error || employees.length === 0) return null;
@@ -56,8 +59,18 @@ function TableContent() {
             <Table className={styles.table}>
                 <TableHead>
                     <TableHeadCell>Табельный номер</TableHeadCell>
-                    <TableHeadCell>ФИО</TableHeadCell>
-                    <TableHeadCell>Отдел</TableHeadCell>
+                    <TableHeadCell
+                        order={sort.name}
+                        onClick={() => sortToggled("name")}
+                    >
+                        ФИО
+                    </TableHeadCell>
+                    <TableHeadCell
+                        order={sort.subdepartment}
+                        onClick={() => sortToggled("subdepartment")}
+                    >
+                        Отдел
+                    </TableHeadCell>
                 </TableHead>
                 <tbody className={cn(isFetching && styles.opacity)}>
                     {employees.map((employee) => (

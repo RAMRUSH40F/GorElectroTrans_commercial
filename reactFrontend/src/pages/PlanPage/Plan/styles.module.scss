@@ -24,8 +24,20 @@
     }
 }
 
+.durationColumn {
+    max-width: 100px;
+}
+
+.peopleColumn {
+    max-width: 100px;
+}
+
 .dateCell {
     white-space: nowrap;
+}
+
+.topicCell {
+    white-space: pre-line;
 }
 
 .nameCell {
