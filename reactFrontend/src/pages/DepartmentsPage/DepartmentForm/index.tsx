@@ -2,7 +2,7 @@ import { Formik } from "formik";
 import React from "react";
 import useFocus from "hooks/useFocus";
 import { IDepartment, TDepartmentDto } from "models/Department";
-import ActionButton from "components/buttons/ActionButton";
+import ActionButton from "components/ActionButton";
 import FormErrorMessage from "components/formElements/FormErrorMessage";
 import Input from "components/formElements/Input";
 import Label from "components/formElements/Label";

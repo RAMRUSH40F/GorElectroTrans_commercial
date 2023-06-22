@@ -3,4 +3,5 @@
 .textarea {
     @include control;
     resize: none;
+    white-space: pre-line;
 }

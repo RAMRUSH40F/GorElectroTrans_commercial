@@ -1,14 +1,14 @@
 import React, { useRef } from "react";
-import ActionButton from "components/buttons/ActionButton";
+import ActionButton from "components/ActionButton";
 import { useUnit } from "effector-react";
 import { addDepartmentFx } from "../model";
 import Alert, { ALERT } from "components/Alert";
 import useClickOutside from "hooks/useClickOutside";
 import useLockedBody from "hooks/useLockedBody";
 import useEscape from "hooks/useEscape";
-import ModalLayout from "components/modals/ModalLayout";
-import ModalHeader from "components/modals/ModalLayout/ModalHeader";
-import ModalContent from "components/modals/ModalLayout/ModalContent";
+import ModalLayout from "components/ModalLayout";
+import ModalHeader from "components/ModalLayout/ModalHeader";
+import ModalContent from "components/ModalLayout/ModalContent";
 import DepartmentForm from "pages/DepartmentsPage/DepartmentForm";
 import { TDepartmentDto } from "models/Department";
 import {

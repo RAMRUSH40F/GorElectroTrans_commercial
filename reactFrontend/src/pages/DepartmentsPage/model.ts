@@ -111,7 +111,7 @@ $departments
             }
             return dep;
         })
-    );
+    )
 
 $error
     .on(getDepartmentsFx, () => null)

@@ -4,6 +4,10 @@ import { IMaterial, IPlan, PlanDto } from "models/Plan";
 import { debounce } from "patronum";
 import { AbortParams } from "shared/api/types";
 import planApi from "shared/api/planApi";
+import { SortOrder } from "components/SortButton";
+import { transformSortToString } from "helpers/transformSortToString";
+
+type Sort = Record<keyof Pick<IPlan, "topic" | "teacher" | "date">, SortOrder>;
 
 interface GateProps {
     depId: string;
@@ -21,12 +25,14 @@ export const loadingEnded = domain.createEvent();
 export const searchChanged = domain.createEvent<string>();
 export const debouncedSearchChanged = domain.createEvent<string>();
 export const initialSearchChanged = domain.createEvent<string>();
+export const sortToggled = domain.createEvent<keyof Sort>();
 
 export const pageChanged = domain.createEvent<number>();
 export const paramsChanged = merge([
     debouncedSearchChanged,
     pageChanged,
     initialSearchChanged,
+    sortToggled,
 ]);
 
 export const depIdChanged = domain.createEvent<string>();
@@ -45,6 +51,11 @@ export const $totalPages = domain.createStore<number>(0);
 export const $page = domain.createStore<number>(1);
 export const $size = domain.createStore<number>(5);
 export const $search = domain.createStore<string>("");
+export const $sort = domain.createStore<Sort>({
+    date: "disabled",
+    teacher: "disabled",
+    topic: "disabled",
+});
 
 export const $depId = domain.createStore<string>("");
 // #endregion
@@ -124,10 +135,17 @@ sample({
 // Fetch plans data once when component is mounted
 sample({
     clock: planGate.open,
-    source: { depId: $depId, page: $page, size: $size, search: $search },
+    source: {
+        depId: $depId,
+        page: $page,
+        size: $size,
+        search: $search,
+        sort: $sort,
+    },
     fn: (params) => ({
         ...params,
         controller: new AbortController(),
+        sort: transformSortToString({ ...params.sort }),
     }),
     filter: ({ search, page, depId }) =>
         search === $search.defaultState &&
@@ -162,11 +180,18 @@ sample({
 // Fetch attendance when search params were changed or attendance was deleted or updated
 sample({
     clock: [paramsChanged, removePlanFx.done, addPlanFx.done],
-    source: { depId: $depId, page: $page, size: $size, search: $search },
+    source: {
+        depId: $depId,
+        page: $page,
+        size: $size,
+        search: $search,
+        sort: $sort,
+    },
     filter: ({ depId }) => depId !== "",
     fn: (params) => ({
         ...params,
         controller: new AbortController(),
+        sort: transformSortToString({ ...params.sort }),
     }),
     target: getPlanFx,
 });
@@ -179,9 +204,16 @@ sample({
     target: loadingStarted,
 });
 
-// Set loading state when request is finished
+// Stop loading state when request completes
 sample({
-    clock: getPlanFx.finally,
+    clock: getPlanFx.done,
+    target: loadingEnded,
+});
+
+// Stop loading state when request fails
+sample({
+    clock: getPlanFx.failData,
+    filter: ({ isCanceled }) => !isCanceled,
     target: loadingEnded,
 });
 
@@ -202,6 +234,14 @@ $error
 
 $plans
     .on(getPlanFx.doneData, (_, { data }) => data)
+    .on(updatePlanFx.doneData, (plans, data) =>
+        plans.map((plan) => {
+            if (plan.id === data.id) {
+                return { ...plan, ...data };
+            }
+            return plan;
+        })
+    )
     .on(planFileAdded, (plans, { fileName, lessonId }) => {
         return plans.map((plan) => {
             if (plan.id === lessonId) {
@@ -228,5 +268,16 @@ $page.on(pageChanged, (_, page) => page).reset(debouncedSearchChanged);
 $search
     .on(searchChanged, (_, value) => value)
     .on(initialSearchChanged, (_, value) => value);
+
+$sort.on(sortToggled, (sort, property) => {
+    switch (sort[property]) {
+        case "disabled":
+            return { ...sort, [property]: "desc" };
+        case "desc":
+            return { ...sort, [property]: "asc" };
+        default:
+            return { ...sort, [property]: "disabled" };
+    }
+});
 
 $depId.on(depIdChanged, (_, id) => id);

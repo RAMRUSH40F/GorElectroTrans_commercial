@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import logoSrc from "assets/img/logo.svg";
 import { LOGIN_ROUTE } from "components/Router/routesPathnames";
 import Container from "components/Container";
-import ActionButton from "components/buttons/ActionButton";
+import ActionButton from "components/ActionButton";
 import { logoutFx } from "shared/auth";
 
 import styles from "./styles.module.scss";

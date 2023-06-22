@@ -1,5 +1,5 @@
 import React from "react";
-import ActionButton from "../buttons/ActionButton";
+import ActionButton from "../ActionButton";
 
 import styles from "./styles.module.scss";
 

@@ -1,6 +1,6 @@
 import React, { FormEvent } from "react";
 import Label from "components/formElements/Label";
-import ActionButton from "components/buttons/ActionButton";
+import ActionButton from "components/ActionButton";
 import Dropdown from "components/formElements/Dropdown";
 import Alert, { ALERT } from "components/Alert";
 import { useUnit } from "effector-react";

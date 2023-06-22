@@ -2,7 +2,6 @@ import { DropdownOption } from "components/formElements/Dropdown";
 import { attach, createDomain, sample } from "effector";
 import { $periods, modalClosed, modalOpened } from "../model";
 import { $depId, planGate } from "pages/PlanPage/model";
-import { debug } from "patronum";
 import reportApi from "shared/api/reportApi";
 
 export interface IReportPeriod {
@@ -73,5 +72,3 @@ $isSubmitting.on(getReportFx.pending, (_, pending) => pending);
 $error
     .on(getReportFx.failData, (_, error) => error.message)
     .reset(modalClosed, activeOptionChanged, formSubmitted);
-
-debug($periodsOptions, $activeOption, $activePeriod);

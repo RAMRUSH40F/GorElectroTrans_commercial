@@ -13,6 +13,7 @@ export interface FetchParams<T> extends Omit<DepParams<T>, "data"> {
     page: number;
     size: number;
     search: string;
+    sort?: string;
 }
 
 export interface FetchResponse<T> {

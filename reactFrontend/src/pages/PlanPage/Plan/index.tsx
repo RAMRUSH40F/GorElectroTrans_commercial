@@ -21,8 +21,10 @@ import {
     $isLoading,
     $page,
     $plans,
+    $sort,
     $totalPages,
     pageChanged,
+    sortToggled,
 } from "../model";
 
 import styles from "./styles.module.scss";
@@ -44,11 +46,12 @@ const Plan: React.FC = () => (
 export default Plan;
 
 function TableContent() {
-    const [plans, isLoading, isFetching, error] = useUnit([
+    const [plans, isLoading, isFetching, error, sort] = useUnit([
         $plans,
         $isLoading,
         $isFetching,
         $error,
+        $sort,
     ]);
     if (isLoading || error || plans.length === 0) return null;
 
@@ -64,14 +67,34 @@ function TableContent() {
         <div className={styles.wrapper}>
             <Table className={styles.table}>
                 <TableHead>
-                    <TableHeadCell>Номер занятия</TableHeadCell>
-                    <TableHeadCell>Дата</TableHeadCell>
-                    <TableHeadCell>Длительность занятия</TableHeadCell>
-                    <TableHeadCell>Кол-во обучающихся</TableHeadCell>
-                    <TableHeadCell className={styles.topicColumn}>
+                    <TableHeadCell className={styles.numberColumn}>
+                        Номер занятия
+                    </TableHeadCell>
+                    <TableHeadCell
+                        order={sort.date}
+                        onClick={() => sortToggled("date")}
+                    >
+                        Дата
+                    </TableHeadCell>
+                    <TableHeadCell className={styles.durationColumn}>
+                        Длительность занятия
+                    </TableHeadCell>
+                    <TableHeadCell className={styles.peopleColumn}>
+                        Кол-во обучающихся
+                    </TableHeadCell>
+                    <TableHeadCell
+                        className={styles.topicColumn}
+                        order={sort.topic}
+                        onClick={() => sortToggled("topic")}
+                    >
                         Тема занятия
                     </TableHeadCell>
-                    <TableHeadCell>Преподаватель</TableHeadCell>
+                    <TableHeadCell
+                        order={sort.teacher}
+                        onClick={() => sortToggled("teacher")}
+                    >
+                        Преподаватель
+                    </TableHeadCell>
                     <TableHeadCell>Статус</TableHeadCell>
                 </TableHead>
                 <tbody className={cn(isFetching && styles.opacity)}>
@@ -96,7 +119,9 @@ function TableContent() {
                                 <TableBodyCell>
                                     {plan.peoplePlanned}
                                 </TableBodyCell>
-                                <TableBodyCell>{plan.topic}</TableBodyCell>
+                                <TableBodyCell className={styles.topicCell}>
+                                    {plan.topic}
+                                </TableBodyCell>
                                 <TableBodyCell className={styles.nameCell}>
                                     {plan.teacher}
                                 </TableBodyCell>
