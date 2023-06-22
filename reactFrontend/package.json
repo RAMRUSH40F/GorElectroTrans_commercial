@@ -62,5 +62,10 @@
         "@types/react-datepicker": "^4.10.0",
         "react-scripts": "^5.0.1",
         "sass": "^1.59.2"
+    },
+    "babel": {
+        "plugins": [
+            "effector/babel-plugin"
+        ]
     }
 }
