@@ -3,6 +3,7 @@ import { attach, createDomain, sample } from "effector";
 import { $periods, modalClosed, modalOpened } from "../model";
 import { $depId, planGate } from "pages/PlanPage/model";
 import reportApi from "shared/api/reportApi";
+import { downloadFileFx } from "helpers/downloadFile";
 
 export interface IReportPeriod {
     year: number;
@@ -43,6 +44,16 @@ sample({
         controller: new AbortController(),
     }),
     target: getReportFx,
+});
+
+// When report was successfully fetched, donwload file
+sample({
+    clock: getReportFx.doneData,
+    fn: ({ file, period }) => ({
+        file,
+        fileName: `Отчет_${period.quoter}кв_${period.year}.xls`,
+    }),
+    target: downloadFileFx,
 });
 
 // Reset all stores when component mountes and unmounts
