@@ -49,7 +49,7 @@ export const $error = domain.createStore<string | null>(null);
 
 export const $totalPages = domain.createStore<number>(0);
 export const $page = domain.createStore<number>(1);
-export const $size = domain.createStore<number>(5);
+export const $size = domain.createStore<number>(20);
 export const $search = domain.createStore<string>("");
 export const $sort = domain.createStore<Sort>({
     date: "disabled",
