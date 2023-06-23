@@ -13,9 +13,11 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.AbstractMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -30,18 +32,23 @@ public class ReportService {
 
     public @NotNull HSSFWorkbook createReport(int quarter, int year) {
         final String fileName = "/report_template.xls";
-        HSSFWorkbook workbook = readWorkbook(fileName);
-        formLessonReport(workbook, fileName, quarter, year);
-        formWorkerReport(workbook, fileName, quarter, year);
-        formTeacherReport(workbook, fileName, quarter, year);
+        final String copyFileName="/report.xls";
+        HSSFWorkbook workbook = readWorkbook(fileName,copyFileName);
+        formLessonReport(workbook, copyFileName, quarter, year);
+        formWorkerReport(workbook, copyFileName, quarter, year);
+        formTeacherReport(workbook, copyFileName, quarter, year);
         return workbook;
     }
 
     /*
     Метод чтения файла
     */
-    public HSSFWorkbook readWorkbook(String filename) {
-        try (InputStream inputStream = getClass().getResourceAsStream(filename)) {
+    public HSSFWorkbook readWorkbook(String filename,String copy) {
+        Path copied = Paths.get(copy);
+        Path originalPath = Paths.get(filename);
+        try {
+            Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
+            InputStream inputStream = getClass().getResourceAsStream(copied.toString());
             return new HSSFWorkbook(new POIFSFileSystem(inputStream));
         } catch (IOException e) {
             throw new RuntimeException("Файл шаблона не был загружен в корневую папку проекта или " +
@@ -53,9 +60,9 @@ public class ReportService {
     /*
      * Метод записи файла
      */
-    public void writeWorkbook(HSSFWorkbook workbook, String fileName) {
+    public void writeWorkbook(HSSFWorkbook workbook, String destinationPath) {
         try {
-            FileOutputStream fileOut = new FileOutputStream(fileName);
+            FileOutputStream fileOut = new FileOutputStream(destinationPath);
             workbook.write(fileOut);
             fileOut.close();
         } catch (IOException e) {
