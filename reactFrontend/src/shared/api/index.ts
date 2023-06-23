@@ -2,8 +2,7 @@ import axios, { AxiosRequestConfig } from "axios";
 import { createEffect } from "effector";
 import { AuthError } from "./types";
 
-// const API_URL = window.location.origin;
-const API_URL = "http://82.146.38.158:8081";
+const API_URL = window.location.origin;
 
 export const api = axios.create({ baseURL: API_URL });
 export const authApi = axios.create({ baseURL: API_URL });
