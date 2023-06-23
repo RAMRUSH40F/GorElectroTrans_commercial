@@ -13,7 +13,9 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -48,8 +50,7 @@ public class ReportService {
         Path originalPath = Paths.get(filename);
         try {
             Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
-            InputStream inputStream = getClass().getResourceAsStream(copied.toString());
-            return new HSSFWorkbook(new POIFSFileSystem(inputStream));
+            return new HSSFWorkbook(new POIFSFileSystem(new FileInputStream(copied.toFile())));
         } catch (IOException e) {
             throw new RuntimeException("Файл шаблона не был загружен в корневую папку проекта или " +
                     "произошла другая ошибка связанная с чтением шаблонной таблицы", e);
