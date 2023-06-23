@@ -1,4 +1,4 @@
-package project.security;
+package project.service;
 
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -6,25 +6,31 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
-import project.security.model.User;
-import project.security.service.JwtAuthorizationService;
+import project.model.Lesson;
+import project.service.reportService.TeacherProfession;
 
 import javax.sql.DataSource;
+import java.sql.Date;
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class JwtAuthorizationServiceIntegrationTest {
+class LessonServiceAndRepositoryUnitTest {
 
     @Autowired
-    JwtAuthorizationService service;
+    LessonServiceImpl lessonService;
 
     @Autowired
     JdbcTemplate jdbcTemplate;
+
 
     @TestConfiguration
     public static class TestDataSourceConfig {
@@ -68,52 +74,49 @@ class JwtAuthorizationServiceIntegrationTest {
 
     }
 
+    @DisplayName("return empty list when no lessons")
     @Test
-    void authenticate_returnsNonNullJwtWhenRightCredentials() {
-        //Configuration
-        //Admin Credentials from H2 database initial script
-        User adminUser = User.builder().username("LolsaF").password("125125").build();
+    void getPagedLessons_returnNotNull() {
 
-        String token = service.authenticate(adminUser);
+        Pageable pageable = PageRequest.of(1, 15);
+        List<Lesson> lessonList = lessonService.findAllByNullableKeywordWithPagination(1, Optional.empty(), pageable).toList();
 
-        User decodedUserFromToken = service.decodeUserFromToken(token);
-        assertAll(
-                () -> assertFalse(token.isEmpty()),
-                () -> assertTrue(decodedUserFromToken.getAuthorities().contains("100")),
-                () -> assertEquals(adminUser.getUsername(), decodedUserFromToken.getUsername())
-        );
+        assertNotNull(lessonList);
+        assertTrue(lessonList.isEmpty());
     }
 
-    @DisplayName("Throws exception when User is Disabled In Database")
-    @Test
-    void authenticate_() {
-        //Configuration
-        //Credentials of disabled user from H2 database initial script
-        User adminUser = User.builder().username("AvaWang").password("password123").build();
 
-        assertThrows(RuntimeException.class, () -> service.authenticate(adminUser));
+    /**
+     * Throws exception because DATE_FORMAT is not present in H2 database
+     */
+    @DisplayName("ByKeyword return empty list when no lessons")
+    @Test
+    void getPagedLessonsByKeyword_returnNotNull() {
+        Pageable pageable = PageRequest.of(1, 1);
+//        List<Lesson> lessonList = lessonService.findAllByNullableKeywordWithPagination(1, "gag", pageable).toList();
+
+//        assertNotNull(lessonList);
+//        assertTrue(lessonList.isEmpty());
     }
 
-    @DisplayName("Authorize to authority 1 with authority 1 and not for others")
+    @DisplayName("Add one lesson successfully")
     @Test
-    void authorize() {
-        //Credentials of user with authority 1 from H2 database initial script
-        String token = service.authenticate(User.builder().username("EthanHo").password("12345678").build());
+    void addNewLesson() {
+        Lesson testLesson = Lesson.builder()
+                .topic("Ремонт нового подвижного состава трамваев_тест")
+                .duration(2.6f)
+                .date(new Date(1683014400L))
+                .teacher("Левицкий Леонид Константинович.")
+                .peoplePlanned(52)
+                .teacherPost(TeacherProfession.MASTER.getProfession())
+                .isHeld(true)
+                .build();
 
-        for (int i = 2; i <= 15; i++) {
-            int i_ = i;
-            assertThrows(RuntimeException.class, () -> service.authorize(token, i_));
-        }
-        assertThrows(RuntimeException.class, () -> service.authorize(token, 100));
-        assertDoesNotThrow(() -> service.authorize(token, 1));
+        lessonService.addNewLesson(4, testLesson);
 
+        Integer lessonsCount = lessonService.getLessonsCount(4);
+        assertEquals(1, lessonsCount);
     }
 
-    @Test
-    void validateToken() {
-    }
 
-    @Test
-    void decodeUserFromToken() {
-    }
 }

@@ -17,13 +17,14 @@ import project.model.Subdepartment;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.Optional;
 
 import static project.dataSource.DynamicDataSourceContextHolder.getCurrentDataSource;
 
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class StudentServiceImplIntegrationTest {
+class StudentServiceAndRepositoryUnitTest {
 
     @Autowired
     StudentServiceImpl studentService;
@@ -88,7 +89,7 @@ class StudentServiceImplIntegrationTest {
 
         studentService.addNewStudentBySubdepartmentName(depId, testStudent);
         Pageable pageable = PageRequest.of(1, 999999);
-        List<Student> studentListAfter = studentService.findAllWithPagination(depId,null, pageable).getContent();
+        List<Student> studentListAfter = studentService.findAllWithPagination(depId, Optional.empty(), pageable).getContent();
 
 
         Assertions.assertAll(
@@ -107,7 +108,7 @@ class StudentServiceImplIntegrationTest {
         testStudent.setSubdepartmentName(testSubdepartment.getName());
 
         Pageable pageable = PageRequest.of(1, 999999);
-        List<Student> studentListAfter = studentService.findAllWithPagination(depId,null, pageable).getContent();
+        List<Student> studentListAfter = studentService.findAllWithPagination(depId, Optional.empty(), pageable).getContent();
 
         Assertions.assertEquals(0, studentListAfter.size());
     }
@@ -124,13 +125,13 @@ class StudentServiceImplIntegrationTest {
         testStudent.setSubdepartmentName(testSubdepartment.getName());
 
         Pageable pageable = PageRequest.of(1, 999999);
-        List<Student> studentListBefore = studentService.findAllWithPagination(depId, null,pageable).getContent();
+        List<Student> studentListBefore = studentService.findAllWithPagination(depId, Optional.empty(), pageable).getContent();
         boolean studentExistsBefore = studentListBefore
                 .stream()
                 .anyMatch(s -> testStudent.getStudentId().equals(s.getStudentId()));
 
         studentService.addNewStudentBySubdepartmentName(depId, testStudent);
-        List<Student> studentListAfter = studentService.findAllWithPagination(depId,null, pageable).getContent();
+        List<Student> studentListAfter = studentService.findAllWithPagination(depId, Optional.empty(), pageable).getContent();
 
         boolean studentExistsAfter = studentListAfter
                 .stream()

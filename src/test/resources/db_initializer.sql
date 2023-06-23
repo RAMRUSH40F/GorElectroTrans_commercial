@@ -112,10 +112,10 @@ INSERT INTO users (username, PASSWORD, enabled)
 VALUES ('WilliamZhang', 'password123', 1);
 INSERT INTO users (username, PASSWORD, enabled)
 VALUES ('MiaTan', 'abc123', 1);
+
+
 INSERT INTO users (username, PASSWORD, enabled)
 VALUES ('JamesLiu', 'letmein123', 1);
-
-
 INSERT INTO users (username, PASSWORD, enabled)
 VALUES ('EthanHo', '12345678', 1);
 INSERT INTO users (username, PASSWORD, enabled)

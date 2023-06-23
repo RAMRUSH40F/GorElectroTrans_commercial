@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class SubdepartmentServiceImplIntegrationTest {
+class SubdepartmentServiceAndRepositoryUnitTest {
 
     @Autowired
     SubdepartmentServiceImpl service;

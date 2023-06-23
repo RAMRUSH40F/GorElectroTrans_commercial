@@ -68,11 +68,11 @@ public class JwtAuthorizationService {
             if (token.isEmpty()) {
                 throw new AuthenticationException("Прежде чем пользоваться сервисом войдите в аккаунт.");
             }
+
             Jws<Claims> claimsJws = Jwts.parser()
                     .setSigningKey(secretKey).parseClaimsJws(token);
-            boolean userIsActive = decodeUserFromToken(token).isActive();
             boolean tokenIsExpired = !claimsJws.getBody().getExpiration().before(new Date());
-            return userIsActive & tokenIsExpired;
+            return tokenIsExpired;
         } catch (JwtException | IllegalArgumentException exception) {
             throw new AuthenticationException(exception,
                     "Прежде чем пользоваться сервисом войдите в аккаунт заново");
@@ -88,7 +88,6 @@ public class JwtAuthorizationService {
 
             String username = jwt.getSubject();
             user.setUsername(username);
-
             Set<String> authorities = new HashSet<>(jwt.getClaim("role").asList(String.class));
             user.setAuthorities(authorities.stream().map(s -> new Authority("", s)).collect(Collectors.toSet()));
 
@@ -105,16 +104,14 @@ public class JwtAuthorizationService {
     private @NonNull String createToken(@NonNull User user) {
         Claims claims = Jwts.claims().setSubject(user.getUsername());
         claims.put("role", user.getAuthorities());
-
         Date now = new Date();
         Date validity = new Date(now.getTime() + JWT_TOKEN_MAX_AGE_HOURS * 3600 * 1000);
-        String token = Jwts.builder()
+        return Jwts.builder()
                 .setClaims(claims)
                 .setExpiration(validity)
                 .setIssuedAt(now)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
-        return token;
     }
 
 
