@@ -31,8 +31,7 @@ public class ReportController {
                                                           @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         validateInterval(quarter);
 
-        final String fileName = "/report_template.xls";
-        HSSFWorkbook reportFile = reportService.createReport(quarter, year, fileName);
+        HSSFWorkbook reportFile = reportService.createReport(quarter, year);
 
         // Set response headers
         HttpHeaders headers = new HttpHeaders();

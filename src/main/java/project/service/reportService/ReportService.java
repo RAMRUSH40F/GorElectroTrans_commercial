@@ -28,7 +28,8 @@ import static project.dataSource.DynamicDataSourceContextHolder.setCurrentDataSo
 public class ReportService {
     private final JdbcTemplate jdbcTemplate;
 
-    public @NotNull HSSFWorkbook createReport(int quarter, int year, String fileName) {
+    public @NotNull HSSFWorkbook createReport(int quarter, int year) {
+        final String fileName = "/report_template.xls";
         HSSFWorkbook workbook = readWorkbook(fileName);
         formLessonReport(workbook, fileName, quarter, year);
         formWorkerReport(workbook, fileName, quarter, year);
@@ -169,7 +170,6 @@ public class ReportService {
 
 
         formStatsForOthersCategory(sheet.getRow(13), 7, 12, 1, row.getLastCellNum(), sheet);
-        setResultingColumnValues(row);
         writeWorkbook(workbook, filename);
     }
 
@@ -181,7 +181,7 @@ public class ReportService {
             cell = row.getCell(column);
             cell.setCellStyle(style);
             cell.setCellValue(jdbcTemplate.query("SELECT COUNT(1) FROM "
-                            + "Attendance_view WHERE `date` BETWEEN '"
+                            + "attendance_view WHERE `date` BETWEEN '"
                             + yearMonthPair.getKey() + "-0"
                             + yearMonthPair.getValue()
                             + "-01' AND '"
@@ -190,6 +190,8 @@ public class ReportService {
                             + "-01'",
                     (rs, rowNum) -> rs.getInt("COUNT(1)")).get(0));
         }
+        setResultingColumnValues(row);
+
     }
 
     private void formSuccessWorker(HSSFRow row, Map.Entry<Integer, Integer> yearMonthPair, int lastCell) {
@@ -200,7 +202,7 @@ public class ReportService {
             cell = row.getCell(column);
             cell.setCellStyle(style);
             cell.setCellValue(jdbcTemplate.query("SELECT COUNT(1) FROM "
-                            + "Attendance_view WHERE `date` BETWEEN '"
+                            + "attendance_view WHERE `date` BETWEEN '"
                             + yearMonthPair.getKey() + "-0"
                             + yearMonthPair.getValue()
                             + "-01' AND '"
@@ -209,6 +211,8 @@ public class ReportService {
                             + "-01' and success=1",
                     (rs, rowNum) -> rs.getInt("COUNT(1)")).get(0));
         }
+        setResultingColumnValues(row);
+
     }
 
     /*
@@ -226,7 +230,7 @@ public class ReportService {
             cell = row.getCell(column);
             cell.setCellStyle(style);
             cell.setCellValue(jdbcTemplate.query("SELECT COUNT(1) FROM "
-                            + "Attendance_view WHERE `date` BETWEEN '"
+                            + "attendance_view WHERE `date` BETWEEN '"
                             + yearMonthPair.getKey() + "-0"
                             + yearMonthPair.getValue()
                             + "-01' AND '"
