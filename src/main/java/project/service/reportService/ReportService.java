@@ -9,6 +9,7 @@ import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -48,8 +49,7 @@ public class ReportService {
         Path originalPath = Paths.get(filename);
         try {
             Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
-            InputStream inputStream = getClass().getResourceAsStream(copied.toString());
-            return new HSSFWorkbook(new POIFSFileSystem(inputStream));
+            return new HSSFWorkbook(new POIFSFileSystem(new FileInputStream(copied.toFile())));
         } catch (IOException e) {
             throw new RuntimeException("Файл шаблона не был загружен в корневую папку проекта или " +
                     "произошла другая ошибка связанная с чтением шаблонной таблицы", e);
@@ -340,7 +340,8 @@ public class ReportService {
         font.setFontName("Times New Roman");
         style.setFont(font);
         style.setAlignment(CellStyle.ALIGN_CENTER);
-        style.setBorderBottom(CellStyle.BORDER_THIN);
+        style.setBorderBottom(CellStyle.BORDER_MEDIUM);
+        style.setBottomBorderColor(IndexedColors.GREY_80_PERCENT.getIndex());
         return style;
     }
 }
