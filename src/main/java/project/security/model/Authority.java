@@ -3,7 +3,10 @@ package project.security.model;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 
 @Setter
@@ -17,15 +20,15 @@ public class Authority {
     private String username;
 
     @Column(name = "authority")
-    private String authority;
+    private String permission;
 
 
     public Authority() {
     }
 
-    public Authority(String username, String authority) {
+    public Authority(String username, String permission) {
         this.username = username;
-        this.authority = authority;
+        this.permission = permission;
     }
 
     @Override
@@ -35,16 +38,16 @@ public class Authority {
 
         Authority authority1 = (Authority) o;
 
-        return getAuthority().equals(authority1.getAuthority());
+        return getPermission().equals(authority1.getPermission());
     }
 
     @Override
     public int hashCode() {
-        return getAuthority().hashCode();
+        return getPermission().hashCode();
     }
 
     @Override
     public String toString() {
-        return getAuthority();
+        return getPermission();
     }
 }

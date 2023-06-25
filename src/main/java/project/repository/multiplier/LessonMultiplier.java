@@ -37,7 +37,7 @@ public class LessonMultiplier {
                     .build();
             lessonService.addNewLesson(departmentId, lesson);
         }
-        System.out.printf("Lesson Multiplier ended work on %d department \n ", departmentId);
+        System.out.printf("Lesson Multiplier ended work on %d department %n ", departmentId);
 
     }
 }

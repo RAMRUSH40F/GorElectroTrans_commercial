@@ -5,7 +5,7 @@ public class FileSizeLimitExceededException extends RuntimeException {
             "Попробуйте загрузить в виде нескольких файлов, или добавить файл к архиву.";
     private String customMessage;
 
-    public FileSizeLimitExceededException(String receivedSubdepartment, String customMessage) {
+    public FileSizeLimitExceededException(String customMessage) {
         this.customMessage = customMessage;
     }
 

@@ -15,11 +15,12 @@ import java.util.Random;
 public class StudentMultiplier {
     private final StudentServiceImpl studentService;
 
+    private final Random randomizer = new Random();
+
     public void addAllStudents(int departmentId) {
 
         List<String> randomNameList = List.of("Стремглав Вячеслав Игоревич", "Семен Иванович Дмитриевич", "Треуголова София Дмитриевна", "Рябичев Даниил Алексендрович", "Теска Кирилл Дмитриевич", "Трезубец Арина Дмитриевич", "Талец Данир Игоревич", "Иванов Семен Алексендрович", "Тодоренко Регина Алексендровна", "Бактяп Иван Алексендрович", "Ильюшина Мария Алексендровна", "Звонкович Николай Игоревич", "Жданович Артем Дмитриевич", "Скряпкин Сергей Алексендрович", "Карцева Катя Игоревна", "Трошин Никита Александрович", "Астон Михаил Дмитриевич", "Кудряшев Михаил Игоревич", "Москов Артем Алексендрович", "Король Артем Дмитриевич");
 
-        Random randomizer = new Random();
         StringBuilder idBuilder = new StringBuilder();
 
 
@@ -31,7 +32,7 @@ public class StudentMultiplier {
                     idBuilder.delete(0, 5);
                     idBuilder.append(0).append(secondN).append("3").append(thirdN).append(fourthN);
                     String studentName = randomNameList.get(randomizer.nextInt(20));
-                    SubdepartmentId = (short) ((randomizer.nextInt(6) + 1));
+                    SubdepartmentId = (short) (randomizer.nextInt(6) + 1);
                     student = Student.builder()
                             .name(studentName)
                             .studentId(idBuilder.toString())
@@ -42,6 +43,6 @@ public class StudentMultiplier {
             }
 
         }
-        System.out.printf("Student Multiplier ended work on %d department \n ", departmentId);
+        System.out.printf("Student Multiplier ended work on %d department %n ", departmentId);
     }
 }

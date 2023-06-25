@@ -124,9 +124,10 @@ class SubdepartmentServiceAndRepositoryUnitTest {
     @Test
     void save_doubleSaveNotThrows() {
         short departmentId = 5;
-        service.save(departmentId, getNotExistingSubdepartment());
+        Subdepartment notExistingSubdepartment = getNotExistingSubdepartment();
+        service.save(departmentId, notExistingSubdepartment);
 
-        assertThrows(RuntimeException.class, () -> service.save(departmentId, getNotExistingSubdepartment()));
+        assertThrows(RuntimeException.class, () -> service.save(departmentId, notExistingSubdepartment));
 
     }
 

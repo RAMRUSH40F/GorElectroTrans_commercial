@@ -32,7 +32,7 @@ public class User {
     private Set<Authority> authorities;
 
     public Set<String> getAuthorities() {
-        return authorities.stream().map(Authority::getAuthority).collect(Collectors.toSet());
+        return authorities.stream().map(Authority::getPermission).collect(Collectors.toSet());
     }
 
     @Override

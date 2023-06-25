@@ -20,9 +20,9 @@ public class RequestExceptionHandlingController {
             PaginationException.class,
             InvalidIntervalException.class,
             InvalidSubdepartmentException.class})
-    public ResponseEntity<ResponseException> handleInvalidRequestException(RuntimeException e) {
+    public ResponseEntity<ResponseExceptionModel> handleInvalidRequestException(RuntimeException e) {
         System.out.println(e.getCause());
-        ResponseException responseException = ResponseException.builder()
+        ResponseExceptionModel responseException = ResponseExceptionModel.builder()
                 .message(e.getMessage())
                 .timeStamp(ZonedDateTime.now(ZoneId.of("UTC+3")))
                 .httpStatus(HttpStatus.BAD_REQUEST)
@@ -33,9 +33,9 @@ public class RequestExceptionHandlingController {
 
     // Security
     @ExceptionHandler(value = {AuthenticationException.class})
-    public ResponseEntity<ResponseException> authException(RuntimeException e) {
+    public ResponseEntity<ResponseExceptionModel> authException(RuntimeException e) {
         System.out.println(e.getCause());
-        ResponseException responseException = ResponseException.builder()
+        ResponseExceptionModel responseException = ResponseExceptionModel.builder()
                 .message(e.getMessage())
                 .timeStamp(ZonedDateTime.now(ZoneId.of("UTC+3")))
                 .httpStatus(HttpStatus.UNAUTHORIZED)
@@ -44,9 +44,9 @@ public class RequestExceptionHandlingController {
     }
 
     @ExceptionHandler(value = {AuthorizationException.class})
-    public ResponseEntity<ResponseException> authorizationException(RuntimeException e) {
+    public ResponseEntity<ResponseExceptionModel> authorizationException(RuntimeException e) {
         System.out.println(e.getCause());
-        ResponseException responseException = ResponseException.builder()
+        ResponseExceptionModel responseException = ResponseExceptionModel.builder()
                 .message(e.getMessage())
                 .timeStamp(ZonedDateTime.now(ZoneId.of("UTC+3")))
                 .httpStatus(HttpStatus.FORBIDDEN)
@@ -56,9 +56,9 @@ public class RequestExceptionHandlingController {
 
     // Database
     @ExceptionHandler(value = {DataIntegrityViolationException.class})
-    public ResponseEntity<ResponseException> handleSqlExceptions(RuntimeException e) {
+    public ResponseEntity<ResponseExceptionModel> handleSqlExceptions(RuntimeException e) {
         System.out.println(e.getCause());
-        ResponseException responseException = ResponseException.builder()
+        ResponseExceptionModel responseException = ResponseExceptionModel.builder()
                 .message("Такие данные не могут быть добавлены. " +
                         "Возможно, они дублируют существующие данные.")
                 .timeStamp(ZonedDateTime.now(ZoneId.of("UTC+3")))
@@ -70,9 +70,9 @@ public class RequestExceptionHandlingController {
     @ExceptionHandler(value = {
             NoSuchElementException.class,
             IllegalArgumentException.class})
-    public ResponseEntity<ResponseException> handleNoSuchElementSqlException(RuntimeException e) {
+    public ResponseEntity<ResponseExceptionModel> handleNoSuchElementSqlException(RuntimeException e) {
         System.out.println(e.getMessage());
-        ResponseException responseException = ResponseException.builder()
+        ResponseExceptionModel responseException = ResponseExceptionModel.builder()
                 .message(e.getMessage())
                 .timeStamp(ZonedDateTime.now(ZoneId.of("UTC+3")))
                 .httpStatus(HttpStatus.BAD_REQUEST)
@@ -81,9 +81,9 @@ public class RequestExceptionHandlingController {
     }
 
     @ExceptionHandler(value = {FileSizeLimitExceededException.class})
-    public ResponseEntity<ResponseException> handleFileSizeExceededSqlException(RuntimeException e) {
+    public ResponseEntity<ResponseExceptionModel> handleFileSizeExceededSqlException(RuntimeException e) {
         System.out.println(e.getMessage());
-        ResponseException responseException = ResponseException.builder()
+        ResponseExceptionModel responseException = ResponseExceptionModel.builder()
                 .message(e.getMessage())
                 .timeStamp(ZonedDateTime.now(ZoneId.of("UTC+3")))
                 .httpStatus(HttpStatus.PAYLOAD_TOO_LARGE)
@@ -94,9 +94,9 @@ public class RequestExceptionHandlingController {
     // Jpa DataBase exceptions
 
     @ExceptionHandler(value = {BoundedEntityNotFound.class})
-    public ResponseEntity<ResponseException> noEntityWithSuchId(BoundedEntityNotFound e) {
+    public ResponseEntity<ResponseExceptionModel> noEntityWithSuchId(BoundedEntityNotFound e) {
         System.out.println(e.getCause());
-        ResponseException responseException = ResponseException.builder()
+        ResponseExceptionModel responseException = ResponseExceptionModel.builder()
                 .message(e.getCustomMessage())
                 .timeStamp(ZonedDateTime.now(ZoneId.of("UTC+3")))
                 .httpStatus(HttpStatus.BAD_REQUEST)
@@ -105,9 +105,9 @@ public class RequestExceptionHandlingController {
     }
 
     @ExceptionHandler(value = {Exception.class})
-    public ResponseException exceptionHandler(Exception e) {
+    public ResponseExceptionModel exceptionHandler(Exception e) {
         System.out.println(e.getCause());
-        return ResponseException.builder()
+        return ResponseExceptionModel.builder()
                 .message("Произошла ошибка. Перепроверьте свой запрос.")
                 .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
                 .timeStamp(ZonedDateTime.now())
