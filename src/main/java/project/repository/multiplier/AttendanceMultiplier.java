@@ -13,6 +13,7 @@ import project.service.LessonServiceImpl;
 import project.service.StudentServiceImpl;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -33,7 +34,7 @@ public class AttendanceMultiplier {
 
         Pageable pageable = PageRequest.of(1, 100);
         // Достаем из БД все записи об уроках и об учениках и оставляем каждый шестой id студента.
-        List<Lesson> lessons = lessonService.findAllByNullableKeywordWithPagination(departmentId, null, pageable).toList();
+        List<Lesson> lessons = lessonService.findAllByNullableKeywordWithPagination(departmentId, Optional.empty(), pageable).toList();
         List<Integer> lessIds = lessons.stream()
                 .map(Lesson::getId)
                 .filter(id -> random.nextInt(6) == 1)
