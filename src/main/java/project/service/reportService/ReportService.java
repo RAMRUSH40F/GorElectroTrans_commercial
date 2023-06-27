@@ -9,48 +9,54 @@ import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import project.model.QuarterDateModel;
 import project.repository.LessonJpaRepository;
-import project.repository.ReportJpaRepository;
+import project.repository.ReportRepository;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.time.Year;
 import java.time.temporal.IsoFields;
 import java.util.*;
 
-import static project.dataSource.DynamicDataSourceContextHolder.setCurrentDataSource;
 import static project.dataSource.DynamicDataSourceContextHolder.getCurrentDataSource;
+import static project.dataSource.DynamicDataSourceContextHolder.setCurrentDataSource;
 
 
 @Service("ReportServiceBean")
 @RequiredArgsConstructor
 public class ReportService {
-    private final JdbcTemplate jdbcTemplate;
-    private final LessonJpaRepository lessonJpaRepository;
-    private final ReportJpaRepository reportJpaRepository;
+    private final ReportRepository reportRepository;
 
     public @NotNull HSSFWorkbook createReport(int quarter, int year) {
         final String fileName = Paths.get("src", "main", "resources", "report_template.xls").toString();
-        HSSFWorkbook hssfWorkBook = readWorkbook(fileName);
-        formLessonReport(hssfWorkBook, fileName, quarter, year);
-        formWorkerReport(hssfWorkBook, fileName, quarter, year);
-        formTeacherReport(hssfWorkBook, fileName, quarter, year);
+        final String copyFileName = Paths.get("src", "main", "resources", "report.xls").toString();
+        HSSFWorkbook hssfWorkBook = readWorkbook(fileName, copyFileName);
+        formLessonReport(hssfWorkBook, copyFileName, quarter, year);
+        formWorkerReport(hssfWorkBook, copyFileName, quarter, year);
+        formTeacherReport(hssfWorkBook, copyFileName, quarter, year);
         return hssfWorkBook;
     }
 
     /*
     Метод чтения файла
     */
-    public HSSFWorkbook readWorkbook(String filename) {
+    public HSSFWorkbook readWorkbook(String filename, String copy) {
+        Path copied = Paths.get(copy);
+        Path originalPath = Paths.get(filename);
         try {
-            return new HSSFWorkbook(new POIFSFileSystem(new FileInputStream(filename)));
+            Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
+            return new HSSFWorkbook(new POIFSFileSystem(new FileInputStream(copied.toFile())));
         } catch (IOException e) {
             throw new RuntimeException("Файл шаблона не был загружен в корневую папку проекта или " +
                     "произошла другая ошибка связанная с чтением шаблонной таблицы", e);
@@ -101,12 +107,10 @@ public class ReportService {
         for (int column = 1; column < lastCell; column += 2) {
             setCurrentDataSource("DEP_" + (column / 2 + 1));
             cell = row1.getCell(column);
-            Date dateFrom=new Date(yearMonthPair.getKey()-1900,yearMonthPair.getValue()-1,1);
-            Date dateTo=new Date(yearMonthPair.getKey()-1900,yearMonthPair.getValue()+2,1);//?Исправить
             if(isHeld) {
-                cell.setCellValue(lessonJpaRepository.findAllLessonsBetweenDates(dateFrom, dateTo));
+                cell.setCellValue(reportRepository.findAllLessonsBetweenDates(yearMonthPair.getKey(), yearMonthPair.getValue()));
             }else {
-                cell.setCellValue(lessonJpaRepository.findAllLessonsBetweenDatesWithHeld(dateFrom, dateTo));
+                cell.setCellValue(reportRepository.findAllLessonsBetweenDatesWithHeld(yearMonthPair.getKey(), yearMonthPair.getValue()));
             }
             cell.setCellStyle(style);
         }
@@ -146,12 +150,12 @@ public class ReportService {
         final Map.Entry<Integer, Integer> yearMonthPair = calculateDate(quarter, year);
         int lastCell = 31;
         formAllWorker(row, yearMonthPair, lastCell);
-       /* formSuccessWorker(sheet.getRow(7), yearMonthPair, lastCell);
+        formSuccessWorker(sheet.getRow(7), yearMonthPair, lastCell);
         formWorkerStatsByProfession(WorkerProfessions.VODITELYTR.getProfession(), sheet.getRow(8), yearMonthPair);
         formWorkerStatsByProfession(WorkerProfessions.VODITELYT.getProfession(), sheet.getRow(9), yearMonthPair);
         formWorkerStatsByProfession(WorkerProfessions.SLESARY.getProfession(), sheet.getRow(10), yearMonthPair);
         formWorkerStatsByProfession(WorkerProfessions.DISPETCHERS.getProfession(), sheet.getRow(11), yearMonthPair);
-        formWorkerStatsByProfession(WorkerProfessions.SPECIALISTS.getProfession(), sheet.getRow(12), yearMonthPair);*/
+        formWorkerStatsByProfession(WorkerProfessions.SPECIALISTS.getProfession(), sheet.getRow(12), yearMonthPair);
 
 
         formStatsForOthersCategory(sheet.getRow(13), 7, 12, 1, row.getLastCellNum(), sheet);
@@ -161,8 +165,6 @@ public class ReportService {
 
     private void formAllWorker(HSSFRow row, Map.Entry<Integer, Integer> yearMonthPair, int lastCell) {
         HSSFCell cell;
-        Date dateFrom = new Date(yearMonthPair.getKey() - 1900, yearMonthPair.getValue() - 1, 1);
-        Date dateTo = new Date(yearMonthPair.getKey() - 1900, yearMonthPair.getValue() + 2, 1);
         CellStyle style = applyClassicStyle(row.getSheet().getWorkbook());
         for (int column = 1; column < lastCell - 1; column += 2) {
             setCurrentDataSource("DEP_" + (column / 2 + 1));
@@ -170,7 +172,7 @@ public class ReportService {
             cell = row.getCell(column);
             cell.setCellStyle(style);
             //?Исправить
-            cell.setCellValue(reportJpaRepository.findAllBetweenDates(dateFrom, dateTo));
+            cell.setCellValue(reportRepository.findAllWorkersBetweenDates(yearMonthPair.getKey(), yearMonthPair.getValue()));
             System.out.println(getCurrentDataSource());
 
         }
@@ -178,16 +180,13 @@ public class ReportService {
 
     private void formSuccessWorker(HSSFRow row, Map.Entry<Integer, Integer> yearMonthPair, int lastCell) {
         HSSFCell cell;
-        Date dateFrom = new Date(yearMonthPair.getKey() - 1900, yearMonthPair.getValue() - 1, 1);
-        Date dateTo = new Date(yearMonthPair.getKey() - 1900, yearMonthPair.getValue() + 2, 1);
         CellStyle style = applyClassicStyle(row.getSheet().getWorkbook());
-        int dep_id=1;
         for (int column = 1; column < lastCell - 1; column += 2) {
             setCurrentDataSource("DEP_" + (column / 2 + 1));
             cell = row.getCell(column);
             cell.setCellStyle(style);
             //?Исправить
-            cell.setCellValue(reportJpaRepository.findAllBetweenDateWithSuccess(dateFrom, dateTo));
+            cell.setCellValue(reportRepository.findAllWorkersBetweenDatesWithSuccess(yearMonthPair.getKey(), yearMonthPair.getValue()));
         }
     }
 
@@ -195,11 +194,6 @@ public class ReportService {
      * Формирования данных о работниках по специальности
      */
     private void formWorkerStatsByProfession(String profession, HSSFRow row, Map.Entry<Integer, Integer> yearMonthPair) {
-        if (profession == null || row == null) {
-            return;
-        }
-        Date dateFrom = new Date(yearMonthPair.getKey() - 1900, yearMonthPair.getValue() - 1, 1);
-        Date dateTo = new Date(yearMonthPair.getKey() - 1900, yearMonthPair.getValue() + 2, 1);
         final int lastCell = 31;
         HSSFCell cell;
         CellStyle style = applyClassicStyle(row.getSheet().getWorkbook());
@@ -207,7 +201,7 @@ public class ReportService {
             setCurrentDataSource("DEP_" + (column / 2 + 1));
             cell = row.getCell(column);
             cell.setCellStyle(style);
-            cell.setCellValue(reportJpaRepository.findAllBetweenDatesWithSubdepartment(dateFrom, dateTo, profession));
+            cell.setCellValue(reportRepository.findAllWorkersBetweenDatesWithSuccessAndProfession(yearMonthPair.getKey(), yearMonthPair.getValue(), profession));
         }
         setResultingColumnValues(row);
     }
@@ -221,7 +215,7 @@ public class ReportService {
         int lastCell = 31;
         Map.Entry<Integer, Integer> yearMonthPair = calculateDate(quarter, year);
 
-        //formLesson(row1, lastCell, yearMonthPair);
+        formLesson(row1, false, lastCell, yearMonthPair);
 
         formTeacherStatsByProfession(TeacherProfession.RUKOVODITEL.getProfession(), sheet.getRow(15), yearMonthPair);
         formTeacherStatsByProfession(TeacherProfession.MASTER.getProfession(), sheet.getRow(16), yearMonthPair);
@@ -246,16 +240,7 @@ public class ReportService {
             setCurrentDataSource("DEP_" + (column / 2 + 1));
             cell = row.getCell(column);
             cell.setCellStyle(style);
-            cell.setCellValue(jdbcTemplate.query("SELECT COUNT(1) FROM "
-                            + "lesson WHERE `date` BETWEEN '"
-                            + yearMonthPair.getKey() + "-"
-                            + yearMonthPair.getValue()
-                            + "-01' AND '"
-                            + yearMonthPair.getKey() + "-"
-                            + (yearMonthPair.getValue() + 3)
-                            + "-01' AND teacherPost LIKE '"
-                            + profession + "'",
-                    (rs, rowNum) -> rs.getInt("COUNT(1)")).get(0));
+            cell.setCellValue(reportRepository.findAllTeachersByProfession(yearMonthPair.getKey(), yearMonthPair.getValue(), profession));
         }
         setResultingColumnValues(row);
     }
@@ -304,6 +289,8 @@ public class ReportService {
         style.setFont(font);
         style.setAlignment(CellStyle.ALIGN_CENTER);
         style.setBorderBottom(CellStyle.BORDER_THIN);
+        style.setBorderBottom(CellStyle.BORDER_MEDIUM);
+        style.setBottomBorderColor(IndexedColors.GREY_80_PERCENT.getIndex());
         return style;
     }
 
