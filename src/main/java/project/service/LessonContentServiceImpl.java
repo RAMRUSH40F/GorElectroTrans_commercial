@@ -40,7 +40,7 @@ public class LessonContentServiceImpl {
     public boolean save(Integer departmentId, LessonContent content) {
         setCurrentDataSource("DEP_" + departmentId);
         try {
-            return Optional.of(repository.save(content).getLessonId()).isPresent();
+            return Optional.of(repository.save(content).getLessonId()).isPresent()  ;
         }catch (DataIntegrityViolationException e) {
             throw new FileSizeLimitExceededException();
         }
