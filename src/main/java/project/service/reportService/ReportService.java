@@ -14,12 +14,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import project.model.QuarterDateModel;
 import project.repository.LessonJpaRepository;
-import project.repository.StudentJpaRepository;
+import project.repository.ReportJpaRepository;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.Year;
@@ -27,14 +26,15 @@ import java.time.temporal.IsoFields;
 import java.util.*;
 
 import static project.dataSource.DynamicDataSourceContextHolder.setCurrentDataSource;
+import static project.dataSource.DynamicDataSourceContextHolder.getCurrentDataSource;
 
 
 @Service("ReportServiceBean")
 @RequiredArgsConstructor
 public class ReportService {
     private final JdbcTemplate jdbcTemplate;
-private final LessonJpaRepository lessonJpaRepository;
-private final StudentJpaRepository studentJpaRepository;
+    private final LessonJpaRepository lessonJpaRepository;
+    private final ReportJpaRepository reportJpaRepository;
 
     public @NotNull HSSFWorkbook createReport(int quarter, int year) {
         final String fileName = Paths.get("src", "main", "resources", "report_template.xls").toString();
@@ -101,7 +101,6 @@ private final StudentJpaRepository studentJpaRepository;
         for (int column = 1; column < lastCell; column += 2) {
             setCurrentDataSource("DEP_" + (column / 2 + 1));
             cell = row1.getCell(column);
-            cell.setCellStyle(style);
             Date dateFrom=new Date(yearMonthPair.getKey()-1900,yearMonthPair.getValue()-1,1);
             Date dateTo=new Date(yearMonthPair.getKey()-1900,yearMonthPair.getValue()+2,1);//?Исправить
             if(isHeld) {
@@ -109,6 +108,7 @@ private final StudentJpaRepository studentJpaRepository;
             }else {
                 cell.setCellValue(lessonJpaRepository.findAllLessonsBetweenDatesWithHeld(dateFrom, dateTo));
             }
+            cell.setCellStyle(style);
         }
     }
 
@@ -146,12 +146,12 @@ private final StudentJpaRepository studentJpaRepository;
         final Map.Entry<Integer, Integer> yearMonthPair = calculateDate(quarter, year);
         int lastCell = 31;
         formAllWorker(row, yearMonthPair, lastCell);
-        formSuccessWorker(sheet.getRow(7), yearMonthPair, lastCell);
+       /* formSuccessWorker(sheet.getRow(7), yearMonthPair, lastCell);
         formWorkerStatsByProfession(WorkerProfessions.VODITELYTR.getProfession(), sheet.getRow(8), yearMonthPair);
         formWorkerStatsByProfession(WorkerProfessions.VODITELYT.getProfession(), sheet.getRow(9), yearMonthPair);
         formWorkerStatsByProfession(WorkerProfessions.SLESARY.getProfession(), sheet.getRow(10), yearMonthPair);
         formWorkerStatsByProfession(WorkerProfessions.DISPETCHERS.getProfession(), sheet.getRow(11), yearMonthPair);
-        formWorkerStatsByProfession(WorkerProfessions.SPECIALISTS.getProfession(), sheet.getRow(12), yearMonthPair);
+        formWorkerStatsByProfession(WorkerProfessions.SPECIALISTS.getProfession(), sheet.getRow(12), yearMonthPair);*/
 
 
         formStatsForOthersCategory(sheet.getRow(13), 7, 12, 1, row.getLastCellNum(), sheet);
@@ -161,39 +161,33 @@ private final StudentJpaRepository studentJpaRepository;
 
     private void formAllWorker(HSSFRow row, Map.Entry<Integer, Integer> yearMonthPair, int lastCell) {
         HSSFCell cell;
+        Date dateFrom = new Date(yearMonthPair.getKey() - 1900, yearMonthPair.getValue() - 1, 1);
+        Date dateTo = new Date(yearMonthPair.getKey() - 1900, yearMonthPair.getValue() + 2, 1);
         CellStyle style = applyClassicStyle(row.getSheet().getWorkbook());
         for (int column = 1; column < lastCell - 1; column += 2) {
             setCurrentDataSource("DEP_" + (column / 2 + 1));
+            System.out.println(getCurrentDataSource());
             cell = row.getCell(column);
             cell.setCellStyle(style);
-            cell.setCellValue(jdbcTemplate.query("SELECT COUNT(1) FROM "
-                            + "Attendance_view WHERE `date` BETWEEN '"
-                            + yearMonthPair.getKey() + "-0"
-                            + yearMonthPair.getValue()
-                            + "-01' AND '"
-                            + yearMonthPair.getKey() + "-0"
-                            + (yearMonthPair.getValue() + 3)
-                            + "-01'",
-                    (rs, rowNum) -> rs.getInt("COUNT(1)")).get(0));
+            //?Исправить
+            cell.setCellValue(reportJpaRepository.findAllBetweenDates(dateFrom, dateTo));
+            System.out.println(getCurrentDataSource());
+
         }
     }
 
     private void formSuccessWorker(HSSFRow row, Map.Entry<Integer, Integer> yearMonthPair, int lastCell) {
         HSSFCell cell;
+        Date dateFrom = new Date(yearMonthPair.getKey() - 1900, yearMonthPair.getValue() - 1, 1);
+        Date dateTo = new Date(yearMonthPair.getKey() - 1900, yearMonthPair.getValue() + 2, 1);
         CellStyle style = applyClassicStyle(row.getSheet().getWorkbook());
+        int dep_id=1;
         for (int column = 1; column < lastCell - 1; column += 2) {
             setCurrentDataSource("DEP_" + (column / 2 + 1));
             cell = row.getCell(column);
             cell.setCellStyle(style);
-            cell.setCellValue(jdbcTemplate.query("SELECT COUNT(1) FROM "
-                            + "Attendance_view WHERE `date` BETWEEN '"
-                            + yearMonthPair.getKey() + "-0"
-                            + yearMonthPair.getValue()
-                            + "-01' AND '"
-                            + yearMonthPair.getKey() + "-0"
-                            + (yearMonthPair.getValue() + 3)
-                            + "-01' and success=1",
-                    (rs, rowNum) -> rs.getInt("COUNT(1)")).get(0));
+            //?Исправить
+            cell.setCellValue(reportJpaRepository.findAllBetweenDateWithSuccess(dateFrom, dateTo));
         }
     }
 
@@ -204,6 +198,8 @@ private final StudentJpaRepository studentJpaRepository;
         if (profession == null || row == null) {
             return;
         }
+        Date dateFrom = new Date(yearMonthPair.getKey() - 1900, yearMonthPair.getValue() - 1, 1);
+        Date dateTo = new Date(yearMonthPair.getKey() - 1900, yearMonthPair.getValue() + 2, 1);
         final int lastCell = 31;
         HSSFCell cell;
         CellStyle style = applyClassicStyle(row.getSheet().getWorkbook());
@@ -211,15 +207,7 @@ private final StudentJpaRepository studentJpaRepository;
             setCurrentDataSource("DEP_" + (column / 2 + 1));
             cell = row.getCell(column);
             cell.setCellStyle(style);
-            cell.setCellValue(jdbcTemplate.query("SELECT COUNT(1) FROM "
-                            + "Attendance_view WHERE `date` BETWEEN '"
-                            + yearMonthPair.getKey() + "-0"
-                            + yearMonthPair.getValue()
-                            + "-01' AND '"
-                            + yearMonthPair.getKey() + "-0"
-                            + (yearMonthPair.getValue() + 3)
-                            + "-01' and success=1 and subdepartment LIKE '" + profession + "'",
-                    (rs, rowNum) -> rs.getInt("COUNT(1)")).get(0));
+            cell.setCellValue(reportJpaRepository.findAllBetweenDatesWithSubdepartment(dateFrom, dateTo, profession));
         }
         setResultingColumnValues(row);
     }
