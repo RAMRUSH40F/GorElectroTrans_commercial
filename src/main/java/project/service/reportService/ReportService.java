@@ -11,10 +11,8 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import project.model.QuarterDateModel;
-import project.repository.LessonJpaRepository;
 import project.repository.ReportRepository;
 
 import java.io.FileInputStream;
@@ -28,6 +26,7 @@ import java.time.LocalDate;
 import java.time.Year;
 import java.time.temporal.IsoFields;
 import java.util.*;
+
 import static project.dataSource.DynamicDataSourceContextHolder.setCurrentDataSource;
 
 
@@ -42,14 +41,12 @@ public class ReportService {
         final Map.Entry<Integer, Integer> yearMonthPair = calculateDate(quarter, year);
         HSSFWorkbook hssfWorkBook = readWorkbook(fileName, copyFileName);
         final HSSFSheet sheet = hssfWorkBook.getSheet("Лист1");
-        formLessonReport(sheet, copyFileName, yearMonthPair);
-        formWorkerReport(sheet, copyFileName, yearMonthPair);
-        formTeacherReport(sheet, copyFileName, yearMonthPair);
-        writeWorkbook(hssfWorkBook, fileName);
-
+        formLessonReport(sheet, yearMonthPair);
+        formWorkerReport(sheet, yearMonthPair);
+        formTeacherReport(sheet, yearMonthPair);
+        writeWorkbook(hssfWorkBook, copyFileName);
         return hssfWorkBook;
     }
-
     /*
     Метод чтения файла
     */
@@ -79,11 +76,7 @@ public class ReportService {
                     "Произошла другая ошибка связанная с записью в таблицу", e);
         }
     }
-
-    /*
-     * Метод формирования отчетов
-     */
-    public void formLessonReport(HSSFSheet sheet, String fileName, Map.Entry<Integer,Integer> yearMonthPair) {
+    public void formLessonReport(HSSFSheet sheet, Map.Entry<Integer,Integer> yearMonthPair) {
        final Map<HSSFRow,Boolean> rowWithHeldMap=new HashMap<>();
         rowWithHeldMap.put(sheet.getRow(2),false);
         rowWithHeldMap.put(sheet.getRow(3),true);
@@ -91,147 +84,37 @@ public class ReportService {
         rowWithHeldMap.put(sheet.getRow(5),true);
 
         for (HSSFRow row : rowWithHeldMap.keySet()) {
-            formLesson(row,rowWithHeldMap.get(row),yearMonthPair);
+            if(rowWithHeldMap.get(row)) {
+                formStatistic(row, ()->reportRepository.findAllLessonsBetweenDates(yearMonthPair.getKey(),yearMonthPair.getValue()));
+            }else{
+                formStatistic(row, ()->reportRepository.findAllLessonsBetweenDatesWithHeld(yearMonthPair.getKey(),yearMonthPair.getValue()));
+            }
             setResultingColumnValues(row);
         }
     }
-
-    /*
-     * Сбор данных о всех уроках
-     */
-    private void formLesson(HSSFRow row,boolean isHeld, Map.Entry<Integer, Integer> yearMonthPair) {
-        HSSFCell cell;
-        int lastCell=31;
-        CellStyle style = applyClassicStyle(row.getSheet().getWorkbook());
-        for (int column = 1; column < lastCell; column += 2) {
-            setCurrentDataSource("DEP_" + (column / 2 + 1));
-            cell = row.getCell(column);
-            if(isHeld) {
-                cell.setCellValue(reportRepository.findAllLessonsBetweenDates(yearMonthPair.getKey(), yearMonthPair.getValue()));
-            }else {
-                cell.setCellValue(reportRepository.findAllLessonsBetweenDatesWithHeld(yearMonthPair.getKey(), yearMonthPair.getValue()));
-            }
-            cell.setCellStyle(style);
-        }
-        setResultingColumnValues(row);
-    }
-
-    /*
-     * Сбор данных о проведенных уроках
-     */
-
-    /*
-     * Подсчет общего количества записей
-     */
-    private void setResultingColumnValues(HSSFRow row) {
-        int total = 0;
-        Cell cell;
-        CellStyle style = applyClassicStyle(row.getSheet().getWorkbook());
-
-        for (Iterator<Cell> x = row.cellIterator(); x.hasNext(); ) {
-            cell = x.next();
-            if (cell.getColumnIndex() == 0) {
-                continue;
-            }
-            if (cell.getColumnIndex() == row.getLastCellNum() - 2) {
-                cell.setCellStyle(style);
-                cell.setCellValue(total);
-            }
-            total += cell.getNumericCellValue();
-        }
-    }
-
-    /*
-     * Формирования данных о всех работниках
-     */
-    public void formWorkerReport(HSSFSheet sheet, String filename, Map.Entry<Integer,Integer> yearMonthPair) {
-        int lastCell = 31;
-        formAllWorker(sheet.getRow(6), yearMonthPair);
-        formSuccessWorker(sheet.getRow(7), yearMonthPair);
+    public void formWorkerReport(HSSFSheet sheet, Map.Entry<Integer,Integer> yearMonthPair) {
+        formStatistic(sheet.getRow(6),()->reportRepository.findAllWorkersBetweenDates(yearMonthPair.getKey(), yearMonthPair.getValue()));
+        formStatistic(sheet.getRow(7),()->reportRepository.findAllWorkersBetweenDatesWithSuccess(yearMonthPair.getKey(), yearMonthPair.getValue()));
         int rowNumber=8;
         for (WorkerProfessions profession:WorkerProfessions.values()) {
-            formWorkerStatsByProfession(profession.getProfession(), sheet.getRow(rowNumber), yearMonthPair);
+            formStatistic(sheet.getRow(rowNumber),()-> reportRepository.findAllWorkersBetweenDatesWithSuccessAndProfession(yearMonthPair.getKey(),yearMonthPair.getValue(), profession.getProfession()));
             rowNumber++;
         }
-        formStatsForOthersCategory(sheet.getRow(13), 7, 12, 1, lastCell, sheet);
+        formStatsForOthersCategory(sheet.getRow(13), 7, 12, sheet);
     }
-
-    private void formAllWorker(HSSFRow row, Map.Entry<Integer, Integer> yearMonthPair) {
-        HSSFCell cell;
-        int lastCell=31;
-        CellStyle style = applyClassicStyle(row.getSheet().getWorkbook());
-        for (int column = 1; column < lastCell - 1; column += 2) {
-            setCurrentDataSource("DEP_" + (column / 2 + 1));
-            cell = row.getCell(column);
-            cell.setCellStyle(style);
-            cell.setCellValue(reportRepository.findAllWorkersBetweenDates(yearMonthPair.getKey(), yearMonthPair.getValue()));
-        }
-        setResultingColumnValues(row);
-    }
-
-    private void formSuccessWorker(HSSFRow row, Map.Entry<Integer, Integer> yearMonthPair) {
-        HSSFCell cell;
-        int lastCell=31;
-        CellStyle style = applyClassicStyle(row.getSheet().getWorkbook());
-        for (int column = 1; column < lastCell - 1; column += 2) {
-            setCurrentDataSource("DEP_" + (column / 2 + 1));
-            cell = row.getCell(column);
-            cell.setCellStyle(style);
-            cell.setCellValue(reportRepository.findAllWorkersBetweenDatesWithSuccess(yearMonthPair.getKey(), yearMonthPair.getValue()));
-        }
-    }
-
-    /*
-     * Формирования данных о работниках по специальности
-     */
-    private void formWorkerStatsByProfession(String profession, HSSFRow row, Map.Entry<Integer, Integer> yearMonthPair) {
-        final int lastCell = 31;
-        HSSFCell cell;
-        CellStyle style = applyClassicStyle(row.getSheet().getWorkbook());
-        for (int column = 1; column < lastCell; column += 2) {
-            setCurrentDataSource("DEP_" + (column / 2 + 1));
-            cell = row.getCell(column);
-            cell.setCellStyle(style);
-            cell.setCellValue(reportRepository.findAllWorkersBetweenDatesWithSuccessAndProfession(yearMonthPair.getKey(), yearMonthPair.getValue(), profession));
-        }
-        setResultingColumnValues(row);
-    }
-
-    /*
-     * Формирования данных об учителях
-     */
-    public void formTeacherReport(HSSFSheet sheet, String filename, Map.Entry<Integer,Integer> yearMonthPair) {
-        int lastCell = 31;
-        formLesson(sheet.getRow(14), false, yearMonthPair);
+    public void formTeacherReport(HSSFSheet sheet, Map.Entry<Integer,Integer> yearMonthPair) {
+        formStatistic(sheet.getRow(14), ()->reportRepository.findAllLessonsBetweenDates(yearMonthPair.getKey(),yearMonthPair.getValue()));
         int rowNumber=15;
         for (TeacherProfession profession:TeacherProfession.values()) {
-            formTeacherStatsByProfession(profession.getProfession(), sheet.getRow(rowNumber), yearMonthPair);
+            formStatistic(sheet.getRow(rowNumber),()->reportRepository.findAllTeachersByProfession(yearMonthPair.getKey(),yearMonthPair.getValue(),profession.getProfession()));
             rowNumber++;
         }
-        formStatsForOthersCategory(sheet.getRow(18), 14, 17, 1, lastCell, sheet);
+        formStatsForOthersCategory(sheet.getRow(18), 14, 17, sheet);
     }
-
-    /*
-     * Формирования данных об учителях определенной должности
-     */
-    private void formTeacherStatsByProfession(String profession, HSSFRow row, Map.Entry<Integer, Integer> yearMonthPair) {
-        int lastCell = 31;
-        HSSFCell cell;
-        CellStyle style = applyClassicStyle(row.getSheet().getWorkbook());
-        for (int column = 1; column < lastCell; column += 2) {
-            setCurrentDataSource("DEP_" + (column / 2 + 1));
-            cell = row.getCell(column);
-            cell.setCellStyle(style);
-            cell.setCellValue(reportRepository.findAllTeachersByProfession(yearMonthPair.getKey(), yearMonthPair.getValue(), profession));
-        }
-        setResultingColumnValues(row);
-    }
-
-    /*
-     * Формирования данных о специальностях, которые не попали в перечень в шаблоне
-     */
-    public void formStatsForOthersCategory(HSSFRow destination, int from, int to, int firstCell, int lastCell, HSSFSheet sheet) {
+    public void formStatsForOthersCategory(HSSFRow destination, int from, int to, HSSFSheet sheet) {
         int value;
+        int firstCell=1;
+        int lastCell=31;
         HSSFRow row;
         Cell cell;
         CellStyle style = applyClassicStyle(destination.getSheet().getWorkbook());
@@ -290,5 +173,34 @@ public class ReportService {
             }
         }
         return intervals;
+    }
+    private void formStatistic(HSSFRow row,Formator formator) {
+        HSSFCell cell;
+        int lastCell=31;
+        CellStyle style = applyClassicStyle(row.getSheet().getWorkbook());
+        for (int column = 1; column < lastCell - 1; column += 2) {
+            setCurrentDataSource("DEP_" + (column / 2 + 1));
+            cell = row.getCell(column);
+            cell.setCellStyle(style);
+            cell.setCellValue(formator.formStatistic());
+        }
+        setResultingColumnValues(row);
+    }
+    private void setResultingColumnValues(HSSFRow row) {
+        int total = 0;
+        Cell cell;
+        CellStyle style = applyClassicStyle(row.getSheet().getWorkbook());
+
+        for (Iterator<Cell> x = row.cellIterator(); x.hasNext(); ) {
+            cell = x.next();
+            if (cell.getColumnIndex() == 0) {
+                continue;
+            }
+            if (cell.getColumnIndex() == row.getLastCellNum() - 2) {
+                cell.setCellStyle(style);
+                cell.setCellValue(total);
+            }
+            total += cell.getNumericCellValue();
+        }
     }
 }
