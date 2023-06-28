@@ -36,8 +36,8 @@ public class ReportService {
     private final ReportRepository reportRepository;
 
     public @NotNull HSSFWorkbook createReport(int quarter, int year) {
-        final String fileName = Paths.get("src", "main", "resources", "report_template.xls").toString();
-        final String copyFileName = Paths.get("src", "main", "resources", "report.xls").toString();
+        final String fileName = "/report_template.xls";
+        final String copyFileName = "/report.xls";
         final Map.Entry<Integer, Integer> yearMonthPair = calculateDate(quarter, year);
         HSSFWorkbook hssfWorkBook = readWorkbook(fileName, copyFileName);
         final HSSFSheet sheet = hssfWorkBook.getSheet("Лист1");
@@ -77,20 +77,10 @@ public class ReportService {
         }
     }
     public void formLessonReport(HSSFSheet sheet, Map.Entry<Integer,Integer> yearMonthPair) {
-       final Map<HSSFRow,Boolean> rowWithHeldMap=new HashMap<>();
-        rowWithHeldMap.put(sheet.getRow(2),false);
-        rowWithHeldMap.put(sheet.getRow(3),true);
-        rowWithHeldMap.put(sheet.getRow(4),false);
-        rowWithHeldMap.put(sheet.getRow(5),true);
-
-        for (HSSFRow row : rowWithHeldMap.keySet()) {
-            if(rowWithHeldMap.get(row)) {
-                formStatistic(row, ()->reportRepository.findAllLessonsBetweenDates(yearMonthPair.getKey(),yearMonthPair.getValue()));
-            }else{
-                formStatistic(row, ()->reportRepository.findAllLessonsBetweenDatesWithHeld(yearMonthPair.getKey(),yearMonthPair.getValue()));
-            }
-            setResultingColumnValues(row);
-        }
+        formStatistic(sheet.getRow(2), ()->reportRepository.findAllLessonsBetweenDates(yearMonthPair.getKey(),yearMonthPair.getValue()));
+        formStatistic(sheet.getRow(3), ()->reportRepository.findAllLessonsBetweenDatesWithHeld(yearMonthPair.getKey(),yearMonthPair.getValue()));
+        formStatistic(sheet.getRow(4), ()->reportRepository.findAllLessonsBetweenDates(yearMonthPair.getKey(),yearMonthPair.getValue()));
+        formStatistic(sheet.getRow(5), ()->reportRepository.findAllLessonsBetweenDatesWithHeld(yearMonthPair.getKey(),yearMonthPair.getValue()));
     }
     public void formWorkerReport(HSSFSheet sheet, Map.Entry<Integer,Integer> yearMonthPair) {
         formStatistic(sheet.getRow(6),()->reportRepository.findAllWorkersBetweenDates(yearMonthPair.getKey(), yearMonthPair.getValue()));
