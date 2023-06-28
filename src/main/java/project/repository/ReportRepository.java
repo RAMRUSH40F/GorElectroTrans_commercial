@@ -61,7 +61,7 @@ public Integer findAllLessonsBetweenDates(int year, int month){
                 + "-01' AND '"
                 + year + "-"
                 + (month + 3)+"-"
-                + "01' AND success=1 AND subdepartment LIKE '" + profession + "'",(rs,rowNum)->rs.getInt("COUNT(1)")).get(0);
+                + "01' AND success=1 AND subdepartment LIKE '" + profession + "%'",(rs,rowNum)->rs.getInt("COUNT(1)")).get(0);
     }
     public Integer findAllTeachersByProfession(int year,int month,String profession){
     return jdbcTemplate.query("SELECT COUNT(1) FROM "
