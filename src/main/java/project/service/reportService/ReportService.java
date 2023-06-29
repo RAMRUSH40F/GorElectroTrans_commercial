@@ -41,10 +41,10 @@ public class ReportService {
         final Map.Entry<Integer, Integer> yearMonthPair = calculateDate(quarter, year);
         HSSFWorkbook hssfWorkBook = readWorkbook(fileName, copyFileName);
         final HSSFSheet sheet = hssfWorkBook.getSheet("Лист1");
-        formLessonReport(sheet, yearMonthPair);
-        formWorkerReport(sheet, yearMonthPair);
-        formTeacherReport(sheet, yearMonthPair);
-        writeWorkbook(hssfWorkBook, copyFileName);
+        creatLessonReportPart(sheet, yearMonthPair);
+        creatWorkerReportPart(sheet, yearMonthPair);
+        creatTeacherReportPart(sheet, yearMonthPair);
+        writeToWorkbook(hssfWorkBook, copyFileName);
         return hssfWorkBook;
     }
     /*
@@ -66,7 +66,7 @@ public class ReportService {
     /*
      * Метод записи файла
      */
-    public void writeWorkbook(HSSFWorkbook workbook, String fileName) {
+    public void writeToWorkbook(HSSFWorkbook workbook, String fileName) {
         try {
             FileOutputStream fileOut = new FileOutputStream(fileName);
             workbook.write(fileOut);
@@ -76,34 +76,38 @@ public class ReportService {
                     "Произошла другая ошибка связанная с записью в таблицу", e);
         }
     }
-    public void formLessonReport(HSSFSheet sheet, Map.Entry<Integer,Integer> yearMonthPair) {
-        formStatistic(sheet.getRow(2), ()->reportRepository.findAllLessonsBetweenDates(yearMonthPair.getKey(),yearMonthPair.getValue()));
-        formStatistic(sheet.getRow(3), ()->reportRepository.findAllLessonsBetweenDatesWithHeld(yearMonthPair.getKey(),yearMonthPair.getValue()));
-        formStatistic(sheet.getRow(4), ()->reportRepository.findAllLessonsBetweenDates(yearMonthPair.getKey(),yearMonthPair.getValue()));
-        formStatistic(sheet.getRow(5), ()->reportRepository.findAllLessonsBetweenDatesWithHeld(yearMonthPair.getKey(),yearMonthPair.getValue()));
+
+    public void creatLessonReportPart(HSSFSheet sheet, Map.Entry<Integer, Integer> yearMonthPair) {
+        setRowValues(sheet.getRow(2), () -> reportRepository.findAllLessonsBetweenDates(yearMonthPair.getKey(), yearMonthPair.getValue()));
+        setRowValues(sheet.getRow(3), () -> reportRepository.findAllLessonsBetweenDatesWithHeld(yearMonthPair.getKey(), yearMonthPair.getValue()));
+        setRowValues(sheet.getRow(4), () -> reportRepository.findAllLessonsBetweenDates(yearMonthPair.getKey(), yearMonthPair.getValue()));
+        setRowValues(sheet.getRow(5), () -> reportRepository.findAllLessonsBetweenDatesWithHeld(yearMonthPair.getKey(), yearMonthPair.getValue()));
     }
-    public void formWorkerReport(HSSFSheet sheet, Map.Entry<Integer,Integer> yearMonthPair) {
-        formStatistic(sheet.getRow(6),()->reportRepository.findAllWorkersBetweenDates(yearMonthPair.getKey(), yearMonthPair.getValue()));
-        formStatistic(sheet.getRow(7),()->reportRepository.findAllWorkersBetweenDatesWithSuccess(yearMonthPair.getKey(), yearMonthPair.getValue()));
-        int rowNumber=8;
-        for (WorkerProfessions profession:WorkerProfessions.values()) {
-            formStatistic(sheet.getRow(rowNumber),()-> reportRepository.findAllWorkersBetweenDatesWithSuccessAndProfession(yearMonthPair.getKey(),yearMonthPair.getValue(), profession.getProfession()));
+
+    public void creatWorkerReportPart(HSSFSheet sheet, Map.Entry<Integer, Integer> yearMonthPair) {
+        setRowValues(sheet.getRow(6), () -> reportRepository.findAllWorkersBetweenDates(yearMonthPair.getKey(), yearMonthPair.getValue()));
+        setRowValues(sheet.getRow(7), () -> reportRepository.findAllWorkersBetweenDatesWithSuccess(yearMonthPair.getKey(), yearMonthPair.getValue()));
+        int rowNumber = 8;
+        for (WorkerProfessions profession : WorkerProfessions.values()) {
+            setRowValues(sheet.getRow(rowNumber), () -> reportRepository.findAllWorkersBetweenDatesWithSuccessAndProfession(yearMonthPair.getKey(), yearMonthPair.getValue(), profession.getProfession()));
             rowNumber++;
         }
         formStatsForOthersCategory(sheet.getRow(13), 7, 12, sheet);
     }
-    public void formTeacherReport(HSSFSheet sheet, Map.Entry<Integer,Integer> yearMonthPair) {
-        formStatistic(sheet.getRow(14), ()->reportRepository.findAllLessonsBetweenDates(yearMonthPair.getKey(),yearMonthPair.getValue()));
-        int rowNumber=15;
-        for (TeacherProfession profession:TeacherProfession.values()) {
-            formStatistic(sheet.getRow(rowNumber),()->reportRepository.findAllTeachersByProfession(yearMonthPair.getKey(),yearMonthPair.getValue(),profession.getProfession()));
+
+    public void creatTeacherReportPart(HSSFSheet sheet, Map.Entry<Integer, Integer> yearMonthPair) {
+        setRowValues(sheet.getRow(14), () -> reportRepository.findAllLessonsBetweenDates(yearMonthPair.getKey(), yearMonthPair.getValue()));
+        int rowNumber = 15;
+        for (TeacherProfession profession : TeacherProfession.values()) {
+            setRowValues(sheet.getRow(rowNumber), () -> reportRepository.findAllTeachersByProfession(yearMonthPair.getKey(), yearMonthPair.getValue(), profession.getProfession()));
             rowNumber++;
         }
         formStatsForOthersCategory(sheet.getRow(18), 14, 17, sheet);
     }
+
     public void formStatsForOthersCategory(HSSFRow destination, int from, int to, HSSFSheet sheet) {
         int value;
-        int firstCell=1;
+        int firstCell = 1;
         int lastCell=31;
         HSSFRow row;
         Cell cell;
@@ -120,7 +124,7 @@ public class ReportService {
             cell.setCellStyle(style);
             cell.setCellValue(result);
         }
-        setResultingColumnValues(destination);
+        setResultingRowValues(destination);
     }
 
     /*
@@ -164,19 +168,21 @@ public class ReportService {
         }
         return intervals;
     }
-    private void formStatistic(HSSFRow row,Formator formator) {
+
+    private void setRowValues(HSSFRow row, StatisticFormator statisticFormator) {
         HSSFCell cell;
-        int lastCell=31;
+        int lastCell = 31;
         CellStyle style = applyClassicStyle(row.getSheet().getWorkbook());
         for (int column = 1; column < lastCell - 1; column += 2) {
             setCurrentDataSource("DEP_" + (column / 2 + 1));
             cell = row.getCell(column);
             cell.setCellStyle(style);
-            cell.setCellValue(formator.formStatistic());
+            cell.setCellValue(statisticFormator.formStatistic());
         }
-        setResultingColumnValues(row);
+        setResultingRowValues(row);
     }
-    private void setResultingColumnValues(HSSFRow row) {
+
+    private void setResultingRowValues(HSSFRow row) {
         int total = 0;
         Cell cell;
         CellStyle style = applyClassicStyle(row.getSheet().getWorkbook());

@@ -1,5 +1,5 @@
 package project.service.reportService;
 
-public interface Formator {
+public interface StatisticFormator {
     Integer formStatistic();
 }

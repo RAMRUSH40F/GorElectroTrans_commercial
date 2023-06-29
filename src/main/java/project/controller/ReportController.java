@@ -2,7 +2,6 @@ package project.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -14,10 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import project.model.QuarterDateModel;
 import project.service.reportService.ReportService;
 
-import java.time.LocalDate;
-import java.time.Year;
-import java.time.temporal.IsoFields;
-import java.util.ArrayList;
 import java.util.List;
 
 import static project.exceptions.Validator.validateInterval;
