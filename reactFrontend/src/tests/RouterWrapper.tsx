@@ -1,15 +1,18 @@
 import React from "react";
 import { MemoryRouter } from "react-router";
 
-interface Props {
+export interface RouterWrapperProps {
     children: React.ReactNode;
     initialPath?: string;
 }
 
-const RenderRouterWrapper: React.FC<Props> = ({ children, initialPath = "/" }) => {
+const RouterWrapper: React.FC<RouterWrapperProps> = ({
+    children,
+    initialPath = "/",
+}) => {
     return (
         <MemoryRouter initialEntries={[initialPath]}>{children}</MemoryRouter>
     );
 };
 
-export default RenderRouterWrapper;
+export default RouterWrapper;

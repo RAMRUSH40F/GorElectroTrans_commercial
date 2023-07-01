@@ -1,14 +1,12 @@
 import React, { useRef } from "react";
-import ActionButton from "../../../components/ActionButton";
-import useLockedBody from "../../../hooks/useLockedBody";
+import ActionButton from "components/ActionButton";
+import useLockedBody from "hooks/useLockedBody";
 import { useUnit } from "effector-react";
 import Alert, { ALERT } from "components/Alert";
 import ModalLayout from "components/ModalLayout";
 import ModalHeader from "components/ModalLayout/ModalHeader";
 import ModalContent from "components/ModalLayout/ModalContent";
-import EmployeeForm, {
-    EmployeeFormState,
-} from "pages/EmployeesPage/EmployeeForm";
+import EmployeeForm, { EmployeeFormState } from "../EmployeeForm";
 import Loader from "components/Loader";
 import useClickOutside from "hooks/useClickOutside";
 import useEscape from "hooks/useEscape";

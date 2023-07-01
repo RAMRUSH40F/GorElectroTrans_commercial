@@ -14,6 +14,7 @@ const Loader: React.FC<Props> = ({ className }) => {
             <div></div>
             <div></div>
             <div></div>
+            <span className="visually-hidden">Загрузка</span>
         </div>
     );
 };

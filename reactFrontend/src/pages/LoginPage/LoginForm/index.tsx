@@ -39,7 +39,7 @@ const LoginForm: React.FC<Props> = ({ onSubmit, disableError }) => {
                 errors,
                 touched,
             }) => (
-                <form onSubmit={handleSubmit} onChange={disableError}>
+                <form aria-label="login form" onSubmit={handleSubmit} onChange={disableError}>
                     <Label className={styles.label}>
                         <Input
                             className={styles.input}
@@ -50,7 +50,6 @@ const LoginForm: React.FC<Props> = ({ onSubmit, disableError }) => {
                             value={values.username}
                             disabled={isSubmitting}
                             autoComplete="none"
-                            aria-label="username"
                         />
                         {errors.username && touched.username && (
                             <FormErrorMessage>

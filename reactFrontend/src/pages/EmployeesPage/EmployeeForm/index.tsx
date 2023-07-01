@@ -88,7 +88,11 @@ const EmployeeForm: FC<Props> = ({
                 isSubmitting,
                 setFieldValue,
             }) => (
-                <form onSubmit={handleSubmit} onChange={clearError}>
+                <form
+                    onSubmit={handleSubmit}
+                    onChange={clearError}
+                    aria-label="employee form"
+                >
                     {!isEditing && (
                         <>
                             <Label

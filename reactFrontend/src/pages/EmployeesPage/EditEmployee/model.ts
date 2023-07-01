@@ -1,14 +1,14 @@
 import { attach, createDomain, sample } from "effector";
-import {
-    $depId,
-    employeesGate,
-    removeEmployeeFx,
-    updateEmployeeFx,
-} from "../model";
 import { NOTICE, showNoticeFx } from "helpers/notice";
 import { IEmployee } from "models/Employee";
 import { IDepartment } from "models/Department";
 import departmentApi from "shared/api/departmentsApi";
+import {
+    $depId,
+    pageClosed,
+    removeEmployeeFx,
+    updateEmployeeFx,
+} from "../model/employeesModel";
 
 const domain = createDomain();
 
@@ -32,6 +32,7 @@ export const $isModalActive = domain.createStore<boolean>(false);
 export const $editingEmployee = domain.createStore<IEmployee | null>(null);
 
 export const $isConfirming = domain.createStore<boolean>(false);
+
 
 const getDepartmentsFx = attach({ effect: departmentApi.fetchFx });
 
@@ -78,7 +79,7 @@ sample({
 
 // Cancel delete request when modal was closed
 sample({
-    clock: employeesGate.close,
+    clock: pageClosed,
     source: removeEmployeeFx,
 }).watch(({ controller }) => {
     controller.abort();
@@ -96,7 +97,7 @@ sample({
 
 // Cancel update request when modal was closed
 sample({
-    clock: employeesGate.close,
+    clock: pageClosed,
     source: updateEmployeeFx,
 }).watch(({ controller }) => {
     controller.abort();
@@ -111,7 +112,7 @@ sample({
 
 // Reset all stores when component unmountes
 domain.onCreateStore(($store) => {
-    $store.reset(employeesGate.close, modalClosed, modalOpened);
+    $store.reset(pageClosed, modalClosed, modalOpened);
 });
 
 $isLoading.on(getDepartmentsFx.pending, (_, pending) => pending);

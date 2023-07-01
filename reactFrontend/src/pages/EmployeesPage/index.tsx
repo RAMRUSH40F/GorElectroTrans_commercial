@@ -7,7 +7,7 @@ import { getDivisionRoute } from "../../helpers/getDivisionRoute";
 import NewEmployee from "./NewEmployee";
 import { useDeboucedCallback } from "hooks/useDebouncedCallback";
 import Search from "components/Search";
-import { $search, employeesGate, searchChanged } from "./model";
+import { $search, employeesGate, searchChanged } from "./model/employeesModel";
 
 import styles from "./styles.module.scss";
 
