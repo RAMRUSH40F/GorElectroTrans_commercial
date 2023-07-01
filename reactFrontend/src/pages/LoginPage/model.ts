@@ -1,9 +1,11 @@
-import { createEvent, createStore } from "effector";
+import { createDomain } from "effector";
 import { loginFx } from "shared/auth";
 
-export const errorReset = createEvent();
+export const loginDomain = createDomain();
 
-export const $error = createStore<string | null>(null);
+export const errorReset = loginDomain.createEvent();
+
+export const $error = loginDomain.createStore<string | null>(null);
 
 $error
     .on(loginFx.failData, (_, error) => error.message)

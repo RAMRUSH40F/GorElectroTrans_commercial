@@ -13,7 +13,7 @@ type Props = {
 const Search: React.FC<Props> = ({ value, handleChange, className }) => {
     return (
         <div className={cn(styles.search, className)}>
-            <Input value={value} onChange={handleChange} placeholder="Поиск" />
+            <Input value={value} onChange={handleChange} name="search" placeholder="Поиск" />
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 30 30"

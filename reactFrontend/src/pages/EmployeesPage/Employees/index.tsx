@@ -1,4 +1,4 @@
-import React, { useEffect, FC } from "react";
+import { useEffect, FC } from "react";
 import Pagination from "components/Pagination";
 import Table from "components/Table";
 import TableBodyRow from "components/Table/TableBodyRow";

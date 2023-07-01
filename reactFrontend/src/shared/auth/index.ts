@@ -1,14 +1,8 @@
-import {
-    attach,
-    createEffect,
-    createEvent,
-    createStore,
-    sample,
-} from "effector";
+import { attach, createDomain, sample, merge } from "effector";
 import { createGate } from "effector-react";
-import { authRequestFx } from "./api";
+import { authRequestFx } from "../api";
 import { NOTICE, showNoticeFx } from "helpers/notice";
-import userApi from "./api/userApi";
+import userApi from "../api/userApi";
 
 export enum ROLES {
     SPEC_1 = "1",
@@ -29,25 +23,27 @@ export enum ROLES {
 }
 
 export const AuthGate = createGate();
+export const authDomain = createDomain();
 
 export const loginFx = attach({ effect: userApi.loginFx });
 export const logoutFx = attach({ effect: userApi.logoutFx });
 export const refreshFx = attach({ effect: userApi.refreshFx });
 
-export const checkAccessTokenFx = createEffect<void, boolean>(() => {
+export const checkAccessTokenFx = authDomain.createEffect<void, boolean>(() => {
     return localStorage.getItem("accessToken") ? true : false;
 });
-export const removeTokenFromLocalStorageFx = createEffect(() => {
+export const removeTokenFromLocalStorageFx = authDomain.createEffect(() => {
     localStorage.removeItem("accessToken");
 });
 
-export const loggedOut = createEvent();
-export const errorSet = createEvent<string>();
+export const loggedIn = merge([loginFx.doneData, refreshFx.doneData]);
+export const loggedOut = authDomain.createEvent();
+export const errorSet = authDomain.createEvent<string>();
 
-export const $roles = createStore<ROLES[]>([]);
-export const $isAuth = createStore<boolean>(false);
-export const $isLoading = createStore<boolean>(true);
-export const $error = createStore<string | null>(null);
+export const $roles = authDomain.createStore<ROLES[]>([]);
+export const $isAuth = authDomain.createStore<boolean>(false);
+export const $isLoading = authDomain.createStore<boolean>(true);
+export const $error = authDomain.createStore<string | null>(null);
 
 // Checking if there is an access token in local storage
 sample({
@@ -58,8 +54,8 @@ sample({
 // If access token is in local storage, refresh user's authentication status
 sample({
     clock: checkAccessTokenFx.doneData,
-    target: refreshFx,
     filter: (hasToken) => hasToken,
+    target: refreshFx,
 });
 
 // Logout if authRequestFx fails with 401 status
@@ -96,10 +92,6 @@ $isLoading
 
 $error.on(errorSet, (_, message) => message).reset(refreshFx);
 
-$isAuth
-    .on([refreshFx.doneData, loginFx.doneData], () => true)
-    .reset(logoutFx.done, loggedOut);
+$isAuth.on(loggedIn, () => true).reset(logoutFx.done, loggedOut);
 
-$roles
-    .on([loginFx.doneData, refreshFx.doneData], (_, roles) => roles)
-    .reset(logoutFx.done, loggedOut);
+$roles.on(loggedIn, (_, roles) => roles).reset(logoutFx.done, loggedOut);
