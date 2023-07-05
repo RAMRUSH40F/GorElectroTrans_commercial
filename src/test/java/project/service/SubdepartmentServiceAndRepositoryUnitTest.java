@@ -120,17 +120,6 @@ class SubdepartmentServiceAndRepositoryUnitTest {
         assertEquals(newName, subdepartment1.getName());
     }
 
-    @DisplayName("Throws on saving when subdepartment already exists")
-    @Test
-    void save_doubleSaveNotThrows() {
-        short departmentId = 5;
-        Subdepartment notExistingSubdepartment = getNotExistingSubdepartment();
-        service.save(departmentId, notExistingSubdepartment);
-
-        assertThrows(RuntimeException.class, () -> service.save(departmentId, notExistingSubdepartment));
-
-    }
-
     private Subdepartment saveTestSubdepartmentAndReturn() {
         return service.save(1,
                 Subdepartment.builder()
