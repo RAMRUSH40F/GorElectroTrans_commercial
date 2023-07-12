@@ -2,6 +2,8 @@ package project.repository.multiplier;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import project.model.Attendance;
 import project.model.Lesson;
@@ -28,9 +30,9 @@ public class AttendanceMultiplier {
     public void addAllAttendance(int departmentId) {
 
         Random random = new Random();
-
+        Pageable pageable = PageRequest.of(1, 100);
         // Достаем из БД все записи об уроках и об учениках и оставляем каждый шестой id студента.
-        List<Lesson> lessons = lessonService.findAllWithPagination(departmentId,1,99).toList();
+        List<Lesson> lessons = lessonService.findAllByNullableKeywordWithPagination(departmentId,null,pageable).toList();
         List<Integer> lessIds = lessons.stream()
                 .map(Lesson::getId)
                 .filter(id -> random.nextInt(6) == 1)

@@ -3,7 +3,7 @@ package project.exceptions;
 public class InvalidSubdepartmentException extends RuntimeException {
     private final Object receivedSubdepartment;
     private final String MESSAGE_TEMPLATE = "Ошибка с обработкой отдела. Возможно, введенный вами отдел не существует." +
-            "Перепроверьте правильность вводимых данных";
+            "Перепроверьте правильность вводимых данных: ";
     private String customMessage;
 
     public InvalidSubdepartmentException(String receivedSubdepartment, String customMessage) {

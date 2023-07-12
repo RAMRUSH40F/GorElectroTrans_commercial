@@ -7,10 +7,12 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.springframework.lang.Nullable;
 import project.model.projection.LessonContentNoFileProjection;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -63,10 +65,12 @@ public class Lesson {
     @JoinColumn(name = "lesson_id", insertable = false, updatable = false)
     @Fetch(FetchMode.JOIN)
     @JsonIgnore
+    @Nullable
     private Set<LessonContentNoFileProjection> lessonContentProjection;
 
     @JsonGetter("lessonContent")
     public Set<String> getLessonFileNames() {
+        if (lessonContentProjection == null) lessonContentProjection = new HashSet<>();
         return lessonContentProjection.stream()
                 .map(LessonContentNoFileProjection::getFileName)
                 .collect(Collectors.toSet());

@@ -2,19 +2,19 @@ package project.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import project.exceptions.InvalidSubdepartmentException;
 import project.model.Student;
+import project.model.Subdepartment;
 import project.repository.StudentJpaRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static project.dataSource.DynamicDataSourceContextHolder.setCurrentDataSource;
+import static project.exceptions.Validator.validatePaginationParams;
 
 
 @Service
@@ -27,28 +27,26 @@ public class StudentServiceImpl {
 
     public @NonNull Student addNewStudentBySubdepartmentName(int departmentId, @NonNull Student student) {
         setCurrentDataSource("DEP_" + departmentId);
-        Short newSubDepartmentId = subdepartmentService
+        Subdepartment studentsSubDepartment = subdepartmentService
                 .findByName(departmentId, student.getSubdepartmentName())
-                .getId();
-        if (newSubDepartmentId == null) {
-            throw new InvalidSubdepartmentException(student.getSubdepartmentName());
-        }
+                .orElseThrow(() -> new InvalidSubdepartmentException(student.getSubdepartmentName()));
         if (repository.existsById(student.getStudentId())) {
             throw new IllegalArgumentException("Рабочий с таким номером уже есть в базе.");
         }
-        Student result = repository.save(createStudent(student, newSubDepartmentId));
-        result.setSubdepartmentName(student.getSubdepartmentName());
-        return result;
+        return repository.save(createStudent(student, studentsSubDepartment));
 
     }
-    public @NonNull Page<Student> findAllWithPagination(Pageable pageable,int departmentId) {
+
+    public @NonNull Page<Student> findAllWithPagination(int departmentId, @Nullable String key, Pageable pageable) {
         setCurrentDataSource("DEP_" + departmentId);
-        Page<Student> studentPage = repository.findAll(pageable);
-        for (Student s : studentPage.getContent()) {
-            s.setSubdepartmentName(s.getSubdepartment().getName());
+        // Пагинация с первой(для пользователя), с 0-ой для сервера.
+        pageable = pageable.withPage(pageable.getPageNumber() - 1);
+        if(key==null) {
+            return repository.findAll(pageable);
         }
-        return studentPage;
+        return repository.findAllByKey(key,pageable);
     }
+
 
     // У рабочих общая на всю компанию таблица с рабочими.
     public void deleteStudentById(int departmentId, String studentId) {
@@ -61,15 +59,10 @@ public class StudentServiceImpl {
      */
     public @NonNull Student updateStudent(int departmentId, @NonNull Student student) {
         setCurrentDataSource("DEP_" + departmentId);
-        Short newSubDepartmentId = subdepartmentService
+        Subdepartment studentsSubDepartment = subdepartmentService
                 .findByName(departmentId, student.getSubdepartmentName())
-                .getId();
-        if (newSubDepartmentId == null) {
-            throw new InvalidSubdepartmentException(student.getSubdepartmentName());
-        }
-        Student result = repository.save(createStudent(student, newSubDepartmentId));
-        result.setSubdepartmentName(result.getSubdepartmentName());
-        return result;
+                .orElseThrow(() -> new InvalidSubdepartmentException(student.getSubdepartmentName()));
+        return repository.save(createStudent(student, studentsSubDepartment));
     }
 
     public @NonNull Student addNewStudentByDepId(int departmentId, @NonNull Student student) {
@@ -86,11 +79,12 @@ public class StudentServiceImpl {
     }
 
 
-    public static @NonNull Student createStudent(Student student, @NonNull Short subDepartmentId) {
+    public static @NonNull Student createStudent(Student student, @NonNull Subdepartment subdepartment) {
         return Student.builder()
                 .studentId(student.getStudentId())
                 .name(student.getName())
-                .subdepartmentId(subDepartmentId)
+                .subdepartmentId(subdepartment.getId())
+                .subdepartment(subdepartment)
                 .build();
     }
 }

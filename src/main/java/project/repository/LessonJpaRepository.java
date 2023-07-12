@@ -19,7 +19,7 @@ public interface LessonJpaRepository extends PagingAndSortingRepository<Lesson, 
     @Query("select l from Lesson l " +
             "where l.topic like CONCAT('%', :key, '%') " +
             "or l.teacher like CONCAT('%', :key, '%') " +
-            "or l.date like CONCAT('%', :key, '%') " +
+            "or DATE_FORMAT(l.date, '%d.%m.%Y') like CONCAT('%', :key, '%') " +
             "order by l.date DESC")
     Page<Lesson> findAllByKey(@Param("key") @Nullable String key, Pageable pageable);
 

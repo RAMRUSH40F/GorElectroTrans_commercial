@@ -1,15 +1,15 @@
 package project.service;
 
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import project.model.Subdepartment;
 import project.repository.SubdepartmentJpaRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static project.dataSource.DynamicDataSourceContextHolder.setCurrentDataSource;
 
@@ -41,24 +41,20 @@ public class SubdepartmentServiceImpl {
 
     public @NonNull Subdepartment updateName(int departmentId, Subdepartment subdepartment) {
         setCurrentDataSource("DEP_" + departmentId);
-        repository.save(subdepartment);
-        return subdepartment;
+        return repository.save(subdepartment);
     }
 
     public @NonNull Subdepartment save(int departmentId, Subdepartment subdepartment) {
+        if (repository.existsByName(subdepartment.getName())) {
+            throw new IllegalArgumentException("Отдел с таким именем уже есть в базе.");
+        }
         setCurrentDataSource("DEP_" + departmentId);
         return repository.save(subdepartment);
     }
 
-    public @Nullable Subdepartment findById(int departmentId, short SubdepartmentId) {
+    public @NonNull Optional<Subdepartment> findByName(int departmentId, String subdepartmentName) {
         setCurrentDataSource("DEP_" + departmentId);
-        return repository.findById(SubdepartmentId).orElse(null);
-
-    }
-
-    public @Nullable Subdepartment findByName(int departmentId, String subdepartmentName) {
-        setCurrentDataSource("DEP_" + departmentId);
-        return repository.findByName(subdepartmentName).orElse(null);
+        return repository.findByName(subdepartmentName);
     }
 
 

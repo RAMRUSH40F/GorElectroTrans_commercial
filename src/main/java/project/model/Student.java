@@ -1,10 +1,13 @@
 package project.model;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 
@@ -23,22 +26,36 @@ public class Student {
     private String studentId;
 
     @Column(name = "subdepartment_id")
-    @JsonProperty("subdepartmentId")
+    @JsonIgnore
     private Short subdepartmentId;
 
     @Column
     @JsonProperty("fullName")
     private String name;
 
-    @ManyToOne
-    @JoinColumn(insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "subdepartment_id", insertable = false, updatable = false)
     @Fetch(FetchMode.JOIN)
     @JsonIgnore
+    @Nullable
     private Subdepartment subdepartment;
 
-    @Transient
-    @JsonProperty("subdepartmentName")
-    private String subdepartmentName;
+    @JsonGetter("subdepartmentName")
+    public String getSubdepartmentName() {
+        if (subdepartment != null) {
+            return subdepartment.getName();
+        }
+        return "";
+    }
+
+    @JsonSetter("subdepartmentName")
+    public void setSubdepartmentName(String name) {
+        if (subdepartment == null) {
+            subdepartment = new Subdepartment();
+        }
+        subdepartment.setName(name);
+    }
+
 
     @Override
     public String toString() {
@@ -46,6 +63,7 @@ public class Student {
                 "studentId='" + studentId + '\'' +
                 ", subdepartmentId=" + subdepartmentId +
                 ", name='" + name + '\'' +
+                ", subdepartmentName=" + getSubdepartmentName() +
                 '}';
     }
 

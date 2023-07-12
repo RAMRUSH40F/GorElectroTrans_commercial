@@ -13,11 +13,10 @@ import project.model.Student;
 
 @Repository
 public interface StudentJpaRepository extends PagingAndSortingRepository<Student, String> {
-    //Page<Student> findAll(Sort sort, Pageable pageable);
-   /* @Query("select s from Student s " +
+    @Query("select s from Student s " +
             "where s.name like CONCAT('%', :key, '%') " +
             "or s.studentId like CONCAT('%', :key, '%') " +
             "or s.subdepartment.name like CONCAT('%', :key, '%') "
     )
-    Page<Student> findAllByKey(@Param("key") @Nullable String key, Pageable pageable);*/
+    Page<Student> findAllByKey(@Param("key") String key, Pageable pageable);
 }

@@ -2,6 +2,7 @@ package project.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
@@ -22,14 +23,11 @@ public class AttendanceController {
 
     @GetMapping("/dep_{N}/attendance/data")
     public ResponseEntity<List<Attendance>> findAllByKeyWordWithPagination(@PathVariable("N") String depId,
-                                                                           @RequestParam(value = "page") String page,
-                                                                           @RequestParam(value = "size") String pageSize,
+                                                                           Pageable paginationParams,
                                                                            @RequestParam(value = "key", required = false) @Nullable String keyWord,
                                                                            @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
-        validatePaginationParams(page, pageSize);
-
-        Page<Attendance> attendancePage = attendanceService.findAllByKeywordWithPagination(departmentId, keyWord, Integer.valueOf(page), Integer.valueOf(pageSize));
+        Page<Attendance> attendancePage = attendanceService.findAllByKeywordWithPagination(departmentId, keyWord, paginationParams);
         HttpHeaders headers = new HttpHeaders();
         headers.add("attendance_count", String.valueOf(attendancePage.getTotalElements()));
 
@@ -41,25 +39,25 @@ public class AttendanceController {
 
 
     @PostMapping("/dep_{N}/attendance/data")
-    public Attendance addNewRecordAttendance(@PathVariable("N") String depId,
-                                             @RequestBody Attendance attendance,
-                                             @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
+    public Attendance createAttendance(@PathVariable("N") String depId,
+                                       @RequestBody Attendance attendance,
+                                       @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
         return attendanceService.save(departmentId, attendance);
     }
 
     @PutMapping("/dep_{N}/attendance/data")
-    public void updateRecordAttendance(@PathVariable("N") String depId,
+    public Attendance updateAttendance(@PathVariable("N") String depId,
                                        @RequestBody Attendance attendance,
                                        @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
-        attendanceService.updateEntity(departmentId, attendance);
+        return attendanceService.updateEntity(departmentId, attendance);
     }
 
     @DeleteMapping("/dep_{N}/attendance/data")
-    public void deleteRecordById(@PathVariable("N") String depId,
-                                 @RequestBody Attendance attendance,
-                                 @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
+    public void deleteById(@PathVariable("N") String depId,
+                           @RequestBody Attendance attendance,
+                           @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
         attendanceService.deleteById(departmentId, attendance);
     }
