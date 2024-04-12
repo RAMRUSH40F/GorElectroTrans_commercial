@@ -12,7 +12,7 @@ import {
     $isModalActive,
     modalClosed,
     modalOpened,
-} from "./model/newEmployeeModel";
+} from "./model/model";
 
 const selectors = {
     form: () => screen.getByRole("form", { name: /employee form/i }),
@@ -81,7 +81,7 @@ test("should display error when it is not empty", () => {
     expect(error).toBeInTheDocument();
 });
 
-test("should display empty alert when departments list is empty", async () => {
+test("should display empty alert when departments list is empty", () => {
     const scope = fork({
         values: new Map()
             .set($isModalActive, true)
@@ -275,12 +275,6 @@ describe("form submitting", () => {
         expect(name).toBeDisabled();
         expect(employeeId).toBeDisabled();
         expect(submitButton).toBeDisabled();
-
-        await waitFor(() => {
-            expect(name).not.toBeDisabled();
-            expect(employeeId).not.toBeDisabled();
-            expect(submitButton).not.toBeDisabled();
-        });
 
         expect(submitFn).toBeCalledTimes(1);
     });

@@ -1,6 +1,6 @@
 import { attach, createDomain, sample } from "effector";
 import { NOTICE, showNoticeFx } from "helpers/notice";
-import { $depId, addEmployeeFx, pageClosed } from "../../model/employeesModel";
+import { $depId, addEmployeeFx, pageClosed } from "../../model/model";
 import { IDepartment } from "models/Department";
 import departmentApi from "shared/api/departmentsApi";
 
