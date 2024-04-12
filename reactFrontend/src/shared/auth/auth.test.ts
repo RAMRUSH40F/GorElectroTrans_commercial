@@ -1,14 +1,14 @@
 import { fork, allSettled } from "effector";
 import {
-    checkAccessTokenFx,
-    refreshFx,
-    loggedIn,
-    ROLES,
-    $roles,
-    $isAuth,
-    $isLoading,
-    $error,
-    loggedOut,
+  checkAccessTokenFx,
+  refreshFx,
+  loggedIn,
+  ROLES,
+  $roles,
+  $isAuth,
+  $isLoading,
+  $error,
+  loggedOut,
 } from ".";
 import { authRequestFx } from "shared/api";
 
@@ -61,13 +61,19 @@ test("should set auth status and roles after successfull logging", async () => {
 });
 
 test("should stop loading when refresh is finished", async () => {
-    const scope = fork();
+  const refreshFn = jest.fn();
 
-    expect(scope.getState($isLoading)).toEqual(true);
+  const scope = fork({
+    handlers: new Map().set(refreshFx, refreshFn),
+  });
 
-    await allSettled(refreshFx, { scope });
+  expect(refreshFn).toBeCalledTimes(0);
+  expect(scope.getState($isLoading)).toEqual(true);
+  
+  await allSettled(refreshFx, { scope });
 
-    expect(scope.getState($isLoading)).toEqual(false);
+  expect(refreshFn).toBeCalledTimes(1);
+  expect(scope.getState($isLoading)).toEqual(false);
 });
 
 test("should set error when refresh fails with status !== 401", async () => {

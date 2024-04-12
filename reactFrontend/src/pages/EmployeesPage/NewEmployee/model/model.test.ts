@@ -30,8 +30,6 @@ const mockedEmployeeParams = {
     data: mockedEmployee,
 };
 
-let scope: Scope;
-
 const modalOpenedFn = jest.fn();
 modalOpened.watch(modalOpenedFn);
 
@@ -48,8 +46,6 @@ const addEmployeeFn = jest.fn();
 addEmployeeFx.watch(addEmployeeFn);
 
 beforeEach(() => {
-    scope = fork();
-
     modalOpenedFn.mockClear();
     modalClosedFn.mockClear();
     errorResetFn.mockClear();
@@ -58,6 +54,10 @@ beforeEach(() => {
 });
 
 test("should set modal active status when modalOpened triggers", async () => {
+  const getDepartmentsFxFn = jest.fn();
+
+    const scope = fork({ handlers: new Map().set(getDepartmentsFx, getDepartmentsFxFn) });
+
     await allSettled(modalOpened, { scope });
 
     expect(modalOpenedFn).toBeCalledTimes(1);

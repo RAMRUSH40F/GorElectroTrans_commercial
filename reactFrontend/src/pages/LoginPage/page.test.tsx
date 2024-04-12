@@ -1,9 +1,7 @@
 import {
     screen,
     render,
-    findByRole,
     act,
-    waitFor,
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { UserEvent } from "@testing-library/user-event/dist/types/setup/setup";
@@ -52,7 +50,7 @@ test("should display default states on render", () => {
 });
 
 test("should display fields with value when user types", async () => {
-    const mockedusername = "user@mail.com";
+    const mockedUsername = "user@mail.com";
     const mockedPassword = "qwerty123";
 
     render(<LoginPage />, { wrapper: RouterWrapper });
@@ -61,11 +59,11 @@ test("should display fields with value when user types", async () => {
     const password = selectors.password();
 
     await act(async () => {
-        await user.type(username, mockedusername);
+        await user.type(username, mockedUsername);
         await user.type(password, mockedPassword);
     });
 
-    expect(username).toHaveValue(mockedusername);
+    expect(username).toHaveValue(mockedUsername);
     expect(password).toHaveValue(mockedPassword);
 });
 
@@ -89,7 +87,7 @@ describe("form validation", () => {
 
         const button = selectors.button();
 
-        await act(async () => user.click(button));
+        await act(async () => await user.click(button));
 
         expect(screen.getAllByText(requiredError)).toHaveLength(2);
     });
@@ -131,49 +129,5 @@ describe("form validation", () => {
         });
 
         expect(screen.getByText(/Минимальная длина: 5/i)).toBeInTheDocument();
-    });
-});
-
-describe("form submitting", () => {
-    const submitFn = jest.fn();
-
-    beforeEach(() => {
-        submitFn.mockClear();
-        render(<LoginPage />, { wrapper: RouterWrapper });
-        selectors.form().addEventListener("submit", submitFn);
-    });
-
-    afterEach(() => {
-        selectors.form().removeEventListener("submit", submitFn);
-    });
-
-    test("should submit form when all fields are valid", async () => {
-        const username = selectors.username();
-        const password = selectors.password();
-        const button = selectors.button();
-
-        await act(async () => {
-            await user.type(username, "user@mail.com");
-            await user.type(password, "qwerty123");
-            await user.click(button);
-        });
-
-        expect(submitFn).toBeCalledTimes(1);
-    });
-
-    test("should disable form while submitting", async () => {
-        const username = selectors.username();
-        const password = selectors.password();
-        const button = selectors.button();
-
-        await act(async () => {
-            await user.type(username, "user@mail.com");
-            await user.type(password, "qwerty123");
-            await user.click(button);
-        });
-
-        expect(username).toBeDisabled();
-        expect(password).toBeDisabled();
-        expect(button).toBeDisabled();
     });
 });

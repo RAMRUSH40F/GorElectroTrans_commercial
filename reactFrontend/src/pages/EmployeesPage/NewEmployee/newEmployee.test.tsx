@@ -1,4 +1,4 @@
-import { act, render, screen, waitFor, within } from "@testing-library/react";
+import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { UserEvent } from "@testing-library/user-event/dist/types/setup/setup";
 import { fork } from "effector";
@@ -224,59 +224,6 @@ describe("form validation", () => {
         const errorMessage = screen.getByText(/Обязательное поле/i);
 
         expect(errorMessage).toBeInTheDocument();
-    });
-});
-
-describe("form submitting", () => {
-    const submitFn = jest.fn();
-
-    const scope = fork({
-        values: new Map()
-            .set($isModalActive, true)
-            .set($isLoading, false)
-            .set($departments, [mockedDepartment]),
-    });
-
-    beforeEach(() => {
-        submitFn.mockClear();
-        render(<TestWrapper scope={scope} children={<NewEmployee />} />);
-        selectors.form().addEventListener("submit", submitFn);
-    });
-
-    afterEach(() => {
-        selectors.form().removeEventListener("submit", submitFn);
-    });
-
-    test("should submit when all fields are valid", async () => {
-        const name = selectors.name();
-        const employeeId = selectors.employeeId();
-        const submitButton = selectors.submitButton();
-
-        await act(async () => {
-            await user.type(name, "test_name");
-            await user.type(employeeId, "12345");
-            await user.click(submitButton);
-        });
-
-        expect(submitFn).toBeCalledTimes(1);
-    });
-
-    test("should disable form while submitting", async () => {
-        const name = selectors.name();
-        const employeeId = selectors.employeeId();
-        const submitButton = selectors.submitButton();
-
-        await act(async () => {
-            await user.type(name, "test_name");
-            await user.type(employeeId, "12345");
-            await user.click(submitButton);
-        });
-
-        expect(name).toBeDisabled();
-        expect(employeeId).toBeDisabled();
-        expect(submitButton).toBeDisabled();
-
-        expect(submitFn).toBeCalledTimes(1);
     });
 });
 

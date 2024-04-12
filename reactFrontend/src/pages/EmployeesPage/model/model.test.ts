@@ -99,6 +99,10 @@ describe("events", () => {
 
     describe("pageLoaded", () => {
         test("should set depId when page was loaded", async () => {
+            const scope = fork({
+              handlers: new Map().set(getEmployeesFx, () => ({data: [], totalPages: 1})),
+            });
+
             await allSettled(pageLoaded, {
                 scope,
                 params: { depId: "13", search: "", page: 1 },
@@ -110,6 +114,12 @@ describe("events", () => {
         });
 
         test("should set page value when page was loaded and value !== defaultState", async () => {
+            const getEmployeesFxFn = jest.fn();
+
+            const scope = fork({
+              handlers: new Map().set(getEmployeesFx, getEmployeesFxFn),
+            });
+
             await allSettled(pageLoaded, {
                 scope,
                 params: { depId: "", search: "", page: 5 },
