@@ -26,7 +26,7 @@ const PlanReportForm: React.FC = () => {
     return (
         <>
             <ErrorAlert />
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} aria-label="Отчетность">
                 <Period />
                 <div className={styles.controls}>
                     <ActionButton
