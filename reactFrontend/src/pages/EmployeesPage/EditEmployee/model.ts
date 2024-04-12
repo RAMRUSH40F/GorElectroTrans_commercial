@@ -8,7 +8,7 @@ import {
     pageClosed,
     removeEmployeeFx,
     updateEmployeeFx,
-} from "../model/employeesModel";
+} from "../model/model";
 
 const domain = createDomain();
 
@@ -32,7 +32,6 @@ export const $isModalActive = domain.createStore<boolean>(false);
 export const $editingEmployee = domain.createStore<IEmployee | null>(null);
 
 export const $isConfirming = domain.createStore<boolean>(false);
-
 
 const getDepartmentsFx = attach({ effect: departmentApi.fetchFx });
 

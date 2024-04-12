@@ -11,7 +11,7 @@ import useClickOutside from "hooks/useClickOutside";
 import useEscape from "hooks/useEscape";
 import useLockedBody from "hooks/useLockedBody";
 import { IEmployee } from "models/Employee";
-import { updateEmployeeFx } from "../model/employeesModel";
+import { updateEmployeeFx } from "../model/model";
 import {
     $depError,
     $departments,
