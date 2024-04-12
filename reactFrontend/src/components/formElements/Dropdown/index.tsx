@@ -46,6 +46,7 @@ const Dropdown: React.FC<SelectProps> = ({
             )}
             ref={selectRef}
         >
+            <select className="visually-hidden" disabled={disabled}></select>
             <div
                 className={cn(styles.header, isOpen && styles.open)}
                 onClick={() => setIsOpen(!isOpen)}
