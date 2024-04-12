@@ -17,7 +17,7 @@ import {
     pageLoaded,
     searchChanged,
     sortToggled,
-} from "./model/employeesModel";
+} from "./model/model";
 
 const selectors = {
     search: () => screen.getByPlaceholderText(/поиск/i),
