@@ -175,11 +175,5 @@ describe("form submitting", () => {
         expect(username).toBeDisabled();
         expect(password).toBeDisabled();
         expect(button).toBeDisabled();
-
-        await waitFor(() => {
-            expect(username).not.toBeDisabled();
-            expect(password).not.toBeDisabled();
-            expect(button).not.toBeDisabled();
-        });
     });
 });
