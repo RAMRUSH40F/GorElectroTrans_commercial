@@ -3,43 +3,15 @@ import {
     $depError,
     $departments,
     $error,
-    $isLoading,
     $isModalActive,
     errorReset,
     getDepartmentsFx,
     modalClosed,
     modalOpened,
-} from "./newEmployeeModel";
+} from "./model";
 import { IDepartment } from "models/Department";
 import { addEmployeeFx } from "pages/EmployeesPage/model";
 import { IEmployee } from "models/Employee";
-
-const modalOpenedFn = jest.fn();
-modalOpened.watch(modalOpenedFn);
-
-const modalClosedFn = jest.fn();
-modalClosed.watch(modalClosedFn);
-
-const errorResetFn = jest.fn();
-errorReset.watch(errorResetFn);
-
-const getDepartmentsFn = jest.fn();
-getDepartmentsFx.watch(getDepartmentsFn);
-
-const addEmployeeFn = jest.fn();
-addEmployeeFx.watch(addEmployeeFn);
-
-let scope: Scope;
-
-beforeEach(() => {
-    scope = fork();
-
-    modalOpenedFn.mockClear();
-    modalClosedFn.mockClear();
-    errorResetFn.mockClear();
-    getDepartmentsFn.mockClear();
-    addEmployeeFn.mockClear();
-});
 
 const mockedMessage = "Something went wrong";
 const mockedDepartment: IDepartment = { id: 1, name: "test_name" };
@@ -57,6 +29,33 @@ const mockedEmployeeParams = {
     controller: new AbortController(),
     data: mockedEmployee,
 };
+
+let scope: Scope;
+
+const modalOpenedFn = jest.fn();
+modalOpened.watch(modalOpenedFn);
+
+const modalClosedFn = jest.fn();
+modalClosed.watch(modalClosedFn);
+
+const errorResetFn = jest.fn();
+errorReset.watch(errorResetFn);
+
+const getDepartmentsFn = jest.fn();
+getDepartmentsFx.watch(getDepartmentsFn);
+
+const addEmployeeFn = jest.fn();
+addEmployeeFx.watch(addEmployeeFn);
+
+beforeEach(() => {
+    scope = fork();
+
+    modalOpenedFn.mockClear();
+    modalClosedFn.mockClear();
+    errorResetFn.mockClear();
+    getDepartmentsFn.mockClear();
+    addEmployeeFn.mockClear();
+});
 
 test("should set modal active status when modalOpened triggers", async () => {
     await allSettled(modalOpened, { scope });

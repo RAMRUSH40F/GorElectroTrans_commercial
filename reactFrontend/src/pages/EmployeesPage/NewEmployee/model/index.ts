@@ -7,4 +7,4 @@ export {
     $error,
     $depError,
     $isModalActive,
-} from "./newEmployeeModel";
+} from "./model";
