@@ -21,7 +21,7 @@ import {
     loadingEnded,
     addEmployeeFx,
     removeEmployeeFx,
-} from "./employeesModel";
+} from "./model";
 import { IEmployee } from "models/Employee";
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -32,7 +32,7 @@ const mockedEmployee: IEmployee = {
     subdepartmentName: "test_subname",
 };
 
-// #region Wathers
+// #region Watchers
 const depIdChangedFn = jest.fn();
 depIdChanged.watch(depIdChangedFn);
 

@@ -12,5 +12,5 @@ export {
     sortToggled,
     removeEmployeeFx,
     updateEmployeeFx,
-    addEmployeeFx
-} from "./employeesModel";
+    addEmployeeFx,
+} from "./model";
