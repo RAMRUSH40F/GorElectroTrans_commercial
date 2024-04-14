@@ -1,4 +1,4 @@
-import { Scope, allSettled, fork } from "effector";
+import { allSettled, fork } from "effector";
 
 import { addEmployeeFx } from "pages/EmployeesPage/model";
 

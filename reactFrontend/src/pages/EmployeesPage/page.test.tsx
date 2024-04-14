@@ -33,7 +33,7 @@ const selectors = {
 const mockedEmployee: IEmployee = {
     fullName: "test_name",
     studentId: "test_id",
-    subdepartmentName: "test_subname",
+    subdepartmentName: "test_subName",
 };
 
 let user: UserEvent;
@@ -59,7 +59,7 @@ test("should display loader when loading is active", () => {
 
     render(<TestWrapper scope={scope} children={<EmployeesPage />} />);
 
-    expect(screen.getByText(/Загрузка/i));
+    expect(screen.getByText(/Загрузка/i)).toBeInTheDocument();
 });
 
 test("should set opacity to table when fetching is active", () => {
