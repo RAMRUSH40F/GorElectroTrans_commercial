@@ -3,8 +3,9 @@ import { createEffect } from "effector";
 
 import { AuthError } from "./types";
 
+// uncomment for production
 // const API_URL = window.location.origin;
-const API_URL = "http://82.146.38.158:8081";
+const API_URL = "http://localhost:8082";
 
 export const api = axios.create({ baseURL: API_URL });
 export const authApi = axios.create({ baseURL: API_URL });
