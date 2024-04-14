@@ -1,13 +1,15 @@
 import { allSettled, fork } from "effector";
+
+import { IReportPeriod } from "../PlanReportForm/model/model";
+
 import {
     $isModalActive,
-    modalClosed,
-    modalOpened,
-    getPeriodsFx,
     $periods,
     $periodsError,
+    getPeriodsFx,
+    modalClosed,
+    modalOpened,
 } from "./model";
-import { IReportPeriod } from "../PlanReportForm/model/model";
 
 const mockedPeriod: IReportPeriod = { quoter: 1, year: 2023 };
 const mockedParams = {
@@ -34,10 +36,10 @@ beforeEach(() => {
 
 test("should set modal active status to true when modalOpened triggers", async () => {
     const scope = fork({
-      handlers: new Map().set(getPeriodsFx, () => {
-          getPeriodsFn();
-          return [mockedPeriod];
-      }),
+        handlers: new Map().set(getPeriodsFx, () => {
+            getPeriodsFn();
+            return [mockedPeriod];
+        }),
     });
 
     await allSettled(modalOpened, { scope });

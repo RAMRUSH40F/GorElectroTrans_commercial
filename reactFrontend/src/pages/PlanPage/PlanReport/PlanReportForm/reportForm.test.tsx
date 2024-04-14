@@ -1,9 +1,10 @@
+import PlanReportForm from ".";
 import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { UserEvent } from "@testing-library/user-event/dist/types/setup/setup";
 import { Scope, fork } from "effector";
 import TestWrapper from "tests/TestWrapper";
-import PlanReportForm from ".";
+
 import {
     $activeOption,
     $error,

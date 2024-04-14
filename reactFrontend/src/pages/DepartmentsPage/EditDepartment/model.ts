@@ -1,6 +1,9 @@
 import { createDomain, sample } from "effector";
+
 import { NOTICE, showNoticeFx } from "helpers/notice";
+
 import { IDepartment } from "models/Department";
+
 import {
     departmentsGate,
     removeDepartmentFx,
@@ -92,7 +95,7 @@ domain.onCreateStore(($store) => {
 $error
     .on(
         [updateDepartmentFx.failData, removeDepartmentFx.failData],
-        (_, error) => (error.isCanceled ? null : error.message)
+        (_, error) => (error.isCanceled ? null : error.message),
     )
     .reset(errorReset, updateDepartmentFx, removeDepartmentFx);
 

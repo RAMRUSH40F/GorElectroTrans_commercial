@@ -1,17 +1,25 @@
-import React, { useRef, MouseEvent } from "react";
-import useClickOutside from "hooks/useClickOutside";
-import useEscape from "hooks/useEscape";
-import ModalLayout from "components/ModalLayout";
-import ModalHeader from "components/ModalLayout/ModalHeader";
-import ModalContent from "components/ModalLayout/ModalContent";
+import React, { MouseEvent, useRef } from "react";
+
+import { useUnit } from "effector-react";
+
+import PlanForm, { PlanFormValues } from "pages/PlanPage/PlanForm";
+
 import Alert, { ALERT } from "components/Alert";
 import Confirm from "components/Comfirm";
-import PlanForm, { PlanFormValues } from "pages/PlanPage/PlanForm";
-import { updatePlanFx } from "../model";
-import { IPlan } from "models/Plan";
-import { parseISO } from "helpers/parseISO";
+import ModalLayout from "components/ModalLayout";
+import ModalContent from "components/ModalLayout/ModalContent";
+import ModalHeader from "components/ModalLayout/ModalHeader";
+
+import useClickOutside from "hooks/useClickOutside";
+import useEscape from "hooks/useEscape";
 import useLockedBody from "hooks/useLockedBody";
-import { useUnit } from "effector-react";
+
+import { parseISO } from "helpers/parseISO";
+
+import { IPlan } from "models/Plan";
+
+import { updatePlanFx } from "../model";
+
 import {
     $editingPlan,
     $error,

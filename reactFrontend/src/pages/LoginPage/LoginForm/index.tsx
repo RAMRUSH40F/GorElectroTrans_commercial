@@ -1,9 +1,12 @@
-import { Formik } from "formik";
 import React from "react";
+
+import { Formik } from "formik";
+
 import ActionButton from "components/ActionButton";
 import FormErrorMessage from "components/formElements/FormErrorMessage";
 import Input from "components/formElements/Input";
 import Label from "components/formElements/Label";
+
 import { loginFormScheme } from "./loginFormScheme";
 
 import styles from "./styles.module.scss";
@@ -39,7 +42,11 @@ const LoginForm: React.FC<Props> = ({ onSubmit, disableError }) => {
                 errors,
                 touched,
             }) => (
-                <form aria-label="login form" onSubmit={handleSubmit} onChange={disableError}>
+                <form
+                    aria-label="login form"
+                    onSubmit={handleSubmit}
+                    onChange={disableError}
+                >
                     <Label className={styles.label}>
                         <Input
                             className={styles.input}

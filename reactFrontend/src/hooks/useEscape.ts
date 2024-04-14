@@ -9,7 +9,8 @@ const useEscape = (handleClose: () => void): void => {
         };
 
         document.addEventListener("keydown", handleCloseModalByKeyboard);
-        return () => document.removeEventListener("keydown", handleCloseModalByKeyboard);
+        return () =>
+            document.removeEventListener("keydown", handleCloseModalByKeyboard);
     }, [handleClose]);
 };
 

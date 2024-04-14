@@ -17,5 +17,5 @@ export const downloadFileFx = createEffect<DownloadParams, string>(
         link.remove();
         URL.revokeObjectURL(url);
         return fileName;
-    }
+    },
 );

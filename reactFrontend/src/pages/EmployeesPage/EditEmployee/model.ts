@@ -1,8 +1,12 @@
 import { attach, createDomain, sample } from "effector";
+
 import { NOTICE, showNoticeFx } from "helpers/notice";
-import { IEmployee } from "models/Employee";
+
 import { IDepartment } from "models/Department";
+import { IEmployee } from "models/Employee";
+
 import departmentApi from "shared/api/departmentsApi";
+
 import {
     $depId,
     pageClosed,
@@ -119,12 +123,12 @@ $isLoading.on(getDepartmentsFx.pending, (_, pending) => pending);
 $departments.on(getDepartmentsFx.doneData, (_, data) => data);
 
 $depError.on(getDepartmentsFx.failData, (_, { isCanceled, message }) =>
-    isCanceled ? null : message
+    isCanceled ? null : message,
 );
 
 $error
     .on([updateEmployeeFx.failData, removeEmployeeFx.failData], (_, error) =>
-        error.isCanceled ? null : error.message
+        error.isCanceled ? null : error.message,
     )
     .reset(errorReset, updateEmployeeFx, removeEmployeeFx);
 

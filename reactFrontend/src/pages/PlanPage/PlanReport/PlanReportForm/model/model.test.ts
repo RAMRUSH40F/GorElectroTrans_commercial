@@ -1,4 +1,9 @@
 import { allSettled, fork } from "effector";
+
+import { DropdownOption } from "components/formElements/Dropdown";
+
+import { downloadFileFx } from "helpers/downloadFile";
+
 import {
     $activeOption,
     $activePeriod,
@@ -8,8 +13,6 @@ import {
     formSubmitted,
     getReportFx,
 } from "./model";
-import { DropdownOption } from "components/formElements/Dropdown";
-import { downloadFileFx } from "helpers/downloadFile";
 
 const mockedMessage = "Something went wrong";
 const mockedParams = {

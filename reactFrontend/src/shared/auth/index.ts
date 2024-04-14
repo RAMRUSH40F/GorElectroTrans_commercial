@@ -1,7 +1,9 @@
-import { attach, createDomain, sample, merge } from "effector";
+import { attach, createDomain, merge, sample } from "effector";
 import { createGate } from "effector-react";
-import { authRequestFx } from "../api";
+
 import { NOTICE, showNoticeFx } from "helpers/notice";
+
+import { authRequestFx } from "../api";
 import userApi from "../api/userApi";
 
 export enum ROLES {

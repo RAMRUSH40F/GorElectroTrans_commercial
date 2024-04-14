@@ -1,13 +1,18 @@
 import React from "react";
+
+import { useGate, useUnit } from "effector-react";
 import { useParams, useSearchParams } from "react-router-dom";
+
 import Search from "components/Search";
 import SectionHeader from "components/SectionHeader";
-import { getDivisionRoute } from "helpers/getDivisionRoute";
-import Attendance from "./Attendance";
-import { useGate, useUnit } from "effector-react";
-import { $search, attendanceGate, searchChanged } from "./model";
+
 import { useDeboucedCallback } from "hooks/useDebouncedCallback";
+
+import { getDivisionRoute } from "helpers/getDivisionRoute";
+
+import Attendance from "./Attendance";
 import NewAttendance from "./NewAttendance";
+import { $search, attendanceGate, searchChanged } from "./model";
 
 import styles from "./styles.module.scss";
 

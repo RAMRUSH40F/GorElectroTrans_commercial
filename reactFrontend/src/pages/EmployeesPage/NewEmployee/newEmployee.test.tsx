@@ -1,10 +1,12 @@
+import NewEmployee from ".";
 import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { UserEvent } from "@testing-library/user-event/dist/types/setup/setup";
 import { fork } from "effector";
 import TestWrapper from "tests/TestWrapper";
-import NewEmployee from ".";
+
 import { IDepartment } from "models/Department";
+
 import {
     $depError,
     $departments,

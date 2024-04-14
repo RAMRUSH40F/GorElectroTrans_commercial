@@ -1,17 +1,20 @@
-import { useEffect, FC } from "react";
+import { FC, useEffect } from "react";
+
+import cn from "classnames";
+import { useUnit } from "effector-react";
+import { useSearchParams } from "react-router-dom";
+
+import Alert, { ALERT } from "components/Alert";
+import Loader from "components/Loader";
 import Pagination from "components/Pagination";
 import Table from "components/Table";
 import TableBodyRow from "components/Table/TableBodyRow";
 import TableBodyCell from "components/Table/TableBodyRow/TableBodyCell";
 import TableHead from "components/Table/TableHead";
 import TableHeadCell from "components/Table/TableHead/TableHeadCell";
-import { useSearchParams } from "react-router-dom";
-import Alert, { ALERT } from "components/Alert";
-import Loader from "components/Loader";
+
 import EditEmployee from "../EditEmployee";
-import { useUnit } from "effector-react";
 import { modalOpened } from "../EditEmployee/model";
-import cn from "classnames";
 import {
     $employees,
     $error,

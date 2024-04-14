@@ -1,4 +1,5 @@
 import { FC, ReactNode } from "react";
+
 import { Scope } from "effector";
 import { Provider } from "effector-react";
 

@@ -1,6 +1,8 @@
 import { ReactNode, forwardRef } from "react";
-import Container from "../Container";
+
 import cn from "classnames";
+
+import Container from "../Container";
 
 import styles from "./styles.module.scss";
 
@@ -22,7 +24,7 @@ const ModalLayout = forwardRef<HTMLDivElement, Props>(
                 </Container>
             </div>
         );
-    }
+    },
 );
 
 export default ModalLayout;

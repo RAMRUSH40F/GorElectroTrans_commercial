@@ -1,4 +1,5 @@
 import React from "react";
+
 import cn from "classnames";
 
 import styles from "./styles.module.scss";
@@ -16,7 +17,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, Props>(
                 {children}
             </textarea>
         );
-    }
+    },
 );
 
 export default Textarea;

@@ -1,10 +1,13 @@
 import React from "react";
-import { Outlet, Navigate, useParams, useLocation } from "react-router-dom";
+
+import { useUnit } from "effector-react";
+import { Navigate, Outlet, useLocation, useParams } from "react-router-dom";
+
 import {
     LOGIN_ROUTE,
     UNAUTHORIZED_ROUTE,
 } from "components/Router/routesPathnames";
-import { useUnit } from "effector-react";
+
 import { $isAuth, $roles, ROLES } from "shared/auth";
 
 const ProtectedDepartmentRoute: React.FC = () => {
@@ -14,7 +17,7 @@ const ProtectedDepartmentRoute: React.FC = () => {
 
     if (isAuth) {
         const isAllowedRole = roles.some(
-            (role) => role === divisionId || role === ROLES.ADMIN
+            (role) => role === divisionId || role === ROLES.ADMIN,
         );
         return isAllowedRole ? (
             <Outlet />

@@ -1,11 +1,15 @@
-import { merge, attach, createDomain, sample, combine } from "effector";
-import { debounce } from "patronum";
+import { attach, combine, createDomain, merge, sample } from "effector";
 import { createGate } from "effector-react";
+import { debounce } from "patronum";
+
+import { SortOrder } from "components/SortButton";
+
+import { transformSortToString } from "helpers/transformSortToString";
+
 import { IEmployee } from "models/Employee";
+
 import employeeApi from "shared/api/employeesApi";
 import { AbortParams } from "shared/api/types";
-import { SortOrder } from "components/SortButton";
-import { transformSortToString } from "helpers/transformSortToString";
 
 interface Sort {
     name: SortOrder;
@@ -223,7 +227,7 @@ $isFetching.on(fetchStarted, (_, pending) => pending);
 $error
     .on(getEmployeesFx, () => null)
     .on(getEmployeesFx.failData, (_, error) =>
-        error.isCanceled ? null : error.message
+        error.isCanceled ? null : error.message,
     );
 
 $employees
@@ -234,7 +238,7 @@ $employees
                 return { ...employee, ...data };
             }
             return employee;
-        })
+        }),
     );
 
 $totalPages.on(getEmployeesFx.doneData, (_, { totalPages }) => totalPages);

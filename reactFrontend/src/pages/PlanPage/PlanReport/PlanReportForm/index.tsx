@@ -1,9 +1,12 @@
 import React, { FormEvent } from "react";
-import Label from "components/formElements/Label";
-import ActionButton from "components/ActionButton";
-import Dropdown from "components/formElements/Dropdown";
-import Alert, { ALERT } from "components/Alert";
+
 import { useUnit } from "effector-react";
+
+import ActionButton from "components/ActionButton";
+import Alert, { ALERT } from "components/Alert";
+import Dropdown from "components/formElements/Dropdown";
+import Label from "components/formElements/Label";
+
 import {
     $activeOption,
     $error,

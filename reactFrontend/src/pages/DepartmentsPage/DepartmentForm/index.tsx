@@ -1,11 +1,16 @@
-import { Formik } from "formik";
 import React from "react";
-import useFocus from "hooks/useFocus";
-import { IDepartment, TDepartmentDto } from "models/Department";
+
+import { Formik } from "formik";
+
 import ActionButton from "components/ActionButton";
 import FormErrorMessage from "components/formElements/FormErrorMessage";
 import Input from "components/formElements/Input";
 import Label from "components/formElements/Label";
+
+import useFocus from "hooks/useFocus";
+
+import { IDepartment, TDepartmentDto } from "models/Department";
+
 import { departmentFormScheme } from "./departmentFormSchema";
 
 import styles from "./styles.module.scss";

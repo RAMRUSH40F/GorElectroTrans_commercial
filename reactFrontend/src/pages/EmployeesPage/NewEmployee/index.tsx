@@ -1,17 +1,23 @@
 import React, { useRef } from "react";
-import ActionButton from "components/ActionButton";
-import useLockedBody from "hooks/useLockedBody";
+
 import { useUnit } from "effector-react";
+
+import ActionButton from "components/ActionButton";
 import Alert, { ALERT } from "components/Alert";
-import ModalLayout from "components/ModalLayout";
-import ModalHeader from "components/ModalLayout/ModalHeader";
-import ModalContent from "components/ModalLayout/ModalContent";
-import EmployeeForm, { EmployeeFormState } from "../EmployeeForm";
 import Loader from "components/Loader";
+import ModalLayout from "components/ModalLayout";
+import ModalContent from "components/ModalLayout/ModalContent";
+import ModalHeader from "components/ModalLayout/ModalHeader";
+
 import useClickOutside from "hooks/useClickOutside";
 import useEscape from "hooks/useEscape";
+import useLockedBody from "hooks/useLockedBody";
+
 import { IEmployee } from "models/Employee";
+
+import EmployeeForm, { EmployeeFormState } from "../EmployeeForm";
 import { addEmployeeFx } from "../model";
+
 import {
     $depError,
     $departments,

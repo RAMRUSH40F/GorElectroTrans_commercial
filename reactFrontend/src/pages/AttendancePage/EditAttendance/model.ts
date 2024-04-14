@@ -1,6 +1,9 @@
 import { createDomain, sample } from "effector";
-import { IAttendance } from "models/Attendance";
+
 import { NOTICE, showNoticeFx } from "helpers/notice";
+
+import { IAttendance } from "models/Attendance";
+
 import {
     attendanceGate,
     removeAttendanceFx,
@@ -96,7 +99,7 @@ domain.onCreateStore(($store) => {
 $error
     .on(
         [updateAttendanceFx.failData, removeAttendanceFx.failData],
-        (_, error) => (error.isCanceled ? null : error.message)
+        (_, error) => (error.isCanceled ? null : error.message),
     )
     .reset(errorReset, updateAttendanceFx, removeAttendanceFx);
 

@@ -1,11 +1,14 @@
 import { createDomain, sample } from "effector";
-import { planGate, removePlanFx, updatePlanFx } from "../model";
+
 import { NOTICE, showNoticeFx } from "helpers/notice";
+
 import { IPlan } from "models/Plan";
+
 import {
     modalOpened as MaterialsOpened,
     backButtonClicked,
 } from "../Materials/model";
+import { planGate, removePlanFx, updatePlanFx } from "../model";
 
 const domain = createDomain();
 
@@ -92,14 +95,14 @@ domain.onCreateStore(($store) => {
 
 $error
     .on([updatePlanFx.failData, removePlanFx.failData], (_, error) =>
-        error.isCanceled ? null : error.message
+        error.isCanceled ? null : error.message,
     )
     .reset(
         errorReset,
         updatePlanFx,
         removePlanFx,
         modalClosed,
-        MaterialsOpened
+        MaterialsOpened,
     );
 
 $isDisabled.on(removePlanFx.pending, (_, pending) => pending);

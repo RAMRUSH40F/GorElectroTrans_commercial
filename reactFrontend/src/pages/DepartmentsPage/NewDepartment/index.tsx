@@ -1,19 +1,26 @@
 import React, { useRef } from "react";
-import ActionButton from "components/ActionButton";
+
 import { useUnit } from "effector-react";
-import { addDepartmentFx } from "../model";
-import Alert, { ALERT } from "components/Alert";
-import useClickOutside from "hooks/useClickOutside";
-import useLockedBody from "hooks/useLockedBody";
-import useEscape from "hooks/useEscape";
-import ModalLayout from "components/ModalLayout";
-import ModalHeader from "components/ModalLayout/ModalHeader";
-import ModalContent from "components/ModalLayout/ModalContent";
+
 import DepartmentForm from "pages/DepartmentsPage/DepartmentForm";
+
+import ActionButton from "components/ActionButton";
+import Alert, { ALERT } from "components/Alert";
+import ModalLayout from "components/ModalLayout";
+import ModalContent from "components/ModalLayout/ModalContent";
+import ModalHeader from "components/ModalLayout/ModalHeader";
+
+import useClickOutside from "hooks/useClickOutside";
+import useEscape from "hooks/useEscape";
+import useLockedBody from "hooks/useLockedBody";
+
 import { TDepartmentDto } from "models/Department";
+
+import { addDepartmentFx } from "../model";
+
 import {
-    $isModalActive,
     $error,
+    $isModalActive,
     errorReset,
     modalClosed,
     modalOpened,

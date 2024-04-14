@@ -1,36 +1,41 @@
-import React, { FC, useRef, MouseEvent } from "react";
-import ActionButton from "components/ActionButton";
-import backIconSrc from "assets/img/back-icon.svg";
-import InputFile from "components/formElements/InputFile";
-import Confirm from "components/Comfirm";
-import Alert, { ALERT } from "components/Alert";
-import Loader from "components/Loader";
+import React, { FC, MouseEvent, useRef } from "react";
+
 import cn from "classnames";
-import ModalLayout from "components/ModalLayout";
-import ModalHeader from "components/ModalLayout/ModalHeader";
-import ModalContent from "components/ModalLayout/ModalContent";
 import { useUnit } from "effector-react";
+
+import ActionButton from "components/ActionButton";
+import Alert, { ALERT } from "components/Alert";
+import Confirm from "components/Comfirm";
+import Loader from "components/Loader";
+import ModalLayout from "components/ModalLayout";
+import ModalContent from "components/ModalLayout/ModalContent";
+import ModalHeader from "components/ModalLayout/ModalHeader";
+import InputFile from "components/formElements/InputFile";
+
 import useClickOutside from "hooks/useClickOutside";
 import useEscape from "hooks/useEscape";
 import useLockedBody from "hooks/useLockedBody";
+
+import backIconSrc from "assets/img/back-icon.svg";
+
 import {
     $error,
     $file,
+    $fileLoaders,
     $fileNames,
     $isAdding,
     $isConfirming,
     $isDisabled,
-    $fileLoaders,
     $isModalActive,
     backButtonClicked,
     confirmButtonClicked,
     confirmingClosed,
     confirmingOpened,
+    downloadButtonClicked,
     fileChanged,
     isAddingOpened,
     modalClosed,
     submitButtonClicked,
-    downloadButtonClicked,
 } from "./model";
 
 import styles from "./styles.module.scss";
@@ -84,7 +89,7 @@ function Files() {
 
     const handelDownload = (
         event: MouseEvent<HTMLButtonElement>,
-        fileName: string
+        fileName: string,
     ) => {
         event.stopPropagation();
         downloadButtonClicked(fileName);

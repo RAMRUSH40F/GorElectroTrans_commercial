@@ -1,8 +1,10 @@
-import { createEffect } from "effector";
-import { authRequestFx } from "..";
 import { isCancel } from "axios";
-import { ApiError, AuthError, FetchParams, FetchResponse } from "../types";
+import { createEffect } from "effector";
+
 import { IEmployee } from "models/Employee";
+
+import { authRequestFx } from "..";
+import { ApiError, AuthError, FetchParams, FetchResponse } from "../types";
 
 export const fetchFx = createEffect<
     FetchParams<null>,

@@ -1,19 +1,26 @@
-import React, { FC, useRef, useState, MouseEvent } from "react";
-import useFocus from "hooks/useFocus";
-import { IPlan, PLAN_STATUS, PLAN_STATUS_VALUE } from "models/Plan";
+import React, { FC, MouseEvent, useRef, useState } from "react";
+
+import cn from "classnames";
+import { Formik } from "formik";
+
+import { modalOpened } from "pages/PlanPage/Materials/model";
+
+import ActionButton from "components/ActionButton";
+import DateInput from "components/formElements/DateInput";
+import Dropdown, { DropdownOption } from "components/formElements/Dropdown";
+import FormErrorMessage from "components/formElements/FormErrorMessage";
 import Input from "components/formElements/Input";
+import InputNumber from "components/formElements/InputNumber";
 import Label from "components/formElements/Label";
 import Textarea from "components/formElements/Textarea";
-import DateInput from "components/formElements/DateInput";
-import { Formik } from "formik";
-import ActionButton from "components/ActionButton";
-import { planFormScheme } from "./planFormScheme";
-import FormErrorMessage from "components/formElements/FormErrorMessage";
-import InputNumber from "components/formElements/InputNumber";
-import Dropdown, { DropdownOption } from "components/formElements/Dropdown";
-import { modalOpened } from "pages/PlanPage/Materials/model";
+
+import useFocus from "hooks/useFocus";
+
+import { IPlan, PLAN_STATUS, PLAN_STATUS_VALUE } from "models/Plan";
+
 import { movedToConfirm } from "../EditPlan/model";
-import cn from "classnames";
+
+import { planFormScheme } from "./planFormScheme";
 
 import styles from "./styles.module.scss";
 
@@ -70,7 +77,7 @@ const PlanForm: FC<Props> = ({
         if (plan) {
             return (
                 teacherOptions.find(
-                    (option) => option.label === String(plan.teacherPost)
+                    (option) => option.label === String(plan.teacherPost),
                 ) ?? teacherOptions[0]
             );
         }
@@ -81,7 +88,7 @@ const PlanForm: FC<Props> = ({
         if (plan) {
             return (
                 statusOptions.find(
-                    (option) => !!parseInt(option.value) === plan.isHeld
+                    (option) => !!parseInt(option.value) === plan.isHeld,
                 ) ?? statusOptions[0]
             );
         }
@@ -101,7 +108,7 @@ const PlanForm: FC<Props> = ({
     const handleOpenMaterials = (
         event: MouseEvent<HTMLButtonElement>,
         fileNames: string[],
-        lessonId: number
+        lessonId: number,
     ) => {
         event.stopPropagation();
         modalOpened({ fileNames, lessonId });
@@ -267,13 +274,13 @@ const PlanForm: FC<Props> = ({
                                 <ActionButton
                                     className={cn(
                                         styles.actionBtn,
-                                        styles.materials
+                                        styles.materials,
                                     )}
                                     onClick={(event) =>
                                         handleOpenMaterials(
                                             event,
                                             plan.lessonContent,
-                                            plan.id
+                                            plan.id,
                                         )
                                     }
                                     disabled={isSubmitting || isDisabled}

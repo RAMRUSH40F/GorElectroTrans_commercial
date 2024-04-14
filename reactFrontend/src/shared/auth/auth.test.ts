@@ -1,15 +1,16 @@
-import { fork, allSettled } from "effector";
 import {
-  checkAccessTokenFx,
-  refreshFx,
-  loggedIn,
-  ROLES,
-  $roles,
-  $isAuth,
-  $isLoading,
-  $error,
-  loggedOut,
+    $error,
+    $isAuth,
+    $isLoading,
+    $roles,
+    ROLES,
+    checkAccessTokenFx,
+    loggedIn,
+    loggedOut,
+    refreshFx,
 } from ".";
+import { allSettled, fork } from "effector";
+
 import { authRequestFx } from "shared/api";
 
 test("should not invoke refreshFx if there is not access token in LC", async () => {
@@ -61,19 +62,19 @@ test("should set auth status and roles after successfull logging", async () => {
 });
 
 test("should stop loading when refresh is finished", async () => {
-  const refreshFn = jest.fn();
+    const refreshFn = jest.fn();
 
-  const scope = fork({
-    handlers: new Map().set(refreshFx, refreshFn),
-  });
+    const scope = fork({
+        handlers: new Map().set(refreshFx, refreshFn),
+    });
 
-  expect(refreshFn).toBeCalledTimes(0);
-  expect(scope.getState($isLoading)).toEqual(true);
-  
-  await allSettled(refreshFx, { scope });
+    expect(refreshFn).toBeCalledTimes(0);
+    expect(scope.getState($isLoading)).toEqual(true);
 
-  expect(refreshFn).toBeCalledTimes(1);
-  expect(scope.getState($isLoading)).toEqual(false);
+    await allSettled(refreshFx, { scope });
+
+    expect(refreshFn).toBeCalledTimes(1);
+    expect(scope.getState($isLoading)).toEqual(false);
 });
 
 test("should set error when refresh fails with status !== 401", async () => {

@@ -1,6 +1,8 @@
-import { merge, attach, createDomain, sample } from "effector";
+import { attach, createDomain, merge, sample } from "effector";
 import { createGate } from "effector-react";
+
 import { IDepartment, TDepartmentDto } from "models/Department";
+
 import departmentApi from "shared/api/departmentsApi";
 import { AbortParams } from "shared/api/types";
 
@@ -110,13 +112,13 @@ $departments
                 return { ...dep, ...data };
             }
             return dep;
-        })
-    )
+        }),
+    );
 
 $error
     .on(getDepartmentsFx, () => null)
     .on(getDepartmentsFx.failData, (_, error) =>
-        error.isCanceled ? null : error.message
+        error.isCanceled ? null : error.message,
     );
 
 $depId.on(depIdChanged, (_, id) => id);

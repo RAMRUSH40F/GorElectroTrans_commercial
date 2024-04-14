@@ -1,4 +1,10 @@
 import { Scope, allSettled, fork } from "effector";
+
+import { addEmployeeFx } from "pages/EmployeesPage/model";
+
+import { IDepartment } from "models/Department";
+import { IEmployee } from "models/Employee";
+
 import {
     $depError,
     $departments,
@@ -9,9 +15,6 @@ import {
     modalClosed,
     modalOpened,
 } from "./model";
-import { IDepartment } from "models/Department";
-import { addEmployeeFx } from "pages/EmployeesPage/model";
-import { IEmployee } from "models/Employee";
 
 const mockedMessage = "Something went wrong";
 const mockedDepartment: IDepartment = { id: 1, name: "test_name" };
@@ -54,9 +57,11 @@ beforeEach(() => {
 });
 
 test("should set modal active status when modalOpened triggers", async () => {
-  const getDepartmentsFxFn = jest.fn();
+    const getDepartmentsFxFn = jest.fn();
 
-    const scope = fork({ handlers: new Map().set(getDepartmentsFx, getDepartmentsFxFn) });
+    const scope = fork({
+        handlers: new Map().set(getDepartmentsFx, getDepartmentsFxFn),
+    });
 
     await allSettled(modalOpened, { scope });
 

@@ -1,8 +1,10 @@
-import { merge, attach, createDomain, sample } from "effector";
-import { debounce } from "patronum";
+import { attach, createDomain, merge, sample } from "effector";
 import { createGate } from "effector-react";
+import { debounce } from "patronum";
+
+import { AttendanceDto, AttendanceId, IAttendance } from "models/Attendance";
+
 import attendanceApi from "shared/api/attendanceApi";
-import { IAttendance, AttendanceId, AttendanceDto } from "models/Attendance";
 import { AbortParams } from "shared/api/types";
 
 interface GateProps {
@@ -201,7 +203,7 @@ $isFetching.on(fetchStarted, (_, pending) => pending);
 $error
     .on(getAttendanceFx, () => null)
     .on(getAttendanceFx.failData, (_, error) =>
-        error.isCanceled ? null : error.message
+        error.isCanceled ? null : error.message,
     );
 
 $attendances

@@ -1,17 +1,25 @@
 import React, { useRef } from "react";
-import ActionButton from "components/ActionButton";
-import useLockedBody from "hooks/useLockedBody";
-import ModalLayout from "components/ModalLayout";
-import ModalHeader from "components/ModalLayout/ModalHeader";
-import ModalContent from "components/ModalLayout/ModalContent";
-import Alert, { ALERT } from "components/Alert";
-import PlanForm, { PlanFormValues } from "pages/PlanPage/PlanForm";
+
 import { useUnit } from "effector-react";
+
+import PlanForm, { PlanFormValues } from "pages/PlanPage/PlanForm";
+
+import ActionButton from "components/ActionButton";
+import Alert, { ALERT } from "components/Alert";
+import ModalLayout from "components/ModalLayout";
+import ModalContent from "components/ModalLayout/ModalContent";
+import ModalHeader from "components/ModalLayout/ModalHeader";
+
 import useClickOutside from "hooks/useClickOutside";
 import useEscape from "hooks/useEscape";
+import useLockedBody from "hooks/useLockedBody";
+
 import { parseISO } from "helpers/parseISO";
+
 import { PlanDto } from "models/Plan";
+
 import { addPlanFx } from "../model";
+
 import {
     $error,
     $isModalActive,

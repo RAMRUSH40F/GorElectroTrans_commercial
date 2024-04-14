@@ -1,9 +1,10 @@
+import PlanReport from ".";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { UserEvent } from "@testing-library/user-event/dist/types/setup/setup";
 import { fork } from "effector";
 import TestWrapper from "tests/TestWrapper";
-import PlanReport from ".";
+
 import {
     $isLoading,
     $isModalActive,

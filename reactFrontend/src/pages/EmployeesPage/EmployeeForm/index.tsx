@@ -1,14 +1,18 @@
 import React, { FC, useEffect, useRef } from "react";
-import Input from "components/formElements/Input";
-import Label from "components/formElements/Label";
-import ActionButton from "components/ActionButton";
-import { IDepartment } from "models/Department";
+
 import { Formik } from "formik";
-import { employeeFormScheme } from "./employeeFormScheme";
-import FormErrorMessage from "components/formElements/FormErrorMessage";
-import { IEmployee } from "models/Employee";
-import InputNumber from "components/formElements/InputNumber";
+
+import ActionButton from "components/ActionButton";
 import Dropdown, { DropdownOption } from "components/formElements/Dropdown";
+import FormErrorMessage from "components/formElements/FormErrorMessage";
+import Input from "components/formElements/Input";
+import InputNumber from "components/formElements/InputNumber";
+import Label from "components/formElements/Label";
+
+import { IDepartment } from "models/Department";
+import { IEmployee } from "models/Employee";
+
+import { employeeFormScheme } from "./employeeFormScheme";
 
 import styles from "./styles.module.scss";
 
@@ -59,7 +63,7 @@ const EmployeeForm: FC<Props> = ({
             return (
                 options.find(
                     (option) =>
-                        option.value === String(employee.subdepartmentName)
+                        option.value === String(employee.subdepartmentName),
                 ) ?? options[0]
             );
         }

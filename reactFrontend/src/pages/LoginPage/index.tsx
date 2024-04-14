@@ -1,13 +1,19 @@
 import React from "react";
-import LoginForm, { LoginFormState } from "pages/LoginPage/LoginForm";
-import { DIVISIONS_ROUTE } from "components/Router/routesPathnames";
-import { getDivisionRoute } from "helpers/getDivisionRoute";
-import Alert, { ALERT } from "components/Alert";
-import { useLocation, useNavigate } from "react-router-dom";
-import { $error, errorReset } from "./model";
+
 import { useUnit } from "effector-react";
-import { loginFx, ROLES } from "shared/auth";
+import { useLocation, useNavigate } from "react-router-dom";
+
+import LoginForm, { LoginFormState } from "pages/LoginPage/LoginForm";
+
+import Alert, { ALERT } from "components/Alert";
+import { DIVISIONS_ROUTE } from "components/Router/routesPathnames";
+
+import { getDivisionRoute } from "helpers/getDivisionRoute";
+
 import { ICredentials } from "shared/api/userApi/login";
+import { ROLES, loginFx } from "shared/auth";
+
+import { $error, errorReset } from "./model";
 
 import styles from "./styles.module.scss";
 

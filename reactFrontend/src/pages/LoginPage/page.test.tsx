@@ -1,15 +1,12 @@
-import {
-    screen,
-    render,
-    act,
-} from "@testing-library/react";
+import LoginPage from ".";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { UserEvent } from "@testing-library/user-event/dist/types/setup/setup";
+import { Scope, fork, hydrate } from "effector";
 import RouterWrapper from "tests/RouterWrapper";
 import TestWrapper from "tests/TestWrapper";
-import { Scope, fork, hydrate } from "effector";
+
 import { $error, loginDomain } from "./model";
-import LoginPage from ".";
 
 const selectors = {
     username: () => screen.getByPlaceholderText(/логин/i),

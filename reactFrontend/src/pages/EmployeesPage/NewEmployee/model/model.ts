@@ -1,8 +1,12 @@
 import { attach, createDomain, sample } from "effector";
+
 import { NOTICE, showNoticeFx } from "helpers/notice";
-import { $depId, addEmployeeFx, pageClosed } from "../../model/model";
+
 import { IDepartment } from "models/Department";
+
 import departmentApi from "shared/api/departmentsApi";
+
+import { $depId, addEmployeeFx, pageClosed } from "../../model/model";
 
 const domain = createDomain();
 
@@ -60,13 +64,13 @@ $departments.on(getDepartmentsFx.doneData, (_, data) => data);
 
 $depError
     .on(getDepartmentsFx.failData, (_, { message, isCanceled }) =>
-        isCanceled ? null : message
+        isCanceled ? null : message,
     )
     .reset(modalClosed);
 
 $error
     .on(addEmployeeFx.failData, (_, error) =>
-        error.isCanceled ? null : error.message
+        error.isCanceled ? null : error.message,
     )
     .reset(errorReset, addEmployeeFx, modalClosed);
 
