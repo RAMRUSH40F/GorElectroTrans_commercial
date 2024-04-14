@@ -7,21 +7,25 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import project.dataSource.DynamicDataSourceContextHolder;
 import project.model.Lesson;
 import project.service.reportService.TeacherProfession;
 
+import javax.sql.DataSource;
 import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -31,12 +35,24 @@ class LessonServiceTest {
     LessonServiceImpl lessonService;
     @Autowired
     JdbcTemplate jdbcTemplate;
-    @Autowired
-    TestRestTemplate restTemplate;
 
     @BeforeAll
     static void setDataBaseToCancelException() {
         DynamicDataSourceContextHolder.setCurrentDataSource("DEP_1");
+    }
+
+    @TestConfiguration
+    public static class TestDataSourceConfig {
+
+        @Primary
+        @Bean("TestDatasource")
+        public DataSource dataSource() {
+            return new EmbeddedDatabaseBuilder()
+                    .setType(EmbeddedDatabaseType.H2)
+                    .addScript("classpath:db_initializer.sql")
+                    .build();
+        }
+
     }
 
     @BeforeEach
@@ -58,15 +74,15 @@ class LessonServiceTest {
 
     @AfterAll
     void deleteSchema() {
-        jdbcTemplate.execute("DROP VIEW Attendance_view");
-        jdbcTemplate.execute("DROP VIEW Materials_view");
-        jdbcTemplate.execute("DROP TABLE lesson");
-        jdbcTemplate.execute("DROP TABLE authorities");
-        jdbcTemplate.execute("DROP TABLE users");
-        jdbcTemplate.execute("DROP TABLE subdepartment");
-        jdbcTemplate.execute("DROP TABLE student");
-        jdbcTemplate.execute("DROP TABLE attendance");
-        jdbcTemplate.execute("DROP TABLE lesson_content");
+        jdbcTemplate.execute("DROP VIEW IF EXISTS Attendance_view");
+        jdbcTemplate.execute("DROP VIEW IF EXISTS  Materials_view");
+        jdbcTemplate.execute("DROP TABLE IF EXISTS  attendance");
+        jdbcTemplate.execute("DROP TABLE IF EXISTS lesson_content");
+        jdbcTemplate.execute("DROP TABLE IF EXISTS  lesson");
+        jdbcTemplate.execute("DROP TABLE IF EXISTS  authorities");
+        jdbcTemplate.execute("DROP TABLE IF EXISTS  users");
+        jdbcTemplate.execute("DROP TABLE IF EXISTS student");
+        jdbcTemplate.execute("DROP TABLE IF EXISTS  subdepartment");
 
     }
 
@@ -91,7 +107,7 @@ class LessonServiceTest {
     @Test
     void getLessonByKeyword_returnNotNull() {
         Pageable pageable = PageRequest.of(1, 1);
-        List<Lesson> lessonList = lessonService.findAllByNullableKeywordWithPagination(1, Optional.empty(),pageable).toList();
+        List<Lesson> lessonList = lessonService.findAllByNullableKeywordWithPagination(1, Optional.empty(), pageable).toList();
         System.out.println(lessonList);
 
         assertNotNull(lessonList);
