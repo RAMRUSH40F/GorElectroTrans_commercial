@@ -1,6 +1,7 @@
-import { createEffect } from "effector";
-import { authRequestFx } from "..";
 import { isCancel } from "axios";
+import { createEffect } from "effector";
+
+import { authRequestFx } from "..";
 import { ApiError, AuthError, DepParams } from "../types";
 
 export const deleteFx = createEffect<DepParams<string>, string, ApiError>(
@@ -27,5 +28,5 @@ export const deleteFx = createEffect<DepParams<string>, string, ApiError>(
                 throw customError;
             }
         }
-    }
+    },
 );

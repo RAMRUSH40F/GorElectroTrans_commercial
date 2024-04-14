@@ -1,5 +1,7 @@
 import React from "react";
+
 import { Outlet } from "react-router-dom";
+
 import Menu from "./Menu";
 
 import styles from "./styles.module.scss";

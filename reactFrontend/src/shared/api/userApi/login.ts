@@ -1,7 +1,9 @@
 import { createEffect } from "effector";
-import { requestFx } from "..";
 import decodeJwt from "jwt-decode";
+
 import { ROLES } from "shared/auth";
+
+import { requestFx } from "..";
 
 export interface ICredentials {
     username: string;
@@ -35,5 +37,5 @@ export const loginFx = createEffect<ICredentials, ROLES[], UserApiError>(
             const customError: UserApiError = { message, status };
             throw customError;
         }
-    }
+    },
 );

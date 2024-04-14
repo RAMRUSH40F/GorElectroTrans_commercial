@@ -1,9 +1,13 @@
 import React from "react";
+
 import { useLocation } from "react-router-dom";
-import logoSrc from "assets/img/logo.svg";
-import { LOGIN_ROUTE } from "components/Router/routesPathnames";
-import Container from "components/Container";
+
 import ActionButton from "components/ActionButton";
+import Container from "components/Container";
+import { LOGIN_ROUTE } from "components/Router/routesPathnames";
+
+import logoSrc from "assets/img/logo.svg";
+
 import { logoutFx } from "shared/auth";
 
 import styles from "./styles.module.scss";

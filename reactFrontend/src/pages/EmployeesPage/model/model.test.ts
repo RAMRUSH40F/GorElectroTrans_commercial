@@ -1,28 +1,30 @@
 import { Scope, allSettled, fork } from "effector";
+
+import { IEmployee } from "models/Employee";
+
 import {
     $depId,
+    $employees,
+    $error,
     $page,
+    $search,
+    $sort,
+    $totalPages,
+    addEmployeeFx,
+    debouncedSearchChanged,
     depIdChanged,
+    fetchStarted,
+    getEmployeesFx,
+    initialSearchChanged,
+    loadingEnded,
+    loadingStarted,
     pageChanged,
     pageLoaded,
-    searchChanged,
-    initialSearchChanged,
-    $search,
-    debouncedSearchChanged,
-    sortToggled,
-    $sort,
-    getEmployeesFx,
     paramsChanged,
-    $employees,
-    $totalPages,
-    $error,
-    fetchStarted,
-    loadingStarted,
-    loadingEnded,
-    addEmployeeFx,
     removeEmployeeFx,
+    searchChanged,
+    sortToggled,
 } from "./model";
-import { IEmployee } from "models/Employee";
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -100,7 +102,10 @@ describe("events", () => {
     describe("pageLoaded", () => {
         test("should set depId when page was loaded", async () => {
             const scope = fork({
-              handlers: new Map().set(getEmployeesFx, () => ({data: [], totalPages: 1})),
+                handlers: new Map().set(getEmployeesFx, () => ({
+                    data: [],
+                    totalPages: 1,
+                })),
             });
 
             await allSettled(pageLoaded, {
@@ -117,7 +122,7 @@ describe("events", () => {
             const getEmployeesFxFn = jest.fn();
 
             const scope = fork({
-              handlers: new Map().set(getEmployeesFx, getEmployeesFxFn),
+                handlers: new Map().set(getEmployeesFx, getEmployeesFxFn),
             });
 
             await allSettled(pageLoaded, {

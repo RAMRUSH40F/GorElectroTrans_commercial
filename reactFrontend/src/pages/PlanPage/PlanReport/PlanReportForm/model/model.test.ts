@@ -1,4 +1,9 @@
 import { allSettled, fork } from "effector";
+
+import { DropdownOption } from "components/formElements/Dropdown";
+
+import { downloadFileFx } from "helpers/downloadFile";
+
 import {
     $activeOption,
     $activePeriod,
@@ -8,8 +13,6 @@ import {
     formSubmitted,
     getReportFx,
 } from "./model";
-import { DropdownOption } from "components/formElements/Dropdown";
-import { downloadFileFx } from "helpers/downloadFile";
 
 const mockedMessage = "Something went wrong";
 const mockedParams = {
@@ -122,7 +125,7 @@ test("should set error when request fails", async () => {
     expect(scope.getState($error)).toEqual(mockedMessage);
 });
 
-test("should trigger donwloadFileFx when report was successfully fetched", async () => {
+test("should trigger downloadFileFx when report was successfully fetched", async () => {
     const scope = fork({
         handlers: new Map()
             .set(getReportFx, () => {

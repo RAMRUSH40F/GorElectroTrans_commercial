@@ -1,8 +1,10 @@
-import { createEffect } from "effector";
-import { authRequestFx } from "..";
 import { isCancel } from "axios";
-import { ApiError, AuthError, DepParams } from "../types";
+import { createEffect } from "effector";
+
 import { IReportPeriod } from "pages/PlanPage/PlanReport/PlanReportForm/model/model";
+
+import { authRequestFx } from "..";
+import { ApiError, AuthError, DepParams } from "../types";
 
 export const fetchPeriodsFx = createEffect<
     DepParams<null>,

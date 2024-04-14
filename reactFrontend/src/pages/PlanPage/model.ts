@@ -1,11 +1,15 @@
 import { attach, createDomain, merge, sample } from "effector";
 import { createGate } from "effector-react";
-import { IMaterial, IPlan, PlanDto } from "models/Plan";
 import { debounce } from "patronum";
-import { AbortParams } from "shared/api/types";
-import planApi from "shared/api/planApi";
+
 import { SortOrder } from "components/SortButton";
+
 import { transformSortToString } from "helpers/transformSortToString";
+
+import { IMaterial, IPlan, PlanDto } from "models/Plan";
+
+import planApi from "shared/api/planApi";
+import { AbortParams } from "shared/api/types";
 
 type Sort = Record<keyof Pick<IPlan, "topic" | "teacher" | "date">, SortOrder>;
 
@@ -229,7 +233,7 @@ $isFetching.on(fetchStarted, (_, pending) => pending);
 $error
     .on(getPlanFx, () => null)
     .on(getPlanFx.failData, (_, { isCanceled, message }) =>
-        isCanceled ? null : message
+        isCanceled ? null : message,
     );
 
 $plans
@@ -240,7 +244,7 @@ $plans
                 return { ...plan, ...data };
             }
             return plan;
-        })
+        }),
     )
     .on(planFileAdded, (plans, { fileName, lessonId }) => {
         return plans.map((plan) => {
@@ -254,7 +258,7 @@ $plans
         return plans.map((plan) => {
             if (plan.id === lessonId) {
                 plan.lessonContent = plan.lessonContent.filter(
-                    (name) => name !== fileName
+                    (name) => name !== fileName,
                 );
             }
             return plan;

@@ -1,6 +1,9 @@
-import { useRef, useCallback } from "react";
+import { useCallback, useRef } from "react";
 
-export const useDeboucedCallback = <A extends any[]>(callback: (...args: A) => void, delay: number) => {
+export const useDeboucedCallback = <A extends any[]>(
+    callback: (...args: A) => void,
+    delay: number,
+) => {
     const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const debouncedCallback = useCallback(
@@ -13,7 +16,7 @@ export const useDeboucedCallback = <A extends any[]>(callback: (...args: A) => v
                 callback(...args);
             }, delay);
         },
-        [callback, delay]
+        [callback, delay],
     );
 
     return debouncedCallback;

@@ -1,4 +1,5 @@
 import React from "react";
+
 import cn from "classnames";
 
 import styles from "./styles.module.scss";
@@ -24,7 +25,7 @@ const InputFile: React.FC<Props> = ({
                 <span
                     className={cn(
                         styles.field,
-                        (file || fileNameLabel) && styles.active
+                        (file || fileNameLabel) && styles.active,
                     )}
                 >
                     {file?.name ?? fileNameLabel ?? "Выберите файл"}

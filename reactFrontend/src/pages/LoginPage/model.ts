@@ -1,4 +1,5 @@
 import { createDomain } from "effector";
+
 import { loginFx } from "shared/auth";
 
 export const loginDomain = createDomain();

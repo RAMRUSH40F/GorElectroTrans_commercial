@@ -1,6 +1,7 @@
 import React from "react";
-import ReactPaginate, { ReactPaginateProps } from "react-paginate";
+
 import cn from "classnames";
+import ReactPaginate, { ReactPaginateProps } from "react-paginate";
 
 import styles from "./styles.module.scss";
 

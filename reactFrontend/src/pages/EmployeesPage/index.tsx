@@ -1,12 +1,17 @@
 import React from "react";
+
 import { useGate, useUnit } from "effector-react";
 import { useParams, useSearchParams } from "react-router-dom";
-import SectionHeader from "../../components/SectionHeader";
-import Employees from "./Employees";
-import { getDivisionRoute } from "../../helpers/getDivisionRoute";
-import NewEmployee from "./NewEmployee";
-import { useDeboucedCallback } from "hooks/useDebouncedCallback";
+
 import Search from "components/Search";
+
+import { useDeboucedCallback } from "hooks/useDebouncedCallback";
+
+import SectionHeader from "../../components/SectionHeader";
+import { getDivisionRoute } from "../../helpers/getDivisionRoute";
+
+import Employees from "./Employees";
+import NewEmployee from "./NewEmployee";
 import { $search, employeesGate, searchChanged } from "./model/model";
 
 import styles from "./styles.module.scss";

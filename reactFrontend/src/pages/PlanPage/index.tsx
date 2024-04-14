@@ -1,16 +1,22 @@
 import React from "react";
+
+import { useGate, useUnit } from "effector-react";
+import { useParams, useSearchParams } from "react-router-dom";
+
+import CheckAccess from "components/CheckAccess";
 import Search from "components/Search";
 import SectionHeader from "components/SectionHeader";
-import Plan from "./Plan";
-import NewPlan from "./NewPlan";
-import PlanReport from "./PlanReport";
-import { useParams, useSearchParams } from "react-router-dom";
-import { getDivisionRoute } from "helpers/getDivisionRoute";
-import CheckAccess from "components/CheckAccess";
-import { ROLES } from "shared/auth";
-import { useGate, useUnit } from "effector-react";
-import { $search, planGate, searchChanged } from "./model";
+
 import { useDeboucedCallback } from "hooks/useDebouncedCallback";
+
+import { getDivisionRoute } from "helpers/getDivisionRoute";
+
+import { ROLES } from "shared/auth";
+
+import NewPlan from "./NewPlan";
+import Plan from "./Plan";
+import PlanReport from "./PlanReport";
+import { $search, planGate, searchChanged } from "./model";
 
 import styles from "./styles.module.scss";
 

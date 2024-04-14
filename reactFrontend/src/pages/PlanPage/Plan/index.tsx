@@ -1,20 +1,25 @@
 import React, { MouseEvent, useEffect } from "react";
+
+import cn from "classnames";
+import { useUnit } from "effector-react";
+import { useSearchParams } from "react-router-dom";
+
+import Alert, { ALERT } from "components/Alert";
+import Loader from "components/Loader";
+import Pagination from "components/Pagination";
 import Table from "components/Table";
 import TableBodyRow from "components/Table/TableBodyRow";
 import TableBodyCell from "components/Table/TableBodyRow/TableBodyCell";
 import TableHead from "components/Table/TableHead";
 import TableHeadCell from "components/Table/TableHead/TableHeadCell";
-import Pagination from "components/Pagination";
+
 import { formatDate } from "helpers/formatDate";
-import Alert, { ALERT } from "components/Alert";
-import { useSearchParams } from "react-router-dom";
-import Loader from "components/Loader";
-import { useUnit } from "effector-react";
+
+import { IPlan, PLAN_STATUS_VALUE } from "models/Plan";
+
 import EditPlan from "../EditPlan";
 import { modalOpened } from "../EditPlan/model";
 import Materials from "../Materials";
-import { IPlan, PLAN_STATUS_VALUE } from "models/Plan";
-import cn from "classnames";
 import {
     $error,
     $isFetching,
@@ -57,7 +62,7 @@ function TableContent() {
 
     const handleOpenEditing = (
         event: MouseEvent<HTMLTableRowElement>,
-        plan: IPlan
+        plan: IPlan,
     ) => {
         event.stopPropagation();
         modalOpened({ plan });
@@ -104,7 +109,7 @@ function TableContent() {
                                 className={cn(
                                     styles.row,
                                     plan.lessonContent.length < 1 &&
-                                        styles.empty
+                                        styles.empty,
                                 )}
                                 key={plan.id}
                                 onClick={(event) =>

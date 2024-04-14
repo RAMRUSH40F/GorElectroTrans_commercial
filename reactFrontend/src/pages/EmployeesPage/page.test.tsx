@@ -1,11 +1,13 @@
-import { act, render, screen, within } from "@testing-library/react";
-import { fork } from "effector";
 import EmployeesPage from ".";
-import TestWrapper from "tests/TestWrapper";
-import RouterWrapper from "tests/RouterWrapper";
-import { IEmployee } from "models/Employee";
+import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { UserEvent } from "@testing-library/user-event/dist/types/setup/setup";
+import { fork } from "effector";
+import RouterWrapper from "tests/RouterWrapper";
+import TestWrapper from "tests/TestWrapper";
+
+import { IEmployee } from "models/Employee";
+
 import {
     $employees,
     $error,
@@ -31,7 +33,7 @@ const selectors = {
 const mockedEmployee: IEmployee = {
     fullName: "test_name",
     studentId: "test_id",
-    subdepartmentName: "test_subname",
+    subdepartmentName: "test_subName",
 };
 
 let user: UserEvent;
@@ -57,7 +59,7 @@ test("should display loader when loading is active", () => {
 
     render(<TestWrapper scope={scope} children={<EmployeesPage />} />);
 
-    expect(screen.getByText(/Загрузка/i));
+    expect(screen.getByText(/Загрузка/i)).toBeInTheDocument();
 });
 
 test("should set opacity to table when fetching is active", () => {

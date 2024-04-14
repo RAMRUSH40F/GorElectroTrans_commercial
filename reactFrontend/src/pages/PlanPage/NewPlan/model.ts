@@ -1,5 +1,7 @@
 import { createDomain, sample } from "effector";
+
 import { NOTICE, showNoticeFx } from "helpers/notice";
+
 import { addPlanFx, planGate } from "../model";
 
 const domain = createDomain();
@@ -33,7 +35,7 @@ domain.onCreateStore(($store) => {
 
 $error
     .on(addPlanFx.failData, (_, error) =>
-        error.isCanceled ? null : error.message
+        error.isCanceled ? null : error.message,
     )
     .reset(errorReset, addPlanFx, modalClosed);
 

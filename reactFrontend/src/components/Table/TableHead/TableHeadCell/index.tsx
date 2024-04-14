@@ -1,6 +1,8 @@
 import React, { ReactNode } from "react";
-import SortButton, { SortOrder } from "components/SortButton";
+
 import cn from "classnames";
+
+import SortButton, { SortOrder } from "components/SortButton";
 
 import styles from "./styles.module.scss";
 

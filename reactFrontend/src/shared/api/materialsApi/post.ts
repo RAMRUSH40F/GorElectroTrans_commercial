@@ -1,8 +1,10 @@
-import { createEffect } from "effector";
-import { ApiError, AuthError, DepParams } from "../types";
-import { authRequestFx } from "..";
 import { isCancel } from "axios";
+import { createEffect } from "effector";
+
 import { IMaterial } from "models/Plan";
+
+import { authRequestFx } from "..";
+import { ApiError, AuthError, DepParams } from "../types";
 
 interface MaterialParams<T> extends DepParams<T> {
     lessonId: number;

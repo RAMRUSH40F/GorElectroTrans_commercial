@@ -1,16 +1,23 @@
-import { useUnit } from "effector-react";
 import React, { useRef } from "react";
+
+import { useUnit } from "effector-react";
+
+import DepartmentForm from "pages/DepartmentsPage/DepartmentForm";
+
+import Alert, { ALERT } from "components/Alert";
+import Confirm from "components/Comfirm";
+import ModalLayout from "components/ModalLayout";
+import ModalContent from "components/ModalLayout/ModalContent";
+import ModalHeader from "components/ModalLayout/ModalHeader";
+
 import useClickOutside from "hooks/useClickOutside";
 import useEscape from "hooks/useEscape";
 import useLockedBody from "hooks/useLockedBody";
-import Confirm from "components/Comfirm";
-import Alert, { ALERT } from "components/Alert";
-import ModalLayout from "components/ModalLayout";
-import ModalHeader from "components/ModalLayout/ModalHeader";
-import ModalContent from "components/ModalLayout/ModalContent";
-import DepartmentForm from "pages/DepartmentsPage/DepartmentForm";
+
 import { IDepartment, TDepartmentDto } from "models/Department";
+
 import { updateDepartmentFx } from "../model";
+
 import {
     $editingDepartment,
     $error,

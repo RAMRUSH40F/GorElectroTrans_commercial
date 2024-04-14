@@ -1,7 +1,10 @@
 import { attach, createDomain, sample } from "effector";
-import { $depId, planGate } from "../../model";
+
 import reportApi from "shared/api/reportApi";
+
 import { IReportPeriod } from "../PlanReportForm/model/model";
+
+import { $depId, planGate } from "../../model";
 
 const domain = createDomain();
 
@@ -41,7 +44,7 @@ $isLoading.on(getPeriodsFx.pending, (_, pending) => pending);
 $periods.on(getPeriodsFx.doneData, (_, data) => data);
 
 $periodsError.on(getPeriodsFx.failData, (_, { isCanceled, message }) =>
-    isCanceled ? null : message
+    isCanceled ? null : message,
 );
 
 $isModalActive.on(modalOpened, () => true).on(modalClosed, () => false);

@@ -1,10 +1,14 @@
 import React from "react";
+
+import { useGate } from "effector-react";
 import { useParams } from "react-router-dom";
+
 import SectionHeader from "components/SectionHeader";
+
 import { getDivisionRoute } from "helpers/getDivisionRoute";
+
 import Departments from "./Departments";
 import NewDepartment from "./NewDepartment";
-import { useGate } from "effector-react";
 import { departmentsGate } from "./model";
 
 import styles from "./styles.module.scss";

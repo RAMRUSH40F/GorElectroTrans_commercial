@@ -1,9 +1,14 @@
-import { DropdownOption } from "components/formElements/Dropdown";
 import { attach, createDomain, sample } from "effector";
-import { $periods, modalClosed, modalOpened } from "../../model/model";
+
 import { $depId, planGate } from "pages/PlanPage/model";
-import reportApi from "shared/api/reportApi";
+
+import { DropdownOption } from "components/formElements/Dropdown";
+
 import { downloadFileFx } from "helpers/downloadFile";
+
+import reportApi from "shared/api/reportApi";
+
+import { $periods, modalClosed, modalOpened } from "../../model/model";
 
 export interface IReportPeriod {
     year: number;
@@ -33,7 +38,7 @@ sample({
     clock: formSubmitted,
     source: { period: $activePeriod, depId: $depId },
     filter: (
-        source: SubmitSource
+        source: SubmitSource,
     ): source is { depId: string; period: IReportPeriod } =>
         source.period !== null,
     fn: ({ depId, period }) => ({
@@ -46,7 +51,7 @@ sample({
     target: getReportFx,
 });
 
-// When report was successfully fetched, donwload file
+// When report was successfully fetched, download file
 sample({
     clock: getReportFx.doneData,
     fn: ({ file, period }) => ({
@@ -56,7 +61,7 @@ sample({
     target: downloadFileFx,
 });
 
-// Reset all stores when component mountes and unmounts
+// Reset all stores when component mounts and unmounts
 domain.onCreateStore(($store) => {
     $store.reset(modalOpened, modalClosed, planGate.close);
 });
@@ -65,7 +70,7 @@ $periodsOptions.on($periods, (_, periods) =>
     periods.map(({ quoter, year }) => ({
         label: `Год: ${year}, квартал: ${quoter}`,
         value: `${quoter},${year}`,
-    }))
+    })),
 );
 
 $activeOption.on($periodsOptions, (_, options) => options[0]);

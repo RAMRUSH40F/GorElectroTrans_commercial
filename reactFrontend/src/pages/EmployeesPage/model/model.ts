@@ -1,11 +1,15 @@
-import { merge, attach, createDomain, sample, combine } from "effector";
-import { debounce } from "patronum";
+import { attach, combine, createDomain, merge, sample } from "effector";
 import { createGate } from "effector-react";
+import { debounce } from "patronum";
+
+import { SortOrder } from "components/SortButton";
+
+import { transformSortToString } from "helpers/transformSortToString";
+
 import { IEmployee } from "models/Employee";
+
 import employeeApi from "shared/api/employeesApi";
 import { AbortParams } from "shared/api/types";
-import { SortOrder } from "components/SortButton";
-import { transformSortToString } from "helpers/transformSortToString";
 
 interface Sort {
     name: SortOrder;
@@ -42,7 +46,7 @@ export const paramsChanged = merge([
 ]);
 
 export const depIdChanged = domain.createEvent<string>();
-// #endregion
+// #end region
 
 // #region Stores
 export const $employees = domain.createStore<IEmployee[]>([]);
@@ -67,7 +71,7 @@ const $params = combine({
     size: $size,
     sort: $sort,
 });
-// #endregion
+// #end region
 
 export const getEmployeesFx = attach({
     effect: employeeApi.fetchFx,
@@ -211,7 +215,7 @@ sample({
     target: loadingEnded,
 });
 
-// Reset all stores when component unmountes
+// Reset all stores when component unmounts
 domain.onCreateStore(($store) => {
     $store.reset(pageClosed);
 });
@@ -223,7 +227,7 @@ $isFetching.on(fetchStarted, (_, pending) => pending);
 $error
     .on(getEmployeesFx, () => null)
     .on(getEmployeesFx.failData, (_, error) =>
-        error.isCanceled ? null : error.message
+        error.isCanceled ? null : error.message,
     );
 
 $employees
@@ -234,7 +238,7 @@ $employees
                 return { ...employee, ...data };
             }
             return employee;
-        })
+        }),
     );
 
 $totalPages.on(getEmployeesFx.doneData, (_, { totalPages }) => totalPages);
