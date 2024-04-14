@@ -42,8 +42,8 @@ public class DynamicDataSourceConfig {
 
     private DataSource createDataSource(String databaseName) {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-//        dataSource.setDriverClassName("org.mariadb.jdbc.Driver");
-        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        dataSource.setDriverClassName("org.mariadb.jdbc.Driver");
+//        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
         dataSource.setUrl(databaseUrl + "/" + databaseName);
         dataSource.setUsername(databaseUsername);
         dataSource.setPassword(databasePassword);
