@@ -1,4 +1,4 @@
-import { Scope, allSettled, fork } from "effector";
+import { allSettled, fork } from "effector";
 import {
     $isModalActive,
     modalClosed,
@@ -16,7 +16,6 @@ const mockedParams = {
     depId: "1",
 };
 const mockedMessage = "Something went wrong";
-let scope: Scope;
 
 const modalOpenedFn = jest.fn();
 modalOpened.watch(modalOpenedFn);
@@ -28,14 +27,19 @@ const getPeriodsFn = jest.fn();
 getPeriodsFx.watch(getPeriodsFn);
 
 beforeEach(() => {
-    scope = fork();
-
     modalOpenedFn.mockClear();
     modalClosedFn.mockClear();
     getPeriodsFn.mockClear();
 });
 
 test("should set modal active status to true when modalOpened triggers", async () => {
+    const scope = fork({
+      handlers: new Map().set(getPeriodsFx, () => {
+          getPeriodsFn();
+          return [mockedPeriod];
+      }),
+    });
+
     await allSettled(modalOpened, { scope });
 
     expect(modalOpenedFn).toBeCalledTimes(1);
