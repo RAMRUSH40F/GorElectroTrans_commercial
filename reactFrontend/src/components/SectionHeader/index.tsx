@@ -1,7 +1,8 @@
 import React from "react";
+
 import cn from "classnames";
 
-import "./styles.scss";
+import styles from "./styles.module.scss";
 
 type Props = {
     title: string;
@@ -11,9 +12,9 @@ type Props = {
 
 const SectionHeader: React.FC<Props> = ({ title, subtitle, className }) => {
     return (
-        <header className={cn("page-heading", className)}>
-            <h1 className="page-heading__title">{title}</h1>
-            {subtitle && <p className="page-heading__subtitle">{subtitle}</p>}
+        <header className={cn(styles.header, className)}>
+            <h1>{title}</h1>
+            {subtitle && <p>{subtitle}</p>}
         </header>
     );
 };

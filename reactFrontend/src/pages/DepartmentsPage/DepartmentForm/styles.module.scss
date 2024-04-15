@@ -1,0 +1,17 @@
+@import "../../../assets/styles/mixins.scss";
+
+.label {
+    margin-bottom: 10px;
+}
+
+.input {
+    width: 100%;
+    margin-bottom: 2.5px;
+}
+
+.controls {
+    @include flex-center(0.6rem, flex-end);
+    padding-top: 1rem;
+    margin-top: 1rem;
+    border-top: 1px solid $grey;
+}

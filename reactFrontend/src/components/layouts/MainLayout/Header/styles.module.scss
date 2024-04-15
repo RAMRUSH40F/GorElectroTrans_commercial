@@ -1,0 +1,26 @@
+@import "../../../../assets/styles/mixins.scss";
+
+.header {
+    background-color: $white;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid rgba($grey, 0.5);
+    img {
+        height: 41px;
+        @media (max-width: $mobile) {
+            width: 160px;
+        }
+    }
+}
+
+.wrapper {
+    @include flex-center(1rem, space-between);
+}
+
+.loginBtn {
+    @include flex-center(5px);
+    @media (max-width: $mobile) {
+        height: 2.1rem;
+        font-size: 0.73rem;
+        padding: 0.375rem 1rem;
+    }
+}

@@ -1,14 +1,16 @@
 import React from "react";
-import Container from "../../../Container";
-import logoSrc from "../../../../assets/img/logo-footer.svg";
 
-import "./styles.scss";
+import Container from "components/Container";
+
+import logoSrc from "assets/img/logo-footer.svg";
+
+import styles from "./styles.module.scss";
 
 const Footer: React.FC = () => {
     return (
-        <footer className="footer">
+        <footer className={styles.footer}>
             <Container>
-                <img className="footer__logo" src={logoSrc} alt="Logo" />
+                <img src={logoSrc} alt="Logo" />
             </Container>
         </footer>
     );

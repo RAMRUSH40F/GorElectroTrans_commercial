@@ -1,8 +1,10 @@
 import React, { useRef, useState } from "react";
-import useClickOutside from "../../../hooks/useClickOutside";
+
 import cn from "classnames";
 
-import "./styles.scss";
+import useClickOutside from "../../../hooks/useClickOutside";
+
+import styles from "./styles.module.scss";
 
 export interface DropdownOption {
     label: string;
@@ -18,7 +20,14 @@ type SelectProps = {
     disabled?: boolean;
 };
 
-const Dropdown: React.FC<SelectProps> = ({ initialOption, options, placeholder, onChange, className, disabled }) => {
+const Dropdown: React.FC<SelectProps> = ({
+    initialOption,
+    options,
+    placeholder,
+    onChange,
+    className,
+    disabled,
+}) => {
     const [isOpen, setIsOpen] = useState(false);
     const [selected, setSelected] = useState<string>(initialOption.label);
     const selectRef = useRef<HTMLDivElement | null>(null);
@@ -31,15 +40,31 @@ const Dropdown: React.FC<SelectProps> = ({ initialOption, options, placeholder, 
     };
 
     return (
-        <div className={cn("select", disabled && "select--disabled", className)} ref={selectRef}>
-            <div className={cn("select__header", isOpen && "select__header--open")} onClick={() => setIsOpen(!isOpen)}>
-                <div className="select__placeholder">{selected || placeholder}</div>
-                <div className={cn("select__icon", isOpen && "select__icon--open")}></div>
+        <div
+            className={cn(
+                styles.select,
+                disabled && styles.disabled,
+                className,
+            )}
+            ref={selectRef}
+        >
+            <select className="visually-hidden" disabled={disabled}></select>
+            <div
+                className={cn(styles.header, isOpen && styles.open)}
+                onClick={() => setIsOpen(!isOpen)}
+            >
+                <div className={styles.placeholder}>
+                    {selected || placeholder}
+                </div>
+                <div className={cn(styles.icon, isOpen && styles.open)}></div>
             </div>
-            <ul className={cn("select__options", isOpen && "select__options--open")}>
+            <ul className={cn(styles.options, isOpen && styles.open)}>
                 {options.map((option) => (
                     <li
-                        className={cn("select__option", option.label === selected && "select__option--selected")}
+                        className={cn(
+                            styles.option,
+                            option.label === selected && styles.selected,
+                        )}
                         key={option.value}
                         onClick={() => handleSelect(option)}
                     >

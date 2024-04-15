@@ -1,7 +1,8 @@
 import React from "react";
+
 import cn from "classnames";
 
-import "./styles.scss";
+import styles from "./styles.module.scss";
 
 type Props = {
     children: React.ReactNode;
@@ -9,7 +10,7 @@ type Props = {
 };
 
 const Table: React.FC<Props> = ({ children, className }) => {
-    return <table className={cn("table", className)}>{children}</table>;
+    return <table className={cn(styles.table, className)}>{children}</table>;
 };
 
 export default Table;

@@ -1,0 +1,29 @@
+@import "../../../../assets/styles/vars.scss";
+
+.headCell {
+    font-size: 0.95rem;
+    line-height: 1.45;
+    padding: 0.5rem;
+    font-weight: 700;
+    border: 1px solid $grey;
+    background-color: $darkblue;
+    transition: background-color 0.15s ease;
+    @media (max-width: $pcBig) {
+        font-size: 0.75rem;
+    }
+    &.sort {
+        padding: 0;
+        &:hover {
+            background-color: rgba($darkblue, 0.92);
+        }
+    }
+}
+
+.wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    cursor: pointer;
+    padding: 0.5rem;
+}
