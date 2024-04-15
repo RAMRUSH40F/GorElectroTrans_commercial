@@ -27,7 +27,7 @@ beforeEach(() => {
     user = userEvent.setup();
 });
 
-test("should disaplay form", () => {
+test("should display form", () => {
     const scope = fork({
         values: new Map().set($activeOption, {
             label: "test_label",

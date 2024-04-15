@@ -14,7 +14,7 @@ import {
     $periodsOptions,
     activeOptionChanged,
     formSubmitted,
-} from "./model";
+} from "./model/model";
 
 import styles from "./styles.module.scss";
 
