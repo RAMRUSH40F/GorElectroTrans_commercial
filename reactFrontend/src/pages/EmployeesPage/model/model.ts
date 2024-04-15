@@ -46,7 +46,7 @@ export const paramsChanged = merge([
 ]);
 
 export const depIdChanged = domain.createEvent<string>();
-// #endregion
+// #end region
 
 // #region Stores
 export const $employees = domain.createStore<IEmployee[]>([]);
@@ -71,7 +71,7 @@ const $params = combine({
     size: $size,
     sort: $sort,
 });
-// #endregion
+// #end region
 
 export const getEmployeesFx = attach({
     effect: employeeApi.fetchFx,
@@ -215,7 +215,7 @@ sample({
     target: loadingEnded,
 });
 
-// Reset all stores when component unmountes
+// Reset all stores when component unmounts
 domain.onCreateStore(($store) => {
     $store.reset(pageClosed);
 });

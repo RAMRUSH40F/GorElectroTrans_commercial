@@ -7,7 +7,6 @@ import { DropdownOption } from "components/formElements/Dropdown";
 import { downloadFileFx } from "helpers/downloadFile";
 
 import reportApi from "shared/api/reportApi";
-import { downloadFileFx } from "helpers/downloadFile";
 
 import { $periods, modalClosed, modalOpened } from "../../model/model";
 
@@ -52,7 +51,7 @@ sample({
     target: getReportFx,
 });
 
-// When report was successfully fetched, donwload file
+// When report was successfully fetched, download file
 sample({
     clock: getReportFx.doneData,
     fn: ({ file, period }) => ({
@@ -62,7 +61,7 @@ sample({
     target: downloadFileFx,
 });
 
-// Reset all stores when component mountes and unmounts
+// Reset all stores when component mounts and unmounts
 domain.onCreateStore(($store) => {
     $store.reset(modalOpened, modalClosed, planGate.close);
 });
