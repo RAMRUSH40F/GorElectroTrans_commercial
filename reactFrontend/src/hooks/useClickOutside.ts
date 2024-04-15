@@ -3,7 +3,7 @@ import React from "react";
 const useClickOutside = <T extends HTMLElement = HTMLElement>(
     ref: React.RefObject<T>,
     handleClose: () => void,
-    eventOptions?: AddEventListenerOptions
+    eventOptions?: AddEventListenerOptions,
 ): void => {
     React.useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -12,8 +12,15 @@ const useClickOutside = <T extends HTMLElement = HTMLElement>(
             }
         };
 
-        document.addEventListener("click", handleClickOutside, { capture: true, ...eventOptions });
-        return () => document.removeEventListener("click", handleClickOutside, { capture: true, ...eventOptions });
+        document.addEventListener("click", handleClickOutside, {
+            capture: true,
+            ...eventOptions,
+        });
+        return () =>
+            document.removeEventListener("click", handleClickOutside, {
+                capture: true,
+                ...eventOptions,
+            });
     }, [handleClose, ref, eventOptions]);
 };
 

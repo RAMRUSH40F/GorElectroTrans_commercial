@@ -1,6 +1,6 @@
 import React from "react";
 
-import "./styles.scss";
+import styles from "./styles.module.scss";
 
 type Props = {
     children: React.ReactNode;
@@ -8,8 +8,8 @@ type Props = {
 
 const TableHead: React.FC<Props> = ({ children }) => {
     return (
-        <thead className="table-head">
-            <tr className="table-head__row">{children}</tr>
+        <thead>
+            <tr className={styles.headRow}>{children}</tr>
         </thead>
     );
 };

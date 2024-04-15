@@ -1,0 +1,68 @@
+@import "../../../assets/styles/mixins.scss";
+
+.label {
+    @media (max-width: $mobileMiddle) {
+        width: 100%;
+    }
+    &.mb {
+        margin-bottom: 0.6rem;
+    }
+}
+
+.textarea {
+    color: $lightblack;
+    width: 100%;
+    min-height: 100px;
+    margin-bottom: 2.5px;
+}
+
+.input {
+    color: $lightblack;
+    width: 100%;
+    margin-bottom: 2.5px;
+}
+
+.row {
+    display: flex;
+    gap: 0.6rem;
+    @media (max-width: $mobileMiddle) {
+        flex-wrap: wrap;
+    }
+    &.mb {
+        margin-bottom: 0.6rem;
+    }
+}
+
+.controls {
+    @include flex-center(1rem, space-between);
+    padding-top: 1rem;
+    margin-top: 1rem;
+    border-top: 1px solid $grey;
+    @media (max-width: $mobileSmall) {
+        flex-direction: column;
+        gap: 0.6rem;
+    }
+}
+
+.controlsWrapper {
+    @include flex-center(0.6rem, flex-end);
+    width: 100%;
+}
+
+.addBtn {
+    margin-left: auto;
+}
+
+.actionBtn {
+    @media (max-width: $mobileSmall) {
+        width: 100%;
+    }
+    &.materials {
+        @include flex-center(0.5rem);
+        svg {
+            height: 20px;
+            width: 20px;
+            fill: $white;
+        }
+    }
+}

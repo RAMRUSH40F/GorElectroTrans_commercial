@@ -1,22 +1,21 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { ROOT_ROUTE } from "../../constants/routesPathnames";
 
-import "./styles.scss";
+import { Link } from "react-router-dom";
+
+import { ROOT_ROUTE } from "components/Router/routesPathnames";
+
+import styles from "./styles.module.scss";
 
 const MissingPage: React.FC = () => {
     return (
-        <div className="missing-page">
-            <h1 className="missing-page__title">
-                <p className="missing-page__subtitle">Страница не найдена</p>
-                <p className="missing-page__subtitle">404</p>
+        <div className={styles.page}>
+            <h1 className={styles.title}>
+                <p>Страница не найдена</p>
+                <p>404</p>
             </h1>
-            <p className="missing-page__text">
+            <p className={styles.message}>
                 Может вы хотите перейти {""}
-                <Link to={ROOT_ROUTE.PATH} className="missing-page__link">
-                    на главную
-                </Link>
-                ?
+                <Link to={ROOT_ROUTE.PATH}>на главную</Link>?
             </p>
         </div>
     );

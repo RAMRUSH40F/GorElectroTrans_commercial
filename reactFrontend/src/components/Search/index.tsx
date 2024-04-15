@@ -1,39 +1,27 @@
-import React, { useState } from "react";
-import cn from "classnames";
-import Input from "../formElements/Input";
-import { useSearchParams } from "react-router-dom";
-import { useDeboucedCallback } from "../../hooks/useDebouncedCallback";
+import React, { ChangeEvent } from "react";
 
-import "./styles.scss";
+import cn from "classnames";
+
+import Input from "../formElements/Input";
+
+import styles from "./styles.module.scss";
 
 type Props = {
+    value?: string;
+    handleChange?: (event: ChangeEvent<HTMLInputElement>) => void;
     className?: string;
 };
 
-const Search: React.FC<Props> = ({ className }) => {
-    const [searchParams, setSearchParams] = useSearchParams();
-    const [value, setValue] = useState(searchParams.get("key") || "");
-
-    const debouncedSearch = useDeboucedCallback((value) => {
-        if (value) {
-            searchParams.set("page", String(1));
-            searchParams.set("key", value);
-        } else {
-            searchParams.delete("key");
-        }
-        setSearchParams(searchParams);
-    }, 250);
-
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        debouncedSearch(event.target.value);
-        setValue(event.target.value);
-    };
-
+const Search: React.FC<Props> = ({ value, handleChange, className }) => {
     return (
-        <div className={cn("search", className)}>
-            <Input className="search__input" value={value} onChange={handleChange} placeholder="Поиск" />
+        <div className={cn(styles.search, className)}>
+            <Input
+                value={value}
+                onChange={handleChange}
+                name="search"
+                placeholder="Поиск"
+            />
             <svg
-                className="search__icon"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 30 30"
                 width="30px"

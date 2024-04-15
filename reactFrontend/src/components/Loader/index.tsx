@@ -1,7 +1,8 @@
 import React from "react";
+
 import cn from "classnames";
 
-import "./styles.scss";
+import styles from "./styles.module.scss";
 
 type Props = {
     className?: string;
@@ -9,11 +10,12 @@ type Props = {
 
 const Loader: React.FC<Props> = ({ className }) => {
     return (
-        <div className={cn("loader", className)}>
+        <div className={cn(styles.loader, className)}>
             <div></div>
             <div></div>
             <div></div>
             <div></div>
+            <span className="visually-hidden">Загрузка</span>
         </div>
     );
 };

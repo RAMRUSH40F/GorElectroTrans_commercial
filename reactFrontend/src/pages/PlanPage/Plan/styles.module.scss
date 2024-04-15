@@ -1,0 +1,53 @@
+.wrapper {
+    overflow-x: auto;
+    margin-bottom: 1rem;
+}
+
+.table {
+    min-width: 40.625rem;
+    width: 100%;
+    margin-bottom: 1rem;
+    tbody.opacity {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+}
+
+.topicColumn {
+    min-width: 13.75rem;
+}
+
+.row.empty {
+    background-color: #eff6ff;
+    &:hover {
+        background-color: darken(#eff6ff, 2%);
+    }
+}
+
+.durationColumn {
+    max-width: 100px;
+}
+
+.peopleColumn {
+    max-width: 100px;
+}
+
+.dateCell {
+    white-space: nowrap;
+}
+
+.topicCell {
+    white-space: pre-line;
+}
+
+.nameCell {
+    min-width: 11rem;
+}
+
+.pagination {
+    justify-content: flex-end;
+}
+
+.loader {
+    margin: 2rem auto 0;
+}

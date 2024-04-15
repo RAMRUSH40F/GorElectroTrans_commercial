@@ -1,18 +1,21 @@
 import React from "react";
-import Header from "./Header";
+
 import { Outlet } from "react-router-dom";
-import Footer from "./Footer";
-import Container from "../../Container";
 import { ToastContainer } from "react-toastify";
 
-import "./styles.scss";
+import Container from "../../Container";
+
+import Footer from "./Footer";
+import Header from "./Header";
+
+import styles from "./styles.module.scss";
 
 const MainLayout: React.FC = () => {
     return (
-        <div className="main-layout">
+        <div className={styles.layout}>
             <ToastContainer />
             <Header />
-            <main className="main-layout__content">
+            <main>
                 <Container>
                     <Outlet />
                 </Container>

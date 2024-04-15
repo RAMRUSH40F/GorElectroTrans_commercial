@@ -1,7 +1,8 @@
 import React from "react";
+
 import cn from "classnames";
 
-import "./styles.scss";
+import styles from "./styles.module.scss";
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
     file?: File | null;
@@ -9,17 +10,38 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
     labelText?: string;
 }
 
-const InputFile: React.FC<Props> = ({ className, labelText, file, fileNameLabel, ...rest }) => {
+const InputFile: React.FC<Props> = ({
+    className,
+    labelText,
+    file,
+    fileNameLabel,
+    disabled,
+    ...rest
+}) => {
     return (
-        <div className={cn("input-file", className)}>
-            {labelText && <p className="input-file__label-text">{labelText}</p>}
-            <div className="input-file__wrapper">
-                <span className={cn("input-file__field", { "input-file__field--active": file || fileNameLabel })}>
+        <div className={className}>
+            {labelText && <p className={styles.text}>{labelText}</p>}
+            <div className={styles.wrapper}>
+                <span
+                    className={cn(
+                        styles.field,
+                        (file || fileNameLabel) && styles.active,
+                    )}
+                >
                     {file?.name ?? fileNameLabel ?? "Выберите файл"}
                 </span>
-                <label className="input-file__btn" onClick={(event) => event.stopPropagation()}>
+                <label
+                    className={cn(styles.label, disabled && styles.disabled)}
+                    onClick={(event) => event.stopPropagation()}
+                >
                     <span>Обзор...</span>
-                    <input className="visually-hidden" value={""} type="file" {...rest} />
+                    <input
+                        className="visually-hidden"
+                        value={""}
+                        type="file"
+                        disabled={disabled}
+                        {...rest}
+                    />
                 </label>
             </div>
         </div>

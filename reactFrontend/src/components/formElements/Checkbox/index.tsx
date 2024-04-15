@@ -1,7 +1,8 @@
 import React from "react";
+
 import cn from "classnames";
 
-import "./styles.scss";
+import styles from "./styles.module.scss";
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
     wrapperClassName?: string;
@@ -9,12 +10,24 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
     labelTextClassName?: string;
 }
 
-const Checkbox: React.FC<Props> = ({ wrapperClassName, labelText, labelTextClassName, checked, ...rest }) => {
+const Checkbox: React.FC<Props> = ({
+    wrapperClassName,
+    labelText,
+    labelTextClassName,
+    checked,
+    ...rest
+}) => {
     return (
-        <label className={cn("checkbox", wrapperClassName)}>
+        <label className={cn(styles.checkbox, wrapperClassName)}>
             <input className="visually-hidden" type="checkbox" {...rest} />
-            <span className={cn("checkbox__field", { "checkbox__field--checked": checked })}></span>
-            {labelText && <span className={cn("checkbox__label-text", labelTextClassName)}>{labelText}</span>}
+            <span
+                className={cn(styles.field, checked && styles.checked)}
+            ></span>
+            {labelText && (
+                <span className={cn(styles.text, labelTextClassName)}>
+                    {labelText}
+                </span>
+            )}
         </label>
     );
 };

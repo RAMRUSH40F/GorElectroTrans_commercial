@@ -1,7 +1,7 @@
-import React from "react";
+import { useEffect } from "react";
 
 const useLockedBody = (isLocked: boolean) => {
-    React.useEffect(() => {
+    useEffect(() => {
         if (isLocked) {
             document.body.classList.add("overflow");
         } else {
