@@ -38,7 +38,7 @@
         "prettier:check": "prettier --check \"**/*.{ts,tsx,json,css,md}\"",
         "prettier:fix": "prettier --write \"**/*.{ts,tsx,json,css,md}\"",
         "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-        "check": "tsc && npm run prettier && npm run lint",
+        "check": "tsc && npm run prettier:check && npm run lint",
         "eject": "react-scripts eject",
         "move-build": "XCOPY /Y /E build ..\\src\\main\\resources\\",
         "clean-old-build": "rmdir /s /q ..\\src\\main\\resources\\static ",
