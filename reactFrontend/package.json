@@ -41,8 +41,8 @@
         "check": "tsc && npm run prettier:check && npm run lint",
         "eject": "react-scripts eject",
         "move-build": "XCOPY /Y /E build ..\\src\\main\\resources\\",
-        "clean-old-build": "rmdir /s /q ..\\src\\main\\resources\\static ",
-        "postbuild": "npm run clean-old-build && npm run move-build"
+        "clean-old-build": "rmdir /s /q ..\\src\\main\\resources\\static",
+        "build-and-move": "npm run build && npm run clean-old-build && npm run move-build"
     },
     "eslintConfig": {
         "extends": [
