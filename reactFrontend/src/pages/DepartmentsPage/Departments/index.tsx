@@ -1,4 +1,8 @@
 import React from "react";
+
+import cn from "classnames";
+import { useUnit } from "effector-react";
+
 import Alert, { ALERT } from "components/Alert";
 import Loader from "components/Loader";
 import Table from "components/Table";
@@ -6,11 +10,10 @@ import TableBodyRow from "components/Table/TableBodyRow";
 import TableBodyCell from "components/Table/TableBodyRow/TableBodyCell";
 import TableHead from "components/Table/TableHead";
 import TableHeadCell from "components/Table/TableHead/TableHeadCell";
-import { $departments, $error, $isFetching, $isLoading } from "../model";
-import { useUnit } from "effector-react";
-import { modalOpened } from "../EditDepartment/model";
+
 import EditDepartment from "../EditDepartment";
-import cn from "classnames";
+import { modalOpened } from "../EditDepartment/model";
+import { $departments, $error, $isFetching, $isLoading } from "../model";
 
 import styles from "./styles.module.scss";
 

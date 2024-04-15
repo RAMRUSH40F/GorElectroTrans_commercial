@@ -1,13 +1,15 @@
-import { merge, attach, createDomain, sample } from "effector";
-import { debounce } from "patronum";
+import { attach, combine, createDomain, merge, sample } from "effector";
 import { createGate } from "effector-react";
-import { IEmployee } from "models/Employee";
-import employeeApi from "shared/api/employeesApi";
-import { AbortParams } from "shared/api/types";
+import { debounce } from "patronum";
+
 import { SortOrder } from "components/SortButton";
+
 import { transformSortToString } from "helpers/transformSortToString";
 
-// type Sort = Record<keyof Omit<IEmployee, "studentId">, SortOrder>;
+import { IEmployee } from "models/Employee";
+
+import employeeApi from "shared/api/employeesApi";
+import { AbortParams } from "shared/api/types";
 
 interface Sort {
     name: SortOrder;
@@ -24,6 +26,9 @@ export const employeesGate = createGate<GateProps>();
 const domain = createDomain();
 
 // #region Events
+export const pageLoaded = employeesGate.open;
+export const pageClosed = employeesGate.close;
+
 export const loadingStarted = domain.createEvent();
 export const loadingEnded = domain.createEvent();
 
@@ -31,8 +36,8 @@ export const searchChanged = domain.createEvent<string>();
 export const debouncedSearchChanged = domain.createEvent<string>();
 export const initialSearchChanged = domain.createEvent<string>();
 export const sortToggled = domain.createEvent<keyof Sort>();
-
 export const pageChanged = domain.createEvent<number>();
+
 export const paramsChanged = merge([
     debouncedSearchChanged,
     pageChanged,
@@ -49,6 +54,7 @@ export const $isLoading = domain.createStore<boolean>(false);
 export const $isFetching = domain.createStore<boolean>(false);
 export const $error = domain.createStore<string | null>(null);
 
+export const $depId = domain.createStore<string>("");
 export const $totalPages = domain.createStore<number>(0);
 export const $page = domain.createStore<number>(1);
 export const $size = domain.createStore<number>(20);
@@ -58,7 +64,13 @@ export const $sort = domain.createStore<Sort>({
     subdepartment: "disabled",
 });
 
-export const $depId = domain.createStore<string>("");
+const $params = combine({
+    depId: $depId,
+    search: $search,
+    page: $page,
+    size: $size,
+    sort: $sort,
+});
 // #endregion
 
 export const getEmployeesFx = attach({
@@ -93,56 +105,47 @@ export const removeEmployeeFx = attach({
     },
 });
 
-const fetchStarted = merge([
+export const fetchStarted = merge([
     getEmployeesFx.pending,
     addEmployeeFx.pending,
     updateEmployeeFx.pending,
     removeEmployeeFx.pending,
 ]);
 
-// Set department id when accessing page
+// Set department id when page was mounted
 sample({
-    clock: employeesGate.open,
-    source: employeesGate.state,
+    clock: pageLoaded,
     fn: ({ depId }) => depId,
     target: depIdChanged,
 });
 
-// Set search value from url search params when component is mounted
+// Set search value from url search params when page was mounted
 sample({
-    clock: employeesGate.open,
-    source: employeesGate.state,
+    clock: pageLoaded,
     fn: ({ search }) => search,
     filter: ({ search }) => search !== $search.defaultState,
     target: initialSearchChanged,
 });
 
-// Change search value after 250ms when user stopped typing
+// Change search value after 250ms from last searchChanged invocation
 debounce({
     source: searchChanged,
     target: debouncedSearchChanged,
     timeout: 250,
 });
 
-// Set page value from url search params when component is mounted
+// Set page value from url search params when page was mounted
 sample({
-    clock: employeesGate.open,
-    source: employeesGate.state,
+    clock: pageLoaded,
     fn: ({ page }) => page,
     filter: ({ page }) => page !== $page.defaultState,
     target: pageChanged,
 });
 
-// Fetch attendance data once when component is mounted
+// Fetch attendance data once when component was mounted
 sample({
-    clock: employeesGate.open,
-    source: {
-        depId: $depId,
-        page: $page,
-        size: $size,
-        search: $search,
-        sort: $sort,
-    },
+    clock: pageLoaded,
+    source: $params,
     fn: (params) => ({
         ...params,
         controller: new AbortController(),
@@ -157,7 +160,7 @@ sample({
 
 // Cancel fetch request when component is unmounted
 sample({
-    clock: employeesGate.close,
+    clock: pageClosed,
     source: getEmployeesFx,
 }).watch(({ controller }) => controller.abort());
 
@@ -181,13 +184,7 @@ sample({
 // // Fetch employees when search params were changed or employee was deleted or updated
 sample({
     clock: [paramsChanged, removeEmployeeFx.done, addEmployeeFx.done],
-    source: {
-        depId: $depId,
-        page: $page,
-        size: $size,
-        search: $search,
-        sort: $sort,
-    },
+    source: $params,
     filter: ({ depId }) => depId !== "",
     fn: (params) => ({
         ...params,
@@ -220,7 +217,7 @@ sample({
 
 // Reset all stores when component unmountes
 domain.onCreateStore(($store) => {
-    $store.reset(employeesGate.close);
+    $store.reset(pageClosed);
 });
 
 $isLoading.on(loadingStarted, () => true).on(loadingEnded, () => false);
@@ -230,7 +227,7 @@ $isFetching.on(fetchStarted, (_, pending) => pending);
 $error
     .on(getEmployeesFx, () => null)
     .on(getEmployeesFx.failData, (_, error) =>
-        error.isCanceled ? null : error.message
+        error.isCanceled ? null : error.message,
     );
 
 $employees
@@ -241,7 +238,7 @@ $employees
                 return { ...employee, ...data };
             }
             return employee;
-        })
+        }),
     );
 
 $totalPages.on(getEmployeesFx.doneData, (_, { totalPages }) => totalPages);

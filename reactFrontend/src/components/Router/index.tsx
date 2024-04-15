@@ -1,30 +1,35 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+
+import { Route, Routes } from "react-router-dom";
+
+import AttendancePage from "pages/AttendancePage";
+import DepartmentsPage from "pages/DepartmentsPage";
+import DivisionsPage from "pages/DivisionsPage";
+import EmployeesPage from "pages/EmployeesPage";
+import LoginPage from "pages/LoginPage";
+import MissingPage from "pages/MissingPage";
+import PlanPage from "pages/PlanPage";
+import UnauthorizedPage from "pages/UnauthorizedPage";
+
+import { ROLES } from "shared/auth";
+
+import MainLayout from "../layouts/MainLayout";
+import MenuLayout from "../layouts/MenuLayout";
+
+import HomeRoute from "./HomeRoute";
+import ProtectedDepartmentRoute from "./ProtectedDepartmentRoute";
+import RoleProtectedRoute from "./RoleProtectedRoute";
 import {
     ATTENDANCE_ROUTE,
     DEPARTMENTS_ROUTE,
     DIVISIONS_ROUTE,
-    ROOT_ROUTE,
     EMPLOYEES_ROUTE,
-    WORK_PLAN_ROUTE,
-    UNAUTHORIZED_ROUTE,
-    MISSING_ROUTE,
     LOGIN_ROUTE,
+    MISSING_ROUTE,
+    ROOT_ROUTE,
+    UNAUTHORIZED_ROUTE,
+    WORK_PLAN_ROUTE,
 } from "./routesPathnames";
-import AttendancePage from "pages/AttendancePage";
-import DepartmentsPage from "pages/DepartmentsPage";
-import DivisionsPage from "pages/DivisionsPage";
-import LoginPage from "pages/LoginPage";
-import EmployeesPage from "pages/EmployeesPage";
-import PlanPage from "pages/PlanPage";
-import MainLayout from "../layouts/MainLayout";
-import MenuLayout from "../layouts/MenuLayout";
-import RoleProtectedRoute from "./RoleProtectedRoute";
-import { ROLES } from "shared/auth";
-import ProtectedDepartmentRoute from "./ProtectedDepartmentRoute";
-import MissingPage from "pages/MissingPage";
-import UnauthorizedPage from "pages/UnauthorizedPage";
-import HomeRoute from "./HomeRoute";
 
 const Router: React.FC = () => {
     return (

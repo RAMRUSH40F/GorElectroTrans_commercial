@@ -1,11 +1,13 @@
 import { attach, createDomain, sample } from "effector";
-import { $depId, planGate } from "../model";
+
 import reportApi from "shared/api/reportApi";
-import { IReportPeriod } from "./PlanReportForm/model";
+
+import { IReportPeriod } from "../PlanReportForm/model/model";
+
+import { $depId, planGate } from "../../model";
 
 const domain = createDomain();
 
-export const errorReset = domain.createEvent();
 export const modalOpened = domain.createEvent();
 export const modalClosed = domain.createEvent();
 
@@ -14,7 +16,7 @@ export const $isLoading = domain.createStore<boolean>(true);
 export const $periodsError = domain.createStore<string | null>(null);
 export const $isModalActive = domain.createStore<boolean>(false);
 
-const getPeriodsFx = attach({ effect: reportApi.fetchPeriodsFx });
+export const getPeriodsFx = attach({ effect: reportApi.fetchPeriodsFx });
 
 // Fetch periods when modal window opens
 sample({
@@ -42,7 +44,7 @@ $isLoading.on(getPeriodsFx.pending, (_, pending) => pending);
 $periods.on(getPeriodsFx.doneData, (_, data) => data);
 
 $periodsError.on(getPeriodsFx.failData, (_, { isCanceled, message }) =>
-    isCanceled ? null : message
+    isCanceled ? null : message,
 );
 
 $isModalActive.on(modalOpened, () => true).on(modalClosed, () => false);

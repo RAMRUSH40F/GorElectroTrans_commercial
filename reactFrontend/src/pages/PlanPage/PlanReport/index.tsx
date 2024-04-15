@@ -1,15 +1,20 @@
 import React, { useRef } from "react";
+
+import { useUnit } from "effector-react";
+
+import PlanReportForm from "pages/PlanPage/PlanReport/PlanReportForm";
+
 import ActionButton from "components/ActionButton";
+import Alert, { ALERT } from "components/Alert";
+import Loader from "components/Loader";
+import ModalLayout from "components/ModalLayout";
+import ModalContent from "components/ModalLayout/ModalContent";
+import ModalHeader from "components/ModalLayout/ModalHeader";
+
 import useClickOutside from "hooks/useClickOutside";
 import useEscape from "hooks/useEscape";
 import useLockedBody from "hooks/useLockedBody";
-import ModalLayout from "components/ModalLayout";
-import ModalHeader from "components/ModalLayout/ModalHeader";
-import ModalContent from "components/ModalLayout/ModalContent";
-import PlanReportForm from "pages/PlanPage/PlanReport/PlanReportForm";
-import Alert, { ALERT } from "components/Alert";
-import Loader from "components/Loader";
-import { useUnit } from "effector-react";
+
 import {
     $isLoading,
     $isModalActive,

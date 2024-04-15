@@ -1,13 +1,14 @@
 import React from "react";
+
+import cn from "classnames";
+import ruLocalization from "date-fns/locale/ru";
 import DatePicker, {
     ReactDatePickerProps,
     registerLocale,
 } from "react-datepicker";
-import ruLocalization from "date-fns/locale/ru";
-import cn from "classnames";
 
-import "react-datepicker/dist/react-datepicker.css";
 import styles from "./styles.module.scss";
+import "react-datepicker/dist/react-datepicker.css";
 
 registerLocale("ru", ruLocalization);
 

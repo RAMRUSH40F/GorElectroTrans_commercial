@@ -1,8 +1,10 @@
-import { createEffect } from "effector";
-import { authRequestFx } from "..";
 import { isCancel } from "axios";
-import { ApiError, AuthError, DepParams } from "../types";
+import { createEffect } from "effector";
+
 import { IMaterial } from "models/Plan";
+
+import { authRequestFx } from "..";
+import { ApiError, AuthError, DepParams } from "../types";
 
 export const deleteFx = createEffect<DepParams<IMaterial>, IMaterial, ApiError>(
     async ({ depId, data, controller }) => {
@@ -28,5 +30,5 @@ export const deleteFx = createEffect<DepParams<IMaterial>, IMaterial, ApiError>(
                 throw customError;
             }
         }
-    }
+    },
 );

@@ -1,6 +1,8 @@
 import React, { useRef, useState } from "react";
-import useClickOutside from "../../../hooks/useClickOutside";
+
 import cn from "classnames";
+
+import useClickOutside from "../../../hooks/useClickOutside";
 
 import styles from "./styles.module.scss";
 
@@ -42,10 +44,11 @@ const Dropdown: React.FC<SelectProps> = ({
             className={cn(
                 styles.select,
                 disabled && styles.disabled,
-                className
+                className,
             )}
             ref={selectRef}
         >
+            <select className="visually-hidden" disabled={disabled}></select>
             <div
                 className={cn(styles.header, isOpen && styles.open)}
                 onClick={() => setIsOpen(!isOpen)}
@@ -60,7 +63,7 @@ const Dropdown: React.FC<SelectProps> = ({
                     <li
                         className={cn(
                             styles.option,
-                            option.label === selected && styles.selected
+                            option.label === selected && styles.selected,
                         )}
                         key={option.value}
                         onClick={() => handleSelect(option)}

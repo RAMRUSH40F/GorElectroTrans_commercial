@@ -1,17 +1,22 @@
 import React, { useRef } from "react";
+
+import { Formik } from "formik";
+
+import ActionButton from "components/ActionButton";
+import Dropdown, { DropdownOption } from "components/formElements/Dropdown";
+import FormErrorMessage from "components/formElements/FormErrorMessage";
+import InputNumber from "components/formElements/InputNumber";
 import Label from "components/formElements/Label";
+
+import useFocus from "hooks/useFocus";
+
 import {
     ATTENDACE_RESULT_VALUE,
     ATTENDANCE_RESULT,
     AttendanceDto,
 } from "models/Attendance";
-import useFocus from "hooks/useFocus";
-import { Formik } from "formik";
-import FormErrorMessage from "components/formElements/FormErrorMessage";
-import ActionButton from "components/ActionButton";
+
 import { attendanceFormScheme } from "./attendanceFormSheme";
-import InputNumber from "components/formElements/InputNumber";
-import Dropdown, { DropdownOption } from "components/formElements/Dropdown";
 
 import styles from "./styles.module.scss";
 
@@ -56,7 +61,7 @@ const AttendanceForm: React.FC<Props> = ({
         if (attendance) {
             return (
                 options.find(
-                    (option) => option.value === String(attendance.success)
+                    (option) => option.value === String(attendance.success),
                 ) ?? options[0]
             );
         }

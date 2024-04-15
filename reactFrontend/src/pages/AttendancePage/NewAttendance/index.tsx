@@ -1,24 +1,31 @@
 import React, { useRef } from "react";
-import useLockedBody from "hooks/useLockedBody";
-import ActionButton from "components/ActionButton";
-import ModalLayout from "components/ModalLayout";
-import ModalHeader from "components/ModalLayout/ModalHeader";
-import ModalContent from "components/ModalLayout/ModalContent";
-import Alert, { ALERT } from "components/Alert";
+
+import { useUnit } from "effector-react";
+
 import AttendanceForm, {
     AttendanceFormState,
 } from "pages/AttendancePage/AttendanceForm";
-import { useUnit } from "effector-react";
+
+import ActionButton from "components/ActionButton";
+import Alert, { ALERT } from "components/Alert";
+import ModalLayout from "components/ModalLayout";
+import ModalContent from "components/ModalLayout/ModalContent";
+import ModalHeader from "components/ModalLayout/ModalHeader";
+
 import useClickOutside from "hooks/useClickOutside";
 import useEscape from "hooks/useEscape";
+import useLockedBody from "hooks/useLockedBody";
+
 import { AttendanceDto } from "models/Attendance";
+
 import { addAttendanceFx } from "../model";
+
 import {
+    $error,
     $isModalActive,
     errorReset,
     modalClosed,
     modalOpened,
-    $error,
 } from "./model";
 
 import styles from "./styles.module.scss";

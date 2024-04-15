@@ -1,4 +1,5 @@
 import React from "react";
+
 import cn from "classnames";
 
 import styles from "./styles.module.scss";
@@ -14,6 +15,7 @@ const Loader: React.FC<Props> = ({ className }) => {
             <div></div>
             <div></div>
             <div></div>
+            <span className="visually-hidden">Загрузка</span>
         </div>
     );
 };

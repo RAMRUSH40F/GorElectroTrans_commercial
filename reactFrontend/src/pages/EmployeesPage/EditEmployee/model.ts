@@ -1,14 +1,18 @@
 import { attach, createDomain, sample } from "effector";
+
+import { NOTICE, showNoticeFx } from "helpers/notice";
+
+import { IDepartment } from "models/Department";
+import { IEmployee } from "models/Employee";
+
+import departmentApi from "shared/api/departmentsApi";
+
 import {
     $depId,
-    employeesGate,
+    pageClosed,
     removeEmployeeFx,
     updateEmployeeFx,
-} from "../model";
-import { NOTICE, showNoticeFx } from "helpers/notice";
-import { IEmployee } from "models/Employee";
-import { IDepartment } from "models/Department";
-import departmentApi from "shared/api/departmentsApi";
+} from "../model/model";
 
 const domain = createDomain();
 
@@ -78,7 +82,7 @@ sample({
 
 // Cancel delete request when modal was closed
 sample({
-    clock: employeesGate.close,
+    clock: pageClosed,
     source: removeEmployeeFx,
 }).watch(({ controller }) => {
     controller.abort();
@@ -96,7 +100,7 @@ sample({
 
 // Cancel update request when modal was closed
 sample({
-    clock: employeesGate.close,
+    clock: pageClosed,
     source: updateEmployeeFx,
 }).watch(({ controller }) => {
     controller.abort();
@@ -111,7 +115,7 @@ sample({
 
 // Reset all stores when component unmountes
 domain.onCreateStore(($store) => {
-    $store.reset(employeesGate.close, modalClosed, modalOpened);
+    $store.reset(pageClosed, modalClosed, modalOpened);
 });
 
 $isLoading.on(getDepartmentsFx.pending, (_, pending) => pending);
@@ -119,12 +123,12 @@ $isLoading.on(getDepartmentsFx.pending, (_, pending) => pending);
 $departments.on(getDepartmentsFx.doneData, (_, data) => data);
 
 $depError.on(getDepartmentsFx.failData, (_, { isCanceled, message }) =>
-    isCanceled ? null : message
+    isCanceled ? null : message,
 );
 
 $error
     .on([updateEmployeeFx.failData, removeEmployeeFx.failData], (_, error) =>
-        error.isCanceled ? null : error.message
+        error.isCanceled ? null : error.message,
     )
     .reset(errorReset, updateEmployeeFx, removeEmployeeFx);
 

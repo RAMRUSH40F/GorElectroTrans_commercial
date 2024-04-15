@@ -1,7 +1,9 @@
-import { createEffect } from "effector";
-import { AttendanceDto } from "models/Attendance";
-import { authRequestFx } from "..";
 import { isCancel } from "axios";
+import { createEffect } from "effector";
+
+import { AttendanceDto } from "models/Attendance";
+
+import { authRequestFx } from "..";
 import { ApiError, AuthError, DepParams } from "../types";
 
 export const putFx = createEffect<

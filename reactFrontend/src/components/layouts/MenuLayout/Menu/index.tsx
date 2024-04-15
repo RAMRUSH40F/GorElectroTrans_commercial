@@ -1,12 +1,9 @@
 import React from "react";
-import { Link, useLocation, useParams } from "react-router-dom";
-import scheduleIconSrc from "assets/img/nav/schedule-icon.svg";
-import checklistIconSrc from "assets/img/nav/checklist-icon.svg";
-import buildingIconSrc from "assets/img/nav/building-icon.svg";
-import workerIconSrc from "assets/img/nav/worker.svg";
-import CheckAccess from "components/CheckAccess";
-import { ROLES } from "shared/auth";
+
 import cn from "classnames";
+import { Link, useLocation, useParams } from "react-router-dom";
+
+import CheckAccess from "components/CheckAccess";
 import {
     ATTENDANCE_ROUTE,
     DEPARTMENTS_ROUTE,
@@ -14,6 +11,13 @@ import {
     EMPLOYEES_ROUTE,
     WORK_PLAN_ROUTE,
 } from "components/Router/routesPathnames";
+
+import buildingIconSrc from "assets/img/nav/building-icon.svg";
+import checklistIconSrc from "assets/img/nav/checklist-icon.svg";
+import scheduleIconSrc from "assets/img/nav/schedule-icon.svg";
+import workerIconSrc from "assets/img/nav/worker.svg";
+
+import { ROLES } from "shared/auth";
 
 import styles from "./styles.module.scss";
 
@@ -65,7 +69,7 @@ const Menu: React.FC<Props> = ({ className }) => {
                     >
                         <Link
                             className={cn(
-                                activeLink === link.path && styles.active
+                                activeLink === link.path && styles.active,
                             )}
                             to={link.path}
                         >

@@ -1,4 +1,5 @@
 import React from "react";
+
 import cn from "classnames";
 
 import styles from "./styles.module.scss";
@@ -14,7 +15,7 @@ const Input = React.forwardRef<HTMLInputElement, Props>(
                 ref={ref}
             />
         );
-    }
+    },
 );
 
 export default Input;

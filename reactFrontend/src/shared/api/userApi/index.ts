@@ -1,6 +1,6 @@
 import { loginFx } from "./login";
-import { refreshFx } from "./refresh";
 import { logoutFx } from "./logout";
+import { refreshFx } from "./refresh";
 
 const userApi = { loginFx, refreshFx, logoutFx };
 

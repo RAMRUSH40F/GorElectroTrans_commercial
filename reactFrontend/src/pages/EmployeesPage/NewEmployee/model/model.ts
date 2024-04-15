@@ -1,8 +1,12 @@
 import { attach, createDomain, sample } from "effector";
+
 import { NOTICE, showNoticeFx } from "helpers/notice";
-import { $depId, addEmployeeFx, employeesGate } from "../model";
+
 import { IDepartment } from "models/Department";
+
 import departmentApi from "shared/api/departmentsApi";
+
+import { $depId, addEmployeeFx, pageClosed } from "../../model/model";
 
 const domain = createDomain();
 
@@ -16,7 +20,7 @@ export const $depError = domain.createStore<string | null>(null);
 export const $error = domain.createStore<string | null>(null);
 export const $isModalActive = domain.createStore(false);
 
-const getDepartmentsFx = attach({ effect: departmentApi.fetchFx });
+export const getDepartmentsFx = attach({ effect: departmentApi.fetchFx });
 
 // Fetch departments when modal window opens
 sample({
@@ -43,7 +47,7 @@ sample({
 
 // Cancel update request when employees page was closed
 sample({
-    clock: employeesGate.close,
+    clock: pageClosed,
     source: addEmployeeFx,
 }).watch(({ controller }) => {
     controller.abort();
@@ -51,7 +55,7 @@ sample({
 
 // Reset all stores when component mountes and unmounts
 domain.onCreateStore(($store) => {
-    $store.reset(modalOpened, modalClosed, employeesGate.close);
+    $store.reset(modalOpened, modalClosed, pageClosed);
 });
 
 $isLoading.on(getDepartmentsFx.pending, (_, pending) => pending);
@@ -60,13 +64,13 @@ $departments.on(getDepartmentsFx.doneData, (_, data) => data);
 
 $depError
     .on(getDepartmentsFx.failData, (_, { message, isCanceled }) =>
-        isCanceled ? null : message
+        isCanceled ? null : message,
     )
     .reset(modalClosed);
 
 $error
     .on(addEmployeeFx.failData, (_, error) =>
-        error.isCanceled ? null : error.message
+        error.isCanceled ? null : error.message,
     )
     .reset(errorReset, addEmployeeFx, modalClosed);
 

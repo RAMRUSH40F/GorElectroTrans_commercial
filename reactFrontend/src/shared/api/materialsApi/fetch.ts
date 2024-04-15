@@ -1,6 +1,7 @@
-import { createEffect } from "effector";
-import { authRequestFx } from "..";
 import { isCancel } from "axios";
+import { createEffect } from "effector";
+
+import { authRequestFx } from "..";
 import { ApiError, AuthError, DepParams } from "../types";
 
 interface DownloadResponse {

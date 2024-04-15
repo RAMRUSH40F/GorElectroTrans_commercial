@@ -1,8 +1,10 @@
-import { createEffect } from "effector";
-import { authRequestFx } from "..";
 import { isCancel } from "axios";
-import { ApiError, AuthError, DepParams } from "../types";
+import { createEffect } from "effector";
+
 import { IPlan, PlanDto } from "models/Plan";
+
+import { authRequestFx } from "..";
+import { ApiError, AuthError, DepParams } from "../types";
 
 export const postFx = createEffect<DepParams<PlanDto>, IPlan, ApiError>(
     async ({ depId, data, controller }) => {
@@ -30,5 +32,5 @@ export const postFx = createEffect<DepParams<PlanDto>, IPlan, ApiError>(
                 throw customError;
             }
         }
-    }
+    },
 );

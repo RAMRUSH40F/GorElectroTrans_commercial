@@ -1,9 +1,15 @@
-import { DropdownOption } from "components/formElements/Dropdown";
 import { attach, createDomain, sample } from "effector";
-import { $periods, modalClosed, modalOpened } from "../model";
+
 import { $depId, planGate } from "pages/PlanPage/model";
+
+import { DropdownOption } from "components/formElements/Dropdown";
+
+import { downloadFileFx } from "helpers/downloadFile";
+
 import reportApi from "shared/api/reportApi";
 import { downloadFileFx } from "helpers/downloadFile";
+
+import { $periods, modalClosed, modalOpened } from "../../model/model";
 
 export interface IReportPeriod {
     year: number;
@@ -22,18 +28,18 @@ export const formSubmitted = domain.createEvent();
 
 export const $periodsOptions = domain.createStore<DropdownOption[]>([]);
 export const $activeOption = domain.createStore<DropdownOption | null>(null);
-const $activePeriod = domain.createStore<IReportPeriod | null>(null);
+export const $activePeriod = domain.createStore<IReportPeriod | null>(null);
 export const $isSubmitting = domain.createStore<boolean>(false);
 export const $error = domain.createStore<string | null>(null);
 
-const getReportFx = attach({ effect: reportApi.fetchFx });
+export const getReportFx = attach({ effect: reportApi.fetchFx });
 
 // Fetch report when form submits
 sample({
     clock: formSubmitted,
     source: { period: $activePeriod, depId: $depId },
     filter: (
-        source: SubmitSource
+        source: SubmitSource,
     ): source is { depId: string; period: IReportPeriod } =>
         source.period !== null,
     fn: ({ depId, period }) => ({
@@ -65,7 +71,7 @@ $periodsOptions.on($periods, (_, periods) =>
     periods.map(({ quoter, year }) => ({
         label: `Год: ${year}, квартал: ${quoter}`,
         value: `${quoter},${year}`,
-    }))
+    })),
 );
 
 $activeOption.on($periodsOptions, (_, options) => options[0]);

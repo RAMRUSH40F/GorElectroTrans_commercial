@@ -1,19 +1,23 @@
 import React, { useRef } from "react";
+
 import { useUnit } from "effector-react";
-import Confirm from "components/Comfirm";
+
 import Alert, { ALERT } from "components/Alert";
+import Confirm from "components/Comfirm";
 import Loader from "components/Loader";
 import ModalLayout from "components/ModalLayout";
-import ModalHeader from "components/ModalLayout/ModalHeader";
 import ModalContent from "components/ModalLayout/ModalContent";
-import EmployeeForm, {
-    EmployeeFormState,
-} from "pages/EmployeesPage/EmployeeForm";
+import ModalHeader from "components/ModalLayout/ModalHeader";
+
 import useClickOutside from "hooks/useClickOutside";
 import useEscape from "hooks/useEscape";
 import useLockedBody from "hooks/useLockedBody";
+
 import { IEmployee } from "models/Employee";
-import { updateEmployeeFx } from "../model";
+
+import EmployeeForm, { EmployeeFormState } from "../EmployeeForm";
+import { updateEmployeeFx } from "../model/model";
+
 import {
     $depError,
     $departments,
@@ -21,8 +25,8 @@ import {
     $error,
     $isConfirming,
     $isDisabled,
-    $isModalActive,
     $isLoading,
+    $isModalActive,
     confirmButtonClicked,
     confirmingClosed,
     errorReset,

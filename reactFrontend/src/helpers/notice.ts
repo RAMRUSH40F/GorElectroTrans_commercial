@@ -1,5 +1,5 @@
-import { toast, ToastOptions } from "react-toastify";
 import { createEffect } from "effector";
+import { ToastOptions, toast } from "react-toastify";
 
 export enum NOTICE {
     SUCCESS = "success",
@@ -34,5 +34,5 @@ export const showNoticeFx = createEffect<NoticeParams, void, Error>(
             default:
                 break;
         }
-    }
+    },
 );

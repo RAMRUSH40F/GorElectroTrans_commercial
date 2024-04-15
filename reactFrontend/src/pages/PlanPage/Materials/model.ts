@@ -1,11 +1,16 @@
 import { ChangeEvent } from "react";
+
 import { attach, createDomain, sample } from "effector";
-import materialApi from "shared/api/materialsApi";
-import { $depId, planFileAdded, planFileRemoved } from "../model";
-import { AbortParams } from "shared/api/types";
-import { NOTICE, showNoticeFx } from "helpers/notice";
-import { IMaterial } from "models/Plan";
+
 import { downloadFileFx } from "helpers/downloadFile";
+import { NOTICE, showNoticeFx } from "helpers/notice";
+
+import { IMaterial } from "models/Plan";
+
+import materialApi from "shared/api/materialsApi";
+import { AbortParams } from "shared/api/types";
+
+import { $depId, planFileAdded, planFileRemoved } from "../model";
 
 const domain = createDomain();
 
@@ -70,7 +75,7 @@ export const addFileFx = attach({
     source: { depId: $depId, lessonId: $lessonId },
     mapParams(
         { data, controller }: AbortParams<FormData>,
-        { depId, lessonId }
+        { depId, lessonId },
     ) {
         return { depId, data, controller, lessonId };
     },
@@ -222,7 +227,7 @@ $fileNames
     .on(modalOpened, (_, { fileNames }) => fileNames)
     .on(addFileFx.doneData, (fileNames, data) => [data.fileName, ...fileNames])
     .on(removeFileFx.doneData, (fileNames, { fileName }) =>
-        fileNames.filter((currFileName) => currFileName !== fileName)
+        fileNames.filter((currFileName) => currFileName !== fileName),
     );
 
 $lessonId.on(modalOpened, (_, { lessonId }) => lessonId);
@@ -233,7 +238,7 @@ $fileLoaders
         fileName,
     ])
     .on([downloadFileFx.doneData, removeLoader], (loaders, fileName) =>
-        loaders.filter((name) => name !== fileName)
+        loaders.filter((name) => name !== fileName),
     );
 
 $file
@@ -254,7 +259,7 @@ $error
     .on(checkIsExistingFx.failData, (_, error) => error.message)
     .on(
         [addFileFx.failData, fetchFileFx.failData, removeFileFx.failData],
-        (_, { message, isCanceled }) => (isCanceled ? null : message)
+        (_, { message, isCanceled }) => (isCanceled ? null : message),
     )
     .reset([
         errorReset,
