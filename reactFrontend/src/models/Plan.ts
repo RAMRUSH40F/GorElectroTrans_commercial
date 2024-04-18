@@ -24,5 +24,5 @@ export enum PLAN_STATUS {
 
 export const PLAN_STATUS_VALUE: { [key in PLAN_STATUS]: string } = {
     [PLAN_STATUS.HELD]: "Проведено",
-    [PLAN_STATUS.SCHEDULED]: "Запланированно",
+    [PLAN_STATUS.SCHEDULED]: "Запланировано",
 };
