@@ -24,7 +24,7 @@ import { planFormScheme } from "./planFormScheme";
 
 import styles from "./styles.module.scss";
 
-const teacherOptions: DropdownOption[] = [
+export const teacherOptions: DropdownOption[] = [
     { label: "Руководитель/зам.руководителя", value: "post-1" },
     { label: "Ст. мастер/мастер", value: "post-2" },
     { label: "Наставник", value: "post-3" },
@@ -34,7 +34,7 @@ const teacherOptions: DropdownOption[] = [
 
 export type StatusDropdownOption = DropdownOption<PLAN_STATUS, string>;
 
-const statusOptions: StatusDropdownOption[] = [
+export const statusOptions: StatusDropdownOption[] = [
     {
         label: PLAN_STATUS_VALUE[PLAN_STATUS.PLANNED],
         value: PLAN_STATUS.PLANNED,
@@ -159,6 +159,7 @@ const PlanForm: FC<Props> = ({
                     onSubmit={handleSubmit}
                     className="plan-form"
                     onChange={clearError}
+                    aria-label="Рабочий план"
                 >
                     <Label
                         className={cn(styles.label, styles.mb)}
@@ -266,6 +267,7 @@ const PlanForm: FC<Props> = ({
                         text="Должность преподавателя"
                     >
                         <Dropdown
+                            name="teacher"
                             options={teacherOptions}
                             initialOption={values.teacherPost}
                             onChange={(option) => {
