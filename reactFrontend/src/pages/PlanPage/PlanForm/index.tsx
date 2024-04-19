@@ -31,14 +31,25 @@ const teacherOptions: DropdownOption[] = [
     { label: "Специалист по техническому обучению", value: "post-4" },
     { label: "Другое", value: "post-5" },
 ];
-const statusOptions: DropdownOption[] = [
+
+export type StatusDropdownOption = DropdownOption<PLAN_STATUS, string>;
+
+const statusOptions: StatusDropdownOption[] = [
     {
-        label: PLAN_STATUS_VALUE[PLAN_STATUS.SCHEDULED],
-        value: String(PLAN_STATUS.SCHEDULED),
+        label: PLAN_STATUS_VALUE[PLAN_STATUS.PLANNED],
+        value: PLAN_STATUS.PLANNED,
     },
     {
         label: PLAN_STATUS_VALUE[PLAN_STATUS.HELD],
-        value: String(PLAN_STATUS.HELD),
+        value: PLAN_STATUS.HELD,
+    },
+    {
+        label: PLAN_STATUS_VALUE[PLAN_STATUS.RESCHEDULED],
+        value: PLAN_STATUS.RESCHEDULED,
+    },
+    {
+        label: PLAN_STATUS_VALUE[PLAN_STATUS.CANCELLED],
+        value: PLAN_STATUS.CANCELLED,
     },
 ];
 
@@ -57,7 +68,8 @@ export type PlanFormValues = {
     teacher: string;
     topic: string;
     teacherPost: DropdownOption;
-    status: DropdownOption;
+    status: StatusDropdownOption;
+    comment: string | null;
 };
 
 const PlanForm: FC<Props> = ({
@@ -84,14 +96,14 @@ const PlanForm: FC<Props> = ({
         return teacherOptions[0];
     };
 
-    const getInitialStatusOption = (): DropdownOption => {
+    const getInitialStatusOption = (): StatusDropdownOption => {
         if (plan) {
             return (
-                statusOptions.find(
-                    (option) => !!parseInt(option.value) === plan.isHeld,
-                ) ?? statusOptions[0]
+                statusOptions.find((option) => option.value === plan.status) ??
+                statusOptions[0]
             );
         }
+
         return statusOptions[0];
     };
 
@@ -103,6 +115,7 @@ const PlanForm: FC<Props> = ({
         topic: plan?.topic ?? "",
         teacherPost: getInitialTeacherPostOption(),
         status: getInitialStatusOption(),
+        comment: plan?.comment ?? null,
     };
 
     const handleOpenMaterials = (
@@ -119,6 +132,11 @@ const PlanForm: FC<Props> = ({
         movedToConfirm();
     };
 
+    const isCommentRequired = (status: PLAN_STATUS) =>
+        [PLAN_STATUS.RESCHEDULED, PLAN_STATUS.CANCELLED].some(
+            (value) => value === status,
+        );
+
     return (
         <Formik
             initialValues={initialState}
@@ -134,6 +152,8 @@ const PlanForm: FC<Props> = ({
                 touched,
                 isSubmitting,
                 setFieldValue,
+                setFieldError,
+                setTouched,
             }) => (
                 <form
                     onSubmit={handleSubmit}
@@ -256,17 +276,50 @@ const PlanForm: FC<Props> = ({
                         />
                     </Label>
                     {isEditing && (
-                        <Label className={styles.label} text="Статус занятия">
-                            <Dropdown
-                                options={statusOptions}
-                                initialOption={values.status}
-                                onChange={(option) => {
-                                    setFieldValue("status", option);
-                                    clearError && clearError();
-                                }}
-                                disabled={isSubmitting || isDisabled}
-                            />
-                        </Label>
+                        <>
+                            <Label
+                                className={cn(styles.label, styles.mb)}
+                                text="Статус занятия"
+                            >
+                                <Dropdown
+                                    options={statusOptions}
+                                    initialOption={values.status}
+                                    onChange={(
+                                        option: StatusDropdownOption,
+                                    ) => {
+                                        setFieldValue("status", option);
+                                        if (!isCommentRequired(option.value)) {
+                                            setFieldValue("comment", null);
+                                            setFieldError("comment", undefined);
+                                            setTouched({ comment: false });
+                                        }
+                                        clearError && clearError();
+                                    }}
+                                    disabled={isSubmitting || isDisabled}
+                                />
+                            </Label>
+                            {isCommentRequired(values.status.value) && (
+                                <Label
+                                    className={styles.label}
+                                    text="Комментарий"
+                                >
+                                    <Textarea
+                                        className={styles.textarea}
+                                        name="comment"
+                                        onBlur={handleBlur}
+                                        onChange={handleChange}
+                                        value={values.comment ?? ""}
+                                        disabled={isSubmitting || isDisabled}
+                                        placeholder="Укажите причину..."
+                                    />
+                                    {errors.comment && touched.comment && (
+                                        <FormErrorMessage>
+                                            {errors.comment}
+                                        </FormErrorMessage>
+                                    )}
+                                </Label>
+                            )}
+                        </>
                     )}
                     <div className={styles.controls}>
                         {plan ? (
