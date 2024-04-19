@@ -1,39 +1,53 @@
 import React, { useRef, useState } from "react";
 
 import cn from "classnames";
+import { EnumType } from "typescript";
 
 import useClickOutside from "../../../hooks/useClickOutside";
 
 import styles from "./styles.module.scss";
 
-export interface DropdownOption {
-    label: string;
-    value: string;
+type DropdownValue = string | number | EnumType;
+type DropdownLabel = string | number;
+
+export interface DropdownOption<
+    V extends DropdownValue = string,
+    L extends DropdownLabel = string,
+> {
+    label: L;
+    value: V;
 }
 
-type SelectProps = {
-    options: DropdownOption[];
-    initialOption: DropdownOption;
-    onChange: (option: DropdownOption) => void;
+type SelectProps<
+    V extends DropdownValue = string,
+    L extends DropdownLabel = string,
+> = {
+    options: DropdownOption<V, L>[];
+    initialOption: DropdownOption<V, L>;
+    onChange: (option: DropdownOption<V, L>) => void;
     placeholder?: string;
     className?: string;
     disabled?: boolean;
 };
 
-const Dropdown: React.FC<SelectProps> = ({
+const Dropdown = <V extends DropdownValue, L extends DropdownLabel>({
     initialOption,
     options,
     placeholder,
     onChange,
     className,
     disabled,
-}) => {
+}: SelectProps<V, L>) => {
     const [isOpen, setIsOpen] = useState(false);
-    const [selected, setSelected] = useState<string>(initialOption.label);
+    const [selected, setSelected] = useState<DropdownLabel>(
+        initialOption.label,
+    );
     const selectRef = useRef<HTMLDivElement | null>(null);
     useClickOutside(selectRef, () => setIsOpen(false));
 
-    const handleSelect = (option: DropdownOption) => {
+    const handleSelect = (
+        option: DropdownOption<V, L>,
+    ) => {
         setSelected(option.label);
         setIsOpen(false);
         onChange(option);
@@ -65,7 +79,7 @@ const Dropdown: React.FC<SelectProps> = ({
                             styles.option,
                             option.label === selected && styles.selected,
                         )}
-                        key={option.value}
+                        key={String(option.value)}
                         onClick={() => handleSelect(option)}
                     >
                         {option.label}
