@@ -45,9 +45,7 @@ const Dropdown = <V extends DropdownValue, L extends DropdownLabel>({
     const selectRef = useRef<HTMLDivElement | null>(null);
     useClickOutside(selectRef, () => setIsOpen(false));
 
-    const handleSelect = (
-        option: DropdownOption<V, L>,
-    ) => {
+    const handleSelect = (option: DropdownOption<V, L>) => {
         setSelected(option.label);
         setIsOpen(false);
         onChange(option);
