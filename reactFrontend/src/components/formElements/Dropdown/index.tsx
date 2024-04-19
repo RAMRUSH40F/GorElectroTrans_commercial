@@ -25,6 +25,7 @@ type SelectProps<
     options: DropdownOption<V, L>[];
     initialOption: DropdownOption<V, L>;
     onChange: (option: DropdownOption<V, L>) => void;
+    name?: string;
     placeholder?: string;
     className?: string;
     disabled?: boolean;
@@ -37,6 +38,7 @@ const Dropdown = <V extends DropdownValue, L extends DropdownLabel>({
     onChange,
     className,
     disabled,
+    name,
 }: SelectProps<V, L>) => {
     const [isOpen, setIsOpen] = useState(false);
     const [selected, setSelected] = useState<DropdownLabel>(
@@ -60,7 +62,11 @@ const Dropdown = <V extends DropdownValue, L extends DropdownLabel>({
             )}
             ref={selectRef}
         >
-            <select className="visually-hidden" disabled={disabled}></select>
+            <select
+                className="visually-hidden"
+                name={name}
+                disabled={disabled}
+            ></select>
             <div
                 className={cn(styles.header, isOpen && styles.open)}
                 onClick={() => setIsOpen(!isOpen)}
