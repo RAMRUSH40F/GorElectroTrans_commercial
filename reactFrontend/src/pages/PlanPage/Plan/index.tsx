@@ -131,9 +131,7 @@ function TableContent() {
                                     {plan.teacher}
                                 </TableBodyCell>
                                 <TableBodyCell>
-                                    {plan.isHeld
-                                        ? PLAN_STATUS_VALUE[1]
-                                        : PLAN_STATUS_VALUE[0]}
+                                    {PLAN_STATUS_VALUE[plan.status]}
                                 </TableBodyCell>
                             </TableBodyRow>
                         ))}
