@@ -21,7 +21,7 @@ type Props = {
     departments: IDepartment[];
     clearError?: () => void;
     employee?: IEmployee | null;
-    moveToConfrim?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+    moveToConfirm?: (event: React.MouseEvent<HTMLButtonElement>) => void;
     isDisabled?: boolean;
     isEditing?: boolean;
 };
@@ -36,7 +36,7 @@ const EmployeeForm: FC<Props> = ({
     departments,
     onSubmit,
     employee,
-    moveToConfrim,
+    moveToConfirm,
     clearError,
     isDisabled,
     isEditing,
@@ -157,7 +157,7 @@ const EmployeeForm: FC<Props> = ({
                         />
                     </Label>
                     <div className={styles.controls}>
-                        {moveToConfrim && employee ? (
+                        {moveToConfirm && employee ? (
                             <>
                                 <ActionButton
                                     disabled={isSubmitting || isDisabled}
@@ -168,7 +168,7 @@ const EmployeeForm: FC<Props> = ({
                                 </ActionButton>
                                 <ActionButton
                                     disabled={isSubmitting || isDisabled}
-                                    onClick={moveToConfrim}
+                                    onClick={moveToConfirm}
                                     type="button"
                                     colorType="danger"
                                 >

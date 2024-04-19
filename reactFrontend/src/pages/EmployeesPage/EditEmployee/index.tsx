@@ -112,7 +112,7 @@ function Form() {
                 departments={departments}
                 clearError={() => errorReset()}
                 employee={employee}
-                moveToConfrim={() => movedToConfirm()}
+                moveToConfirm={() => movedToConfirm()}
                 isDisabled={isDisabled}
                 isEditing={true}
             />
