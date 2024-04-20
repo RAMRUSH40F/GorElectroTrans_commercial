@@ -3,6 +3,7 @@ import React, { MouseEvent, useEffect } from "react";
 import cn from "classnames";
 import { useUnit } from "effector-react";
 import { useSearchParams } from "react-router-dom";
+import { Tooltip } from "react-tooltip";
 
 import Alert, { ALERT } from "components/Alert";
 import Loader from "components/Loader";
@@ -104,7 +105,7 @@ function TableContent() {
                 </TableHead>
                 <tbody className={cn(isFetching && styles.opacity)}>
                     {!error &&
-                        plans.map((plan) => (
+                        plans.map((plan, index) => (
                             <TableBodyRow
                                 className={cn(
                                     styles.row,
@@ -130,14 +131,40 @@ function TableContent() {
                                 <TableBodyCell className={styles.nameCell}>
                                     {plan.teacher}
                                 </TableBodyCell>
-                                <TableBodyCell>
+                                <TableBodyCell
+                                    className={cn(
+                                        styles.statusCell,
+                                        styles[plan.status.toLowerCase()],
+                                    )}
+                                    data-tooltip-id={`plan-status-tooltip-${index}`}
+                                >
                                     {PLAN_STATUS_VALUE[plan.status]}
+                                    {plan.comment && (
+                                        <StatusTooltip
+                                            comment={plan.comment}
+                                            id={`plan-status-tooltip-${index}`}
+                                        />
+                                    )}
                                 </TableBodyCell>
                             </TableBodyRow>
                         ))}
                 </tbody>
             </Table>
         </div>
+    );
+}
+
+function StatusTooltip({ comment, id }: { comment: string; id: string }) {
+    return (
+        <Tooltip
+            id={id}
+            className={styles.statusTooltip}
+            content={`Причина: ${comment} тут может быть довольно много текста и это нужно продумать`}
+            border={"1px solid #929292"}
+            variant="light"
+            opacity={1}
+            place="left"
+        />
     );
 }
 
