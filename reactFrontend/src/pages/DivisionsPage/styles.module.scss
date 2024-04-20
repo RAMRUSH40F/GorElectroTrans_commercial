@@ -20,7 +20,9 @@
         display: flex;
         align-items: center;
         cursor: pointer;
-        transition: background-color 0.15s ease, color 0.15s ease;
+        transition:
+            background-color 0.15s ease,
+            color 0.15s ease;
         @media (min-width: $tablet) {
             &:hover {
                 background-color: rgba($grey, 0.5);
