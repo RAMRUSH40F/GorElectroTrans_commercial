@@ -155,16 +155,16 @@ describe("fields", () => {
 
         expect(visibleComment).toBeInTheDocument();
         expect(visibleComment).not.toBeDisabled();
-        
+
         await act(async () => {
-          await user.click(status);
+            await user.click(status);
             await user.click(cancelledStatus);
         });
 
         const invisibleComment = screen.queryByRole("textbox", {
             name: /комментарий/i,
         });
-        
+
         expect(invisibleComment).toBeInTheDocument();
         expect(visibleComment).not.toBeDisabled();
     });
