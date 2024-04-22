@@ -7,6 +7,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.model.Lesson;
+import project.monitoring.MetricsProducer;
 import project.service.LessonServiceImpl;
 
 import java.util.List;
@@ -19,6 +20,7 @@ import static project.exceptions.Validator.validateDepartmentId;
 public class LessonController {
 
     private final LessonServiceImpl lessonService;
+    private final MetricsProducer metricsProducer;
 
     @GetMapping("/dep_{N}/work_plan/data")
     public ResponseEntity<List<Lesson>> findLessonsWithPagination(@PathVariable("N") String depId,
@@ -43,6 +45,7 @@ public class LessonController {
                                @RequestBody Lesson lesson,
                                @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
+        metricsProducer.pushCreateLessonRequest();
         return lessonService.addNewLesson(departmentId, lesson);
     }
 

@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 @Table
 public class Lesson {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonProperty("id")

@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @RestController
 @RequiredArgsConstructor
-public class    AuthorisationController {
+public class AuthorisationController {
     private final JwtAuthorizationService jwtAuthorizationService;
 
     @PostMapping("/auth/login")
