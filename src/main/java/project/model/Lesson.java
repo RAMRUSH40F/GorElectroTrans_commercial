@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 @Table
 public class Lesson {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonProperty("id")
@@ -60,6 +59,11 @@ public class Lesson {
     @Column(name = "isheld")
     @JsonProperty("isHeld")
     private boolean isHeld;
+
+    @Column(name = "status")
+    @JsonProperty("status")
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "lesson_id", insertable = false, updatable = false)
@@ -95,6 +99,7 @@ public class Lesson {
         if (!getDuration().equals(lesson.getDuration())) return false;
         if (!getDate().equals(lesson.getDate())) return false;
         if (!getTeacher().equals(lesson.getTeacher())) return false;
+        if (!getStatus().equals(lesson.getStatus())) return false;
         return getTeacherPost().equals(lesson.getTeacherPost());
     }
 
@@ -108,6 +113,7 @@ public class Lesson {
         result = 31 * result + getTeacherPost().hashCode();
         result = 31 * result + getPeoplePlanned();
         result = 31 * result + (isHeld() ? 1 : 0);
+        result = 31 * result + getStatus().hashCode();
         return result;
     }
 
@@ -122,7 +128,15 @@ public class Lesson {
                 ", teacherPost='" + teacherPost + '\'' +
                 ", peoplePlanned=" + peoplePlanned +
                 ", isHeld=" + isHeld +
+                ", status=" + status.toString() +
                 ", lessonFileNames=" + getLessonFileNames() +
                 '}';
+    }
+
+    public enum Status{
+        PLANNED ,
+        HELD ,
+        CANCELLED ,
+        RESCHEDULED
     }
 }
