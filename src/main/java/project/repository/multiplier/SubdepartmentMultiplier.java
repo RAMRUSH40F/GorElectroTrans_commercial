@@ -1,6 +1,7 @@
 package project.repository.multiplier;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import project.model.Subdepartment;
@@ -12,6 +13,7 @@ import java.util.Map;
 @Service("SubdepartmentMultiplierBean")
 @Lazy
 @RequiredArgsConstructor
+@Slf4j
 public class SubdepartmentMultiplier {
 
     private final SubdepartmentServiceImpl service;
@@ -30,7 +32,6 @@ public class SubdepartmentMultiplier {
             for (int j = 1; j <= 7; j++) {
                 short id = (short) (j);
                 String name = subDepartmentNames.get(j);
-                name = name + "_" + i;
                 Subdepartment subdepartment = Subdepartment.builder()
                         .name(name)
                         .id(id)
@@ -38,7 +39,6 @@ public class SubdepartmentMultiplier {
                 service.save(i, subdepartment);
             }
         }
-        System.out.println("SubdepartmentMultiplier ended its work!");
-
+        log.info("Added subdepartment testdata for all departments");
     }
 }

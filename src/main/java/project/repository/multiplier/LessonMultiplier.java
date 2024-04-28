@@ -1,6 +1,8 @@
 package project.repository.multiplier;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import project.model.Lesson;
 import project.service.LessonServiceImpl;
@@ -9,7 +11,9 @@ import project.service.reportService.TeacherProfession;
 import java.sql.Date;
 
 @Service("LessonMultiplierBean")
+@Lazy
 @RequiredArgsConstructor
+@Slf4j
 public class LessonMultiplier {
 
     private final LessonServiceImpl lessonService;
@@ -37,7 +41,7 @@ public class LessonMultiplier {
                     .build();
             lessonService.addNewLesson(departmentId, lesson);
         }
-        System.out.printf("Lesson Multiplier ended work on %d department %n ", departmentId);
+        log.info("Lesson multiplier added testData: departmentDatabase={}", departmentId);
 
     }
 }

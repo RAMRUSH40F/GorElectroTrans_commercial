@@ -14,6 +14,9 @@ public class Application {
     public static void main(String[] args) {
         DynamicDataSourceContextHolder.setCurrentDataSource("DEP_1");
         ConfigurableApplicationContext context = SpringApplication.run(Application.class, args);
+
+        //Заполнить тестовыми данными
+        //context.getBean(TestDataGenerator.class).addTestData();
     }
 
 }
