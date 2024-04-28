@@ -1,0 +1,14 @@
+version: '1.0'
+services:
+  mariadb:
+    image: mariadb:10.7
+    environment:
+      MARIADB_ROOT_PASSWORD: testpass
+    networks:
+      - backend
+    ports:
+      - '3306:3306'
+    restart: on-failure
+networks:
+  backend:
+    driver: bridge
