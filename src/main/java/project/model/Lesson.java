@@ -11,6 +11,7 @@ import org.springframework.lang.Nullable;
 import project.model.projection.LessonContentNoFileProjection;
 
 import javax.persistence.*;
+import java.io.Console;
 import java.sql.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -65,6 +66,11 @@ public class Lesson {
     @Enumerated(EnumType.STRING)
     private Status status;
 
+    @Column(name = "comment")
+    @JsonProperty("comment")
+    @Nullable
+    private String comment;
+
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "lesson_id", insertable = false, updatable = false)
     @Fetch(FetchMode.JOIN)
@@ -84,7 +90,6 @@ public class Lesson {
     public void getLessonFileNames(Set<String> fileNames) {
         //Receiving Set of fileNames. No actions yet
     }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
