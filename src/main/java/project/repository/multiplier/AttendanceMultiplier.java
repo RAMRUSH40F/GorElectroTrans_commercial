@@ -19,7 +19,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 
-@Service("AttendanceMultiplierBean")
+@Service
 @Lazy
 @RequiredArgsConstructor
 @Slf4j
@@ -32,7 +32,7 @@ public class AttendanceMultiplier {
     private final Random random = new Random();
 
     public void addAllAttendance(int departmentId) {
-
+        log.info("Attendance multiplier starting adding testData: departmentDatabase={}", departmentId);
 
         Pageable pageable = PageRequest.of(1, 100);
         // Достаем из БД все записи об уроках и об учениках и оставляем каждый шестой id студента.
