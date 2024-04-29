@@ -1,6 +1,7 @@
 package project.repository.multiplier;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,9 +19,10 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 
-@Service("AttendanceMultiplierBean")
+@Service
 @Lazy
 @RequiredArgsConstructor
+@Slf4j
 public class AttendanceMultiplier {
 
     private final AttendanceServiceImpl attendanceService;
@@ -30,7 +32,7 @@ public class AttendanceMultiplier {
     private final Random random = new Random();
 
     public void addAllAttendance(int departmentId) {
-
+        log.info("Attendance multiplier starting adding testData: departmentDatabase={}", departmentId);
 
         Pageable pageable = PageRequest.of(1, 100);
         // Достаем из БД все записи об уроках и об учениках и оставляем каждый шестой id студента.
@@ -39,7 +41,7 @@ public class AttendanceMultiplier {
                 .map(Lesson::getId)
                 .filter(id -> random.nextInt(6) == 1)
                 .collect(Collectors.toList());
-        System.out.println(lessIds);
+        log.debug(lessIds.toString());
 
         // Достаем из БД все записи об уроках и об учениках и оставляем каждый 3ий урок.
         List<Student> students = studentRepository.getStudentsIdList(departmentId);
@@ -47,7 +49,7 @@ public class AttendanceMultiplier {
                 map(Student::getStudentId).
                 filter(id -> random.nextInt(3) == 1)
                 .collect(Collectors.toList());
-        System.out.println(studentIdS);
+        log.debug(studentIdS.toString());
 
         // Каждый шестой в среднем ходит на какие-то уроки
         for (String studId : studentIdS) {
@@ -61,7 +63,7 @@ public class AttendanceMultiplier {
                 attendanceService.save(departmentId, attendance);
             }
         }
-        System.out.printf("Attendance multiplier ended work on %d department %n", departmentId);
+        log.info("Attendance multiplier added testData: departmentDatabase={}", departmentId);
     }
 
 
