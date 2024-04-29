@@ -45,7 +45,6 @@ public class StudentController {
                                                             @RequestParam String key,
                                                             @RequestParam(required = false) Integer limit,
                                                             @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
-        log.info("findStudentsByName() called: key={}, limit={}", key, limit);
         int departmentId = validateDepartmentId(depId);
         List<StudentIdName> students = studentService.findByNameContains(departmentId, key, limit);
 

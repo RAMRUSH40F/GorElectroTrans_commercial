@@ -1,28 +1,24 @@
-package project;
+package project.configuration.web;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-import javax.sql.DataSource;
-
+/**
+ * Включить логирование запросов spring
+ *
+ * @author Ramil Rahimkulov (rahimkulov@yoomoney.ru)
+ * @since 30.04.2024
+ */
 @Configuration
-@RequiredArgsConstructor
-public class AppContext {
+public class WebConfig extends WebMvcConfigurerAdapter {
 
-
-    @Bean
-    public JdbcTemplate myJdbcTemplate(DataSource mariaDbDynamicDataSource) {
-        return new JdbcTemplate(mariaDbDynamicDataSource);
-    }
-
-    @Bean
-    public NamedParameterJdbcTemplate myNamedParameterJdbcTemplate(DataSource mariaDbDynamicDataSource) {
-        return new NamedParameterJdbcTemplate(mariaDbDynamicDataSource);
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new HttpRequestFilter());
     }
 
     /**
