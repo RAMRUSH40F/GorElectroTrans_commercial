@@ -31,6 +31,7 @@ public class SubdepartmentMultiplier {
 
     public void addAllSubDepartments() {
 
+        log.info("Stated adding subdepartment testdata for all departments");
         for (int i = 1; i <= 15; i++) {
             for (int j = 1; j <= SUBDEPARTMENT_NAMES.size(); j++) {
                 short id = (short) (j);

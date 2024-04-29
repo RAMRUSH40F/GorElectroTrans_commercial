@@ -43,6 +43,6 @@ public class StudentMultiplier {
             }
 
         }
-        log.info("lessonMultiplier ended work: departmentDatabase={}", departmentId);
+        log.info("Student multiplier ended work: departmentDatabase={}", departmentId);
     }
 }
