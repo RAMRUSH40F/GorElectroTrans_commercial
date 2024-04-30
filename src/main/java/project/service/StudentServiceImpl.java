@@ -1,32 +1,39 @@
 package project.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import project.exceptions.InvalidSubdepartmentException;
 import project.model.Student;
 import project.model.Subdepartment;
+import project.model.projection.StudentIdName;
 import project.repository.StudentJpaRepository;
+import project.repository.projections.StudentIdNameJpaRepository;
 
 import java.util.List;
 import java.util.Optional;
 
 import static project.dataSource.DynamicDataSourceContextHolder.setCurrentDataSource;
-import static project.exceptions.Validator.validatePaginationParams;
 
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class StudentServiceImpl {
 
     private final StudentJpaRepository repository;
+    private final StudentIdNameJpaRepository studentIdNameJpaRepository;
     private final SubdepartmentServiceImpl subdepartmentService;
 
 
-    public @NonNull Student addNewStudentBySubdepartmentName(int departmentId, @NonNull Student student) {
+    @NonNull
+    public Student addNewStudentBySubdepartmentName(int departmentId, @NonNull Student student) {
         setCurrentDataSource("DEP_" + departmentId);
         Subdepartment studentsSubDepartment = subdepartmentService
                 .findByName(departmentId, student.getSubdepartmentName())
@@ -38,18 +45,36 @@ public class StudentServiceImpl {
 
     }
 
-    public @NonNull Page<Student> findAllWithPagination(int departmentId, Optional<String> key, Pageable pageable) {
+    @NonNull
+    public Page<Student> findAllWithPagination(int departmentId, Optional<String> key, Pageable pageable) {
         setCurrentDataSource("DEP_" + departmentId);
         // Пагинация с первой(для пользователя), с 0-ой для сервера.
         pageable = pageable.withPage(pageable.getPageNumber() - 1);
-        if(key.isEmpty()) {
+        if (key.isEmpty()) {
             return repository.findAll(pageable);
         }
-        return repository.findAllByKey(key.get(),pageable);
+        return repository.findAllByKey(key.get(), pageable);
     }
 
+    /**
+     * @param key   ключ для поиска вхождения в name
+     * @param limit макс.кол-во строк в выборке
+     */
+    @NonNull
+    public List<StudentIdName> findByNameContains(int departmentId, @NonNull String key, @Nullable Integer limit) {
+        setCurrentDataSource("DEP_" + departmentId);
 
-    // У рабочих общая на всю компанию таблица с рабочими.
+        PageRequest pageRequest = limit == null ? PageRequest.ofSize(999) : PageRequest.ofSize(limit);
+        var students = studentIdNameJpaRepository.findByNameStartsWith(StringUtils.capitalize(key), pageRequest);
+        log.info("Fetched Students by name part WITH INDEX on name: rows={}, key={}", students.size(), key);
+        if (!students.isEmpty()) {
+            return students;
+        }
+        students = studentIdNameJpaRepository.findByNameContainingIgnoreCase(key, pageRequest);
+        log.info("Fetched Students by name part NOT USING INDEX on name: rows={}, key={}", students.size(), key);
+        return students;
+    }
+
     public void deleteStudentById(int departmentId, String studentId) {
         setCurrentDataSource("DEP_" + departmentId);
         repository.deleteById(studentId);
@@ -58,7 +83,8 @@ public class StudentServiceImpl {
     /**
      * Метод для смены отдела какого-то студента.
      */
-    public @NonNull Student updateStudent(int departmentId, @NonNull Student student) {
+    @NonNull
+    public Student updateStudent(int departmentId, @NonNull Student student) {
         setCurrentDataSource("DEP_" + departmentId);
         Subdepartment studentsSubDepartment = subdepartmentService
                 .findByName(departmentId, student.getSubdepartmentName())
@@ -66,21 +92,24 @@ public class StudentServiceImpl {
         return repository.save(createStudent(student, studentsSubDepartment));
     }
 
-    public @NonNull Student addNewStudentByDepId(int departmentId, @NonNull Student student) {
+    @NonNull
+    public Student addNewStudentByDepId(int departmentId, @NonNull Student student) {
         setCurrentDataSource("DEP_" + departmentId);
         return repository.save(student);
     }
 
     /**
-     * Метод для внутреннего использование классов Multiplier.
+     * Метод для внутреннего использования классами Multiplier.
      */
-    public @NonNull List<Student> getStudentsIdList(int departmentId) {
+    @NonNull
+    public List<Student> getStudentsIdList(int departmentId) {
         setCurrentDataSource("DEP_" + departmentId);
         return (List<Student>) repository.findAll();
     }
 
 
-    public static @NonNull Student createStudent(Student student, @NonNull Subdepartment subdepartment) {
+    @NonNull
+    public static Student createStudent(Student student, @NonNull Subdepartment subdepartment) {
         return Student.builder()
                 .studentId(student.getStudentId())
                 .name(student.getName())

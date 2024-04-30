@@ -1,6 +1,7 @@
 package project.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -8,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.model.Student;
+import project.model.projection.StudentIdName;
 import project.service.StudentServiceImpl;
 
 import java.util.List;
@@ -17,6 +19,7 @@ import static project.exceptions.Validator.*;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class StudentController {
 
     private final StudentServiceImpl studentService;
@@ -27,7 +30,7 @@ public class StudentController {
                                                       Pageable paginationParams,
                                                       @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         int departmentId = validateDepartmentId(depId);
-        Page<Student> studentPage = studentService.findAllWithPagination(departmentId,key, paginationParams);
+        Page<Student> studentPage = studentService.findAllWithPagination(departmentId, key, paginationParams);
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("students_count", String.valueOf(studentPage.getTotalElements()));
@@ -35,6 +38,22 @@ public class StudentController {
                 .ok()
                 .headers(headers)
                 .body(studentPage.getContent());
+    }
+
+    @GetMapping("/dep_{N}/students/getByName")
+    public ResponseEntity<List<StudentIdName>> findStudentsByName(@PathVariable("N") String depId,
+                                                            @RequestParam String key,
+                                                            @RequestParam(required = false) Integer limit,
+                                                            @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
+        int departmentId = validateDepartmentId(depId);
+        List<StudentIdName> students = studentService.findByNameContains(departmentId, key, limit);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("students_count", String.valueOf(students.size()));
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .body(students);
     }
 
 

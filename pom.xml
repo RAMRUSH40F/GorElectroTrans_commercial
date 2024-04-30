@@ -13,7 +13,7 @@
     <groupId>org.example</groupId>
     <artifactId>GorElectroTrans</artifactId>
     <packaging>war</packaging>
-    <version>3.2</version>
+    <version>3.4</version>
 
     <name>GorElectroTrans</name>
     <description>Project for a transport company</description>
@@ -35,10 +35,6 @@
             <version>3.9</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
-        </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>

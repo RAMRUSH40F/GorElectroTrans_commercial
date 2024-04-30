@@ -15,7 +15,9 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import project.model.Student;
 import project.model.Subdepartment;
+import project.model.projection.StudentIdName;
 import project.security.service.JwtAuthorizationService;
+import project.service.StudentServiceImpl;
 import project.service.SubdepartmentServiceImpl;
 
 import javax.sql.DataSource;
@@ -36,6 +38,8 @@ public class StudentApiTest {
     JdbcTemplate jdbcTemplate;
     @Autowired
     TestRestTemplate restTemplate;
+    @Autowired
+    StudentServiceImpl studentServiceImpl;
 
     @MockBean
     JwtAuthorizationService jwtAuthorizationService;
@@ -111,13 +115,57 @@ public class StudentApiTest {
         );
     }
 
+    /**
+     * Тестируем api поиска студентов по имени
+     */
+    @Test
+    void testFindByName() {
+        // Configuration
+        int depId = 9;
+        Subdepartment testSubdepartment = saveTestSubdepartmentAndReturn();
+        Student testStudent = createTestStudent();
+        testStudent.setSubdepartmentId(null);
+        testStudent.setSubdepartmentName(testSubdepartment.getName());
+        studentServiceImpl.addNewStudentBySubdepartmentName(9, testStudent);
+
+        // Отключили аунтефикацию
+        doNothing().when(jwtAuthorizationService).authorize(anyString(), anyInt());
+
+        ResponseEntity<StudentIdName[]> response = restTemplate.getForEntity("/dep_" + depId + "/students/getByName?key=Арте&limit=7", StudentIdName[].class);
+
+        // Retrieve the saved student from the response body
+        StudentIdName receivedStudent = response.getBody()[0];
+        Assertions.assertAll(
+                () -> assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK),
+                () -> Assertions.assertEquals(receivedStudent.getStudentId(), testStudent.getStudentId()),
+                () -> Assertions.assertEquals(receivedStudent.getName(), testStudent.getName())
+        );
+
+        ResponseEntity<StudentIdName[]> response2 = restTemplate.getForEntity("/dep_" + depId + "/students/getByName?key=алекс&limit=7", StudentIdName[].class);
+        StudentIdName receivedStudent2 = response.getBody()[0];
+
+        Assertions.assertAll(
+                () -> assertThat(response2.getStatusCode()).isEqualTo(HttpStatus.OK),
+                () -> Assertions.assertEquals(receivedStudent2.getStudentId(), testStudent.getStudentId()),
+                () -> Assertions.assertEquals(receivedStudent2.getName(), testStudent.getName())
+        );
+
+        ResponseEntity<StudentIdName[]> response3 = restTemplate.getForEntity("/dep_" + depId + "/students/getByName?key=ложный&limit=7", StudentIdName[].class);
+
+        Assertions.assertAll(
+                () -> assertThat(response3.getStatusCode()).isEqualTo(HttpStatus.OK),
+                () -> Assertions.assertEquals(response3.getBody().length, 0)
+        );
+
+    }
+
 
     private Student createTestStudent() {
         return Student.builder()
                 .studentId("56122")
                 .subdepartment(new Subdepartment((short) 121, "SubdepName"))
                 .subdepartmentId((short) 121)
-                .name("Alex B.")
+                .name("Александров Артем Валерьевич")
                 .build();
     }
 
