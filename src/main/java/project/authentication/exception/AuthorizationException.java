@@ -1,4 +1,4 @@
-package project.security.exception;
+package project.authentication.exception;
 
 public class AuthorizationException extends RuntimeException {
     private final String DEFAULT_MESSAGE = "Произошла ошибка авторизации. Скорее всего, у вас нет прав для доступа к этой операции";

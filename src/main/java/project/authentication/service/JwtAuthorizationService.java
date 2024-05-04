@@ -1,4 +1,4 @@
-package project.security.service;
+package project.authentication.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.exceptions.JWTVerificationException;
@@ -8,9 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
-import project.security.exception.AuthenticationException;
-import project.security.model.Authority;
-import project.security.model.User;
+import project.authentication.exception.AuthenticationException;
+import project.authentication.model.Authority;
+import project.authentication.model.User;
 
 import java.util.Date;
 import java.util.HashSet;

@@ -1,10 +1,10 @@
-package project.security;
+package project.authentication;
 
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
-import project.security.service.JwtAuthorizationService;
+import project.authentication.service.JwtAuthorizationService;
 
 @Aspect
 @Component

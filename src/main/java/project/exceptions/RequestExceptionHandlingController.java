@@ -5,8 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import project.security.exception.AuthenticationException;
-import project.security.exception.AuthorizationException;
+import project.authentication.exception.AuthenticationException;
+import project.authentication.exception.AuthorizationException;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;

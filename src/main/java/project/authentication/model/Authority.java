@@ -1,4 +1,4 @@
-package project.security.model;
+package project.authentication.model;
 
 import lombok.Getter;
 import lombok.Setter;

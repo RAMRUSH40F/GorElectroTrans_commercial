@@ -1,10 +1,10 @@
-package project.security.service;
+package project.authentication.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
-import project.security.model.User;
-import project.security.repository.UserJpaRepository;
+import project.authentication.model.User;
+import project.authentication.repository.UserJpaRepository;
 
 import java.util.HashSet;
 import java.util.Optional;

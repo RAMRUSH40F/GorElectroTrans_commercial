@@ -1,4 +1,4 @@
-package project.security.controller;
+package project.authentication.controller;
 
 
 import lombok.RequiredArgsConstructor;
@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
-import project.security.service.JwtAuthorizationService;
-import project.security.exception.AuthenticationException;
-import project.security.model.User;
+import project.authentication.service.JwtAuthorizationService;
+import project.authentication.exception.AuthenticationException;
+import project.authentication.model.User;
 
 import javax.servlet.http.HttpServletResponse;
 
