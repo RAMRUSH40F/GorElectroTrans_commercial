@@ -11,12 +11,12 @@
 
 
     <groupId>org.example</groupId>
-    <artifactId>GorElectroTrans</artifactId>
+    <artifactId>LessonTestingApp</artifactId>
     <packaging>war</packaging>
-    <version>3.2</version>
+    <version>4.0</version>
 
-    <name>GorElectroTrans</name>
-    <description>Project for a transport company</description>
+    <name>LessonTestingApp</name>
+    <description></description>
 
     <properties>
         <java.version>11</java.version>
@@ -47,10 +47,6 @@
             <version>3.9</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
-        </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>
@@ -112,52 +108,10 @@
             <artifactId>spring-jdbc</artifactId>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>mysql</groupId>-->
-<!--            <artifactId>mysql-connector-java</artifactId>-->
-<!--            <version>8.0.26</version>-->
-<!--        </dependency>-->
-
         <dependency>
             <groupId>org.mariadb.jdbc</groupId>
             <artifactId>mariadb-java-client</artifactId>
             <version>3.1.1</version>
-        </dependency>
-
-        <!-- testing -->
-
-
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>2.1.214</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-            <version>5.3.3</version>
-            <scope>test</scope>
-        </dependency>
-
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>5.8.2</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
         </dependency>
 
     </dependencies>
@@ -165,7 +119,7 @@
 
     <build>
 
-        <finalName>GorElectroTrans</finalName>
+        <finalName>LessonTestingApp</finalName>
 
         <plugins>
             <plugin>
@@ -173,18 +127,6 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
             </plugin>
-            <plugin>
-                <groupId>com.github.eirslett</groupId>
-                <artifactId>frontend-maven-plugin</artifactId>
-                <version>1.6</version>
-                <configuration>
-                    <workingDirectory>reactFrontend</workingDirectory>
-                    <installDirectory>target</installDirectory>
-                </configuration>
-                <executions>
-                </executions>
-            </plugin>
-
         </plugins>
     </build>
 
