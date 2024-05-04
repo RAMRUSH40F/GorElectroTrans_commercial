@@ -1,6 +1,15 @@
 version: '3.7'
 
 services:
+  mariadb:
+    image: mariadb:10.7
+    environment:
+      MARIADB_ROOT_PASSWORD: testpass
+    volumes:
+      - ./database/update:/docker-entrypoint-initdb.d
+    ports:
+      - '3306:3306'
+    restart: unless-stopped
   grafana:
     build: './config/grafana'
     ports:
@@ -29,3 +38,4 @@ services:
           - prometheus
 networks:
   monitoring:
+

@@ -13,8 +13,6 @@ import java.util.Map;
 @Configuration
 public class DynamicDataSourceConfig {
 
-    private static final int DATABASE_COUNT = 15;
-
     @Value("${maria.db.url}")
     private String databaseUrl;
 
@@ -29,11 +27,10 @@ public class DynamicDataSourceConfig {
     public Map<Object, Object> dataSourceMap() {
         Map<Object, Object> dataSourceMap = new HashMap<>();
 
-        for (short i = 1; i <= DATABASE_COUNT; i++) {
-            String databaseName = "DEP_" + i;
-            DataSource mariaDbDataSource = createDataSource(databaseName);
-            dataSourceMap.put(databaseName, mariaDbDataSource);
-        }
+        int i = 1;
+        String databaseName = "DEP_" + i;
+        DataSource mariaDbDataSource = createDataSource(databaseName);
+        dataSourceMap.put(databaseName, mariaDbDataSource);
 
         DataSource mariaAuthorisationDataSource = createDataSource("USERS");
         dataSourceMap.put("USERS", mariaAuthorisationDataSource);
