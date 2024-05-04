@@ -17,6 +17,7 @@ import java.util.Map;
 public class SubdepartmentMultiplier {
 
     private static final Map<Integer, String> SUBDEPARTMENT_NAMES = new HashMap<>();
+
     static {
         SUBDEPARTMENT_NAMES.put(1, "Водители троллейбусов");
         SUBDEPARTMENT_NAMES.put(2, "Машинисты трамваев");
@@ -29,20 +30,17 @@ public class SubdepartmentMultiplier {
 
     private final SubdepartmentServiceImpl service;
 
-    public void addAllSubDepartments() {
-
-        log.info("Stated adding subdepartment testdata for all departments");
-        for (int i = 1; i <= 15; i++) {
-            for (int j = 1; j <= SUBDEPARTMENT_NAMES.size(); j++) {
-                short id = (short) (j);
-                String name = SUBDEPARTMENT_NAMES.get(j);
-                Subdepartment subdepartment = Subdepartment.builder()
-                        .name(name)
-                        .id(id)
-                        .build();
-                service.save(i, subdepartment);
-            }
+    public void addTestSubDepartments(int departmentId) {
+        log.info("Started adding test subdepartments: department={}", departmentId);
+        for (int j = 1; j <= SUBDEPARTMENT_NAMES.size(); j++) {
+            short id = (short) (j);
+            String name = SUBDEPARTMENT_NAMES.get(j);
+            Subdepartment subdepartment = Subdepartment.builder()
+                    .name(name)
+                    .id(id)
+                    .build();
+            service.save(departmentId, subdepartment);
         }
-        log.info("Added subdepartment testdata for all departments");
+        log.info("Added test subdepartments: department={}", departmentId);
     }
 }

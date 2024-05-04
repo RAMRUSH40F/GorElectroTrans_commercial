@@ -16,7 +16,6 @@ public class Application {
         ConfigurableApplicationContext context = SpringApplication.run(Application.class, args);
 
         //Заполнить тестовыми данными
-        //context.getBean(TestDataGenerator.class).addTestData();
+        //context.getBean(TestDataGenerator.class).addAllTestData();
     }
-
 }

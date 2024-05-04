@@ -3,6 +3,7 @@ package project.repository.multiplier;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 /**
@@ -25,19 +26,19 @@ public class TestDataGenerator {
     @Autowired
     SubdepartmentMultiplier subdepartmentMultiplier;
 
-    public void addTestData() {
-        addTestData(DEPARTMENTS_COUNT);
+    public void addAllTestData() {
+        for (int i = 0; i < DEPARTMENTS_COUNT; i++)
+            addTestData(DEPARTMENTS_COUNT);
     }
 
     /**
-     * @param numberOfDepartments до какой базы включительно заполнить данными, начиная с DEP_1
+     * @param departmentNumber номер департамента для заполнения
      */
-    public void addTestData(int numberOfDepartments) {
-        subdepartmentMultiplier.addAllSubDepartments();
-        for (int i = 1; i <= numberOfDepartments; i++) {
-            lessonMultiplier.addAllLessons(i);
-            studentMultiplier.addAllStudents(i);
-            attendanceMultiplier.addAllAttendance(i);
-        }
+    public void addTestData(int departmentNumber) {
+        subdepartmentMultiplier.addTestSubDepartments(departmentNumber);
+        lessonMultiplier.addAllLessons(departmentNumber);
+        studentMultiplier.addAllStudents(departmentNumber);
+        attendanceMultiplier.addAllAttendance(departmentNumber);
+
     }
 }
