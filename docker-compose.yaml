@@ -1,14 +1,27 @@
-version: '1.0'
+version: '1.3'
 services:
-  mariadb:
+  application_gortrans:
+    build:
+      dockerfile: Dockerfile
+    depends_on:
+      - database_mariadb
+    networks:
+      - backend
+    ports:
+      - '8082:8082'
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+  database_mariadb:
     image: mariadb:10.7
     environment:
       MARIADB_ROOT_PASSWORD: testpass
     networks:
       - backend
+    volumes:
+    - ./src/main/resources/sql/update:/docker-entrypoint-initdb.d
     ports:
       - '3306:3306'
-    restart: on-failure
+    restart: unless-stopped
 networks:
   backend:
     driver: bridge

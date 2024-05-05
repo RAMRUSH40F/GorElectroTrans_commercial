@@ -1,6 +1,7 @@
 package project.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -16,17 +17,19 @@ import project.repository.AttendanceJpaRepository;
 
 import java.util.Optional;
 
+import static project.dataSource.DynamicDataSourceContextHolder.getCurrentDataSource;
 import static project.dataSource.DynamicDataSourceContextHolder.setCurrentDataSource;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AttendanceServiceImpl {
 
     private final AttendanceJpaRepository repository;
 
     public @NonNull Attendance save(int departmentId, Attendance attendance) {
         setCurrentDataSource("DEP_" + departmentId);
-
+        log.debug(getCurrentDataSource());
         try {
             boundLessonAndStudentToAttendance(attendance);
             AttendanceId attendanceId = new AttendanceId(attendance.getLessonId(), attendance.getStudentId());

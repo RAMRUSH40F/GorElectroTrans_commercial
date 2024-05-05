@@ -1,6 +1,7 @@
 package project.service.reportService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -32,12 +33,13 @@ import static project.dataSource.DynamicDataSourceContextHolder.setCurrentDataSo
 
 @Service("ReportServiceBean")
 @RequiredArgsConstructor
+@Slf4j
 public class ReportService {
     private final ReportRepository reportRepository;
 
     public @NotNull HSSFWorkbook createReport(int quarter, int year) {
-        final String fileName = "/report_template.xls";
-        final String copyFileName = "/report.xls";
+        final String fileName = "src/main/resources/report_template.xls";
+        final String copyFileName = "src/main/resources/report.xls";
         final Map.Entry<Integer, Integer> yearMonthPair = calculateDate(quarter, year);
         HSSFWorkbook hssfWorkBook = readWorkbook(fileName, copyFileName);
         final HSSFSheet sheet = hssfWorkBook.getSheet("Лист1");
@@ -47,6 +49,7 @@ public class ReportService {
         writeToWorkbook(hssfWorkBook, copyFileName);
         return hssfWorkBook;
     }
+
     /*
     Метод чтения файла
     */
@@ -57,6 +60,7 @@ public class ReportService {
             Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
             return new HSSFWorkbook(new POIFSFileSystem(new FileInputStream(copied.toFile())));
         } catch (IOException e) {
+            log.error("Ошибка на этапе чтения файла:", e);
             throw new RuntimeException("Файл шаблона не был загружен в корневую папку проекта или " +
                     "произошла другая ошибка связанная с чтением шаблонной таблицы", e);
         }
@@ -108,7 +112,7 @@ public class ReportService {
     public void formStatsForOthersCategory(HSSFRow destination, int from, int to, HSSFSheet sheet) {
         int value;
         int firstCell = 1;
-        int lastCell=31;
+        int lastCell = 31;
         HSSFRow row;
         Cell cell;
         CellStyle style = applyClassicStyle(destination.getSheet().getWorkbook());
