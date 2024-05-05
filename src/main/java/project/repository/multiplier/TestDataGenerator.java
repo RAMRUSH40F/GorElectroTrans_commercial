@@ -27,8 +27,9 @@ public class TestDataGenerator {
     SubdepartmentMultiplier subdepartmentMultiplier;
 
     public void addAllTestData() {
-        for (int i = 0; i < DEPARTMENTS_COUNT; i++)
-            addTestData(DEPARTMENTS_COUNT);
+        for (int i = 1; i <= DEPARTMENTS_COUNT; i++) {
+            addTestData(i);
+        }
     }
 
     /**
@@ -39,6 +40,5 @@ public class TestDataGenerator {
         lessonMultiplier.addAllLessons(departmentNumber);
         studentMultiplier.addAllStudents(departmentNumber);
         attendanceMultiplier.addAllAttendance(departmentNumber);
-
     }
 }

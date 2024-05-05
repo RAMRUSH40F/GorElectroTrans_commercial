@@ -1,6 +1,7 @@
 package project.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
@@ -11,11 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static project.dataSource.DynamicDataSourceContextHolder.getCurrentDataSource;
 import static project.dataSource.DynamicDataSourceContextHolder.setCurrentDataSource;
 
 @Service
 @RequiredArgsConstructor
-
+@Slf4j
 public class SubdepartmentServiceImpl {
 
     private final SubdepartmentJpaRepository repository;
@@ -47,6 +49,7 @@ public class SubdepartmentServiceImpl {
 
     public @NonNull Subdepartment save(int departmentId, Subdepartment subdepartment) {
         setCurrentDataSource("DEP_" + departmentId);
+        log.debug(getCurrentDataSource());
         return repository.save(subdepartment);
     }
 
