@@ -17,20 +17,6 @@ public class DataGenerationController {
     @Autowired
     private TestDataGenerator testDataGenerator;
 
-    //TODO: Поправить баг, когда не меняется datasource в процессе одного метода
-   /* @GetMapping("/all/generateData")
-    public String generateAllData() {
-        log.info("Start Filling Data Base, Active Profile is Docker");
-        try {
-            testDataGenerator.addAllTestData();
-        } catch (Exception e) {
-            log.error("Exception During Generation", e);
-            return "Exception During Generation";
-        }
-        log.info("Ended filling datasource");
-        return "Data was Successfully Generated!";
-    }*/
-
     @GetMapping("/dep_{n}/generateData")
     public String generateDepData(@PathVariable Integer n) {
         log.info("Start filling department number{}", n);
