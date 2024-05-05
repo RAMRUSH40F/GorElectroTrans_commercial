@@ -2,8 +2,7 @@ package project.security;
 
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,7 +12,10 @@ import project.security.service.JwtAuthorizationService;
 import project.security.exception.AuthenticationException;
 import project.security.model.User;
 
-import javax.servlet.http.HttpServletResponse;
+import static java.lang.Boolean.TRUE;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
+
 
 /**
  * Эндпоинты для выдачи токена с ролью либо код ошибки с комментарием.
@@ -21,15 +23,16 @@ import javax.servlet.http.HttpServletResponse;
  */
 @RestController
 @RequiredArgsConstructor
-public class    AuthorisationController {
+public class AuthorisationController {
     private final JwtAuthorizationService jwtAuthorizationService;
 
     @PostMapping("/auth/login")
-    public ResponseEntity<Boolean> authenticate(@RequestBody User user, HttpServletResponse response) {
+    public ResponseEntity<Boolean> authenticate(@RequestBody User user) {
         try {
             String jwtToken = jwtAuthorizationService.authenticate(user);
-            response.addHeader(HttpHeaders.AUTHORIZATION, jwtToken);
-            return new ResponseEntity<>(true, HttpStatus.OK);
+            return ResponseEntity.ok()
+                    .header(AUTHORIZATION, jwtToken)
+                    .body(TRUE);
         } catch (Exception e) {
             throw new AuthenticationException(e, "Ваша прошлая сессия истекла. " +
                     "Войдите в аккаунт заново");
@@ -37,20 +40,22 @@ public class    AuthorisationController {
     }
 
     @PostMapping("/auth/validate")
-    public boolean validateToken(@RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken, HttpServletResponse response){
-        response.addHeader(HttpHeaders.AUTHORIZATION, jwtToken);
-        if (jwtAuthorizationService.validateToken(jwtToken)){
-            return true;
+    public ResponseEntity<Boolean> validateToken(@RequestHeader(value = AUTHORIZATION, defaultValue = "") String jwtToken) {
+        if (jwtAuthorizationService.validateToken(jwtToken)) {
+            return ResponseEntity.ok()
+                    .header(AUTHORIZATION, jwtToken)
+                    .body(TRUE);
         }
         throw new AuthenticationException("Ваша прошлая сессия истекла. " +
                 "Войдите в аккаунт заново");
     }
 
     @PostMapping("/auth/logout")
-    public ResponseEntity<Boolean> logout(HttpServletResponse response) {
+    public ResponseEntity<Boolean> logout() {
         try {
-            response.addHeader(HttpHeaders.AUTHORIZATION, "");
-            return new ResponseEntity<>(true, HttpStatus.OK);
+            return ResponseEntity.ok()
+                    .header(AUTHORIZATION,"")
+                    .body(TRUE);
         } catch (Exception e) {
             throw new AuthenticationException(e, "Не получилось выйти из аккаунта");
         }
