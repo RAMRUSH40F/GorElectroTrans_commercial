@@ -1,9 +1,13 @@
-package project.repository.multiplier;
+package project.multiplier.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import project.multiplier.AttendanceMultiplier;
+import project.multiplier.LessonMultiplier;
+import project.multiplier.StudentMultiplier;
+import project.multiplier.SubdepartmentMultiplier;
 
 /**
  * Сервис для заполнения базы тестовыми данными
