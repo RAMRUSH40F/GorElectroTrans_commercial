@@ -127,7 +127,9 @@ class LessonServiceTest {
                         .teacher((String) res[3])
                         .peoplePlanned((Integer) res[4])
                         .teacherPost((String) res[5])
-                        .isHeld(true).build());
+                        .isHeld(true)
+                        .status(Lesson.Status.HELD)
+                        .build());
 
         Integer num2 = lessonService.getLessonsCount(4);
         assertTrue(num < num2);

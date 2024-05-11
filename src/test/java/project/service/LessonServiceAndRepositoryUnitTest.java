@@ -110,6 +110,7 @@ class LessonServiceAndRepositoryUnitTest {
                 .peoplePlanned(52)
                 .teacherPost(TeacherProfession.MASTER.getProfession())
                 .isHeld(true)
+                .status(Lesson.Status.HELD)
                 .build();
 
         lessonService.addNewLesson(4, testLesson);

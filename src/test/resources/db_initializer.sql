@@ -21,7 +21,9 @@ CREATE TABLE `lesson`
     `teacher`        VARCHAR(100)  NOT NULL,
     `people_planned` INTEGER       NOT NULL,
     `isHeld`         INTEGER       NOT NULL,
-    `teacherPost`    VARCHAR(40)   NOT NULL
+    `teacherPost`    VARCHAR(40)   NOT NULL,
+    `status`         VARCHAR(20)   NOT NULL,
+    `comment`        VARCHAR(1000)
 );
 
 

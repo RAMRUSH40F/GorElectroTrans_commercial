@@ -11,6 +11,7 @@ import org.springframework.lang.Nullable;
 import project.model.projection.LessonContentNoFileProjection;
 
 import javax.persistence.*;
+import java.io.Console;
 import java.sql.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -26,7 +27,6 @@ import java.util.stream.Collectors;
 @Entity
 @Table
 public class Lesson {
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -61,6 +61,16 @@ public class Lesson {
     @JsonProperty("isHeld")
     private boolean isHeld;
 
+    @Column(name = "status")
+    @JsonProperty("status")
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
+    @Column(name = "comment")
+    @JsonProperty("comment")
+    @Nullable
+    private String comment;
+
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "lesson_id", insertable = false, updatable = false)
     @Fetch(FetchMode.JOIN)
@@ -80,7 +90,6 @@ public class Lesson {
     public void getLessonFileNames(Set<String> fileNames) {
         //Receiving Set of fileNames. No actions yet
     }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -95,6 +104,7 @@ public class Lesson {
         if (!getDuration().equals(lesson.getDuration())) return false;
         if (!getDate().equals(lesson.getDate())) return false;
         if (!getTeacher().equals(lesson.getTeacher())) return false;
+        if (!getStatus().equals(lesson.getStatus())) return false;
         return getTeacherPost().equals(lesson.getTeacherPost());
     }
 
@@ -108,6 +118,7 @@ public class Lesson {
         result = 31 * result + getTeacherPost().hashCode();
         result = 31 * result + getPeoplePlanned();
         result = 31 * result + (isHeld() ? 1 : 0);
+        result = 31 * result + getStatus().hashCode();
         return result;
     }
 
@@ -122,7 +133,15 @@ public class Lesson {
                 ", teacherPost='" + teacherPost + '\'' +
                 ", peoplePlanned=" + peoplePlanned +
                 ", isHeld=" + isHeld +
+                ", status=" + status.toString() +
                 ", lessonFileNames=" + getLessonFileNames() +
                 '}';
+    }
+
+    public enum Status{
+        PLANNED ,
+        HELD ,
+        CANCELLED ,
+        RESCHEDULED
     }
 }

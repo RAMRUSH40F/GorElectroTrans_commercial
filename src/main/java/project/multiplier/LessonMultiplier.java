@@ -37,6 +37,7 @@ public class LessonMultiplier {
                     .peoplePlanned((Integer) LESSONS_DATA[i][4])
                     .teacherPost((String) LESSONS_DATA[i][5])
                     .isHeld(true)
+                    .status(Lesson.Status.HELD)
                     .build();
             lessonService.addNewLesson(departmentId, lesson);
         }
