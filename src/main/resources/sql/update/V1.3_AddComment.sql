@@ -1,47 +1,47 @@
 
-USE dep_1;
+USE DEP_1;
 ALTER TABLE lesson
     ADD comment varchar(1000);
-USE dep_2;
+USE DEP_2;
 ALTER TABLE lesson
     ADD comment varchar(1000);
-USE dep_3;
+USE DEP_3;
 ALTER TABLE lesson
     ADD comment varchar(1000);
-USE dep_4;
+USE DEP_4;
 ALTER TABLE lesson
     ADD comment varchar(1000);
-USE dep_5;
+USE DEP_5;
 ALTER TABLE lesson
     ADD comment varchar(1000);
-USE dep_6;
+USE DEP_6;
 ALTER TABLE lesson
     ADD comment varchar(1000);
-USE dep_7;
+USE DEP_7;
 ALTER TABLE lesson
     ADD comment varchar(1000);
-USE dep_8;
+USE DEP_8;
 ALTER TABLE lesson
     ADD comment varchar(1000);
-USE dep_9;
+USE DEP_9;
 ALTER TABLE lesson
     ADD comment varchar(1000);
-USE dep_10;
+USE DEP_10;
 ALTER TABLE lesson
     ADD comment varchar(1000);
-USE dep_11;
+USE DEP_11;
 ALTER TABLE lesson
     ADD comment varchar(1000);
-USE dep_12;
+USE DEP_12;
 ALTER TABLE lesson
     ADD comment varchar(1000);
-USE dep_13;
+USE DEP_13;
 ALTER TABLE lesson
     ADD comment varchar(1000);
-USE dep_14;
+USE DEP_14;
 ALTER TABLE lesson
     ADD comment varchar(1000);
-USE dep_15;
+USE DEP_15;
 ALTER TABLE lesson
     ADD comment varchar(1000);
     
