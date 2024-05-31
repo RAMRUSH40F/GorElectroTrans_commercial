@@ -45,12 +45,11 @@ public class HttpRequestFilter implements HandlerInterceptor {
         stringBuilder.append("Http request: ")
                 .append(request.getMethod())
                 .append(request.getRequestURI())
-                .append("Parameters={");
-        request.getParameterMap().entrySet().forEach(
-                        entry -> stringBuilder.append(entry.getKey())
-                                .append('=')
-                                .append(Arrays.toString(entry.getValue()))
-                                .append(','));
+                .append(", Parameters={");
+        request.getParameterMap().forEach((key, value) -> stringBuilder.append(key)
+                .append('=')
+                .append(Arrays.toString(value))
+                .append(','));
         stringBuilder.append('}');
         log.info(stringBuilder.toString());
     }

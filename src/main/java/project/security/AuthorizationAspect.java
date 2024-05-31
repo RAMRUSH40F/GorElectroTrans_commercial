@@ -46,5 +46,4 @@ public class AuthorizationAspect {
     public void authorizeRequestsAttendanceController(String jwtToken, String depId) {
         auth.authorize(jwtToken, Integer.parseInt(depId));
     }
-
 }
