@@ -1,13 +1,13 @@
-package project.multiplier.service;
+package project.dataGeneration;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-import project.multiplier.AttendanceMultiplier;
-import project.multiplier.LessonMultiplier;
-import project.multiplier.StudentMultiplier;
-import project.multiplier.SubdepartmentMultiplier;
+import project.dataGeneration.multiplier.AttendanceMultiplier;
+import project.dataGeneration.multiplier.LessonMultiplier;
+import project.dataGeneration.multiplier.StudentMultiplier;
+import project.dataGeneration.multiplier.SubdepartmentMultiplier;
 
 /**
  * Сервис для заполнения базы тестовыми данными
@@ -18,7 +18,7 @@ import project.multiplier.SubdepartmentMultiplier;
 @Service
 @Lazy
 @Slf4j
-public class TestDataGenerator {
+public class TestDataGenerationService {
     public static final int DEPARTMENTS_COUNT = 15;
     @Autowired
     AttendanceMultiplier attendanceMultiplier;

@@ -1,4 +1,4 @@
-package project.multiplier;
+package project.dataGeneration.multiplier;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

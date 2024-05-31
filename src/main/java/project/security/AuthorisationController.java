@@ -1,4 +1,4 @@
-package project.security.controller;
+package project.security;
 
 
 import lombok.RequiredArgsConstructor;

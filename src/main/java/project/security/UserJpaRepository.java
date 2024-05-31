@@ -1,4 +1,4 @@
-package project.security.repository;
+package project.security;
 
 
 import org.springframework.data.repository.CrudRepository;

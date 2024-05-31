@@ -1,4 +1,4 @@
-package project.multiplier.controller;
+package project.dataGeneration;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,21 +7,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import project.multiplier.service.TestDataGenerator;
 
 @RestController
 @RequestMapping("/service")
 @Slf4j
 @Profile("docker")
-public class DataGenerationController {
+public class TestDataGenerationController {
     @Autowired
-    private TestDataGenerator testDataGenerator;
+    private TestDataGenerationService testDataGenerationService;
 
     @GetMapping("/dep_{n}/generateData")
     public String generateDepData(@PathVariable Integer n) {
         log.info("Start filling department number{}", n);
         try {
-            testDataGenerator.addTestData(n);
+            testDataGenerationService.addTestData(n);
         } catch (Exception e) {
             log.error("Exception during data generation in department {}", n, e);
             return "Exception during generation";

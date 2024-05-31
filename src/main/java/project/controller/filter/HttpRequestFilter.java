@@ -1,4 +1,4 @@
-package project.configuration.web;
+package project.controller.filter;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.HandlerInterceptor;
