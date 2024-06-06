@@ -35,25 +35,22 @@ public class AttendanceMultiplier {
         log.info("Attendance multiplier starting adding testData: departmentDatabase={}", departmentId);
 
         Pageable pageable = PageRequest.of(1, 100);
-        // Достаем из БД все записи об уроках и об учениках и оставляем каждый шестой id студента.
+        // Достаем из БД все записи об уроках
         List<Lesson> lessons = lessonService.findAllByNullableKeywordWithPagination(departmentId, Optional.empty(), pageable).toList();
         List<Integer> lessIds = lessons.stream()
                 .map(Lesson::getId)
-                .filter(id -> random.nextInt(6) == 1)
                 .collect(Collectors.toList());
-        log.debug(lessIds.toString());
+        log.debug("LessonId={}", lessIds);
 
-        // Достаем из БД все записи об уроках и об учениках и оставляем каждый 3ий урок.
+        // Достаем из БД все записи об учениках и оставляем шестую часть записей
         List<Student> students = studentRepository.getStudentsIdList(departmentId);
         List<String> studentIdS = students.stream().
                 map(Student::getStudentId).
-                filter(id -> random.nextInt(3) == 1)
+                filter(id -> random.nextInt(6) == 1)
                 .collect(Collectors.toList());
-        log.debug(studentIdS.toString());
+        log.debug("StudentId={}", studentIdS);
 
-        // Каждый шестой в среднем ходит на какие-то уроки
         for (String studId : studentIdS) {
-            // Ходят в среднем на каждый третий урок.
             for (Integer lessId : lessIds) {
                 Attendance attendance = Attendance.builder()
                         .lessonId(lessId)
@@ -63,7 +60,7 @@ public class AttendanceMultiplier {
                 attendanceService.save(departmentId, attendance);
             }
         }
-        log.info("Attendance multiplier added testData: departmentDatabase={}", departmentId);
+        log.debug("Attendance multiplier added testData: departmentDatabase={}", departmentId);
     }
 
 
