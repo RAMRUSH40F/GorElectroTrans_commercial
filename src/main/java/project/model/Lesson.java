@@ -56,8 +56,13 @@ public class Lesson {
     @JsonProperty("peoplePlanned")
     private int peoplePlanned;
 
+    /**
+     * Создано новое поле с большим количеством значений {@link Status}
+     */
     @Column(name = "isheld")
     @JsonProperty("isHeld")
+    @Nullable
+    @Deprecated
     private boolean isHeld;
 
     @Column(name = "status")
