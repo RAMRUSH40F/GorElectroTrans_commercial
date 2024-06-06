@@ -14,16 +14,13 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import project.model.Lesson;
-import project.model.Student;
-import project.model.Subdepartment;
 import project.security.service.JwtAuthorizationService;
 import project.service.LessonServiceImpl;
-import project.service.SubdepartmentServiceImpl;
 import project.service.reportService.TeacherProfession;
 
 import javax.sql.DataSource;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -103,7 +100,7 @@ public class LessonApiTest {
                 () -> assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK),
                 () -> Assertions.assertEquals(receivedLesson.getTopic(), testLesson.getTopic()),
                 () -> Assertions.assertEquals(receivedLesson.getDuration(), testLesson.getDuration()),
-                () -> Assertions.assertEquals(receivedLesson.getDate().toLocalDate(), testLesson.getDate().toLocalDate()),
+                () -> Assertions.assertEquals(receivedLesson.getDate(), testLesson.getDate()),
                 () -> Assertions.assertEquals(receivedLesson.getTeacher(), testLesson.getTeacher()),
                 () -> Assertions.assertEquals(receivedLesson.getPeoplePlanned(), testLesson.getPeoplePlanned()),
                 () -> Assertions.assertEquals(receivedLesson.getTeacherPost(), testLesson.getTeacherPost()),
@@ -113,14 +110,14 @@ public class LessonApiTest {
         );
     }
     private Lesson createTestLesson(){
-        Object[] res = new Object[]{"Ремонт нового подвижного состава трамваев_тест", 2.6f, new Date(1683014400L), "Левицкий Леонид Константинович.", 52, TeacherProfession.MASTER.getProfession()};
+        Object[] res = {"Ремонт нового подвижного состава трамваев_тест", 2.6f, "Левицкий Леонид Константинович.", 52, TeacherProfession.MASTER.getProfession()};
         return Lesson.builder()
                 .topic((String) res[0])
                 .duration((Float) res[1])
-                .date((Date) res[2])
-                .teacher((String) res[3])
-                .peoplePlanned((Integer) res[4])
-                .teacherPost((String) res[5])
+                .date(LocalDate.now())
+                .teacher((String) res[2])
+                .peoplePlanned((Integer) res[3])
+                .teacherPost((String) res[4])
                 .isHeld(true)
                 .status(Lesson.Status.HELD)
                 .build();

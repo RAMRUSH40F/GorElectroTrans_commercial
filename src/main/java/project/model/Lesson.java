@@ -12,7 +12,7 @@ import org.springframework.lang.Nullable;
 import project.model.projection.LessonContentNoFileProjection;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -42,7 +42,7 @@ public class Lesson {
 
     @Column
     @JsonProperty("date")
-    private Date date;
+    private LocalDate date;
 
     @Column
     @JsonProperty("teacher")

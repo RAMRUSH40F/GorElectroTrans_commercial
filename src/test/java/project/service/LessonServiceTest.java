@@ -1,5 +1,6 @@
 package project.service;
 
+import net.bytebuddy.asm.Advice;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +21,7 @@ import project.model.Lesson;
 import project.service.reportService.TeacherProfession;
 
 import javax.sql.DataSource;
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -117,16 +118,16 @@ class LessonServiceTest {
     @Test
     void addNewLesson_lessonCountPlusOneResult() {
         Integer num = lessonService.getLessonsCount(4);
-        Object[] res = new Object[]{"Ремонт нового подвижного состава трамваев_тест", 2.6f, new Date(1683014400L), "Левицкий Леонид Константинович.", 52, TeacherProfession.MASTER.getProfession()};
+        Object[] res = new Object[]{"Ремонт нового подвижного состава трамваев_тест", 2.6f, "Левицкий Леонид Константинович.", 52, TeacherProfession.MASTER.getProfession()};
 
         lessonService.addNewLesson(4,
                 Lesson.builder()
                         .topic((String) res[0])
                         .duration((Float) res[1])
-                        .date((Date) res[2])
-                        .teacher((String) res[3])
-                        .peoplePlanned((Integer) res[4])
-                        .teacherPost((String) res[5])
+                        .date(LocalDate.now())
+                        .teacher((String) res[2])
+                        .peoplePlanned((Integer) res[3])
+                        .teacherPost((String) res[4])
                         .isHeld(true)
                         .status(Lesson.Status.HELD)
                         .build());
