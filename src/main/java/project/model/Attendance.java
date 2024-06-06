@@ -104,25 +104,22 @@ public class Attendance {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         Attendance that = (Attendance) o;
-
-        if (getSuccess() != that.getSuccess()) return false;
-        if (!getStudentId().equals(that.getStudentId())) return false;
-        if (!getLessonId().equals(that.getLessonId())) return false;
-        if (getLesson() != null ? !getLesson().equals(that.getLesson()) : that.getLesson() != null) return false;
-        return getStudent() != null ? getStudent().equals(that.getStudent()) : that.getStudent() == null;
+        return success == that.success && studentId.equals(that.studentId) && lessonId.equals(that.lessonId);
     }
 
     @Override
     public int hashCode() {
-        int result = getStudentId().hashCode();
-        result = 31 * result + getLessonId().hashCode();
-        result = 31 * result + getSuccess();
-        result = 31 * result + (getLesson() != null ? getLesson().hashCode() : 0);
-        result = 31 * result + (getStudent() != null ? getStudent().hashCode() : 0);
+        int result = studentId.hashCode();
+        result = 31 * result + lessonId.hashCode();
+        result = 31 * result + success;
         return result;
     }
 

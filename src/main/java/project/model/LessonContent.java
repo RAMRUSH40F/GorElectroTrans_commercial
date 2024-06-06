@@ -30,12 +30,12 @@ public class LessonContent {
 
         LessonContent that = (LessonContent) o;
 
-        return getFileName().equals(that.getFileName());
+        return fileName.equals(that.fileName);
     }
 
     @Override
     public int hashCode() {
-        return getFileName().hashCode();
+        return fileName.hashCode();
     }
 
     @Override
