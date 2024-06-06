@@ -15,7 +15,7 @@ import project.model.Lesson;
 import project.service.reportService.TeacherProfession;
 
 import javax.sql.DataSource;
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -105,7 +105,7 @@ class LessonServiceAndRepositoryUnitTest {
         Lesson testLesson = Lesson.builder()
                 .topic("Ремонт нового подвижного состава трамваев_тест")
                 .duration(2.6f)
-                .date(new Date(1683014400L))
+                .date(LocalDate.now())
                 .teacher("Левицкий Леонид Константинович.")
                 .peoplePlanned(52)
                 .teacherPost(TeacherProfession.MASTER.getProfession())

@@ -8,7 +8,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.time.LocalDate;
 
 
 @Builder
@@ -66,7 +66,7 @@ public class Attendance {
     }
 
     @JsonGetter("date")
-    public Date getLessonDate() {
+    public LocalDate getLessonDate() {
         if (lesson != null) {
             return lesson.getDate();
         } else {

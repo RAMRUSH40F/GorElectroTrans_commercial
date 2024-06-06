@@ -60,7 +60,7 @@ public class AttendanceMultiplier {
                 attendanceService.save(departmentId, attendance);
             }
         }
-        log.debug("Attendance multiplier added testData: departmentDatabase={}", departmentId);
+        log.info("Attendance multiplier added testData: departmentDatabase={}", departmentId);
     }
 
 
