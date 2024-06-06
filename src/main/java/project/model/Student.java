@@ -69,20 +69,19 @@ public class Student {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         Student student = (Student) o;
-
-        if (getSubdepartmentId() != student.getSubdepartmentId()) return false;
-        if (!getStudentId().equals(student.getStudentId())) return false;
-        return getName().equals(student.getName());
+        return studentId.equals(student.studentId);
     }
 
     @Override
     public int hashCode() {
-        int result = getStudentId().hashCode();
-        result = 31 * result + getName().hashCode();
-        return result;
+        return studentId.hashCode();
     }
 }

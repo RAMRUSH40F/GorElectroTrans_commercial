@@ -20,6 +20,4 @@ public interface AttendanceJpaRepository extends PagingAndSortingRepository<Atte
             "or a.student.subdepartment.name like CONCAT('%', :key, '%') " +
             "or a.student.name like CONCAT('%', :key, '%') ")
     Page<Attendance> findByKeyword(@Param("key") @NonNull String key, Pageable pageable);
-
-    Page<Attendance> findAll(Pageable pageable);
 }

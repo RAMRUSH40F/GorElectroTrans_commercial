@@ -7,11 +7,11 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import project.model.projection.LessonContentNoFileProjection;
 
 import javax.persistence.*;
-import java.io.Console;
 import java.sql.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Getter
 @Setter
-
 @Entity
 @Table
 public class Lesson {
@@ -79,46 +78,37 @@ public class Lesson {
     private Set<LessonContentNoFileProjection> lessonContentProjection;
 
     @JsonGetter("lessonContent")
+    @NonNull
     public Set<String> getLessonFileNames() {
-        if (lessonContentProjection == null) lessonContentProjection = new HashSet<>();
+        if (lessonContentProjection == null) {
+            return new HashSet<>();
+        }
         return lessonContentProjection.stream()
                 .map(LessonContentNoFileProjection::getFileName)
                 .collect(Collectors.toSet());
     }
 
     @JsonSetter("lessonContent")
-    public void getLessonFileNames(Set<String> fileNames) {
+    public void setLessonFileNames(Set<String> fileNames) {
         //Receiving Set of fileNames. No actions yet
     }
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         Lesson lesson = (Lesson) o;
-
-        if (getPeoplePlanned() != lesson.getPeoplePlanned()) return false;
-        if (isHeld() != lesson.isHeld()) return false;
-        if (!getId().equals(lesson.getId())) return false;
-        if (!getTopic().equals(lesson.getTopic())) return false;
-        if (!getDuration().equals(lesson.getDuration())) return false;
-        if (!getDate().equals(lesson.getDate())) return false;
-        if (!getTeacher().equals(lesson.getTeacher())) return false;
-        if (!getStatus().equals(lesson.getStatus())) return false;
-        return getTeacherPost().equals(lesson.getTeacherPost());
+        return id.equals(lesson.id);
     }
 
     @Override
     public int hashCode() {
-        int result = getId().hashCode();
-        result = 31 * result + getTopic().hashCode();
-        result = 31 * result + getDuration().hashCode();
-        result = 31 * result + getDate().hashCode();
-        result = 31 * result + getTeacher().hashCode();
-        result = 31 * result + getTeacherPost().hashCode();
-        result = 31 * result + getPeoplePlanned();
-        result = 31 * result + (isHeld() ? 1 : 0);
-        result = 31 * result + getStatus().hashCode();
+        int result = id.hashCode();
         return result;
     }
 
@@ -133,7 +123,7 @@ public class Lesson {
                 ", teacherPost='" + teacherPost + '\'' +
                 ", peoplePlanned=" + peoplePlanned +
                 ", isHeld=" + isHeld +
-                ", status=" + status.toString() +
+                ", status=" + status +
                 ", lessonFileNames=" + getLessonFileNames() +
                 '}';
     }
