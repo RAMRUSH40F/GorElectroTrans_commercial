@@ -18,12 +18,12 @@ import java.time.LocalDate;
 public class LessonMultiplier {
 
     private static final Object[][] LESSONS_DATA = {
-            {"Тех.обслуживание на новых моделях трамваев", 2.0f, "Джмун Федор Кириллович", 34, TeacherProfession.MASTER.getProfession()},
-            {"Как вкручивать лампочки правильно", 1.6f, "Высоцкий Констанстин Павлович.", 10, TeacherProfession.RUKOVODITEL.getProfession()},
-            {"Здоровый образ жизни у водителей трамваев", "Капылов Петр Дмитриевич.", 112, TeacherProfession.RUKOVODITEL.getProfession()},
-            {"Разговоры о важном", 1.0f, "Высоцкий П.К.", 34, TeacherProfession.NASTAVNIK.getProfession()},
-            {"Ремонт нового подвижного состава трамваев", 2.6f, "Левицкий Леонид Константинович.", 52, TeacherProfession.MASTER.getProfession()},
-            {"Ремонт усов троллейбуса", 2.4f, "Яшин А.С.", 40, "Лучший механик месяца"}
+            {"Тех.обслуживание на новых моделях трамваев", "Джмун Федор Кириллович", TeacherProfession.MASTER.getProfession()},
+            {"Как вкручивать лампочки правильно", "Высоцкий Констанстин Павлович.", TeacherProfession.RUKOVODITEL.getProfession()},
+            {"Здоровый образ жизни у водителей трамваев", "Капылов Петр Дмитриевич.", TeacherProfession.RUKOVODITEL.getProfession()},
+            {"Разговоры о важном", "Высоцкий П.К.", TeacherProfession.NASTAVNIK.getProfession()},
+            {"Ремонт нового подвижного состава трамваев", "Левицкий Леонид Константинович.", TeacherProfession.MASTER.getProfession()},
+            {"Ремонт усов троллейбуса", "Яшин А.С.", "Другое"}
     };
     private final LessonServiceImpl lessonService;
 
@@ -35,18 +35,17 @@ public class LessonMultiplier {
             String comment = shouldHaveComment ? "Some comment" : null;
             Lesson lesson = Lesson.builder()
                     .topic((String) LESSONS_DATA[i][0])
-                    .duration((Float) LESSONS_DATA[i][1])
+                    .teacher((String) LESSONS_DATA[i][1])
+                    .teacherPost((String) LESSONS_DATA[i][2])
+                    .duration(0.5f * i)
                     .date(LocalDate.now().minusDays(i))
-                    .teacher((String) LESSONS_DATA[i][2])
-                    .peoplePlanned((Integer) LESSONS_DATA[i][3])
-                    .teacherPost((String) LESSONS_DATA[i][4])
+                    .peoplePlanned(i * 10)
                     .isHeld(false)
-                    .status(status) // Different Statuses
+                    .status(status)
                     .comment(comment)
                     .build();
             lessonService.addNewLesson(departmentId, lesson);
         }
         log.info("Lesson multiplier added testData: departmentDatabase={}", departmentId);
-
     }
 }
