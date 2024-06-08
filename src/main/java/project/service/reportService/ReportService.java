@@ -1,6 +1,5 @@
 package project.service.reportService;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -16,13 +15,11 @@ import org.springframework.stereotype.Service;
 import project.model.QuarterDateModel;
 import project.repository.ReportRepository;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.*;
 import java.time.LocalDate;
 import java.time.Year;
 import java.time.temporal.IsoFields;
@@ -32,37 +29,64 @@ import static project.dataSource.DynamicDataSourceContextHolder.setCurrentDataSo
 
 
 @Service("ReportServiceBean")
-@RequiredArgsConstructor
 @Slf4j
 public class ReportService {
     private final ReportRepository reportRepository;
+    private final  File tempFile;
+
+    public ReportService(ReportRepository reportRepository) {
+        this.reportRepository = reportRepository;
+        try {
+            this.tempFile = File.createTempFile("temp_report", "xls");
+            tempFile.deleteOnExit();
+        } catch (IOException e) {
+            log.error("Произошла ошибка при попытке создания временного файла отчетов",e);
+            throw new RuntimeException(e);
+        }
+    }
 
     public @NotNull HSSFWorkbook createReport(int quarter, int year) {
-        final String fileName = "src/main/resources/report_template.xls";
-        final String copyFileName = "src/main/resources/report.xls";
+        log.info("Начали обрабатывать отчеты");
+        final String fileName = "/report_template.xls";
         final Map.Entry<Integer, Integer> yearMonthPair = calculateDate(quarter, year);
-        HSSFWorkbook hssfWorkBook = readWorkbook(fileName, copyFileName);
+        HSSFWorkbook hssfWorkBook = readWorkbook(fileName);
         final HSSFSheet sheet = hssfWorkBook.getSheet("Лист1");
         creatLessonReportPart(sheet, yearMonthPair);
         creatWorkerReportPart(sheet, yearMonthPair);
         creatTeacherReportPart(sheet, yearMonthPair);
-        writeToWorkbook(hssfWorkBook, copyFileName);
+        writeToWorkbook(hssfWorkBook);
         return hssfWorkBook;
     }
 
     /*
     Метод чтения файла
     */
-    public HSSFWorkbook readWorkbook(String filename, String copy) {
-        Path copied = Paths.get(copy);
-        Path originalPath = Paths.get(filename);
-        try {
-            Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
-            return new HSSFWorkbook(new POIFSFileSystem(new FileInputStream(copied.toFile())));
+    public HSSFWorkbook readWorkbook(String fileName) {
+        URL path= getClass().getResource(fileName);
+        log.debug("URL путь к шаблон : {}", path);
+        if(path.toString().contains("*.war!")){
+            log.info("Создаем систему файлов");
+            try {
+                FileSystem zipfs = initFileSystem(path.toURI());
+                log.info("Создали систему файлов");
+            } catch (IOException | URISyntaxException e) {
+                log.error("Ошибка создания системы файлов",e);
+                throw new RuntimeException(e);
+            }
+        }//тут не совсем корректная обработка, должно быть без if в идеале
+        try(FileOutputStream out = new FileOutputStream(tempFile)) {
+            log.debug("Путь к шаблон до преобразования к объекту Path : {}", path.toURI());
+            Path originalPath = Paths.get(URI.create(path.toString().replace("classes!/", "classes/")));
+            log.debug("Путь к шаблон после преобразования к объекту  Path : {}", originalPath);
+            Files.copy(originalPath, out);
+            return new HSSFWorkbook(new POIFSFileSystem(new FileInputStream(tempFile)));
         } catch (IOException e) {
             log.error("Ошибка на этапе чтения файла:", e);
             throw new RuntimeException("Файл шаблона не был загружен в корневую папку проекта или " +
                     "произошла другая ошибка связанная с чтением шаблонной таблицы", e);
+        } catch (URISyntaxException e) {
+            log.error("Ошибка на этапе чтения файла:", e);
+            throw new RuntimeException("Некорректный путь к файлам",e);
         }
     }
 
@@ -70,11 +94,9 @@ public class ReportService {
     /*
      * Метод записи файла
      */
-    public void writeToWorkbook(HSSFWorkbook workbook, String fileName) {
-        try {
-            FileOutputStream fileOut = new FileOutputStream(fileName);
+    public void writeToWorkbook(HSSFWorkbook workbook) {
+        try(FileOutputStream fileOut = new FileOutputStream(tempFile)) {
             workbook.write(fileOut);
-            fileOut.close();
         } catch (IOException e) {
             throw new RuntimeException(
                     "Произошла другая ошибка связанная с записью в таблицу", e);
@@ -129,6 +151,19 @@ public class ReportService {
             cell.setCellValue(result);
         }
         setResultingRowValues(destination);
+    }
+    private FileSystem initFileSystem(URI uri) throws IOException
+    {
+        try
+        {
+            return FileSystems.getFileSystem(uri);
+        }
+        catch( FileSystemNotFoundException e )
+        {
+            Map<String, String> env = new HashMap<>();
+            env.put("create", "true");
+            return FileSystems.newFileSystem(uri, env);
+        }
     }
 
     /*
