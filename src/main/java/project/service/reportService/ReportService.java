@@ -1,142 +1,87 @@
 package project.service.reportService;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import project.model.QuarterDateModel;
 import project.repository.ReportRepository;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URL;
-import java.nio.file.FileSystemNotFoundException;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.Year;
 import java.time.temporal.IsoFields;
-import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.regex.Pattern;
 
 import static project.dataSource.DynamicDataSourceContextHolder.setCurrentDataSource;
 
 
 @Service("ReportServiceBean")
 @Slf4j
+@RequiredArgsConstructor
 public class ReportService {
-    private static final Pattern ARCHIVE_PATTERN = Pattern.compile("(.*)\\.(([wj])ar!)(.*)");
     private static final String REPORT_TEMPLATE_PATH = "/report_template.xls";
+
     private final ReportRepository reportRepository;
-    private final File tempFile;
-    public ReportService(ReportRepository reportRepository) {
-        this.reportRepository = reportRepository;
-        try {
-            this.tempFile = File.createTempFile("temp_report", "xls");
-            tempFile.deleteOnExit();
-        } catch (IOException e) {
-            log.error("Произошла ошибка при попытке создания временного файла отчетов",e);
-            throw new RuntimeException(e);
-        }
-    }
+
+
     @NotNull
     public HSSFWorkbook createReport(int quarter, int year) {
         log.info("Начали создание отчета");
-        Map.Entry<Integer, Integer> yearMonthPair = calculateDate(quarter, year);
+        Pair<Integer, Integer> yearMonthPair = calculateDate(quarter, year);
         HSSFWorkbook hssfWorkBook = createWorkbook();
         HSSFSheet sheet = hssfWorkBook.getSheet("Лист1");
         createLessonReportPart(sheet, yearMonthPair);
         createWorkerReportPart(sheet, yearMonthPair);
         createTeacherReportPart(sheet, yearMonthPair);
-        writeToWorkbook(hssfWorkBook);
         log.info("Закончили создание отчета");
         return hssfWorkBook;
     }
 
-    /*
-    Метод чтения файла
-    */
     private HSSFWorkbook createWorkbook() {
-        URL templateClasspath=Objects.requireNonNull(getClass().getResource(REPORT_TEMPLATE_PATH));
-
-        boolean workingInJarFile = ARCHIVE_PATTERN.matcher(templateClasspath.toString()).matches();
-        if(workingInJarFile){
-            log.info("Создаем систему файлов для архива");
-            try {
-                initFileSystem(templateClasspath.toURI());
-            } catch (Exception e) {
-                log.error("Ошибка создания системы файлов",e);
-                throw new RuntimeException(e);
-            }
-       }
-        try(FileOutputStream out = new FileOutputStream(tempFile)) {
-            log.debug("Путь к шаблон до преобразования к объекту Path : {}", templateClasspath.toURI());
-            Path templatePath = Paths.get(URI.create(templateClasspath.toString().replace("classes!/", "classes/")));//Почему-то в докере ставится лишний восклицательный знак
-            log.debug("Путь к шаблон после преобразования к объекту  Path : {}", templatePath);
-            Files.copy(templatePath, out);
-            return new HSSFWorkbook(new POIFSFileSystem(new FileInputStream(tempFile)));
+        try (InputStream inputStream = Objects.requireNonNull(getClass().getResourceAsStream(REPORT_TEMPLATE_PATH))) {
+            return new HSSFWorkbook(inputStream);
         } catch (Exception e) {
             log.error("Ошибка на этапе чтения файла:", e);
             throw new RuntimeException("Файл шаблона не был загружен в корневую папку проекта или " +
                     "произошла другая ошибка связанная с чтением шаблонной таблицы", e);
         }
     }
-
-
-    /*
-     * Метод записи файла
-     */
-    private void writeToWorkbook(HSSFWorkbook workbook) {
-        try(FileOutputStream fileOut = new FileOutputStream(tempFile)) {
-            workbook.write(fileOut);
-        } catch (IOException e) {
-            throw new RuntimeException(
-                    "Произошла ошибка при записи данных в таблицу", e);
-        }
+    private void createLessonReportPart(HSSFSheet sheet, Pair<Integer, Integer> yearMonthPair) {
+        setRowValues(sheet.getRow(2), () -> reportRepository.findAllLessonsBetweenDates(yearMonthPair.getFirst(), yearMonthPair.getSecond()));
+        setRowValues(sheet.getRow(3), () -> reportRepository.findAllLessonsBetweenDatesWithHeld(yearMonthPair.getFirst(), yearMonthPair.getSecond()));
+        setRowValues(sheet.getRow(4), () -> reportRepository.findAllLessonsBetweenDates(yearMonthPair.getFirst(), yearMonthPair.getSecond()));
+        setRowValues(sheet.getRow(5), () -> reportRepository.findAllLessonsBetweenDatesWithHeld(yearMonthPair.getFirst(), yearMonthPair.getSecond()));
     }
 
-    private void createLessonReportPart(HSSFSheet sheet, Map.Entry<Integer, Integer> yearMonthPair) {
-        setRowValues(sheet.getRow(2), () -> reportRepository.findAllLessonsBetweenDates(yearMonthPair.getKey(), yearMonthPair.getValue()));
-        setRowValues(sheet.getRow(3), () -> reportRepository.findAllLessonsBetweenDatesWithHeld(yearMonthPair.getKey(), yearMonthPair.getValue()));
-        setRowValues(sheet.getRow(4), () -> reportRepository.findAllLessonsBetweenDates(yearMonthPair.getKey(), yearMonthPair.getValue()));
-        setRowValues(sheet.getRow(5), () -> reportRepository.findAllLessonsBetweenDatesWithHeld(yearMonthPair.getKey(), yearMonthPair.getValue()));
-    }
-
-    private void createWorkerReportPart(HSSFSheet sheet, Map.Entry<Integer, Integer> yearMonthPair) {
-        setRowValues(sheet.getRow(6), () -> reportRepository.findAllWorkersBetweenDates(yearMonthPair.getKey(), yearMonthPair.getValue()));
-        setRowValues(sheet.getRow(7), () -> reportRepository.findAllWorkersBetweenDatesWithSuccess(yearMonthPair.getKey(), yearMonthPair.getValue()));
+    private void createWorkerReportPart(HSSFSheet sheet, Pair<Integer, Integer> yearMonthPair) {
+        setRowValues(sheet.getRow(6), () -> reportRepository.findAllWorkersBetweenDates(yearMonthPair.getFirst(), yearMonthPair.getSecond()));
+        setRowValues(sheet.getRow(7), () -> reportRepository.findAllWorkersBetweenDatesWithSuccess(yearMonthPair.getFirst(), yearMonthPair.getSecond()));
         int rowNumber = 8;
         for (WorkerProfessions profession : WorkerProfessions.values()) {
-            setRowValues(sheet.getRow(rowNumber), () -> reportRepository.findAllWorkersBetweenDatesWithSuccessAndProfession(yearMonthPair.getKey(), yearMonthPair.getValue(), profession.getProfession()));
+            setRowValues(sheet.getRow(rowNumber), () -> reportRepository.findAllWorkersBetweenDatesWithSuccessAndProfession(yearMonthPair.getFirst(), yearMonthPair.getSecond(), profession.getProfession()));
             rowNumber++;
         }
         formStatsForOthersCategory(sheet.getRow(13), 7, 12, sheet);
     }
 
-    private void createTeacherReportPart(HSSFSheet sheet, Map.Entry<Integer, Integer> yearMonthPair) {
-        setRowValues(sheet.getRow(14), () -> reportRepository.findAllLessonsBetweenDates(yearMonthPair.getKey(), yearMonthPair.getValue()));
+    private void createTeacherReportPart(HSSFSheet sheet, Pair<Integer, Integer> yearMonthPair) {
+        setRowValues(sheet.getRow(14), () -> reportRepository.findAllLessonsBetweenDates(yearMonthPair.getFirst(), yearMonthPair.getSecond()));
         int rowNumber = 15;
         for (TeacherProfession profession : TeacherProfession.values()) {
-            setRowValues(sheet.getRow(rowNumber), () -> reportRepository.findAllTeachersByProfession(yearMonthPair.getKey(), yearMonthPair.getValue(), profession.getProfession()));
+            setRowValues(sheet.getRow(rowNumber), () -> reportRepository.findAllTeachersByProfession(yearMonthPair.getFirst(), yearMonthPair.getSecond(), profession.getProfession()));
             rowNumber++;
         }
         formStatsForOthersCategory(sheet.getRow(18), 14, 17, sheet);
@@ -163,27 +108,15 @@ public class ReportService {
         }
         setResultingRowValues(destination);
     }
-    private void initFileSystem(URI uri) throws IOException
-    {
-        try
-        {
-             FileSystems.getFileSystem(uri);
-        }
-        catch( FileSystemNotFoundException e )
-        {
-            Map<String, String> env = new HashMap<>();
-            env.put("create", "true");
-            FileSystems.newFileSystem(uri, env);
-        }
-    }
+
 
     /*
      * Расчет интервала
      */
-    private Map.Entry<Integer, Integer> calculateDate(int quarter, int year) {
+    private Pair<Integer, Integer> calculateDate(int quarter, int year) {
         int month;
         month = (quarter - 1) * 3 + 1;
-        return new AbstractMap.SimpleImmutableEntry<>(year, month);
+        return Pair.of(year, month);
     }
 
     /*
