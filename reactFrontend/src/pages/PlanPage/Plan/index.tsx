@@ -159,7 +159,7 @@ function StatusTooltip({ comment, id }: { comment: string; id: string }) {
         <Tooltip
             id={id}
             className={styles.statusTooltip}
-            content={`Причина: ${comment} тут может быть довольно много текста и это нужно продумать`}
+            content={comment}
             border={"1px solid #929292"}
             variant="light"
             opacity={1}
