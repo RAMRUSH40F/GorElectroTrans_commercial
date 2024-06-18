@@ -24,7 +24,7 @@ public class AuthorizationAspect {
     }
 
 
-    @Before("execution(* project.controller.ReportController.*(..)) && args(jwtToken, ..)")
+    @Before("execution(* project.controller.ReportController.*(..)) && args( ..,jwtToken)")
     public void authorizeRequestsReportController(String jwtToken) {
         auth.authorize(jwtToken, 100);
     }
