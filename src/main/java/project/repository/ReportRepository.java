@@ -25,7 +25,7 @@ public Integer findAllLessonsBetweenDates(int year, int month){
                         + month
                         + "-01' AND '"
                         + year + "-"
-                        + (month + 3) + "-01' and isHeld=true",
+                        + (month + 3) + "-01' and status='HELD'",
                 (rs, rowNum) -> rs.getInt("COUNT(1)")).get(0);
     }
     public Integer findAllWorkersBetweenDates(int year,int month){

@@ -30,7 +30,7 @@ public interface LessonJpaRepository extends PagingAndSortingRepository<Lesson, 
     Integer countAllLessons();
 @Query("SELECT COUNT(l) FROM Lesson l WHERE l.date>=:dateFrom and l.date<:dateTo")
     Integer findAllLessonsBetweenDates(@Param("dateFrom") Date from,@Param("dateTo") Date to);
-    @Query("SELECT COUNT(l) FROM Lesson l WHERE l.date>=:dateFrom and l.date<:dateTo and l.isHeld=true ")
+    @Query("SELECT COUNT(l) FROM Lesson l WHERE l.date>=:dateFrom and l.date<:dateTo and l.status='HELD' ")
     Integer findAllLessonsBetweenDatesWithHeld(@Param("dateFrom") Date from,@Param("dateTo") Date to);
     @Override
     Optional<Lesson> findById(@NonNull Integer integer);
