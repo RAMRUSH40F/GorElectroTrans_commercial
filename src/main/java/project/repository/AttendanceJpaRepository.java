@@ -10,6 +10,9 @@ import org.springframework.stereotype.Repository;
 import project.model.Attendance;
 import project.model.AttendanceId;
 
+import java.time.LocalDate;
+import java.util.List;
+
 @Repository
 public interface AttendanceJpaRepository extends PagingAndSortingRepository<Attendance, AttendanceId> {
 
@@ -20,4 +23,8 @@ public interface AttendanceJpaRepository extends PagingAndSortingRepository<Atte
             "or a.student.subdepartment.name like CONCAT('%', :key, '%') " +
             "or a.student.name like CONCAT('%', :key, '%') ")
     Page<Attendance> findByKeyword(@Param("key") @NonNull String key, Pageable pageable);
+
+    @Query("select a from Attendance a "+
+            "where a.lesson.date between :dateFrom AND :dateTo")
+    List<Attendance> findAttendancesBetweenDate(@Param("dateFrom") LocalDate date1, @Param("dateTo") LocalDate date2);
 }

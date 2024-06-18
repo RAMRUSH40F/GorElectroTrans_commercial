@@ -2,17 +2,26 @@ package project.controller;
 
 
 import lombok.RequiredArgsConstructor;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.model.Attendance;
+import project.service.AttendanceReportServiceImpl;
 import project.service.AttendanceServiceImpl;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import static project.exceptions.Validator.validateDate;
 import static project.exceptions.Validator.validateDepartmentId;
 
 @RequiredArgsConstructor
@@ -20,6 +29,7 @@ import static project.exceptions.Validator.validateDepartmentId;
 public class AttendanceController {
 
     private final AttendanceServiceImpl attendanceService;
+    private final AttendanceReportServiceImpl attendanceReportService;
 
     @GetMapping("/dep_{N}/attendance/data")
     public ResponseEntity<List<Attendance>> findAllByKeyWordWithPagination(@PathVariable("N") String depId,
@@ -60,6 +70,35 @@ public class AttendanceController {
                            @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
         attendanceService.deleteById(departmentId, attendance);
+    }
+
+    @GetMapping("/dep_{N}/report/attendance")
+    public ResponseEntity<ByteArrayResource> createAttendanceReport(@PathVariable("N") String depId,
+                                                                    @RequestParam("dateFrom") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dateFrom,
+                                                                    @RequestParam("dateTo") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dateTo,
+                                                                    @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken){
+        Integer departmentId = validateDepartmentId(depId);
+        validateDate(dateFrom,dateTo);
+
+        XSSFWorkbook attendanceReportFile = attendanceReportService.attendanceReport(departmentId,dateFrom,dateTo);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try {
+            attendanceReportFile.write(outputStream);
+        }catch (IOException exception){
+            throw new RuntimeException("Ошибка записи файла в поток байт");
+        }
+
+        byte[] bytes = outputStream.toByteArray();
+
+        // Set response headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", "Выгрузка_журнала_посещаемости_" + dateFrom + "-" + dateTo + ".xlsx");
+
+        // Return ResponseEntity with file data and headers
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(new ByteArrayResource(bytes));
     }
 
 }

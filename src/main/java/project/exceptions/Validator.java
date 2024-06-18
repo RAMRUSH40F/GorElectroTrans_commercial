@@ -1,6 +1,8 @@
 package project.exceptions;
 
 
+import java.time.LocalDate;
+
 public class Validator {
     private Validator() {
     }
@@ -40,6 +42,12 @@ public class Validator {
     public static void validateInterval(int interval) {
         if (interval > 4 || interval < 1) {
             throw new InvalidIntervalException(interval);
+        }
+    }
+
+    public static void validateDate(LocalDate dateFrom,LocalDate dateTo){
+        if(dateFrom.isAfter(dateTo) ){
+            throw new IllegalArgumentException("Ошибка ввода диапазона дат");
         }
     }
 }
