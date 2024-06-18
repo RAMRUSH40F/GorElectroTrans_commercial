@@ -18,6 +18,7 @@ import java.util.Date;
 @Immutable
 @Table(name = "Attendance_view")
 @IdClass(AttendanceId.class)
+@Deprecated
 public class AttendanceView implements Serializable {
     @Id
     @Column
