@@ -71,6 +71,7 @@ public class StudentController {
                                                  @RequestBody Student student,
                                                  @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         Integer departmentId = validateDepartmentId(depId);
+        validateStudentId(student.getStudentId());
         HttpHeaders headers = new HttpHeaders();
         Student createdStudent = studentService.addNewStudentBySubdepartmentName(departmentId, student);
         return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(createdStudent);
