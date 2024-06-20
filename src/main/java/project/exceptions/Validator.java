@@ -1,6 +1,8 @@
 package project.exceptions;
 
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.time.LocalDate;
 
 public class Validator {
@@ -22,7 +24,7 @@ public class Validator {
     }
 
     public static void validateStudentId(String id) {
-        if (id.length() != 5) {
+        if (id.length() != 5 || !StringUtils.isNumeric(id)) {
             throw new InvalidStudentIdException(id);
         }
     }
@@ -45,8 +47,8 @@ public class Validator {
         }
     }
 
-    public static void validateDate(LocalDate dateFrom,LocalDate dateTo){
-        if(dateFrom.isAfter(dateTo) ){
+    public static void validateDate(LocalDate dateFrom, LocalDate dateTo) {
+        if (dateFrom.isAfter(dateTo)) {
             throw new IllegalArgumentException("Ошибка ввода диапазона дат");
         }
     }
