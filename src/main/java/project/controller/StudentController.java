@@ -46,7 +46,7 @@ public class StudentController {
                                                             @RequestParam(required = false) Integer limit,
                                                             @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
         int departmentId = validateDepartmentId(depId);
-        List<StudentIdName> students = studentService.findByNameContains(departmentId, key, limit);
+        List<StudentIdName> students = studentService.findByNameStartsWith(departmentId, key, limit);
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("students_count", String.valueOf(students.size()));

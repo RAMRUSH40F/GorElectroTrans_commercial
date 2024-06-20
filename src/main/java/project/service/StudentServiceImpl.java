@@ -57,22 +57,14 @@ public class StudentServiceImpl {
     }
 
     /**
-     * @param key   ключ для поиска вхождения в name
+     * @param key   ключ для поиска по началу строки в поле student.name
      * @param limit макс.кол-во строк в выборке
      */
     @NonNull
-    public List<StudentIdName> findByNameContains(int departmentId, @NonNull String key, @Nullable Integer limit) {
+    public List<StudentIdName> findByNameStartsWith(int departmentId, @NonNull String key, @Nullable Integer limit) {
         setCurrentDataSource("DEP_" + departmentId);
-
         PageRequest pageRequest = limit == null ? PageRequest.ofSize(999) : PageRequest.ofSize(limit);
-        var students = studentIdNameJpaRepository.findByNameStartsWith(StringUtils.capitalize(key), pageRequest);
-        log.info("Fetched Students by name part WITH INDEX on name: rows={}, key={}", students.size(), key);
-        if (!students.isEmpty()) {
-            return students;
-        }
-        students = studentIdNameJpaRepository.findByNameContainingIgnoreCase(key, pageRequest);
-        log.info("Fetched Students by name part NOT USING INDEX on name: rows={}, key={}", students.size(), key);
-        return students;
+        return studentIdNameJpaRepository.findByNameStartsWith(StringUtils.capitalize(key), pageRequest);
     }
 
     public void deleteStudentById(int departmentId, String studentId) {
