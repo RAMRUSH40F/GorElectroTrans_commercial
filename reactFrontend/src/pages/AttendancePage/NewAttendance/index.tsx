@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { MouseEvent, useRef } from "react";
 
 import { useUnit } from "effector-react";
 
@@ -31,13 +31,18 @@ import {
 import styles from "./styles.module.scss";
 
 const NewAttendance: React.FC = () => {
+    const handleModalOpen = (event: MouseEvent<HTMLButtonElement>) => {
+        event.stopPropagation();
+        modalOpened();
+    };
+
     return (
         <>
             <AttendanceModal />
             <ActionButton
                 className={styles.addBtn}
                 colorType="info"
-                onClick={() => modalOpened()}
+                onClick={handleModalOpen}
             >
                 Добавить
             </ActionButton>
@@ -51,7 +56,7 @@ function AttendanceModal() {
     const isModalActive = useUnit($isModalActive);
     const modalRef = useRef<HTMLDivElement | null>(null);
 
-    useClickOutside(modalRef, () => modalClosed());
+    useClickOutside(modalRef, () => modalClosed(), { capture: false });
     useEscape(() => modalClosed());
     useLockedBody(isModalActive);
 
