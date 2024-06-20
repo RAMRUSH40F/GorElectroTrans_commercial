@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from "react";
+import React, { ChangeEvent, InputHTMLAttributes } from "react";
 
 import cn from "classnames";
 
@@ -7,19 +7,26 @@ import Input from "../formElements/Input";
 import styles from "./styles.module.scss";
 
 type Props = {
-    value?: string;
     handleChange?: (event: ChangeEvent<HTMLInputElement>) => void;
     className?: string;
-};
+    inputClassName?: string;
+} & InputHTMLAttributes<HTMLInputElement>;
 
-const Search: React.FC<Props> = ({ value, handleChange, className }) => {
+const Search: React.FC<Props> = ({
+    handleChange,
+    className,
+    inputClassName,
+    placeholder = "Поиск",
+    ...props
+}) => {
     return (
         <div className={cn(styles.search, className)}>
             <Input
-                value={value}
+                className={className}
                 onChange={handleChange}
+                placeholder={placeholder}
                 name="search"
-                placeholder="Поиск"
+                {...props}
             />
             <svg
                 xmlns="http://www.w3.org/2000/svg"
