@@ -93,7 +93,7 @@ public class AttendanceController {
         // Set response headers
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-        headers.setContentDispositionFormData("attachment", "Выгрузка_журнала_посещаемости_" + dateFrom + "-" + dateTo + ".xlsx");
+        headers.setContentDispositionFormData("attachment", "Посещаемость_" + dateFrom + "_до_" + dateTo + "_Отдел_" +departmentId+ ".xlsx");
 
         // Return ResponseEntity with file data and headers
         return ResponseEntity.ok()
