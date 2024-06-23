@@ -80,7 +80,9 @@ function Form() {
             topic,
             status,
             teacherPost,
+            comment,
         } = values;
+
         const { day } = parseISO(date);
 
         const changedPlan: IPlan = {
@@ -93,6 +95,8 @@ function Form() {
             isHeld: !!Number(status.value),
             teacherPost: String(teacherPost.label),
             lessonContent: plan.lessonContent,
+            comment: comment ? comment.trim() : null,
+            status: status.value,
         };
 
         try {

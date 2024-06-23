@@ -44,6 +44,25 @@
     min-width: 11rem;
 }
 
+.statusCell {
+    &.planned {
+        background-color: #b3eaff;
+    }
+    &.held {
+        background-color: #bfffbf;
+    }
+    &.rescheduled {
+        background-color: #ffffc9;
+    }
+    &.cancelled {
+        background-color: #fcc6c6;
+    }
+}
+
+.statusTooltip {
+    max-width: 16rem;
+}
+
 .pagination {
     justify-content: flex-end;
 }

@@ -25,6 +25,7 @@
         "react-paginate": "^8.1.4",
         "react-router-dom": "^6.9.0",
         "react-toastify": "^9.1.2",
+        "react-tooltip": "^5.26.3",
         "typescript": "^4.9.5",
         "web-vitals": "^2.1.4",
         "yup": "^1.0.2"
@@ -35,8 +36,8 @@
         "start": "react-scripts start",
         "build": "react-scripts build",
         "test": "react-scripts test --env=jsdom",
-        "prettier:check": "prettier --check \"**/*.{ts,tsx,json,css,md}\"",
-        "prettier:fix": "prettier --write \"**/*.{ts,tsx,json,css,md}\"",
+        "prettier:check": "prettier --check \"**/*.{ts,tsx,json,css,scss,md}\"",
+        "prettier:fix": "prettier --write \"**/*.{ts,tsx,json,css,scss,md}\"",
         "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
         "check": "tsc && npm run prettier:check && npm run lint",
         "eject": "react-scripts eject",

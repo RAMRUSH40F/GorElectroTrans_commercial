@@ -6,6 +6,8 @@ export interface IPlan {
     teacher: string;
     teacherPost: string;
     isHeld: boolean;
+    status: PLAN_STATUS;
+    comment: string | null;
     topic: string;
     lessonContent: string[];
 }
@@ -18,11 +20,15 @@ export interface IMaterial {
 }
 
 export enum PLAN_STATUS {
-    HELD = 1,
-    SCHEDULED = 0,
+    PLANNED = "PLANNED",
+    HELD = "HELD",
+    CANCELLED = "CANCELLED",
+    RESCHEDULED = "RESCHEDULED",
 }
 
 export const PLAN_STATUS_VALUE: { [key in PLAN_STATUS]: string } = {
+    [PLAN_STATUS.PLANNED]: "Запланировано",
     [PLAN_STATUS.HELD]: "Проведено",
-    [PLAN_STATUS.SCHEDULED]: "Запланированно",
+    [PLAN_STATUS.RESCHEDULED]: "Перенесено",
+    [PLAN_STATUS.CANCELLED]: "Отменено",
 };

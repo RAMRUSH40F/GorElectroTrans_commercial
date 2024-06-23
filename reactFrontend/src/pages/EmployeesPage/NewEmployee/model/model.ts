@@ -53,7 +53,7 @@ sample({
     controller.abort();
 });
 
-// Reset all stores when component mountes and unmounts
+// Reset all stores when component montes and unmounts
 domain.onCreateStore(($store) => {
     $store.reset(modalOpened, modalClosed, pageClosed);
 });

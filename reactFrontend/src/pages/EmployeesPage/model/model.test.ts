@@ -31,7 +31,7 @@ const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 const mockedEmployee: IEmployee = {
     fullName: "test_name",
     studentId: "test_id",
-    subdepartmentName: "test_subname",
+    subdepartmentName: "test_sub_name",
 };
 
 // #region Watchers

@@ -76,6 +76,8 @@ function PlanModal() {
             isHeld: !!+status.value,
             teacherPost: String(teacherPost.label),
             lessonContent: [],
+            comment: null,
+            status: status.value,
         };
         try {
             await addPlanFx({
