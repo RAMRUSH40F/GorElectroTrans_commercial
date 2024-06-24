@@ -35,15 +35,28 @@ public class AuthorizationAspect {
         auth.authorize(jwtToken, Integer.parseInt(depId));
     }
 
-
-    @Before("execution(* project.controller.LessonController.*(..)) && args(depId, .., jwtToken)")
-    public void authorizeRequestsLessonController(String depId, String jwtToken) {
-        auth.authorize(jwtToken, Integer.parseInt(depId));
-    }
-
-
     @Before("execution(* project.controller.AttendanceController.*(..)) && args(depId, .., jwtToken)")
     public void authorizeRequestsAttendanceController(String jwtToken, String depId) {
         auth.authorize(jwtToken, Integer.parseInt(depId));
+    }
+
+    @Before("execution(* project.controller.LessonController.createLesson(..)) && args(depId, .., jwtToken)")
+    public void authorizeCreateLessonRequests(String depId, String jwtToken) {
+        auth.authorize(jwtToken, Integer.parseInt(depId));
+    }
+
+    @Before("execution(* project.controller.LessonController.updateLesson(..)) && args(depId, .., jwtToken)")
+    public void authorizeUpdateLessonRequests(String depId, String jwtToken) {
+        auth.authorize(jwtToken, Integer.parseInt(depId));
+    }
+
+    @Before("execution(* project.controller.LessonController.findLessonsWithPagination(..)) && args(depId, .., jwtToken)")
+    public void authorizeFindLessonRequests(String depId, String jwtToken) {
+        auth.authorize(jwtToken, Integer.parseInt(depId));
+    }
+
+    @Before("execution(* project.controller.LessonController.deleteLessonById(..)) && args(.., jwtToken)")
+    public void authorizeDeleteLessonRequests(String jwtToken) {
+        auth.authorize(jwtToken, 100);
     }
 }

@@ -5,6 +5,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class JwtAuthorizationService {
 
     @Value("${jwt_expiration_hours}")
@@ -51,10 +53,11 @@ public class JwtAuthorizationService {
         validateToken(jwtToken);
         Set<String> userAuthorities = decodeUserFromToken(jwtToken).getAuthorities();
         // admin role ("100") has authorization to everything
-        if (!(userAuthorities.contains("100") || userAuthorities.contains(String.valueOf(departmentID)))) {
+        if (!(userAuthorities.contains(String.valueOf(departmentID)) || userAuthorities.contains("100"))) {
             String exceptionText = "У пользователя нет доступа к данной информации." +
                     "Права пользователя:" + userAuthorities +
                     "Необходимые права:" + departmentID;
+            log.warn(exceptionText);
             throw new AuthenticationException(exceptionText);
         }
     }
@@ -106,6 +109,7 @@ public class JwtAuthorizationService {
         claims.put("role", user.getAuthorities());
         Date now = new Date();
         Date validity = new Date(now.getTime() + JWT_TOKEN_MAX_AGE_HOURS * 3600 * 1000);
+        log.info("JwtToken created: expires={}, username={}", validity, user.getUsername());
         return Jwts.builder()
                 .setClaims(claims)
                 .setExpiration(validity)

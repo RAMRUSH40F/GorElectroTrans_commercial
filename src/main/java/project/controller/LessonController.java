@@ -48,7 +48,7 @@ public class LessonController {
 
 
     @PutMapping("/dep_{N}/work_plan/{id}")
-    public Lesson changeLesson(@PathVariable("N") String depId,
+    public Lesson updateLesson(@PathVariable("N") String depId,
                                @PathVariable("id") int id,
                                @RequestBody Lesson lesson,
                                @RequestHeader(value = HttpHeaders.AUTHORIZATION, defaultValue = "") String jwtToken) {
