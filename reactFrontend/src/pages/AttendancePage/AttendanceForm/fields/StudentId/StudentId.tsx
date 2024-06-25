@@ -17,8 +17,15 @@ import { EmployeeSearch } from "./EmployeeSearch";
 import styles from "./studentId.module.scss";
 
 export const StudentId: FC = () => {
-    const { isSubmitting, values, errors, touched, handleChange, handleBlur } =
-        useFormikContext<AttendanceFormState>();
+    const {
+        isSubmitting,
+        values,
+        errors,
+        touched,
+        handleChange,
+        handleBlur,
+        setFieldValue,
+    } = useFormikContext<AttendanceFormState>();
 
     const isValidationError = errors.studentId && touched.studentId;
 
@@ -28,6 +35,11 @@ export const StudentId: FC = () => {
     useFocus(studentIdRef, true);
 
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+
+    const handleSelectEmployee = (employeeId: string) => {
+        setFieldValue("studentId", employeeId);
+        setIsPopoverOpen(false);
+    };
 
     return (
         <div ref={containerRef} onClick={(event) => event.stopPropagation()}>
@@ -41,7 +53,7 @@ export const StudentId: FC = () => {
                 reposition={false}
                 clickOutsideCapture={true}
                 onClickOutside={() => setIsPopoverOpen(false)}
-                content={<EmployeeSearch />}
+                content={<EmployeeSearch onSelect={handleSelectEmployee} />}
             >
                 <Label className={styles.label} text="Табельный номер">
                     <InputNumber
