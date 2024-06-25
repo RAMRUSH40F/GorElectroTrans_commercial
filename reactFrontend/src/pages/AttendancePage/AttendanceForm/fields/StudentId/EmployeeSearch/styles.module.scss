@@ -1,5 +1,10 @@
 @import "../../../../../../assets/styles/vars.scss";
 
+.container {
+    min-height: 4.75rem;
+    background-color: $white;
+}
+
 .employeeName {
     font-size: 0.9rem;
 }
@@ -7,4 +12,31 @@
 .employeesList {
     border: 1px solid $grey;
     border-top: none;
+}
+
+.listMessage {
+    background-color: $white;
+    padding: 10px 14px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: rgba($black, 0.6);
+}
+
+.errorMessage {
+    color: #721c24;
+}
+
+.loaderContainer {
+    padding: 9px 14px;
+    background-color: $white;
+}
+
+.loader {
+    width: 20px;
+    height: 20px;
+    margin: 0 auto;
+
+    div {
+        border-width: 2px;
+    }
 }
