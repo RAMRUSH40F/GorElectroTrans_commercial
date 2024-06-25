@@ -25,7 +25,11 @@ import {
 
 import styles from "./styles.module.scss";
 
-export const EmployeeSearch: FC = () => {
+type Props = {
+    onSelect: (employeeId: string) => void;
+};
+
+export const EmployeeSearch: FC<Props> = ({ onSelect }) => {
     const { divisionId = "" } = useParams();
 
     const { isSubmitting } = useFormikContext<AttendanceFormState>();
@@ -42,7 +46,7 @@ export const EmployeeSearch: FC = () => {
                 placeholder="Поиск сотрудника..."
                 disabled={isSubmitting}
             />
-            <EmployeesList />
+            <EmployeesList onSelect={onSelect} />
             <EmployeesSearchMessage />
             <EmployeesSearchError />
             <EmployeesLoader />
@@ -50,7 +54,7 @@ export const EmployeeSearch: FC = () => {
     );
 };
 
-function EmployeesList() {
+function EmployeesList({ onSelect }: Props) {
     const [employees, isSuccess, isFetching] = useUnit([
         $employees,
         $isSuccess,
@@ -62,7 +66,11 @@ function EmployeesList() {
     return (
         <List className={styles.employeesList}>
             {employees.map((employee) => (
-                <ListItem key={employee.studentId} disabled={isFetching}>
+                <ListItem
+                    key={employee.studentId}
+                    disabled={isFetching}
+                    onClick={() => onSelect(employee.studentId)}
+                >
                     <div className={styles.employeeName}>
                         {employee.fullName}, {employee.studentId}
                     </div>
