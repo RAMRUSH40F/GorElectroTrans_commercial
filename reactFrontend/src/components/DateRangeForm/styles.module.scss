@@ -1,0 +1,30 @@
+@import "../../assets/styles/vars.scss";
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.fields {
+    display: flex;
+    gap: 0.75rem;
+    @media (max-width: $mobileSmall) {
+        flex-direction: column;
+    }   
+}
+
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    justify-content: flex-end;
+    padding-top: 1rem;
+    border-top: 1px solid $grey;
+}
+
+.submitButton {
+    @media (max-width: $mobileSmall) {
+        width: 100%;
+    }
+}
