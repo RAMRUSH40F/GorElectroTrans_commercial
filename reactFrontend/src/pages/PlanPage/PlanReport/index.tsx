@@ -33,7 +33,7 @@ const PlanReport: React.FC = () => {
             <ActionButton
                 className={styles.reportBtn}
                 onClick={() => modalOpened()}
-                colorType="custom"
+                colorType="teal"
             >
                 Сформировать отчет
             </ActionButton>
