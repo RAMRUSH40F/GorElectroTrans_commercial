@@ -11,6 +11,7 @@ import { useDeboucedCallback } from "hooks/useDebouncedCallback";
 import { getDivisionRoute } from "helpers/getDivisionRoute";
 
 import Attendance from "./Attendance";
+import AttendanceReport from "./AttendanceReport";
 import NewAttendance from "./NewAttendance";
 import { $search, attendanceGate, searchChanged } from "./model";
 
@@ -36,7 +37,10 @@ const AttendancePage: React.FC = () => {
                 />
                 <div className={styles.wrapper}>
                     <AttendanceSearch />
-                    <NewAttendance />
+                    <div className={styles.actions}>
+                        <AttendanceReport />
+                        <NewAttendance />
+                    </div>
                 </div>
                 <Attendance />
             </section>
