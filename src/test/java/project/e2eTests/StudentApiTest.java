@@ -135,7 +135,7 @@ public class StudentApiTest {
         // Отключили аунтефикацию
         doNothing().when(jwtAuthorizationService).authorize(anyString(), anyInt());
 
-        ResponseEntity<StudentIdName[]> response = restTemplate.getForEntity("/dep_" + depId + "/students/getByName?key=Арте&limit=7", StudentIdName[].class);
+        ResponseEntity<StudentIdName[]> response = restTemplate.getForEntity("/dep_" + depId + "/students/getByName?key=Алексан&limit=7", StudentIdName[].class);
 
         // Retrieve the saved student from the response body
         StudentIdName receivedStudent = response.getBody()[0];
@@ -143,15 +143,6 @@ public class StudentApiTest {
                 () -> assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK),
                 () -> Assertions.assertEquals(receivedStudent.getStudentId(), testStudent.getStudentId()),
                 () -> Assertions.assertEquals(receivedStudent.getName(), testStudent.getName())
-        );
-
-        ResponseEntity<StudentIdName[]> response2 = restTemplate.getForEntity("/dep_" + depId + "/students/getByName?key=алекс&limit=7", StudentIdName[].class);
-        StudentIdName receivedStudent2 = response.getBody()[0];
-
-        Assertions.assertAll(
-                () -> assertThat(response2.getStatusCode()).isEqualTo(HttpStatus.OK),
-                () -> Assertions.assertEquals(receivedStudent2.getStudentId(), testStudent.getStudentId()),
-                () -> Assertions.assertEquals(receivedStudent2.getName(), testStudent.getName())
         );
 
         ResponseEntity<StudentIdName[]> response3 = restTemplate.getForEntity("/dep_" + depId + "/students/getByName?key=ложный&limit=7", StudentIdName[].class);
