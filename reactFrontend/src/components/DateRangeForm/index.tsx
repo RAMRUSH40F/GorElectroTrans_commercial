@@ -15,7 +15,7 @@ export const INITIAL_STATE: DateRangeFormState = {
     endDate: new Date(),
 };
 
-export const DateRangeForm: React.FC<Props> = ({ onSubmit }) => {
+export const DateRangeForm: React.FC<Props> = ({ onSubmit, isDisabled }) => {
     return (
         <Formik
             initialValues={INITIAL_STATE}
@@ -29,14 +29,14 @@ export const DateRangeForm: React.FC<Props> = ({ onSubmit }) => {
                     aria-label="Отчетность"
                 >
                     <div className={styles.fields}>
-                        <StartDate />
-                        <EndDate />
+                        <StartDate isDisabled={isDisabled} />
+                        <EndDate isDisabled={isDisabled} />
                     </div>
                     <div className={styles.controls}>
                         <ActionButton
                             className={styles.submitButton}
                             type="submit"
-                            disabled={isSubmitting}
+                            disabled={isSubmitting || isDisabled}
                             colorType="success"
                         >
                             Скачать

@@ -8,7 +8,7 @@ import { DateRangeFormState } from "../types";
 
 import styles from "./styles.module.scss";
 
-export const EndDate = () => {
+export const EndDate = ({ isDisabled }: { isDisabled?: boolean }) => {
     const { values, errors, isSubmitting, setFieldValue } =
         useFormikContext<DateRangeFormState>();
 
@@ -28,7 +28,7 @@ export const EndDate = () => {
                 name="endDate"
                 onChange={handleDateChange}
                 selected={values.endDate}
-                disabled={isSubmitting}
+                disabled={isSubmitting || isDisabled}
                 autoComplete="none"
                 shouldCloseOnSelect={true}
             />

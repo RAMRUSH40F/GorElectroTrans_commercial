@@ -4,5 +4,6 @@ export type DateRangeFormState = {
 };
 
 export type Props = {
-    onSubmit: (data: DateRangeFormState) => Promise<void>;
+    onSubmit: (data: DateRangeFormState) => void;
+    isDisabled?: boolean;
 };
