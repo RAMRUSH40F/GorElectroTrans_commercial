@@ -18,10 +18,14 @@ export interface DropdownOption<
     value: V;
 }
 
-type SelectProps = {
-    options: DropdownOption[];
-    initialOption?: DropdownOption;
-    onChange: (option: DropdownOption) => void;
+type SelectProps<
+    V extends DropdownValue = string,
+    L extends DropdownLabel = string,
+> = {
+    options: DropdownOption<V, L>[];
+    initialOption: DropdownOption<V, L>;
+    onChange: (option: DropdownOption<V, L>) => void;
+    name?: string;
     placeholder?: string;
     className?: string;
     disabled?: boolean;
@@ -37,8 +41,8 @@ const Dropdown = <V extends DropdownValue, L extends DropdownLabel>({
     name,
 }: SelectProps<V, L>) => {
     const [isOpen, setIsOpen] = useState(false);
-    const [selected, setSelected] = useState<string | null>(
-        initialOption ? initialOption.label : null,
+    const [selected, setSelected] = useState<DropdownLabel>(
+        initialOption.label,
     );
     const selectRef = useRef<HTMLDivElement | null>(null);
     useClickOutside(selectRef, () => setIsOpen(false));
@@ -67,32 +71,25 @@ const Dropdown = <V extends DropdownValue, L extends DropdownLabel>({
                 className={cn(styles.header, isOpen && styles.open)}
                 onClick={() => setIsOpen(!isOpen)}
             >
-                <div
-                    className={cn(
-                        styles.headerValue,
-                        !selected && styles.empty,
-                    )}
-                >
-                    {selected ?? placeholder ?? "Выберите..."}
+                <div className={styles.placeholder}>
+                    {selected || placeholder}
                 </div>
-                <div className={cn(styles.icon, isOpen && styles.open)} />
+                <div className={cn(styles.icon, isOpen && styles.open)}></div>
             </div>
-            {options.length > 0 && (
-                <ul className={cn(styles.options, isOpen && styles.open)}>
-                    {options.map((option) => (
-                        <li
-                            className={cn(
-                                styles.option,
-                                option.label === selected && styles.selected,
-                            )}
-                            key={option.value}
-                            onClick={() => handleSelect(option)}
-                        >
-                            {option.label}
-                        </li>
-                    ))}
-                </ul>
-            )}
+            <ul className={cn(styles.options, isOpen && styles.open)}>
+                {options.map((option) => (
+                    <li
+                        className={cn(
+                            styles.option,
+                            option.label === selected && styles.selected,
+                        )}
+                        key={String(option.value)}
+                        onClick={() => handleSelect(option)}
+                    >
+                        {option.label}
+                    </li>
+                ))}
+            </ul>
         </div>
     );
 };
