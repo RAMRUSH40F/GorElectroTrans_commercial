@@ -10,7 +10,7 @@ export interface DepParams<T> extends AbortParams<T> {
 }
 
 export interface FetchParams<T> extends Omit<DepParams<T>, "data"> {
-    page: number;
+    page?: number;
     size: number;
     search: string;
     sort?: string;

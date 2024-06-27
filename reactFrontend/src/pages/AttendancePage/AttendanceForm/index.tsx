@@ -17,6 +17,7 @@ import {
 } from "models/Attendance";
 
 import { attendanceFormScheme } from "./attendanceFormSheme";
+import { StudentId } from "./fields";
 
 import styles from "./styles.module.scss";
 
@@ -93,31 +94,7 @@ const AttendanceForm: React.FC<Props> = ({
                 <form onSubmit={handleSubmit} onChange={clearError}>
                     {!isEditing && (
                         <>
-                            <Label
-                                className={styles.label}
-                                text="Табельный номер"
-                            >
-                                <InputNumber
-                                    className={styles.input}
-                                    getInputRef={inputRef}
-                                    placeholder="Номер"
-                                    name="studentId"
-                                    onBlur={handleBlur}
-                                    onChange={handleChange}
-                                    value={values.studentId}
-                                    disabled={isSubmitting || isDisabled}
-                                    autoComplete="none"
-                                    allowNegative={false}
-                                    allowLeadingZeros={true}
-                                    maxLength={5}
-                                    decimalScale={0}
-                                />
-                                {errors.studentId && touched.studentId && (
-                                    <FormErrorMessage>
-                                        {errors.studentId}
-                                    </FormErrorMessage>
-                                )}
-                            </Label>
+                            <StudentId />
                             <Label
                                 className={styles.label}
                                 text="Номер занятия"
