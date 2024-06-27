@@ -5,7 +5,7 @@ import cn from "classnames";
 import styles from "./styles.module.scss";
 
 interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-    colorType: "success" | "danger" | "info" | "warning" | "custom";
+    colorType: "success" | "danger" | "info" | "warning" | "teal" | "custom";
 }
 
 const ActionButton: React.FC<Props> = ({

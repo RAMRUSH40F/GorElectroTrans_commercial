@@ -43,7 +43,8 @@
         "eject": "react-scripts eject",
         "move-build": "XCOPY /Y /E build ..\\src\\main\\resources\\",
         "clean-old-build": "rmdir /s /q ..\\src\\main\\resources\\static",
-        "build-and-move": "npm run build && npm run clean-old-build && npm run move-build"
+        "build-and-move": "npm run build && npm run clean-old-build && npm run move-build",
+        "check-and-build": "npm run check && npm run build-and-move"
     },
     "eslintConfig": {
         "extends": [

@@ -32,3 +32,8 @@ export interface ApiError {
     message: string;
     isCanceled: boolean;
 }
+
+export interface DateRange {
+    dateFrom: string;
+    dateTo: string;
+}

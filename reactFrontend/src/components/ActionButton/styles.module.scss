@@ -43,6 +43,13 @@
             background-color: darken($yellow, 5%);
         }
     }
+    &.teal {
+        background-color: $teal;
+        color: $white;
+        &:hover {
+            background-color: darken($teal, 5%);
+        }
+    }
     @media (max-width: $pcBig) {
         height: 2.5rem;
         font-size: 0.83rem;
