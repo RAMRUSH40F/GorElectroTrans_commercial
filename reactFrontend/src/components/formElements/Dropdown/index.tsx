@@ -71,10 +71,15 @@ const Dropdown = <V extends DropdownValue, L extends DropdownLabel>({
                 className={cn(styles.header, isOpen && styles.open)}
                 onClick={() => setIsOpen(!isOpen)}
             >
-                <div className={styles.placeholder}>
-                    {selected || placeholder}
+                <div
+                    className={cn(
+                        styles.headerValue,
+                        !selected && styles.empty,
+                    )}
+                >
+                    {selected ?? placeholder ?? "Выберите..."}
                 </div>
-                <div className={cn(styles.icon, isOpen && styles.open)}></div>
+                <div className={cn(styles.icon, isOpen && styles.open)} />
             </div>
             <ul className={cn(styles.options, isOpen && styles.open)}>
                 {options.map((option) => (
