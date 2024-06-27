@@ -13,7 +13,14 @@ import useClickOutside from "hooks/useClickOutside";
 import useEscape from "hooks/useEscape";
 import useLockedBody from "hooks/useLockedBody";
 
-import { $error, $isModalActive, modalClosed, modalOpened } from "./model";
+import {
+    $error,
+    $isLoading,
+    $isModalActive,
+    formSubmitted,
+    modalClosed,
+    modalOpened,
+} from "./model";
 
 import styles from "./styles.module.scss";
 
@@ -35,7 +42,7 @@ const AttendanceReport: React.FC = () => {
 export default AttendanceReport;
 
 function ReportModal() {
-    const isModalActive = useUnit($isModalActive);
+    const [isModalActive, isLoading] = useUnit([$isModalActive, $isLoading]);
 
     const modalRef = useRef<HTMLDivElement | null>(null);
     useClickOutside(modalRef, () => modalClosed());
@@ -51,7 +58,10 @@ function ReportModal() {
             </ModalHeader>
             <ModalContent>
                 <ErrorAlert />
-                <DateRangeForm onSubmit={async (data) => console.log(data)} />
+                <DateRangeForm
+                    onSubmit={formSubmitted}
+                    isDisabled={isLoading}
+                />
             </ModalContent>
         </ModalLayout>
     );
