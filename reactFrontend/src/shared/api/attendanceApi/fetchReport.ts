@@ -19,7 +19,7 @@ export const fetchReportFx = createEffect<
     try {
         const response = await authRequestFx({
             method: "GET",
-            url: `/dep_${depId}/report/attendance1`,
+            url: `/dep_${depId}/report/attendance`,
             responseType: "blob",
             headers: {
                 "Content-Type": "application/octet-stream",
