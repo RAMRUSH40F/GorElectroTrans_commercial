@@ -22,6 +22,16 @@ public class ReportRepository {
         return namedParameterJdbcTemplate.queryForObject("SELECT COUNT(1) FROM lesson WHERE `date` BETWEEN :dateFrom and :dateTo and status='HELD'",
                 Map.of("dateFrom", dateFrom, "dateTo", dateTo), Integer.class);
     }
+    public Integer findAllThemesBetweenDates(LocalDate dateFrom, LocalDate dateTo) {
+        return namedParameterJdbcTemplate.queryForObject("SELECT COUNT(1)FROM(SELECT DISTINCT topic FROM lesson WHERE DATE BETWEEN :dateFrom and :dateTo) AS td;",
+                Map.of("dateFrom", dateFrom, "dateTo", dateTo), Integer.class);
+    }
+
+    public Integer findAllThemesBetweenDatesWithHeld(LocalDate dateFrom, LocalDate dateTo) {
+        return namedParameterJdbcTemplate.queryForObject("SELECT COUNT(1)FROM(SELECT DISTINCT topic FROM lesson WHERE DATE BETWEEN :dateFrom and :dateTo and status='HELD') AS td",
+                Map.of("dateFrom", dateFrom, "dateTo", dateTo), Integer.class);
+    }
+
 
     public Integer findAllWorkersBetweenDates(LocalDate dateFrom, LocalDate dateTo) {
         return namedParameterJdbcTemplate.queryForObject("SELECT COUNT(1) FROM attendance_view WHERE `date` BETWEEN :dateFrom and :dateTo",
