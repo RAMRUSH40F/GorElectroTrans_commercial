@@ -36,7 +36,9 @@ export const $isTemplateLoading = domain.createStore(false);
 export const $isTemplateDownloaded = domain.createStore(false);
 export const $isUploaded = domain.createStore(false);
 
-export const $uploadInfo = domain.createStore<IEmployeeUploadResponse | null>(null);
+export const $uploadInfo = domain.createStore<IEmployeeUploadResponse | null>(
+    null,
+);
 
 export const $error = domain.createStore<string | null>(null);
 
@@ -89,7 +91,7 @@ sample({
         type: NOTICE.SUCCESS,
         message: "Все сотрудники успешно загружены",
     }),
-    target: showNoticeFx,
+    target: [showNoticeFx, modalClosed],
 });
 
 sample({
@@ -121,7 +123,9 @@ $isUploaded.on(uploadEmployeesFx.done, () => true);
 $isTemplateLoading.on(getTemplateFx.pending, (_, pending) => pending);
 $isTemplateDownloaded.on(getTemplateFx.doneData, () => true);
 
-$uploadInfo.on(uploadEmployeesFx.doneData, (_, data) => data).reset(uploadEmployeesFx);
+$uploadInfo
+    .on(uploadEmployeesFx.doneData, (_, data) => data)
+    .reset(uploadEmployeesFx);
 
 $error
     .on([uploadEmployeesFx.failData, getTemplateFx.failData], (_, error) =>
@@ -129,6 +133,4 @@ $error
     )
     .reset(errorReset, uploadEmployeesFx, getTemplateFx, modalClosed);
 
-$isModalActive
-    .on(modalOpened, () => true)
-    .on([modalClosed, uploadEmployeesFx.doneData], () => false);
+$isModalActive.on(modalOpened, () => true).on([modalClosed], () => false);
