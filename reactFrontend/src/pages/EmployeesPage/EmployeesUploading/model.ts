@@ -36,10 +36,7 @@ export const $isTemplateLoading = domain.createStore(false);
 export const $isTemplateDownloaded = domain.createStore(false);
 export const $isUploaded = domain.createStore(false);
 
-export const $uploadInfo = domain.createStore<IEmployeeUploadResponse | null>({
-    invalidStudentsId: ["1", "2", "3", "4"],
-    createdStudents: [],
-});
+export const $uploadInfo = domain.createStore<IEmployeeUploadResponse | null>(null);
 
 export const $error = domain.createStore<string | null>(null);
 
