@@ -6,9 +6,9 @@ import { downloadFileFx } from "helpers/downloadFile";
 import { NOTICE, showNoticeFx } from "helpers/notice";
 
 import employeeApi from "shared/api/employeesApi";
-import { AbortParams } from "shared/api/types";
 
 import { $depId } from "../model";
+import { uploadEmployeesFx } from "../model/model";
 
 const domain = createDomain();
 
@@ -33,14 +33,6 @@ export const $error = domain.createStore<string | null>(null);
 export const $isModalActive = domain.createStore<boolean>(false);
 
 export const getTemplateFx = attach({ effect: employeeApi.fetchTemplateFx });
-
-export const uploadEmployeesFx = attach({
-    effect: employeeApi.uploadEmployeesFx,
-    source: { depId: $depId },
-    mapParams({ data, controller }: AbortParams<FormData>, { depId }) {
-        return { depId, data, controller };
-    },
-});
 
 sample({
     clock: downloadButtonClicked,
