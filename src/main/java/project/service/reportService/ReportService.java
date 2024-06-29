@@ -81,8 +81,8 @@ public class ReportService {
     private void createLessonReportPart(XSSFSheet sheet, LocalDate dateForm, LocalDate dateTo) {//
         setRowValues(sheet.getRow(LESSON_PLAN.getIndex()), () -> reportRepository.findAllLessonsBetweenDates(dateForm, dateTo));
         setRowValues(sheet.getRow(LESSON_HANDLE.getIndex()), () -> reportRepository.findAllLessonsBetweenDatesWithHeld(dateForm, dateTo));
-        setRowValues(sheet.getRow(THEME_PLAN.getIndex()), () -> reportRepository.findAllLessonsBetweenDates(dateForm, dateTo));
-        setRowValues(sheet.getRow(THEME_HANDLE.getIndex()), () -> reportRepository.findAllLessonsBetweenDatesWithHeld(dateForm, dateTo));
+        setRowValues(sheet.getRow(THEME_PLAN.getIndex()), () -> reportRepository.findAllThemesBetweenDates(dateForm, dateTo));
+        setRowValues(sheet.getRow(THEME_HANDLE.getIndex()), () -> reportRepository.findAllThemesBetweenDatesWithHeld(dateForm, dateTo));
     }
 
     private void createWorkerReportPart(XSSFSheet sheet, LocalDate dateForm, LocalDate dateTo) {
