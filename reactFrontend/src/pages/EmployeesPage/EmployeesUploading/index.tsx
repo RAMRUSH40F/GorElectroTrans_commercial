@@ -19,7 +19,9 @@ import {
     $error,
     $file,
     $isModalActive,
+    $isTemplateDownloaded,
     $isTemplateLoading,
+    $isUploaded,
     $isUploading,
     backButtonClicked,
     downloadButtonClicked,
@@ -58,7 +60,13 @@ export const EmployeesUploading = () => {
 };
 
 function TemplateLoader() {
-    const [isDisabled] = useUnit([$isTemplateLoading]);
+    const [isDisabled, isTemplateDownloaded, isUploaded] = useUnit([
+        $isTemplateLoading,
+        $isTemplateDownloaded,
+        $isUploaded,
+    ]);
+
+    if (isTemplateDownloaded || isUploaded) return null;
 
     return (
         <ActionButton

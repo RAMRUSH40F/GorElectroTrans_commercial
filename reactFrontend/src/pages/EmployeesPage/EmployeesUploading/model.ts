@@ -28,6 +28,9 @@ export const $file = domain.createStore<File | null>(null);
 export const $isUploading = domain.createStore(false);
 export const $isTemplateLoading = domain.createStore(false);
 
+export const $isTemplateDownloaded = domain.createStore(false);
+export const $isUploaded = domain.createStore(false);
+
 export const $error = domain.createStore<string | null>(null);
 
 export const $isModalActive = domain.createStore<boolean>(false);
@@ -94,7 +97,10 @@ $file
     .reset(uploadEmployeesFx.done);
 
 $isUploading.on(uploadEmployeesFx.pending, (_, pending) => pending);
+$isUploaded.on(uploadEmployeesFx.done, () => true);
+
 $isTemplateLoading.on(getTemplateFx.pending, (_, pending) => pending);
+$isTemplateDownloaded.on(getTemplateFx.doneData, () => true);
 
 $error
     .on([uploadEmployeesFx.failData, getTemplateFx.failData], (_, error) =>
