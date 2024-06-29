@@ -1,15 +1,16 @@
 package project.service.reportService;
 
 
-public enum WorkerProfessions implements Profession{
-    VODITELYTR("Водители троллейбусов"),
-    VODITELYT("Машинисты трамваев"),
+public enum WorkerProfessions implements Profession {
+    VODITELY_TR("Водители троллейбусов"),
+    VODITELY_T("Машинисты трамваев"),
     SLESARY("Слесари"),
     DISPETCHERS("Диспетчеры"),
     SPECIALISTS("Специалисты УГМ");
 
     private final String profession;
-@Override
+
+    @Override
     public String getProfession() {
         return profession;
     }

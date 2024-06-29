@@ -1,6 +1,5 @@
 package project.service;
 
-import net.bytebuddy.asm.Advice;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,7 +17,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import project.dataSource.DynamicDataSourceContextHolder;
 import project.model.Lesson;
-import project.service.reportService.TeacherProfession;
+import project.service.reportService.TeacherProfessions;
 
 import javax.sql.DataSource;
 import java.time.LocalDate;
@@ -118,7 +117,7 @@ class LessonServiceTest {
     @Test
     void addNewLesson_lessonCountPlusOneResult() {
         Integer num = lessonService.getLessonsCount(4);
-        Object[] res = new Object[]{"Ремонт нового подвижного состава трамваев_тест", 2.6f, "Левицкий Леонид Константинович.", 52, TeacherProfession.MASTER.getProfession()};
+        Object[] res = new Object[]{"Ремонт нового подвижного состава трамваев_тест", 2.6f, "Левицкий Леонид Константинович.", 52, TeacherProfessions.MASTER.getProfession()};
 
         lessonService.addNewLesson(4,
                 Lesson.builder()

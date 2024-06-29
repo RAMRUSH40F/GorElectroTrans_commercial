@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import project.model.Lesson;
 import project.model.Lesson.Status;
 import project.service.LessonServiceImpl;
-import project.service.reportService.TeacherProfession;
+import project.service.reportService.TeacherProfessions;
 
 import java.time.LocalDate;
 
@@ -18,11 +18,11 @@ import java.time.LocalDate;
 public class LessonMultiplier {
 
     private static final Object[][] LESSONS_DATA = {
-            {"Тех.обслуживание на новых моделях трамваев", "Джмун Федор Кириллович", TeacherProfession.MASTER.getProfession()},
-            {"Как вкручивать лампочки правильно", "Высоцкий Констанстин Павлович.", TeacherProfession.RUKOVODITEL.getProfession()},
-            {"Здоровый образ жизни у водителей трамваев", "Капылов Петр Дмитриевич.", TeacherProfession.RUKOVODITEL.getProfession()},
-            {"Разговоры о важном", "Высоцкий П.К.", TeacherProfession.NASTAVNIK.getProfession()},
-            {"Ремонт нового подвижного состава трамваев", "Левицкий Леонид Константинович.", TeacherProfession.MASTER.getProfession()},
+            {"Тех.обслуживание на новых моделях трамваев", "Джмун Федор Кириллович", TeacherProfessions.MASTER.getProfession()},
+            {"Как вкручивать лампочки правильно", "Высоцкий Констанстин Павлович.", TeacherProfessions.RUKOVODITEL.getProfession()},
+            {"Здоровый образ жизни у водителей трамваев", "Капылов Петр Дмитриевич.", TeacherProfessions.RUKOVODITEL.getProfession()},
+            {"Разговоры о важном", "Высоцкий П.К.", TeacherProfessions.NASTAVNIK.getProfession()},
+            {"Ремонт нового подвижного состава трамваев", "Левицкий Леонид Константинович.", TeacherProfessions.MASTER.getProfession()},
             {"Ремонт усов троллейбуса", "Яшин А.С.", "Другое"}
     };
     private final LessonServiceImpl lessonService;
