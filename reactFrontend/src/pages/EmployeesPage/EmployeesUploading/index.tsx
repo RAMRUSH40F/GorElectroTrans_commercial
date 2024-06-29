@@ -81,6 +81,7 @@ function FileUploader() {
                 file={file}
                 onChange={fileChanged}
                 disabled={isUploading}
+                placeholder="Загрузите шаблон"
             />
             <ActionButton
                 colorType="success"
