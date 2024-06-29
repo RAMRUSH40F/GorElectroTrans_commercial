@@ -1,14 +1,14 @@
 import { isCancel } from "axios";
 import { createEffect } from "effector";
 
-import { IMaterial } from "models/Plan";
+import { IEmployeeUploadResponse } from "models/Employee";
 
 import { authRequestFx } from "..";
 import { ApiError, AuthError, DepParams } from "../types";
 
 export const uploadEmployeesFx = createEffect<
     DepParams<FormData>,
-    IMaterial,
+    IEmployeeUploadResponse,
     ApiError
 >(async ({ depId, data, controller }) => {
     try {
@@ -21,7 +21,7 @@ export const uploadEmployeesFx = createEffect<
             },
             signal: controller.signal,
         });
-        return response.data as IMaterial;
+        return response.data as IEmployeeUploadResponse;
     } catch (error) {
         if (isCancel(error)) {
             const customError: ApiError = {
