@@ -60,6 +60,10 @@ sample({
     fn: (file) => ({
         file,
         fileName: `Шаблон_сотрудников.xlsx`,
+        container:
+            (document.querySelector(
+                "#employees-uploading-modal",
+            ) as HTMLElement) ?? document.body,
     }),
     target: downloadFileFx,
 });
@@ -98,6 +102,7 @@ $file
     .reset(uploadEmployeesFx.done);
 
 $isUploading.on(uploadEmployeesFx.pending, (_, pending) => pending);
+$isTemplateLoading.on(getTemplateFx.pending, (_, pending) => pending);
 
 $error
     .on([uploadEmployeesFx.failData, getTemplateFx.failData], (_, error) =>

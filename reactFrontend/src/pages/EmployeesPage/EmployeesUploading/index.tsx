@@ -43,7 +43,7 @@ export const EmployeesUploading = () => {
     if (!isModalActive) return null;
 
     return (
-        <ModalLayout ref={modalRef}>
+        <ModalLayout ref={modalRef} id="employees-uploading-modal">
             <ModalHeader closeModal={() => modalClosed()}>
                 Загрузка сотрудников
             </ModalHeader>
