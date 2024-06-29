@@ -23,7 +23,9 @@ import {
     $isTemplateLoading,
     $isUploaded,
     $isUploading,
+    $uploadInfo,
     backButtonClicked,
+    copyIdsClicked,
     downloadButtonClicked,
     fileChanged,
     modalClosed,
@@ -51,6 +53,7 @@ export const EmployeesUploading = () => {
             </ModalHeader>
             <ModalContent>
                 <ErrorAlert />
+                <UploadInfo />
                 <FileUploader />
                 <TemplateLoader />
                 <ModalControls />
@@ -100,6 +103,27 @@ function FileUploader() {
                 Загрузить файл
             </ActionButton>
         </div>
+    );
+}
+
+function UploadInfo() {
+    const [uploadInfo] = useUnit([$uploadInfo]);
+
+    if (!uploadInfo) return null;
+
+    const { createdStudents, invalidStudentsId } = uploadInfo;
+
+    const totalStudentsCount =
+        createdStudents.length + invalidStudentsId.length;
+
+    return (
+        <Alert className={styles.alert} type={ALERT.WARNING}>
+            Не удалось загрузить {invalidStudentsId.length} сотрудников из{" "}
+            {totalStudentsCount}. <br />
+            <span onClick={() => copyIdsClicked()} className={styles.copyText}>
+                Скопировать таб.номера
+            </span>
+        </Alert>
     );
 }
 

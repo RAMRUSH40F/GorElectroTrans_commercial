@@ -2,8 +2,11 @@ import { ChangeEvent } from "react";
 
 import { attach, createDomain, sample } from "effector";
 
+import { copyToClipboardFx } from "helpers/copyToClipboard";
 import { downloadFileFx } from "helpers/downloadFile";
 import { NOTICE, showNoticeFx } from "helpers/notice";
+
+import { IEmployeeUploadResponse } from "models/Employee";
 
 import employeeApi from "shared/api/employeesApi";
 
@@ -23,6 +26,8 @@ export const backButtonClicked = domain.createEvent();
 export const downloadButtonClicked = domain.createEvent();
 export const uploadButtonClicked = domain.createEvent();
 
+export const copyIdsClicked = domain.createEvent();
+
 export const $file = domain.createStore<File | null>(null);
 
 export const $isUploading = domain.createStore(false);
@@ -30,6 +35,11 @@ export const $isTemplateLoading = domain.createStore(false);
 
 export const $isTemplateDownloaded = domain.createStore(false);
 export const $isUploaded = domain.createStore(false);
+
+export const $uploadInfo = domain.createStore<IEmployeeUploadResponse | null>({
+    invalidStudentsId: ["1", "2", "3", "4"],
+    createdStudents: [],
+});
 
 export const $error = domain.createStore<string | null>(null);
 
@@ -77,11 +87,23 @@ sample({
 
 sample({
     clock: uploadEmployeesFx.done,
+    filter: ({ result }) => result.invalidStudentsId.length === 0,
     fn: (_) => ({
         type: NOTICE.SUCCESS,
-        message: "Работники успешно загружены",
+        message: "Все сотрудники успешно загружены",
     }),
     target: showNoticeFx,
+});
+
+sample({
+    clock: copyIdsClicked,
+    source: { uploadInfo: $uploadInfo },
+    filter: ({ uploadInfo }) => uploadInfo !== null,
+    fn: ({ uploadInfo }) => ({
+        text: uploadInfo?.invalidStudentsId.join("\n") ?? "",
+        toastMessage: "Таб.номера скопированы",
+    }),
+    target: copyToClipboardFx,
 });
 
 domain.onCreateStore(($store) => {
@@ -102,10 +124,14 @@ $isUploaded.on(uploadEmployeesFx.done, () => true);
 $isTemplateLoading.on(getTemplateFx.pending, (_, pending) => pending);
 $isTemplateDownloaded.on(getTemplateFx.doneData, () => true);
 
+$uploadInfo.on(uploadEmployeesFx.doneData, (_, data) => data).reset(uploadEmployeesFx);
+
 $error
     .on([uploadEmployeesFx.failData, getTemplateFx.failData], (_, error) =>
         error.isCanceled ? null : error.message,
     )
     .reset(errorReset, uploadEmployeesFx, getTemplateFx, modalClosed);
 
-$isModalActive.on(modalOpened, () => true).on(modalClosed, () => false);
+$isModalActive
+    .on(modalOpened, () => true)
+    .on([modalClosed, uploadEmployeesFx.doneData], () => false);

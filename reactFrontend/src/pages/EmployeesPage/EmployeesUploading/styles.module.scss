@@ -17,6 +17,14 @@
     width: 100%;
 }
 
+.copyText {
+    color: $cyan;
+    cursor: pointer;
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
 .controls {
     @include flex-center(0.6rem, flex-end);
     padding-top: 1rem;
