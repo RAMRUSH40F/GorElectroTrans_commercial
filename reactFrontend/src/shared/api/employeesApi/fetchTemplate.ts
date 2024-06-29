@@ -11,7 +11,7 @@ export const fetchTemplateFx = createEffect<ReportParams, Blob, ApiError>(
         try {
             const response = await authRequestFx({
                 method: "GET",
-                url: `/dep_${depId}/students/studentAddTemplate1`,
+                url: `/dep_${depId}/students/studentAddTemplate`,
                 responseType: "blob",
                 headers: {
                     "Content-Type": "application/octet-stream",
