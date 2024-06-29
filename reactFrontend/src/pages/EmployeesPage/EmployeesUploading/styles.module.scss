@@ -1,0 +1,38 @@
+@import "../../../assets/styles/mixins.scss";
+
+.alert {
+    margin-bottom: 0.5rem;
+}
+
+.uploader {
+    margin-bottom: 0.5rem;
+}
+
+.uploadButton {
+    margin-top: 0.5rem;
+    width: 100%;
+}
+
+.templateButton {
+    width: 100%;
+}
+
+.controls {
+    @include flex-center(0.6rem, flex-end);
+    padding-top: 1rem;
+    margin-top: 1rem;
+    border-top: 1px solid $grey;
+    @media (max-width: $mobileSmall) {
+        flex-direction: column;
+    }
+    button {
+        @include flex-center(0.3rem);
+        @media (max-width: $mobileSmall) {
+            width: 100%;
+        }
+        img {
+            width: 20px;
+            height: 20px;
+        }
+    }
+}
