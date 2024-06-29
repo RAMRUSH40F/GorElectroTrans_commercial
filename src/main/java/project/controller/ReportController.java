@@ -42,7 +42,7 @@ public class ReportController {
                 .body(new ByteArrayResource(byteArrayOutputStream.toByteArray()));
     }
 
-
+    @Deprecated
     @GetMapping("/dep_{N}/report/date")
     public List<QuarterDateModel> getAvailableQuarterYear() {
         return reportService.getQuarterDateModelList();

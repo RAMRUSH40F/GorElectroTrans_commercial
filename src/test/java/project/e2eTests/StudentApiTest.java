@@ -90,7 +90,6 @@ public class StudentApiTest {
         jdbcTemplate.execute("DROP TABLE student");
         jdbcTemplate.execute("DROP TABLE attendance");
         jdbcTemplate.execute("DROP TABLE lesson_content");
-
     }
 
     @Test
