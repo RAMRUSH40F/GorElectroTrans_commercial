@@ -13,8 +13,6 @@ import org.springframework.stereotype.Service;
 import project.model.QuarterDateModel;
 import project.repository.ReportRepository;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.Year;
@@ -25,13 +23,13 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 import static project.dataSource.DynamicDataSourceContextHolder.setCurrentDataSource;
-import static project.service.reportService.ReportTemplateRowNames.*;
+import static project.service.reportService.ReportRow.*;
 
 
 @Service("ReportServiceBean")
 @Slf4j
 public class ReportService {
-    private static final String REPORT_TEMPLATE_PATH = "/report_template.xlsx";
+    private static final String REPORT_TEMPLATE_PATH = "/excelTemplate/report_template.xlsx";
     private final static int SHEET_INDEX = 0;
     private final static int LAST_CELL = 31;
     private final static short FONT_SIZE = 23;
@@ -45,7 +43,7 @@ public class ReportService {
 
 
     @NotNull
-    public ByteArrayOutputStream createReport(LocalDate dateFrom, LocalDate dateTo) {
+    public XSSFWorkbook createReport(@NotNull LocalDate dateFrom, @NotNull LocalDate dateTo) {
         log.info("Начали создание отчета");
         XSSFWorkbook xssfWorkBook = createWorkbook();
         cellStyle = applyClassicStyle(xssfWorkBook);
@@ -55,7 +53,7 @@ public class ReportService {
         createTeacherReportPart(sheet, dateFrom, dateTo);
         xssfWorkBook.getCreationHelper().createFormulaEvaluator().evaluateAll();
         log.info("Закончили создание отчета");
-        return convertWorkbookToByteArray(xssfWorkBook);
+        return xssfWorkBook;
     }
 
     private XSSFWorkbook createWorkbook() {
@@ -68,28 +66,19 @@ public class ReportService {
         }
     }
 
-    private ByteArrayOutputStream convertWorkbookToByteArray(XSSFWorkbook workbook) {
-        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
-            workbook.write(byteArrayOutputStream);
-            return byteArrayOutputStream;
-        } catch (IOException e) {
-            log.info("Ошибка при конвертации отчета в массив байтов");
-            throw new RuntimeException(e);
-        }
-    }
 
     private void createLessonReportPart(XSSFSheet sheet, LocalDate dateForm, LocalDate dateTo) {//
         setRowValues(sheet.getRow(LESSON_PLAN.getIndex()), () -> reportRepository.findAllLessonsBetweenDates(dateForm, dateTo));
-        setRowValues(sheet.getRow(LESSON_HANDLE.getIndex()), () -> reportRepository.findAllLessonsBetweenDatesWithHeld(dateForm, dateTo));
-        setRowValues(sheet.getRow(THEME_PLAN.getIndex()), () -> reportRepository.findAllThemesBetweenDates(dateForm, dateTo));
-        setRowValues(sheet.getRow(THEME_HANDLE.getIndex()), () -> reportRepository.findAllThemesBetweenDatesWithHeld(dateForm, dateTo));
+        setRowValues(sheet.getRow(LESSON_HELD.getIndex()), () -> reportRepository.findAllLessonsBetweenDatesWithHeld(dateForm, dateTo));
+        setRowValues(sheet.getRow(TOPIC_PLAN.getIndex()), () -> reportRepository.findAllThemesBetweenDates(dateForm, dateTo));
+        setRowValues(sheet.getRow(TOPIC_HELD.getIndex()), () -> reportRepository.findAllThemesBetweenDatesWithHeld(dateForm, dateTo));
     }
 
     private void createWorkerReportPart(XSSFSheet sheet, LocalDate dateForm, LocalDate dateTo) {
         setRowValues(sheet.getRow(STUDENTS_PLAN.getIndex()), () -> reportRepository.findAllWorkersBetweenDates(dateForm, dateTo));
         setRowValues(sheet.getRow(STUDENTS_ALL.getIndex()), () -> reportRepository.findAllWorkersBetweenDatesWithSuccess(dateForm, dateTo));
         int rowNumber = STUDENTS_TROLL.getIndex();
-        for (WorkerProfessions profession : WorkerProfessions.values()) {
+        for (WorkerProfession profession : WorkerProfession.values()) {
             setRowValues(sheet.getRow(rowNumber), () -> reportRepository.findAllWorkersBetweenDatesWithSuccessAndProfession(dateForm, dateTo, profession.getProfession()));
             rowNumber++;
         }
@@ -98,10 +87,23 @@ public class ReportService {
     private void createTeacherReportPart(XSSFSheet sheet, LocalDate dateForm, LocalDate dateTo) {
         setRowValues(sheet.getRow(TEACHER_PLAN.getIndex()), () -> reportRepository.findAllLessonsBetweenDates(dateForm, dateTo));
         int rowNumber = TEACHER_RUKOVOD.getIndex();
-        for (TeacherProfessions profession : TeacherProfessions.values()) {
+        for (TeacherProfession profession : TeacherProfession.values()) {
             setRowValues(sheet.getRow(rowNumber), () -> reportRepository.findAllTeachersByProfession(dateForm, dateTo, profession.getProfession()));
             rowNumber++;
         }
+    }
+
+    private CellStyle applyClassicStyle(XSSFWorkbook xssfWorkbook) {
+        CellStyle style = xssfWorkbook.createCellStyle();
+        Font font = xssfWorkbook.createFont();
+        font.setFontHeightInPoints(FONT_SIZE);
+        font.setFontName(FONT_NAME);
+        style.setFont(font);
+        style.setAlignment(CellStyle.ALIGN_CENTER);
+        style.setBorderBottom(CellStyle.BORDER_THIN);
+        style.setBorderBottom(CellStyle.BORDER_MEDIUM);
+        style.setBottomBorderColor(IndexedColors.GREY_80_PERCENT.getIndex());
+        return style;
     }
 
     private void setRowValues(XSSFRow row, Supplier<Integer> supplier) {
@@ -112,22 +114,6 @@ public class ReportService {
             cell.setCellStyle(cellStyle);
             cell.setCellValue(supplier.get());
         }
-    }
-
-    /*
-     * Формирование стиля
-     */
-    private CellStyle applyClassicStyle(XSSFWorkbook workbook) {
-        CellStyle style = workbook.createCellStyle();
-        Font font = workbook.createFont();
-        font.setFontHeightInPoints(FONT_SIZE);
-        font.setFontName(FONT_NAME);
-        style.setFont(font);
-        style.setAlignment(CellStyle.ALIGN_CENTER);
-        style.setBorderBottom(CellStyle.BORDER_THIN);
-        style.setBorderBottom(CellStyle.BORDER_MEDIUM);
-        style.setBottomBorderColor(IndexedColors.GREY_80_PERCENT.getIndex());
-        return style;
     }
 
     @Deprecated
@@ -146,6 +132,4 @@ public class ReportService {
         }
         return intervals;
     }
-
-
 }

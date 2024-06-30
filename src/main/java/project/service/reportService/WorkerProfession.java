@@ -1,9 +1,9 @@
 package project.service.reportService;
 
 
-public enum WorkerProfessions implements Profession {
-    VODITELY_TR("Водители троллейбусов"),
-    VODITELY_T("Машинисты трамваев"),
+public enum WorkerProfession implements Profession {
+    DRIVER_TROLLEYBUS("Водители троллейбусов"),
+    DRIVER_TRAMWAY("Машинисты трамваев"),
     SLESARY("Слесари"),
     DISPETCHERS("Диспетчеры"),
     SPECIALISTS("Специалисты УГМ");
@@ -15,7 +15,7 @@ public enum WorkerProfessions implements Profession {
         return profession;
     }
 
-    WorkerProfessions(String profession) {
+    WorkerProfession(String profession) {
         this.profession = profession;
     }
 }

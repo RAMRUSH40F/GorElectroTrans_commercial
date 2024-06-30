@@ -16,7 +16,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import project.model.Lesson;
 import project.security.service.JwtAuthorizationService;
 import project.service.LessonServiceImpl;
-import project.service.reportService.TeacherProfessions;
+import project.service.reportService.TeacherProfession;
 
 import javax.sql.DataSource;
 
@@ -110,7 +110,7 @@ public class LessonApiTest {
         );
     }
     private Lesson createTestLesson(){
-        Object[] res = {"Ремонт нового подвижного состава трамваев_тест", 2.6f, "Левицкий Леонид Константинович.", 52, TeacherProfessions.MASTER.getProfession()};
+        Object[] res = {"Ремонт нового подвижного состава трамваев_тест", 2.6f, "Левицкий Леонид Константинович.", 52, TeacherProfession.MASTER.getProfession()};
         return Lesson.builder()
                 .topic((String) res[0])
                 .duration((Float) res[1])
