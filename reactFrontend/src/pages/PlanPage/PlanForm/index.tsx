@@ -6,6 +6,7 @@ import { Formik } from "formik";
 import { modalOpened } from "pages/PlanPage/Materials/model";
 
 import ActionButton from "components/ActionButton";
+import CheckAccess from "components/CheckAccess";
 import DateInput from "components/formElements/DateInput";
 import Dropdown, { DropdownOption } from "components/formElements/Dropdown";
 import FormErrorMessage from "components/formElements/FormErrorMessage";
@@ -17,6 +18,8 @@ import Textarea from "components/formElements/Textarea";
 import useFocus from "hooks/useFocus";
 
 import { IPlan, PLAN_STATUS, PLAN_STATUS_VALUE } from "models/Plan";
+
+import { ROLES } from "shared/auth";
 
 import { movedToConfirm } from "../EditPlan/model";
 
@@ -361,15 +364,19 @@ const PlanForm: FC<Props> = ({
                                     >
                                         Сохранить
                                     </ActionButton>
-                                    <ActionButton
-                                        className={styles.actionBtn}
-                                        disabled={isSubmitting || isDisabled}
-                                        onClick={handleMoveToConfirm}
-                                        type="button"
-                                        colorType="danger"
-                                    >
-                                        Удалить
-                                    </ActionButton>
+                                    <CheckAccess allowedRoles={[ROLES.ADMIN]}>
+                                        <ActionButton
+                                            className={styles.actionBtn}
+                                            disabled={
+                                                isSubmitting || isDisabled
+                                            }
+                                            onClick={handleMoveToConfirm}
+                                            type="button"
+                                            colorType="danger"
+                                        >
+                                            Удалить
+                                        </ActionButton>
+                                    </CheckAccess>
                                 </div>
                             </>
                         ) : (
