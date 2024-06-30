@@ -6,10 +6,8 @@ import { fork } from "effector";
 import TestWrapper from "tests/TestWrapper";
 
 import {
-    $isLoading,
+    $error,
     $isModalActive,
-    $periods,
-    $periodsError,
     modalClosed,
     modalOpened,
 } from "./model/model";
@@ -44,23 +42,9 @@ test("should NOT display modal when state is not active", () => {
     expect(title).not.toBeInTheDocument();
 });
 
-test("should display loader when loading is active", () => {
-    const scope = fork({
-        values: new Map().set($isModalActive, true).set($isLoading, true),
-    });
-
-    render(<TestWrapper scope={scope} children={<PlanReport />} />);
-
-    const loader = screen.getByText(/Загрузка/i);
-
-    expect(loader).toBeInTheDocument();
-});
-
 test("should display error when it is not null", () => {
     const scope = fork({
-        values: new Map()
-            .set($isModalActive, true)
-            .set($periodsError, mockedMessage),
+        values: new Map().set($isModalActive, true).set($error, mockedMessage),
     });
 
     render(<TestWrapper scope={scope} children={<PlanReport />} />);
@@ -68,38 +52,6 @@ test("should display error when it is not null", () => {
     const error = screen.getByText(mockedMessage);
 
     expect(error).toBeInTheDocument();
-});
-
-test("should display periodsError when it is not null", () => {
-    const scope = fork({
-        values: new Map()
-            .set($isModalActive, true)
-            .set($isLoading, false)
-            .set($periodsError, mockedMessage),
-    });
-
-    render(<TestWrapper scope={scope} children={<PlanReport />} />);
-
-    const error = screen.getByText(mockedMessage);
-
-    expect(error).toBeInTheDocument();
-});
-
-test("should display empty alert when periods list is empty", () => {
-    const scope = fork({
-        values: new Map()
-            .set($isModalActive, true)
-            .set($isLoading, false)
-            .set($periods, []),
-    });
-
-    render(<TestWrapper scope={scope} children={<PlanReport />} />);
-
-    const alert = screen.getByText(/Нет информации о кварталах/i);
-    const form = screen.queryByRole("form", { name: /отчетность/i });
-
-    expect(alert).toBeInTheDocument();
-    expect(form).not.toBeInTheDocument();
 });
 
 describe("events", () => {
