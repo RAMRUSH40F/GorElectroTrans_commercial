@@ -8,6 +8,7 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
     file?: File | null;
     fileNameLabel?: string;
     labelText?: string;
+    placeholder?: string;
 }
 
 const InputFile: React.FC<Props> = ({
@@ -15,6 +16,7 @@ const InputFile: React.FC<Props> = ({
     labelText,
     file,
     fileNameLabel,
+    placeholder,
     disabled,
     ...rest
 }) => {
@@ -28,7 +30,10 @@ const InputFile: React.FC<Props> = ({
                         (file || fileNameLabel) && styles.active,
                     )}
                 >
-                    {file?.name ?? fileNameLabel ?? "Выберите файл"}
+                    {file?.name ??
+                        fileNameLabel ??
+                        placeholder ??
+                        "Выберите файл"}
                 </span>
                 <label
                     className={cn(styles.label, disabled && styles.disabled)}

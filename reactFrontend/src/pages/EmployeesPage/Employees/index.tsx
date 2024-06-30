@@ -15,6 +15,7 @@ import TableHeadCell from "components/Table/TableHead/TableHeadCell";
 
 import EditEmployee from "../EditEmployee";
 import { modalOpened } from "../EditEmployee/model";
+import { EmployeesUploading } from "../EmployeesUploading";
 import {
     $employees,
     $error,
@@ -32,6 +33,7 @@ import styles from "./styles.module.scss";
 const Employees: FC = () => {
     return (
         <>
+            <EmployeesUploading />
             <EditEmployee />
             <div>
                 <ErrorAlert />

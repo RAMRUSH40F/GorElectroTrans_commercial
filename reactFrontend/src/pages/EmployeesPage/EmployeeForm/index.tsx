@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useRef } from "react";
+import { FC, MouseEvent, useEffect, useRef } from "react";
 
 import { Formik } from "formik";
 
@@ -11,6 +11,8 @@ import Label from "components/formElements/Label";
 
 import { IDepartment } from "models/Department";
 import { IEmployee } from "models/Employee";
+
+import { modalOpened } from "../EmployeesUploading/model";
 
 import { employeeFormScheme } from "./employeeFormScheme";
 
@@ -74,6 +76,13 @@ const EmployeeForm: FC<Props> = ({
         studentId: employee?.studentId ?? "",
         fullName: employee?.fullName ?? "",
         subdepartment: getInitialSubdepartmentOption(),
+    };
+
+    const handleOpenEmployeesUploading = (
+        event: MouseEvent<HTMLButtonElement>,
+    ) => {
+        event.stopPropagation();
+        modalOpened();
     };
 
     return (
@@ -176,13 +185,23 @@ const EmployeeForm: FC<Props> = ({
                                 </ActionButton>
                             </>
                         ) : (
-                            <ActionButton
-                                disabled={isSubmitting || isDisabled}
-                                type="submit"
-                                colorType="success"
-                            >
-                                Добавить
-                            </ActionButton>
+                            <>
+                                <ActionButton
+                                    disabled={isSubmitting || isDisabled}
+                                    type="button"
+                                    colorType="info"
+                                    onClick={handleOpenEmployeesUploading}
+                                >
+                                    Загрузить
+                                </ActionButton>
+                                <ActionButton
+                                    disabled={isSubmitting || isDisabled}
+                                    type="submit"
+                                    colorType="success"
+                                >
+                                    Добавить
+                                </ActionButton>
+                            </>
                         )}
                     </div>
                 </form>

@@ -85,6 +85,14 @@ export const addEmployeeFx = attach({
     },
 });
 
+export const uploadEmployeesFx = attach({
+    effect: employeeApi.uploadEmployeesFx,
+    source: { depId: $depId },
+    mapParams({ data, controller }: AbortParams<FormData>, { depId }) {
+        return { depId, data, controller };
+    },
+});
+
 export const updateEmployeeFx = attach({
     effect: employeeApi.putFx,
     source: $depId,
@@ -108,6 +116,7 @@ export const removeEmployeeFx = attach({
 export const fetchStarted = merge([
     getEmployeesFx.pending,
     addEmployeeFx.pending,
+    uploadEmployeesFx.pending,
     updateEmployeeFx.pending,
     removeEmployeeFx.pending,
 ]);
@@ -183,7 +192,12 @@ sample({
 
 // // Fetch employees when search params were changed or employee was deleted or updated
 sample({
-    clock: [paramsChanged, removeEmployeeFx.done, addEmployeeFx.done],
+    clock: [
+        paramsChanged,
+        removeEmployeeFx.done,
+        addEmployeeFx.done,
+        uploadEmployeesFx.done,
+    ],
     source: $params,
     filter: ({ depId }) => depId !== "",
     fn: (params) => ({

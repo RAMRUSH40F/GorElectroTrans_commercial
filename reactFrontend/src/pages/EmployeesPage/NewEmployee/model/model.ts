@@ -6,6 +6,10 @@ import { IDepartment } from "models/Department";
 
 import departmentApi from "shared/api/departmentsApi";
 
+import {
+    modalOpened as UploadingModalOpened,
+    backButtonClicked,
+} from "../../EmployeesUploading/model";
 import { $depId, addEmployeeFx, pageClosed } from "../../model/model";
 
 const domain = createDomain();
@@ -75,5 +79,5 @@ $error
     .reset(errorReset, addEmployeeFx, modalClosed);
 
 $isModalActive
-    .on(modalOpened, () => true)
-    .on([modalClosed, addEmployeeFx.done], () => false);
+    .on([modalOpened, backButtonClicked], () => true)
+    .on([modalClosed, addEmployeeFx.done, UploadingModalOpened], () => false);
