@@ -3,6 +3,6 @@ export {
     modalClosed,
     $isLoading,
     $isModalActive,
-    $periods,
-    $periodsError,
+    $error,
+    formSubmitted,
 } from "./model";
