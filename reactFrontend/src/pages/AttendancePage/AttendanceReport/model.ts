@@ -50,7 +50,7 @@ sample({
     clock: getReportFx.doneData,
     fn: ({ file, dateRange: { dateFrom, dateTo } }) => ({
         file,
-        fileName: `Отчет_${dateFrom}_${dateTo}.xlsx`,
+        fileName: `Отчет_посещаемость_${dateFrom}_${dateTo}.xlsx`,
     }),
     target: downloadFileFx,
 });
