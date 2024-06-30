@@ -1,50 +1,71 @@
 import { attach, createDomain, sample } from "effector";
 
-import reportApi from "shared/api/reportApi";
+import { DateRangeFormState } from "components/DateRangeForm/types";
 
-import { IReportPeriod } from "../PlanReportForm/model/model";
+import { downloadFileFx } from "helpers/downloadFile";
+import { parseISO } from "helpers/parseISO";
 
-import { $depId, planGate } from "../../model";
+import planApi from "shared/api/planApi";
+
+import { $depId } from "../../model";
 
 const domain = createDomain();
 
+// Events
 export const modalOpened = domain.createEvent();
 export const modalClosed = domain.createEvent();
 
-export const $periods = domain.createStore<IReportPeriod[]>([]);
-export const $isLoading = domain.createStore<boolean>(true);
-export const $periodsError = domain.createStore<string | null>(null);
+export const formSubmitted = domain.createEvent<DateRangeFormState>();
+
+// Stores
 export const $isModalActive = domain.createStore<boolean>(false);
 
-export const getPeriodsFx = attach({ effect: reportApi.fetchPeriodsFx });
+export const $isLoading = domain.createStore<boolean>(false);
+export const $error = domain.createStore<string | null>(null);
 
-// Fetch periods when modal window opens
+// Effects
+export const getReportFx = attach({ effect: planApi.fetchPlanReportFx });
+
+// Relations
+// Fetch report file when form submits
 sample({
-    clock: modalOpened,
-    source: $depId,
-    fn: (depId) => ({ depId, controller: new AbortController(), data: null }),
-    target: getPeriodsFx,
+    clock: formSubmitted,
+    source: { depId: $depId },
+    fn: ({ depId }, { endDate, startDate }) => {
+        const dateFrom = parseISO(startDate.toISOString()).day;
+        const dateTo = parseISO(endDate.toISOString()).day;
+        return {
+            depId,
+            dateFrom,
+            dateTo,
+            data: null,
+            controller: new AbortController(),
+        };
+    },
+    target: getReportFx,
 });
 
-// Cancel fetch quarters request when modal window closes
+// When report was successfully fetched, download file
 sample({
-    clock: modalClosed,
-    source: getPeriodsFx,
-}).watch(({ controller }) => {
-    controller.abort();
+    clock: getReportFx.doneData,
+    fn: ({ file, dateRange: { dateFrom, dateTo } }) => ({
+        file,
+        fileName: `Отчет_рабочий_план_${dateFrom}_${dateTo}.xlsx`,
+    }),
+    target: downloadFileFx,
 });
 
-// Reset all stores when component mountes and unmounts
-domain.onCreateStore(($store) => {
-    $store.reset(modalOpened, modalClosed, planGate.close);
+// Subscriptions
+domain.onCreateStore((store) => {
+    store.reset(modalOpened, modalClosed);
 });
 
-$isLoading.on(getPeriodsFx.pending, (_, pending) => pending);
+$isLoading.on(getReportFx.pending, (_, pending) => pending);
 
-$periods.on(getPeriodsFx.doneData, (_, data) => data);
-
-$periodsError.on(getPeriodsFx.failData, (_, { isCanceled, message }) =>
-    isCanceled ? null : message,
-);
+$error
+    .on(getReportFx.failData, (_, { isCanceled, message }) =>
+        isCanceled ? null : message,
+    )
+    .reset(getReportFx);
 
 $isModalActive.on(modalOpened, () => true).on(modalClosed, () => false);
