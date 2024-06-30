@@ -1,6 +1,6 @@
 package project.service.reportService;
 
-public enum TeacherProfessions implements Profession {
+public enum TeacherProfession implements Profession {
     RUKOVODITEL("Руководитель/зам.руководителя"),
     MASTER("Ст. мастер/мастер"),
     NASTAVNIK("Наставник");
@@ -13,7 +13,7 @@ public enum TeacherProfessions implements Profession {
 
     }
 
-    TeacherProfessions(String profession) {
+    TeacherProfession(String profession) {
         this.profession = profession;
     }
 

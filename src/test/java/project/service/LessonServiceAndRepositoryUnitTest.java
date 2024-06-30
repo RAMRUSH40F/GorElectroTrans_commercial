@@ -12,7 +12,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import project.model.Lesson;
-import project.service.reportService.TeacherProfessions;
+import project.service.reportService.TeacherProfession;
 
 import javax.sql.DataSource;
 import java.time.LocalDate;
@@ -108,7 +108,7 @@ class LessonServiceAndRepositoryUnitTest {
                 .date(LocalDate.now())
                 .teacher("Левицкий Леонид Константинович.")
                 .peoplePlanned(52)
-                .teacherPost(TeacherProfessions.MASTER.getProfession())
+                .teacherPost(TeacherProfession.MASTER.getProfession())
                 .isHeld(true)
                 .status(Lesson.Status.HELD)
                 .build();

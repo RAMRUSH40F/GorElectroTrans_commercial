@@ -1,10 +1,10 @@
 package project.service.reportService;
 
-public enum ReportTemplateRowNames {
+public enum ReportRow {
     LESSON_PLAN(2),
-    LESSON_HANDLE(3),
-    THEME_PLAN(4),
-    THEME_HANDLE(5),
+    LESSON_HELD(3),
+    TOPIC_PLAN(4),
+    TOPIC_HELD(5),
     STUDENTS_PLAN(6),
     STUDENTS_ALL(7),
     STUDENTS_TROLL(8),
@@ -23,7 +23,7 @@ public enum ReportTemplateRowNames {
 
     private final int index;
 
-    ReportTemplateRowNames(int index) {
+    ReportRow(int index) {
         this.index = index;
     }
 }
