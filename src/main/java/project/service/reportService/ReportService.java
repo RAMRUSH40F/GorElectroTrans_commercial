@@ -10,15 +10,10 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
-import project.model.QuarterDateModel;
 import project.repository.ReportRepository;
 
 import java.io.InputStream;
 import java.time.LocalDate;
-import java.time.Year;
-import java.time.temporal.IsoFields;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
@@ -114,22 +109,5 @@ public class ReportService {
             cell.setCellStyle(cellStyle);
             cell.setCellValue(supplier.get());
         }
-    }
-
-    @Deprecated
-    @NotNull
-    public List<QuarterDateModel> getQuarterDateModelList() {
-        int year = Year.now().getValue();
-        int quarter = LocalDate.now().get(IsoFields.QUARTER_OF_YEAR);
-        List<QuarterDateModel> intervals = new ArrayList<>();
-        for (int i = 0; i < 4; i++) {
-            intervals.add(new QuarterDateModel(year, quarter));
-            quarter--;
-            if (quarter <= 0) {
-                quarter = 4;
-                year--;
-            }
-        }
-        return intervals;
     }
 }
