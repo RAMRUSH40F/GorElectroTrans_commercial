@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet id="2" author="ArtemShev">
+        <sqlFile path="sql/update/v1.3_AddStatus.sql"/>
+        <rollback>
+            <sqlFile path="sql/rollback/V1.3_DeleteStatus.sql"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

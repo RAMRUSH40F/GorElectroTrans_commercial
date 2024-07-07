@@ -18,7 +18,7 @@ services:
     networks:
       - backend
     volumes:
-    - ./src/main/resources/sql/update:/docker-entrypoint-initdb.d
+    - ./src/main/resources/sql/init:/docker-entrypoint-initdb.d
     ports:
       - '3306:3306'
     restart: unless-stopped
