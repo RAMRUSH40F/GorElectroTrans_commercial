@@ -4,7 +4,8 @@ services:
     build:
       dockerfile: Dockerfile
     depends_on:
-      - database_mariadb
+      database_mariadb:
+        condition: service_healthy
     networks:
       - backend
     ports:
@@ -14,14 +15,20 @@ services:
   database_mariadb:
     image: mariadb:10.7
     environment:
-      MARIADB_ROOT_PASSWORD: testpass
+      MYSQL_ROOT_PASSWORD: testpass
     networks:
       - backend
     volumes:
-    - ./src/main/resources/sql/init:/docker-entrypoint-initdb.d
+      - ./src/main/resources/sql/init:/docker-entrypoint-initdb.d
     ports:
       - '3306:3306'
-    restart: unless-stopped
+    restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "mysql --user=root --password=testpass -e 'show databases'" ]
+      start_period: 10s
+      interval: 3s
+      timeout: 3s
+      retries: 3
 networks:
   backend:
     driver: bridge
