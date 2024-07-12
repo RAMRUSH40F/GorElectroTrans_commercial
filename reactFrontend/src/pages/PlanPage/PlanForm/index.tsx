@@ -135,8 +135,8 @@ const PlanForm: FC<Props> = ({
         movedToConfirm();
     };
 
-    const isCommentRequired = (status: PLAN_STATUS) =>
-        [PLAN_STATUS.RESCHEDULED, PLAN_STATUS.CANCELLED].some(
+    const isCommentAllowed = (status: PLAN_STATUS) =>
+        [PLAN_STATUS.RESCHEDULED, PLAN_STATUS.CANCELLED, PLAN_STATUS.PLANNED].some(
             (value) => value === status,
         );
 
@@ -293,7 +293,7 @@ const PlanForm: FC<Props> = ({
                                         option: StatusDropdownOption,
                                     ) => {
                                         setFieldValue("status", option);
-                                        if (!isCommentRequired(option.value)) {
+                                        if (!isCommentAllowed(option.value)) {
                                             setFieldValue("comment", null);
                                             setFieldError("comment", undefined);
                                             setTouched({ comment: false });
@@ -303,7 +303,7 @@ const PlanForm: FC<Props> = ({
                                     disabled={isSubmitting || isDisabled}
                                 />
                             </Label>
-                            {isCommentRequired(values.status.value) && (
+                            {isCommentAllowed(values.status.value) && (
                                 <Label
                                     className={styles.label}
                                     text="Комментарий"
