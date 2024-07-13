@@ -90,15 +90,11 @@ public class StudentServiceImpl {
         return repository.save(student);
     }
 
-    /**
-     * Метод для внутреннего использования классами Multiplier.
-     */
     @NonNull
-    public List<Student> getStudentsIdList(int departmentId) {
+    public boolean getStudentExistsWithSubdepartmentId(int departmentId, @NonNull short subdepartmentId) {
         setCurrentDataSource("DEP_" + departmentId);
-        return (List<Student>) repository.findAll();
+        return repository.existsBySubdepartmentId(subdepartmentId);
     }
-
 
     @NonNull
     public static Student createStudent(Student student, @NonNull Subdepartment subdepartment) {
