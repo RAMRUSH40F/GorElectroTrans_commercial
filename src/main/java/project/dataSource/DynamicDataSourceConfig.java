@@ -25,7 +25,6 @@ public class DynamicDataSourceConfig {
     private String databasePassword;
 
     @SneakyThrows
-    @Bean
     public Map<Object, Object> dataSourceMap() {
         Map<Object, Object> dataSourceMap = new HashMap<>();
 
@@ -34,9 +33,9 @@ public class DynamicDataSourceConfig {
             DataSource mariaDbDataSource = createDataSource(databaseName);
             dataSourceMap.put(databaseName, mariaDbDataSource);
         }
-
         DataSource mariaAuthorisationDataSource = createDataSource("USERS");
         dataSourceMap.put("USERS", mariaAuthorisationDataSource);
+        dataSourceMap.put("sys", createDataSource("sys"));
         return dataSourceMap;
     }
 

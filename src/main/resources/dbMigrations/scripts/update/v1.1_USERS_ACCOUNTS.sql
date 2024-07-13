@@ -1,23 +1,4 @@
-DROP DATABASE IF EXISTS USERS;
-CREATE DATABASE USERS;
 USE USERS;
-
-    
-
-CREATE TABLE users (
-  username VARCHAR(15), 
-  PASSWORD VARCHAR(100), 
-  enabled TINYINT(1), 
-  PRIMARY KEY (username)
-);
-
-
-CREATE TABLE authorities (
-  username VARCHAR(15), 
-  authority VARCHAR(25), 
-  FOREIGN KEY (username) REFERENCES users(username) ON UPDATE CASCADE ON DELETE CASCADE
-);
-
 INSERT INTO users (username, PASSWORD, enabled) VALUES ('JohnDoe', 'password123', 1);
 INSERT INTO users (username, PASSWORD, enabled) VALUES ('JaneSmith', 'hello123', 1);
 INSERT INTO users (username, PASSWORD, enabled) VALUES ('MarkJohnson', 'securepassword', 1);

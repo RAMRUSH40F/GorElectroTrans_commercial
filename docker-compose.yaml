@@ -18,14 +18,12 @@ services:
       MYSQL_ROOT_PASSWORD: testpass
     networks:
       - backend
-    volumes:
-      - ./src/main/resources/sql/init:/docker-entrypoint-initdb.d
     ports:
       - '3306:3306'
     restart: always
     healthcheck:
       test: [ "CMD-SHELL", "mysql --user=root --password=testpass -e 'show databases'" ]
-      start_period: 10s
+      start_period: 3s
       interval: 3s
       timeout: 3s
       retries: 3

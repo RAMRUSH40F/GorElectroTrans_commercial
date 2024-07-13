@@ -1,3 +1,22 @@
+DROP DATABASE IF EXISTS USERS;
+CREATE DATABASE USERS;
+USE USERS;
+
+
+
+CREATE TABLE users (
+   username VARCHAR(15),
+   PASSWORD VARCHAR(100),
+   enabled TINYINT(1),
+   PRIMARY KEY (username)
+);
+
+
+CREATE TABLE authorities (
+     username VARCHAR(15),
+     authority VARCHAR(25),
+     FOREIGN KEY (username) REFERENCES users(username) ON UPDATE CASCADE ON DELETE CASCADE
+);
 
 DROP DATABASE IF EXISTS DEP_1;
 DROP DATABASE IF EXISTS DEP_2;
@@ -21,9 +40,9 @@ DROP DATABASE IF EXISTS DEP_15;
                  USE DEP_1;
 
 CREATE TABLE `lesson`(
-  `id` MEDIUMINT UNSIGNED PRIMARY KEY AUTO_INCREMENT, 
+  `id` MEDIUMINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
   `topic` VARCHAR(250) NOT NULL,
-  `duration` DECIMAL(5, 2) NOT NULL, 
+  `duration` DECIMAL(5, 2) NOT NULL,
   `date` DATE NOT NULL,
   `teacher` VARCHAR(100) NOT NULL,
   `people_planned` SMALLINT NOT NULL,
@@ -33,86 +52,86 @@ CREATE TABLE `lesson`(
   INDEX `idx_teacher` (`teacher`),
   INDEX `idx_topic` (`topic`)
 );
-  
+
 CREATE TABLE `subdepartment`(
-  `id` SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT, 
+  `id` SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
   `name` VARCHAR(100) NOT NULL UNIQUE
 );
 
  CREATE TABLE `lesson_content`(
-  `file` MEDIUMBLOB,  
+  `file` MEDIUMBLOB,
   `lesson_id` MEDIUMINT UNSIGNED NOT NULL,
    file_name VARCHAR(120) PRIMARY KEY
 );
-ALTER TABLE 
-  `lesson_content` 
-ADD 
-  INDEX `lesson_content_lesson_id_index`(`lesson_id`); 
-  
-  
+ALTER TABLE
+  `lesson_content`
+ADD
+  INDEX `lesson_content_lesson_id_index`(`lesson_id`);
+
+
 CREATE TABLE `student`(
-  `student_id` CHAR(5) PRIMARY KEY, 
+  `student_id` CHAR(5) PRIMARY KEY,
   `subdepartment_id` SMALLINT UNSIGNED NOT NULL,
   `name` VARCHAR(100) NOT NULL
 );
-ALTER TABLE 
-  `student` 
-ADD 
+ALTER TABLE
+  `student`
+ADD
   INDEX `student_name_index`(`name`);
-  
+
 CREATE TABLE `attendance`(
-  `lesson_id` MEDIUMINT UNSIGNED, 
-  `student_id` CHAR(5), 
+  `lesson_id` MEDIUMINT UNSIGNED,
+  `student_id` CHAR(5),
   `success` BIT(1) NOT NULL,
-   PRIMARY KEY `lesson_id_student_id_PRIMARY_KEY`(`lesson_id`, `student_id`) 
+   PRIMARY KEY `lesson_id_student_id_PRIMARY_KEY`(`lesson_id`, `student_id`)
 );
 
 
-ALTER TABLE 
-  `student` 
-ADD 
-  CONSTRAINT `student_subdepartment_id_foreign` FOREIGN KEY(`subdepartment_id`) REFERENCES `subdepartment`(`id`) 
+ALTER TABLE
+  `student`
+ADD
+  CONSTRAINT `student_subdepartment_id_foreign` FOREIGN KEY(`subdepartment_id`) REFERENCES `subdepartment`(`id`)
   ON UPDATE CASCADE ON DELETE CASCADE;
-  
-ALTER TABLE 
-  `lesson_content` 
-ADD 
+
+ALTER TABLE
+  `lesson_content`
+ADD
   CONSTRAINT `lesson_content_lesson_id_foreign` FOREIGN KEY(`lesson_id`) REFERENCES `lesson`(`id`) ON UPDATE CASCADE ON DELETE CASCADE;
-  
-ALTER TABLE `attendance` 
-ADD 
+
+ALTER TABLE `attendance`
+ADD
   CONSTRAINT `attendance_student_id_foreign` FOREIGN KEY (`student_id`) REFERENCES `student`(`student_id`) ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE 
-  attendance 
-ADD 
+ALTER TABLE
+  attendance
+ADD
   CONSTRAINT `attendance_lesson_id_foreign` FOREIGN KEY (`lesson_id`) REFERENCES `lesson`(`id`) ON UPDATE CASCADE ON DELETE CASCADE;
 
 -- VIEW
 
 
-CREATE VIEW attendance_view AS 
+CREATE VIEW attendance_view AS
 SELECT 	student.name,
 	attendance.lesson_id,
 	lesson.date,
 	attendance.student_id,
-	attendance.success, 
+	attendance.success,
 	lesson.topic,
 	lesson.duration,
 	lesson.teacher,
 	subdepartment.name AS subdepartment
-FROM attendance 
-LEFT JOIN student 
+FROM attendance
+LEFT JOIN student
 	ON attendance.student_id=student.student_id
-LEFT JOIN subdepartment 
+LEFT JOIN subdepartment
 	ON subdepartment.id=student.subdepartment_id
-LEFT JOIN lesson 
-	ON lesson.id=attendance.lesson_id;	
+LEFT JOIN lesson
+	ON lesson.id=attendance.lesson_id;
 
 
-	
 
-CREATE VIEW Materials_view AS 
+
+CREATE VIEW Materials_view AS
 SELECT lesson_content.lesson_id,
 	lesson.date,
 	lesson.topic,
@@ -124,9 +143,9 @@ LEFT JOIN lesson ON lesson_content.lesson_id=lesson.id;
                  USE DEP_2;
 
 CREATE TABLE `lesson`(
-  `id` MEDIUMINT UNSIGNED PRIMARY KEY AUTO_INCREMENT, 
+  `id` MEDIUMINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
   `topic` VARCHAR(250) NOT NULL,
-  `duration` DECIMAL(5, 2) NOT NULL, 
+  `duration` DECIMAL(5, 2) NOT NULL,
   `date` DATE NOT NULL,
   `teacher` VARCHAR(100) NOT NULL,
   `people_planned` SMALLINT NOT NULL,
@@ -137,84 +156,84 @@ CREATE TABLE `lesson`(
   INDEX `idx_topic` (`topic`)
 );
 CREATE TABLE `subdepartment`(
-  `id` SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT, 
+  `id` SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
   `name` VARCHAR(100) NOT NULL UNIQUE
 );
 
  CREATE TABLE `lesson_content`(
-  `file` MEDIUMBLOB,  
+  `file` MEDIUMBLOB,
   `lesson_id` MEDIUMINT UNSIGNED NOT NULL,
    file_name VARCHAR(120) PRIMARY KEY
 );
-ALTER TABLE 
-  `lesson_content` 
-ADD 
-  INDEX `lesson_content_lesson_id_index`(`lesson_id`); 
-  
-  
+ALTER TABLE
+  `lesson_content`
+ADD
+  INDEX `lesson_content_lesson_id_index`(`lesson_id`);
+
+
 CREATE TABLE `student`(
-  `student_id` CHAR(5) PRIMARY KEY, 
+  `student_id` CHAR(5) PRIMARY KEY,
   `subdepartment_id` SMALLINT UNSIGNED NOT NULL,
   `name` VARCHAR(100) NOT NULL
 );
-ALTER TABLE 
-  `student` 
-ADD 
+ALTER TABLE
+  `student`
+ADD
   INDEX `student_name_index`(`name`);
-  
+
 CREATE TABLE `attendance`(
-  `lesson_id` MEDIUMINT UNSIGNED, 
-  `student_id` CHAR(5), 
+  `lesson_id` MEDIUMINT UNSIGNED,
+  `student_id` CHAR(5),
   `success` BIT(1) NOT NULL,
-   PRIMARY KEY `lesson_id_student_id_PRIMARY_KEY`(`lesson_id`, `student_id`) 
+   PRIMARY KEY `lesson_id_student_id_PRIMARY_KEY`(`lesson_id`, `student_id`)
 );
 
 
-ALTER TABLE 
-  `student` 
-ADD 
-  CONSTRAINT `student_subdepartment_id_foreign` FOREIGN KEY(`subdepartment_id`) REFERENCES `subdepartment`(`id`) 
+ALTER TABLE
+  `student`
+ADD
+  CONSTRAINT `student_subdepartment_id_foreign` FOREIGN KEY(`subdepartment_id`) REFERENCES `subdepartment`(`id`)
   ON UPDATE CASCADE ON DELETE CASCADE;
-  
-ALTER TABLE 
-  `lesson_content` 
-ADD 
+
+ALTER TABLE
+  `lesson_content`
+ADD
   CONSTRAINT `lesson_content_lesson_id_foreign` FOREIGN KEY(`lesson_id`) REFERENCES `lesson`(`id`) ON UPDATE CASCADE ON DELETE CASCADE;
-  
-ALTER TABLE `attendance` 
-ADD 
+
+ALTER TABLE `attendance`
+ADD
   CONSTRAINT `attendance_student_id_foreign` FOREIGN KEY (`student_id`) REFERENCES `student`(`student_id`) ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE 
-  attendance 
-ADD 
+ALTER TABLE
+  attendance
+ADD
   CONSTRAINT `attendance_lesson_id_foreign` FOREIGN KEY (`lesson_id`) REFERENCES `lesson`(`id`) ON UPDATE CASCADE ON DELETE CASCADE;
 
 -- VIEW
 
 
-CREATE VIEW attendance_view AS 
+CREATE VIEW attendance_view AS
 SELECT 	student.name,
 	attendance.lesson_id,
 	lesson.date,
 	attendance.student_id,
-	attendance.success, 
+	attendance.success,
 	lesson.topic,
 	lesson.duration,
 	lesson.teacher,
 	subdepartment.name AS subdepartment
-FROM attendance 
-LEFT JOIN student 
+FROM attendance
+LEFT JOIN student
 	ON attendance.student_id=student.student_id
-LEFT JOIN subdepartment 
+LEFT JOIN subdepartment
 	ON subdepartment.id=student.subdepartment_id
-LEFT JOIN lesson 
-	ON lesson.id=attendance.lesson_id;	
+LEFT JOIN lesson
+	ON lesson.id=attendance.lesson_id;
 
 
-	
 
-CREATE VIEW Materials_view AS 
+
+CREATE VIEW Materials_view AS
 SELECT lesson_content.lesson_id,
 	lesson.date,
 	lesson.topic,
@@ -225,9 +244,9 @@ LEFT JOIN lesson ON lesson_content.lesson_id=lesson.id;
      CREATE DATABASE DEP_3;
                  USE DEP_3;
 CREATE TABLE `lesson`(
-  `id` MEDIUMINT UNSIGNED PRIMARY KEY AUTO_INCREMENT, 
+  `id` MEDIUMINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
   `topic` VARCHAR(250) NOT NULL,
-  `duration` DECIMAL(5, 2) NOT NULL, 
+  `duration` DECIMAL(5, 2) NOT NULL,
   `date` DATE NOT NULL,
   `teacher` VARCHAR(100) NOT NULL,
   `people_planned` SMALLINT NOT NULL,
@@ -238,84 +257,84 @@ CREATE TABLE `lesson`(
   INDEX `idx_topic` (`topic`)
 );
 CREATE TABLE `subdepartment`(
-  `id` SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT, 
+  `id` SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
   `name` VARCHAR(100) NOT NULL UNIQUE
 );
 
  CREATE TABLE `lesson_content`(
-  `file` MEDIUMBLOB,  
+  `file` MEDIUMBLOB,
   `lesson_id` MEDIUMINT UNSIGNED NOT NULL,
    file_name VARCHAR(120) PRIMARY KEY
 );
-ALTER TABLE 
-  `lesson_content` 
-ADD 
-  INDEX `lesson_content_lesson_id_index`(`lesson_id`); 
-  
-  
+ALTER TABLE
+  `lesson_content`
+ADD
+  INDEX `lesson_content_lesson_id_index`(`lesson_id`);
+
+
 CREATE TABLE `student`(
-  `student_id` CHAR(5) PRIMARY KEY, 
+  `student_id` CHAR(5) PRIMARY KEY,
   `subdepartment_id` SMALLINT UNSIGNED NOT NULL,
   `name` VARCHAR(100) NOT NULL
 );
-ALTER TABLE 
-  `student` 
-ADD 
+ALTER TABLE
+  `student`
+ADD
   INDEX `student_name_index`(`name`);
-  
+
 CREATE TABLE `attendance`(
-  `lesson_id` MEDIUMINT UNSIGNED, 
-  `student_id` CHAR(5), 
+  `lesson_id` MEDIUMINT UNSIGNED,
+  `student_id` CHAR(5),
   `success` BIT(1) NOT NULL,
-   PRIMARY KEY `lesson_id_student_id_PRIMARY_KEY`(`lesson_id`, `student_id`) 
+   PRIMARY KEY `lesson_id_student_id_PRIMARY_KEY`(`lesson_id`, `student_id`)
 );
 
 
-ALTER TABLE 
-  `student` 
-ADD 
-  CONSTRAINT `student_subdepartment_id_foreign` FOREIGN KEY(`subdepartment_id`) REFERENCES `subdepartment`(`id`) 
+ALTER TABLE
+  `student`
+ADD
+  CONSTRAINT `student_subdepartment_id_foreign` FOREIGN KEY(`subdepartment_id`) REFERENCES `subdepartment`(`id`)
   ON UPDATE CASCADE ON DELETE CASCADE;
-  
-ALTER TABLE 
-  `lesson_content` 
-ADD 
+
+ALTER TABLE
+  `lesson_content`
+ADD
   CONSTRAINT `lesson_content_lesson_id_foreign` FOREIGN KEY(`lesson_id`) REFERENCES `lesson`(`id`) ON UPDATE CASCADE ON DELETE CASCADE;
-  
-ALTER TABLE `attendance` 
-ADD 
+
+ALTER TABLE `attendance`
+ADD
   CONSTRAINT `attendance_student_id_foreign` FOREIGN KEY (`student_id`) REFERENCES `student`(`student_id`) ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE 
-  attendance 
-ADD 
+ALTER TABLE
+  attendance
+ADD
   CONSTRAINT `attendance_lesson_id_foreign` FOREIGN KEY (`lesson_id`) REFERENCES `lesson`(`id`) ON UPDATE CASCADE ON DELETE CASCADE;
 
 -- VIEW
 
 
-CREATE VIEW attendance_view AS 
+CREATE VIEW attendance_view AS
 SELECT 	student.name,
 	attendance.lesson_id,
 	lesson.date,
 	attendance.student_id,
-	attendance.success, 
+	attendance.success,
 	lesson.topic,
 	lesson.duration,
 	lesson.teacher,
 	subdepartment.name AS subdepartment
-FROM attendance 
-LEFT JOIN student 
+FROM attendance
+LEFT JOIN student
 	ON attendance.student_id=student.student_id
-LEFT JOIN subdepartment 
+LEFT JOIN subdepartment
 	ON subdepartment.id=student.subdepartment_id
-LEFT JOIN lesson 
-	ON lesson.id=attendance.lesson_id;	
+LEFT JOIN lesson
+	ON lesson.id=attendance.lesson_id;
 
 
-	
 
-CREATE VIEW Materials_view AS 
+
+CREATE VIEW Materials_view AS
 SELECT lesson_content.lesson_id,
 	lesson.date,
 	lesson.topic,
@@ -328,9 +347,9 @@ LEFT JOIN lesson ON lesson_content.lesson_id=lesson.id;
                  USE DEP_4;
 
 CREATE TABLE `lesson`(
-  `id` MEDIUMINT UNSIGNED PRIMARY KEY AUTO_INCREMENT, 
+  `id` MEDIUMINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
   `topic` VARCHAR(250) NOT NULL,
-  `duration` DECIMAL(5, 2) NOT NULL, 
+  `duration` DECIMAL(5, 2) NOT NULL,
   `date` DATE NOT NULL,
   `teacher` VARCHAR(100) NOT NULL,
   `people_planned` SMALLINT NOT NULL,
@@ -340,86 +359,86 @@ CREATE TABLE `lesson`(
   INDEX `idx_teacher` (`teacher`),
   INDEX `idx_topic` (`topic`)
 );
-  
+
 CREATE TABLE `subdepartment`(
-  `id` SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT, 
+  `id` SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
   `name` VARCHAR(100) NOT NULL UNIQUE
 );
 
  CREATE TABLE `lesson_content`(
-  `file` MEDIUMBLOB,  
+  `file` MEDIUMBLOB,
   `lesson_id` MEDIUMINT UNSIGNED NOT NULL,
    file_name VARCHAR(120) PRIMARY KEY
 );
-ALTER TABLE 
-  `lesson_content` 
-ADD 
-  INDEX `lesson_content_lesson_id_index`(`lesson_id`); 
-  
-  
+ALTER TABLE
+  `lesson_content`
+ADD
+  INDEX `lesson_content_lesson_id_index`(`lesson_id`);
+
+
 CREATE TABLE `student`(
-  `student_id` CHAR(5) PRIMARY KEY, 
+  `student_id` CHAR(5) PRIMARY KEY,
   `subdepartment_id` SMALLINT UNSIGNED NOT NULL,
   `name` VARCHAR(100) NOT NULL
 );
-ALTER TABLE 
-  `student` 
-ADD 
+ALTER TABLE
+  `student`
+ADD
   INDEX `student_name_index`(`name`);
-  
+
 CREATE TABLE `attendance`(
-  `lesson_id` MEDIUMINT UNSIGNED, 
-  `student_id` CHAR(5), 
+  `lesson_id` MEDIUMINT UNSIGNED,
+  `student_id` CHAR(5),
   `success` BIT(1) NOT NULL,
-   PRIMARY KEY `lesson_id_student_id_PRIMARY_KEY`(`lesson_id`, `student_id`) 
+   PRIMARY KEY `lesson_id_student_id_PRIMARY_KEY`(`lesson_id`, `student_id`)
 );
 
 
-ALTER TABLE 
-  `student` 
-ADD 
-  CONSTRAINT `student_subdepartment_id_foreign` FOREIGN KEY(`subdepartment_id`) REFERENCES `subdepartment`(`id`) 
+ALTER TABLE
+  `student`
+ADD
+  CONSTRAINT `student_subdepartment_id_foreign` FOREIGN KEY(`subdepartment_id`) REFERENCES `subdepartment`(`id`)
   ON UPDATE CASCADE ON DELETE CASCADE;
-  
-ALTER TABLE 
-  `lesson_content` 
-ADD 
+
+ALTER TABLE
+  `lesson_content`
+ADD
   CONSTRAINT `lesson_content_lesson_id_foreign` FOREIGN KEY(`lesson_id`) REFERENCES `lesson`(`id`) ON UPDATE CASCADE ON DELETE CASCADE;
-  
-ALTER TABLE `attendance` 
-ADD 
+
+ALTER TABLE `attendance`
+ADD
   CONSTRAINT `attendance_student_id_foreign` FOREIGN KEY (`student_id`) REFERENCES `student`(`student_id`) ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE 
-  attendance 
-ADD 
+ALTER TABLE
+  attendance
+ADD
   CONSTRAINT `attendance_lesson_id_foreign` FOREIGN KEY (`lesson_id`) REFERENCES `lesson`(`id`) ON UPDATE CASCADE ON DELETE CASCADE;
 
 -- VIEW
 
 
-CREATE VIEW attendance_view AS 
+CREATE VIEW attendance_view AS
 SELECT 	student.name,
 	attendance.lesson_id,
 	lesson.date,
 	attendance.student_id,
-	attendance.success, 
+	attendance.success,
 	lesson.topic,
 	lesson.duration,
 	lesson.teacher,
 	subdepartment.name AS subdepartment
-FROM attendance 
-LEFT JOIN student 
+FROM attendance
+LEFT JOIN student
 	ON attendance.student_id=student.student_id
-LEFT JOIN subdepartment 
+LEFT JOIN subdepartment
 	ON subdepartment.id=student.subdepartment_id
-LEFT JOIN lesson 
-	ON lesson.id=attendance.lesson_id;	
+LEFT JOIN lesson
+	ON lesson.id=attendance.lesson_id;
 
 
-	
 
-CREATE VIEW Materials_view AS 
+
+CREATE VIEW Materials_view AS
 SELECT lesson_content.lesson_id,
 	lesson.date,
 	lesson.topic,
@@ -433,9 +452,9 @@ LEFT JOIN lesson ON lesson_content.lesson_id=lesson.id;
                  USE DEP_5;
 
 CREATE TABLE `lesson`(
-  `id` MEDIUMINT UNSIGNED PRIMARY KEY AUTO_INCREMENT, 
+  `id` MEDIUMINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
   `topic` VARCHAR(250) NOT NULL,
-  `duration` DECIMAL(5, 2) NOT NULL, 
+  `duration` DECIMAL(5, 2) NOT NULL,
   `date` DATE NOT NULL,
   `teacher` VARCHAR(100) NOT NULL,
   `people_planned` SMALLINT NOT NULL,
@@ -445,86 +464,86 @@ CREATE TABLE `lesson`(
   INDEX `idx_teacher` (`teacher`),
   INDEX `idx_topic` (`topic`)
 );
-  
+
 CREATE TABLE `subdepartment`(
-  `id` SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT, 
+  `id` SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
   `name` VARCHAR(100) NOT NULL UNIQUE
 );
 
  CREATE TABLE `lesson_content`(
-  `file` MEDIUMBLOB,  
+  `file` MEDIUMBLOB,
   `lesson_id` MEDIUMINT UNSIGNED NOT NULL,
    file_name VARCHAR(120) PRIMARY KEY
 );
-ALTER TABLE 
-  `lesson_content` 
-ADD 
-  INDEX `lesson_content_lesson_id_index`(`lesson_id`); 
-  
-  
+ALTER TABLE
+  `lesson_content`
+ADD
+  INDEX `lesson_content_lesson_id_index`(`lesson_id`);
+
+
 CREATE TABLE `student`(
-  `student_id` CHAR(5) PRIMARY KEY, 
+  `student_id` CHAR(5) PRIMARY KEY,
   `subdepartment_id` SMALLINT UNSIGNED NOT NULL,
   `name` VARCHAR(100) NOT NULL
 );
-ALTER TABLE 
-  `student` 
-ADD 
+ALTER TABLE
+  `student`
+ADD
   INDEX `student_name_index`(`name`);
-  
+
 CREATE TABLE `attendance`(
-  `lesson_id` MEDIUMINT UNSIGNED, 
-  `student_id` CHAR(5), 
+  `lesson_id` MEDIUMINT UNSIGNED,
+  `student_id` CHAR(5),
   `success` BIT(1) NOT NULL,
-   PRIMARY KEY `lesson_id_student_id_PRIMARY_KEY`(`lesson_id`, `student_id`) 
+   PRIMARY KEY `lesson_id_student_id_PRIMARY_KEY`(`lesson_id`, `student_id`)
 );
 
 
-ALTER TABLE 
-  `student` 
-ADD 
-  CONSTRAINT `student_subdepartment_id_foreign` FOREIGN KEY(`subdepartment_id`) REFERENCES `subdepartment`(`id`) 
+ALTER TABLE
+  `student`
+ADD
+  CONSTRAINT `student_subdepartment_id_foreign` FOREIGN KEY(`subdepartment_id`) REFERENCES `subdepartment`(`id`)
   ON UPDATE CASCADE ON DELETE CASCADE;
-  
-ALTER TABLE 
-  `lesson_content` 
-ADD 
+
+ALTER TABLE
+  `lesson_content`
+ADD
   CONSTRAINT `lesson_content_lesson_id_foreign` FOREIGN KEY(`lesson_id`) REFERENCES `lesson`(`id`) ON UPDATE CASCADE ON DELETE CASCADE;
-  
-ALTER TABLE `attendance` 
-ADD 
+
+ALTER TABLE `attendance`
+ADD
   CONSTRAINT `attendance_student_id_foreign` FOREIGN KEY (`student_id`) REFERENCES `student`(`student_id`) ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE 
-  attendance 
-ADD 
+ALTER TABLE
+  attendance
+ADD
   CONSTRAINT `attendance_lesson_id_foreign` FOREIGN KEY (`lesson_id`) REFERENCES `lesson`(`id`) ON UPDATE CASCADE ON DELETE CASCADE;
 
 -- VIEW
 
 
-CREATE VIEW attendance_view AS 
+CREATE VIEW attendance_view AS
 SELECT 	student.name,
 	attendance.lesson_id,
 	lesson.date,
 	attendance.student_id,
-	attendance.success, 
+	attendance.success,
 	lesson.topic,
 	lesson.duration,
 	lesson.teacher,
 	subdepartment.name AS subdepartment
-FROM attendance 
-LEFT JOIN student 
+FROM attendance
+LEFT JOIN student
 	ON attendance.student_id=student.student_id
-LEFT JOIN subdepartment 
+LEFT JOIN subdepartment
 	ON subdepartment.id=student.subdepartment_id
-LEFT JOIN lesson 
-	ON lesson.id=attendance.lesson_id;	
+LEFT JOIN lesson
+	ON lesson.id=attendance.lesson_id;
 
 
-	
 
-CREATE VIEW Materials_view AS 
+
+CREATE VIEW Materials_view AS
 SELECT lesson_content.lesson_id,
 	lesson.date,
 	lesson.topic,
@@ -539,9 +558,9 @@ LEFT JOIN lesson ON lesson_content.lesson_id=lesson.id;
                  USE DEP_6;
 
 CREATE TABLE `lesson`(
-  `id` MEDIUMINT UNSIGNED PRIMARY KEY AUTO_INCREMENT, 
+  `id` MEDIUMINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
   `topic` VARCHAR(250) NOT NULL,
-  `duration` DECIMAL(5, 2) NOT NULL, 
+  `duration` DECIMAL(5, 2) NOT NULL,
   `date` DATE NOT NULL,
   `teacher` VARCHAR(100) NOT NULL,
   `people_planned` SMALLINT NOT NULL,
@@ -551,86 +570,86 @@ CREATE TABLE `lesson`(
   INDEX `idx_teacher` (`teacher`),
   INDEX `idx_topic` (`topic`)
 );
-  
+
 CREATE TABLE `subdepartment`(
-  `id` SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT, 
+  `id` SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
   `name` VARCHAR(100) NOT NULL UNIQUE
 );
 
  CREATE TABLE `lesson_content`(
-  `file` MEDIUMBLOB,  
+  `file` MEDIUMBLOB,
   `lesson_id` MEDIUMINT UNSIGNED NOT NULL,
    file_name VARCHAR(120) PRIMARY KEY
 );
-ALTER TABLE 
-  `lesson_content` 
-ADD 
-  INDEX `lesson_content_lesson_id_index`(`lesson_id`); 
-  
-  
+ALTER TABLE
+  `lesson_content`
+ADD
+  INDEX `lesson_content_lesson_id_index`(`lesson_id`);
+
+
 CREATE TABLE `student`(
-  `student_id` CHAR(5) PRIMARY KEY, 
+  `student_id` CHAR(5) PRIMARY KEY,
   `subdepartment_id` SMALLINT UNSIGNED NOT NULL,
   `name` VARCHAR(100) NOT NULL
 );
-ALTER TABLE 
-  `student` 
-ADD 
+ALTER TABLE
+  `student`
+ADD
   INDEX `student_name_index`(`name`);
-  
+
 CREATE TABLE `attendance`(
-  `lesson_id` MEDIUMINT UNSIGNED, 
-  `student_id` CHAR(5), 
+  `lesson_id` MEDIUMINT UNSIGNED,
+  `student_id` CHAR(5),
   `success` BIT(1) NOT NULL,
-   PRIMARY KEY `lesson_id_student_id_PRIMARY_KEY`(`lesson_id`, `student_id`) 
+   PRIMARY KEY `lesson_id_student_id_PRIMARY_KEY`(`lesson_id`, `student_id`)
 );
 
 
-ALTER TABLE 
-  `student` 
-ADD 
-  CONSTRAINT `student_subdepartment_id_foreign` FOREIGN KEY(`subdepartment_id`) REFERENCES `subdepartment`(`id`) 
+ALTER TABLE
+  `student`
+ADD
+  CONSTRAINT `student_subdepartment_id_foreign` FOREIGN KEY(`subdepartment_id`) REFERENCES `subdepartment`(`id`)
   ON UPDATE CASCADE ON DELETE CASCADE;
-  
-ALTER TABLE 
-  `lesson_content` 
-ADD 
+
+ALTER TABLE
+  `lesson_content`
+ADD
   CONSTRAINT `lesson_content_lesson_id_foreign` FOREIGN KEY(`lesson_id`) REFERENCES `lesson`(`id`) ON UPDATE CASCADE ON DELETE CASCADE;
-  
-ALTER TABLE `attendance` 
-ADD 
+
+ALTER TABLE `attendance`
+ADD
   CONSTRAINT `attendance_student_id_foreign` FOREIGN KEY (`student_id`) REFERENCES `student`(`student_id`) ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE 
-  attendance 
-ADD 
+ALTER TABLE
+  attendance
+ADD
   CONSTRAINT `attendance_lesson_id_foreign` FOREIGN KEY (`lesson_id`) REFERENCES `lesson`(`id`) ON UPDATE CASCADE ON DELETE CASCADE;
 
 -- VIEW
 
 
-CREATE VIEW attendance_view AS 
+CREATE VIEW attendance_view AS
 SELECT 	student.name,
 	attendance.lesson_id,
 	lesson.date,
 	attendance.student_id,
-	attendance.success, 
+	attendance.success,
 	lesson.topic,
 	lesson.duration,
 	lesson.teacher,
 	subdepartment.name AS subdepartment
-FROM attendance 
-LEFT JOIN student 
+FROM attendance
+LEFT JOIN student
 	ON attendance.student_id=student.student_id
-LEFT JOIN subdepartment 
+LEFT JOIN subdepartment
 	ON subdepartment.id=student.subdepartment_id
-LEFT JOIN lesson 
-	ON lesson.id=attendance.lesson_id;	
+LEFT JOIN lesson
+	ON lesson.id=attendance.lesson_id;
 
 
-	
 
-CREATE VIEW Materials_view AS 
+
+CREATE VIEW Materials_view AS
 SELECT lesson_content.lesson_id,
 	lesson.date,
 	lesson.topic,
@@ -645,9 +664,9 @@ LEFT JOIN lesson ON lesson_content.lesson_id=lesson.id;
                  USE DEP_7;
 
 CREATE TABLE `lesson`(
-  `id` MEDIUMINT UNSIGNED PRIMARY KEY AUTO_INCREMENT, 
+  `id` MEDIUMINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
   `topic` VARCHAR(250) NOT NULL,
-  `duration` DECIMAL(5, 2) NOT NULL, 
+  `duration` DECIMAL(5, 2) NOT NULL,
   `date` DATE NOT NULL,
   `teacher` VARCHAR(100) NOT NULL,
   `people_planned` SMALLINT NOT NULL,
@@ -657,86 +676,86 @@ CREATE TABLE `lesson`(
   INDEX `idx_teacher` (`teacher`),
   INDEX `idx_topic` (`topic`)
 );
-  
+
 CREATE TABLE `subdepartment`(
-  `id` SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT, 
+  `id` SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
   `name` VARCHAR(100) NOT NULL UNIQUE
 );
 
  CREATE TABLE `lesson_content`(
-  `file` MEDIUMBLOB,  
+  `file` MEDIUMBLOB,
   `lesson_id` MEDIUMINT UNSIGNED NOT NULL,
    file_name VARCHAR(120) PRIMARY KEY
 );
-ALTER TABLE 
-  `lesson_content` 
-ADD 
-  INDEX `lesson_content_lesson_id_index`(`lesson_id`); 
-  
-  
+ALTER TABLE
+  `lesson_content`
+ADD
+  INDEX `lesson_content_lesson_id_index`(`lesson_id`);
+
+
 CREATE TABLE `student`(
-  `student_id` CHAR(5) PRIMARY KEY, 
+  `student_id` CHAR(5) PRIMARY KEY,
   `subdepartment_id` SMALLINT UNSIGNED NOT NULL,
   `name` VARCHAR(100) NOT NULL
 );
-ALTER TABLE 
-  `student` 
-ADD 
+ALTER TABLE
+  `student`
+ADD
   INDEX `student_name_index`(`name`);
-  
+
 CREATE TABLE `attendance`(
-  `lesson_id` MEDIUMINT UNSIGNED, 
-  `student_id` CHAR(5), 
+  `lesson_id` MEDIUMINT UNSIGNED,
+  `student_id` CHAR(5),
   `success` BIT(1) NOT NULL,
-   PRIMARY KEY `lesson_id_student_id_PRIMARY_KEY`(`lesson_id`, `student_id`) 
+   PRIMARY KEY `lesson_id_student_id_PRIMARY_KEY`(`lesson_id`, `student_id`)
 );
 
 
-ALTER TABLE 
-  `student` 
-ADD 
-  CONSTRAINT `student_subdepartment_id_foreign` FOREIGN KEY(`subdepartment_id`) REFERENCES `subdepartment`(`id`) 
+ALTER TABLE
+  `student`
+ADD
+  CONSTRAINT `student_subdepartment_id_foreign` FOREIGN KEY(`subdepartment_id`) REFERENCES `subdepartment`(`id`)
   ON UPDATE CASCADE ON DELETE CASCADE;
-  
-ALTER TABLE 
-  `lesson_content` 
-ADD 
+
+ALTER TABLE
+  `lesson_content`
+ADD
   CONSTRAINT `lesson_content_lesson_id_foreign` FOREIGN KEY(`lesson_id`) REFERENCES `lesson`(`id`) ON UPDATE CASCADE ON DELETE CASCADE;
-  
-ALTER TABLE `attendance` 
-ADD 
+
+ALTER TABLE `attendance`
+ADD
   CONSTRAINT `attendance_student_id_foreign` FOREIGN KEY (`student_id`) REFERENCES `student`(`student_id`) ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE 
-  attendance 
-ADD 
+ALTER TABLE
+  attendance
+ADD
   CONSTRAINT `attendance_lesson_id_foreign` FOREIGN KEY (`lesson_id`) REFERENCES `lesson`(`id`) ON UPDATE CASCADE ON DELETE CASCADE;
 
 -- VIEW
 
 
-CREATE VIEW attendance_view AS 
+CREATE VIEW attendance_view AS
 SELECT 	student.name,
 	attendance.lesson_id,
 	lesson.date,
 	attendance.student_id,
-	attendance.success, 
+	attendance.success,
 	lesson.topic,
 	lesson.duration,
 	lesson.teacher,
 	subdepartment.name AS subdepartment
-FROM attendance 
-LEFT JOIN student 
+FROM attendance
+LEFT JOIN student
 	ON attendance.student_id=student.student_id
-LEFT JOIN subdepartment 
+LEFT JOIN subdepartment
 	ON subdepartment.id=student.subdepartment_id
-LEFT JOIN lesson 
-	ON lesson.id=attendance.lesson_id;	
+LEFT JOIN lesson
+	ON lesson.id=attendance.lesson_id;
 
 
-	
 
-CREATE VIEW Materials_view AS 
+
+CREATE VIEW Materials_view AS
 SELECT lesson_content.lesson_id,
 	lesson.date,
 	lesson.topic,
@@ -751,9 +770,9 @@ LEFT JOIN lesson ON lesson_content.lesson_id=lesson.id;
                  USE DEP_8;
 
 CREATE TABLE `lesson`(
-  `id` MEDIUMINT UNSIGNED PRIMARY KEY AUTO_INCREMENT, 
+  `id` MEDIUMINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
   `topic` VARCHAR(250) NOT NULL,
-  `duration` DECIMAL(5, 2) NOT NULL, 
+  `duration` DECIMAL(5, 2) NOT NULL,
   `date` DATE NOT NULL,
   `teacher` VARCHAR(100) NOT NULL,
   `people_planned` SMALLINT NOT NULL,
@@ -764,84 +783,84 @@ CREATE TABLE `lesson`(
   INDEX `idx_topic` (`topic`)
 );
 CREATE TABLE `subdepartment`(
-  `id` SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT, 
+  `id` SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
   `name` VARCHAR(100) NOT NULL UNIQUE
 );
 
  CREATE TABLE `lesson_content`(
-  `file` MEDIUMBLOB,  
+  `file` MEDIUMBLOB,
   `lesson_id` MEDIUMINT UNSIGNED NOT NULL,
    file_name VARCHAR(120) PRIMARY KEY
 );
-ALTER TABLE 
-  `lesson_content` 
-ADD 
-  INDEX `lesson_content_lesson_id_index`(`lesson_id`); 
-  
-  
+ALTER TABLE
+  `lesson_content`
+ADD
+  INDEX `lesson_content_lesson_id_index`(`lesson_id`);
+
+
 CREATE TABLE `student`(
-  `student_id` CHAR(5) PRIMARY KEY, 
+  `student_id` CHAR(5) PRIMARY KEY,
   `subdepartment_id` SMALLINT UNSIGNED NOT NULL,
   `name` VARCHAR(100) NOT NULL
 );
-ALTER TABLE 
-  `student` 
-ADD 
+ALTER TABLE
+  `student`
+ADD
   INDEX `student_name_index`(`name`);
-  
+
 CREATE TABLE `attendance`(
-  `lesson_id` MEDIUMINT UNSIGNED, 
-  `student_id` CHAR(5), 
+  `lesson_id` MEDIUMINT UNSIGNED,
+  `student_id` CHAR(5),
   `success` BIT(1) NOT NULL,
-   PRIMARY KEY `lesson_id_student_id_PRIMARY_KEY`(`lesson_id`, `student_id`) 
+   PRIMARY KEY `lesson_id_student_id_PRIMARY_KEY`(`lesson_id`, `student_id`)
 );
 
 
-ALTER TABLE 
-  `student` 
-ADD 
-  CONSTRAINT `student_subdepartment_id_foreign` FOREIGN KEY(`subdepartment_id`) REFERENCES `subdepartment`(`id`) 
+ALTER TABLE
+  `student`
+ADD
+  CONSTRAINT `student_subdepartment_id_foreign` FOREIGN KEY(`subdepartment_id`) REFERENCES `subdepartment`(`id`)
   ON UPDATE CASCADE ON DELETE CASCADE;
-  
-ALTER TABLE 
-  `lesson_content` 
-ADD 
+
+ALTER TABLE
+  `lesson_content`
+ADD
   CONSTRAINT `lesson_content_lesson_id_foreign` FOREIGN KEY(`lesson_id`) REFERENCES `lesson`(`id`) ON UPDATE CASCADE ON DELETE CASCADE;
-  
-ALTER TABLE `attendance` 
-ADD 
+
+ALTER TABLE `attendance`
+ADD
   CONSTRAINT `attendance_student_id_foreign` FOREIGN KEY (`student_id`) REFERENCES `student`(`student_id`) ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE 
-  attendance 
-ADD 
+ALTER TABLE
+  attendance
+ADD
   CONSTRAINT `attendance_lesson_id_foreign` FOREIGN KEY (`lesson_id`) REFERENCES `lesson`(`id`) ON UPDATE CASCADE ON DELETE CASCADE;
 
 -- VIEW
 
 
-CREATE VIEW attendance_view AS 
+CREATE VIEW attendance_view AS
 SELECT 	student.name,
 	attendance.lesson_id,
 	lesson.date,
 	attendance.student_id,
-	attendance.success, 
+	attendance.success,
 	lesson.topic,
 	lesson.duration,
 	lesson.teacher,
 	subdepartment.name AS subdepartment
-FROM attendance 
-LEFT JOIN student 
+FROM attendance
+LEFT JOIN student
 	ON attendance.student_id=student.student_id
-LEFT JOIN subdepartment 
+LEFT JOIN subdepartment
 	ON subdepartment.id=student.subdepartment_id
-LEFT JOIN lesson 
-	ON lesson.id=attendance.lesson_id;	
+LEFT JOIN lesson
+	ON lesson.id=attendance.lesson_id;
 
 
-	
 
-CREATE VIEW Materials_view AS 
+
+CREATE VIEW Materials_view AS
 SELECT lesson_content.lesson_id,
 	lesson.date,
 	lesson.topic,
@@ -857,100 +876,100 @@ LEFT JOIN lesson ON lesson_content.lesson_id=lesson.id;
                  USE DEP_9;
 
 CREATE TABLE `lesson`(
-  `id` MEDIUMINT UNSIGNED PRIMARY KEY AUTO_INCREMENT, 
-  `topic` VARCHAR(250) NOT NULL, 
-  `duration` DECIMAL(5, 2)NOT NULL, 
-  `date` DATE NOT NULL, 
-  `teacher` VARCHAR(100) NOT NULL, 
+  `id` MEDIUMINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+  `topic` VARCHAR(250) NOT NULL,
+  `duration` DECIMAL(5, 2)NOT NULL,
+  `date` DATE NOT NULL,
+  `teacher` VARCHAR(100) NOT NULL,
   `people_planned` SMALLINT NOT NULL,
-  `isHeld` TINYINT(1) NOT NULL, 
-  `teacherPost` VARCHAR(40) NOT NULL 
+  `isHeld` TINYINT(1) NOT NULL,
+  `teacherPost` VARCHAR(40) NOT NULL
 );
-ALTER TABLE 
-  `lesson` 
-ADD 
+ALTER TABLE
+  `lesson`
+ADD
   INDEX `lesson_date_index`(`date`);
-  
-  
+
+
 CREATE TABLE `subdepartment`(
-  `id` SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT, 
+  `id` SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
   `name` VARCHAR(100) NOT NULL UNIQUE
 );
 
  CREATE TABLE `lesson_content`(
-  `file` MEDIUMBLOB,  
+  `file` MEDIUMBLOB,
   `lesson_id` MEDIUMINT UNSIGNED NOT NULL,
    file_name VARCHAR(120) PRIMARY KEY
 );
-ALTER TABLE 
-  `lesson_content` 
-ADD 
-  INDEX `lesson_content_lesson_id_index`(`lesson_id`); 
-  
-  
+ALTER TABLE
+  `lesson_content`
+ADD
+  INDEX `lesson_content_lesson_id_index`(`lesson_id`);
+
+
 CREATE TABLE `student`(
-  `student_id` CHAR(5) PRIMARY KEY, 
+  `student_id` CHAR(5) PRIMARY KEY,
   `subdepartment_id` SMALLINT UNSIGNED NOT NULL,
   `name` VARCHAR(100) NOT NULL
 );
-ALTER TABLE 
-  `student` 
-ADD 
+ALTER TABLE
+  `student`
+ADD
   INDEX `student_name_index`(`name`);
-  
+
 CREATE TABLE `attendance`(
-  `lesson_id` MEDIUMINT UNSIGNED, 
-  `student_id` CHAR(5), 
+  `lesson_id` MEDIUMINT UNSIGNED,
+  `student_id` CHAR(5),
   `success` BIT(1) NOT NULL,
-   PRIMARY KEY `lesson_id_student_id_PRIMARY_KEY`(`lesson_id`, `student_id`) 
+   PRIMARY KEY `lesson_id_student_id_PRIMARY_KEY`(`lesson_id`, `student_id`)
 );
 
 
-ALTER TABLE 
-  `student` 
-ADD 
-  CONSTRAINT `student_subdepartment_id_foreign` FOREIGN KEY(`subdepartment_id`) REFERENCES `subdepartment`(`id`) 
+ALTER TABLE
+  `student`
+ADD
+  CONSTRAINT `student_subdepartment_id_foreign` FOREIGN KEY(`subdepartment_id`) REFERENCES `subdepartment`(`id`)
   ON UPDATE CASCADE ON DELETE CASCADE;
-  
-ALTER TABLE 
-  `lesson_content` 
-ADD 
+
+ALTER TABLE
+  `lesson_content`
+ADD
   CONSTRAINT `lesson_content_lesson_id_foreign` FOREIGN KEY(`lesson_id`) REFERENCES `lesson`(`id`) ON UPDATE CASCADE ON DELETE CASCADE;
-  
-ALTER TABLE `attendance` 
-ADD 
+
+ALTER TABLE `attendance`
+ADD
   CONSTRAINT `attendance_student_id_foreign` FOREIGN KEY (`student_id`) REFERENCES `student`(`student_id`) ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE 
-  attendance 
-ADD 
+ALTER TABLE
+  attendance
+ADD
   CONSTRAINT `attendance_lesson_id_foreign` FOREIGN KEY (`lesson_id`) REFERENCES `lesson`(`id`) ON UPDATE CASCADE ON DELETE CASCADE;
 
 -- VIEW
 
 
-CREATE VIEW attendance_view AS 
+CREATE VIEW attendance_view AS
 SELECT 	student.name,
 	attendance.lesson_id,
 	lesson.date,
 	attendance.student_id,
-	attendance.success, 
+	attendance.success,
 	lesson.topic,
 	lesson.duration,
 	lesson.teacher,
 	subdepartment.name AS subdepartment
-FROM attendance 
-LEFT JOIN student 
+FROM attendance
+LEFT JOIN student
 	ON attendance.student_id=student.student_id
-LEFT JOIN subdepartment 
+LEFT JOIN subdepartment
 	ON subdepartment.id=student.subdepartment_id
-LEFT JOIN lesson 
-	ON lesson.id=attendance.lesson_id;	
+LEFT JOIN lesson
+	ON lesson.id=attendance.lesson_id;
 
 
-	
 
-CREATE VIEW Materials_view AS 
+
+CREATE VIEW Materials_view AS
 SELECT lesson_content.lesson_id,
 	lesson.date,
 	lesson.topic,
@@ -965,9 +984,9 @@ LEFT JOIN lesson ON lesson_content.lesson_id=lesson.id;
                  USE DEP_10;
 
 CREATE TABLE `lesson`(
-  `id` MEDIUMINT UNSIGNED PRIMARY KEY AUTO_INCREMENT, 
+  `id` MEDIUMINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
   `topic` VARCHAR(250) NOT NULL,
-  `duration` DECIMAL(5, 2) NOT NULL, 
+  `duration` DECIMAL(5, 2) NOT NULL,
   `date` DATE NOT NULL,
   `teacher` VARCHAR(100) NOT NULL,
   `people_planned` SMALLINT NOT NULL,
@@ -977,86 +996,86 @@ CREATE TABLE `lesson`(
   INDEX `idx_teacher` (`teacher`),
   INDEX `idx_topic` (`topic`)
 );
-  
+
 CREATE TABLE `subdepartment`(
-  `id` SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT, 
+  `id` SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
   `name` VARCHAR(100) NOT NULL UNIQUE
 );
 
  CREATE TABLE `lesson_content`(
-  `file` MEDIUMBLOB,  
+  `file` MEDIUMBLOB,
   `lesson_id` MEDIUMINT UNSIGNED NOT NULL,
    file_name VARCHAR(120) PRIMARY KEY
 );
-ALTER TABLE 
-  `lesson_content` 
-ADD 
-  INDEX `lesson_content_lesson_id_index`(`lesson_id`); 
-  
-  
+ALTER TABLE
+  `lesson_content`
+ADD
+  INDEX `lesson_content_lesson_id_index`(`lesson_id`);
+
+
 CREATE TABLE `student`(
-  `student_id` CHAR(5) PRIMARY KEY, 
+  `student_id` CHAR(5) PRIMARY KEY,
   `subdepartment_id` SMALLINT UNSIGNED NOT NULL,
   `name` VARCHAR(100) NOT NULL
 );
-ALTER TABLE 
-  `student` 
-ADD 
+ALTER TABLE
+  `student`
+ADD
   INDEX `student_name_index`(`name`);
-  
+
 CREATE TABLE `attendance`(
-  `lesson_id` MEDIUMINT UNSIGNED, 
-  `student_id` CHAR(5), 
+  `lesson_id` MEDIUMINT UNSIGNED,
+  `student_id` CHAR(5),
   `success` BIT(1) NOT NULL,
-   PRIMARY KEY `lesson_id_student_id_PRIMARY_KEY`(`lesson_id`, `student_id`) 
+   PRIMARY KEY `lesson_id_student_id_PRIMARY_KEY`(`lesson_id`, `student_id`)
 );
 
 
-ALTER TABLE 
-  `student` 
-ADD 
-  CONSTRAINT `student_subdepartment_id_foreign` FOREIGN KEY(`subdepartment_id`) REFERENCES `subdepartment`(`id`) 
+ALTER TABLE
+  `student`
+ADD
+  CONSTRAINT `student_subdepartment_id_foreign` FOREIGN KEY(`subdepartment_id`) REFERENCES `subdepartment`(`id`)
   ON UPDATE CASCADE ON DELETE CASCADE;
-  
-ALTER TABLE 
-  `lesson_content` 
-ADD 
+
+ALTER TABLE
+  `lesson_content`
+ADD
   CONSTRAINT `lesson_content_lesson_id_foreign` FOREIGN KEY(`lesson_id`) REFERENCES `lesson`(`id`) ON UPDATE CASCADE ON DELETE CASCADE;
-  
-ALTER TABLE `attendance` 
-ADD 
+
+ALTER TABLE `attendance`
+ADD
   CONSTRAINT `attendance_student_id_foreign` FOREIGN KEY (`student_id`) REFERENCES `student`(`student_id`) ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE 
-  attendance 
-ADD 
+ALTER TABLE
+  attendance
+ADD
   CONSTRAINT `attendance_lesson_id_foreign` FOREIGN KEY (`lesson_id`) REFERENCES `lesson`(`id`) ON UPDATE CASCADE ON DELETE CASCADE;
 
 -- VIEW
 
 
-CREATE VIEW attendance_view AS 
+CREATE VIEW attendance_view AS
 SELECT 	student.name,
 	attendance.lesson_id,
 	lesson.date,
 	attendance.student_id,
-	attendance.success, 
+	attendance.success,
 	lesson.topic,
 	lesson.duration,
 	lesson.teacher,
 	subdepartment.name AS subdepartment
-FROM attendance 
-LEFT JOIN student 
+FROM attendance
+LEFT JOIN student
 	ON attendance.student_id=student.student_id
-LEFT JOIN subdepartment 
+LEFT JOIN subdepartment
 	ON subdepartment.id=student.subdepartment_id
-LEFT JOIN lesson 
-	ON lesson.id=attendance.lesson_id;	
+LEFT JOIN lesson
+	ON lesson.id=attendance.lesson_id;
 
 
-	
 
-CREATE VIEW Materials_view AS 
+
+CREATE VIEW Materials_view AS
 SELECT lesson_content.lesson_id,
 	lesson.date,
 	lesson.topic,
@@ -1072,9 +1091,9 @@ LEFT JOIN lesson ON lesson_content.lesson_id=lesson.id;
                  USE DEP_11;
 
 CREATE TABLE `lesson`(
-  `id` MEDIUMINT UNSIGNED PRIMARY KEY AUTO_INCREMENT, 
+  `id` MEDIUMINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
   `topic` VARCHAR(250) NOT NULL,
-  `duration` DECIMAL(5, 2) NOT NULL, 
+  `duration` DECIMAL(5, 2) NOT NULL,
   `date` DATE NOT NULL,
   `teacher` VARCHAR(100) NOT NULL,
   `people_planned` SMALLINT NOT NULL,
@@ -1084,86 +1103,86 @@ CREATE TABLE `lesson`(
   INDEX `idx_teacher` (`teacher`),
   INDEX `idx_topic` (`topic`)
 );
-  
+
 CREATE TABLE `subdepartment`(
-  `id` SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT, 
+  `id` SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
   `name` VARCHAR(100) NOT NULL UNIQUE
 );
 
  CREATE TABLE `lesson_content`(
-  `file` MEDIUMBLOB,  
+  `file` MEDIUMBLOB,
   `lesson_id` MEDIUMINT UNSIGNED NOT NULL,
    file_name VARCHAR(120) PRIMARY KEY
 );
-ALTER TABLE 
-  `lesson_content` 
-ADD 
-  INDEX `lesson_content_lesson_id_index`(`lesson_id`); 
-  
-  
+ALTER TABLE
+  `lesson_content`
+ADD
+  INDEX `lesson_content_lesson_id_index`(`lesson_id`);
+
+
 CREATE TABLE `student`(
-  `student_id` CHAR(5) PRIMARY KEY, 
+  `student_id` CHAR(5) PRIMARY KEY,
   `subdepartment_id` SMALLINT UNSIGNED NOT NULL,
   `name` VARCHAR(100) NOT NULL
 );
-ALTER TABLE 
-  `student` 
-ADD 
+ALTER TABLE
+  `student`
+ADD
   INDEX `student_name_index`(`name`);
-  
+
 CREATE TABLE `attendance`(
-  `lesson_id` MEDIUMINT UNSIGNED, 
-  `student_id` CHAR(5), 
+  `lesson_id` MEDIUMINT UNSIGNED,
+  `student_id` CHAR(5),
   `success` BIT(1) NOT NULL,
-   PRIMARY KEY `lesson_id_student_id_PRIMARY_KEY`(`lesson_id`, `student_id`) 
+   PRIMARY KEY `lesson_id_student_id_PRIMARY_KEY`(`lesson_id`, `student_id`)
 );
 
 
-ALTER TABLE 
-  `student` 
-ADD 
-  CONSTRAINT `student_subdepartment_id_foreign` FOREIGN KEY(`subdepartment_id`) REFERENCES `subdepartment`(`id`) 
+ALTER TABLE
+  `student`
+ADD
+  CONSTRAINT `student_subdepartment_id_foreign` FOREIGN KEY(`subdepartment_id`) REFERENCES `subdepartment`(`id`)
   ON UPDATE CASCADE ON DELETE CASCADE;
-  
-ALTER TABLE 
-  `lesson_content` 
-ADD 
+
+ALTER TABLE
+  `lesson_content`
+ADD
   CONSTRAINT `lesson_content_lesson_id_foreign` FOREIGN KEY(`lesson_id`) REFERENCES `lesson`(`id`) ON UPDATE CASCADE ON DELETE CASCADE;
-  
-ALTER TABLE `attendance` 
-ADD 
+
+ALTER TABLE `attendance`
+ADD
   CONSTRAINT `attendance_student_id_foreign` FOREIGN KEY (`student_id`) REFERENCES `student`(`student_id`) ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE 
-  attendance 
-ADD 
+ALTER TABLE
+  attendance
+ADD
   CONSTRAINT `attendance_lesson_id_foreign` FOREIGN KEY (`lesson_id`) REFERENCES `lesson`(`id`) ON UPDATE CASCADE ON DELETE CASCADE;
 
 -- VIEW
 
 
-CREATE VIEW attendance_view AS 
+CREATE VIEW attendance_view AS
 SELECT 	student.name,
 	attendance.lesson_id,
 	lesson.date,
 	attendance.student_id,
-	attendance.success, 
+	attendance.success,
 	lesson.topic,
 	lesson.duration,
 	lesson.teacher,
 	subdepartment.name AS subdepartment
-FROM attendance 
-LEFT JOIN student 
+FROM attendance
+LEFT JOIN student
 	ON attendance.student_id=student.student_id
-LEFT JOIN subdepartment 
+LEFT JOIN subdepartment
 	ON subdepartment.id=student.subdepartment_id
-LEFT JOIN lesson 
-	ON lesson.id=attendance.lesson_id;	
+LEFT JOIN lesson
+	ON lesson.id=attendance.lesson_id;
 
 
-	
 
-CREATE VIEW Materials_view AS 
+
+CREATE VIEW Materials_view AS
 SELECT lesson_content.lesson_id,
 	lesson.date,
 	lesson.topic,
@@ -1179,9 +1198,9 @@ LEFT JOIN lesson ON lesson_content.lesson_id=lesson.id;
                  USE DEP_12;
 
 CREATE TABLE `lesson`(
-  `id` MEDIUMINT UNSIGNED PRIMARY KEY AUTO_INCREMENT, 
+  `id` MEDIUMINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
   `topic` VARCHAR(250) NOT NULL,
-  `duration` DECIMAL(5, 2) NOT NULL, 
+  `duration` DECIMAL(5, 2) NOT NULL,
   `date` DATE NOT NULL,
   `teacher` VARCHAR(100) NOT NULL,
   `people_planned` SMALLINT NOT NULL,
@@ -1190,86 +1209,86 @@ CREATE TABLE `lesson`(
   INDEX `idx_date` (`date`),
   INDEX `idx_teacher` (`teacher`),
   INDEX `idx_topic` (`topic`)
-); 
+);
 CREATE TABLE `subdepartment`(
-  `id` SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT, 
+  `id` SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
   `name` VARCHAR(100) NOT NULL UNIQUE
 );
 
  CREATE TABLE `lesson_content`(
-  `file` MEDIUMBLOB,  
+  `file` MEDIUMBLOB,
   `lesson_id` MEDIUMINT UNSIGNED NOT NULL,
    file_name VARCHAR(120) PRIMARY KEY
 );
-ALTER TABLE 
-  `lesson_content` 
-ADD 
-  INDEX `lesson_content_lesson_id_index`(`lesson_id`); 
-  
-  
+ALTER TABLE
+  `lesson_content`
+ADD
+  INDEX `lesson_content_lesson_id_index`(`lesson_id`);
+
+
 CREATE TABLE `student`(
-  `student_id` CHAR(5) PRIMARY KEY, 
+  `student_id` CHAR(5) PRIMARY KEY,
   `subdepartment_id` SMALLINT UNSIGNED NOT NULL,
   `name` VARCHAR(100) NOT NULL
 );
-ALTER TABLE 
-  `student` 
-ADD 
+ALTER TABLE
+  `student`
+ADD
   INDEX `student_name_index`(`name`);
-  
+
 CREATE TABLE `attendance`(
-  `lesson_id` MEDIUMINT UNSIGNED, 
-  `student_id` CHAR(5), 
+  `lesson_id` MEDIUMINT UNSIGNED,
+  `student_id` CHAR(5),
   `success` BIT(1) NOT NULL,
-   PRIMARY KEY `lesson_id_student_id_PRIMARY_KEY`(`lesson_id`, `student_id`) 
+   PRIMARY KEY `lesson_id_student_id_PRIMARY_KEY`(`lesson_id`, `student_id`)
 );
 
 
-ALTER TABLE 
-  `student` 
-ADD 
-  CONSTRAINT `student_subdepartment_id_foreign` FOREIGN KEY(`subdepartment_id`) REFERENCES `subdepartment`(`id`) 
+ALTER TABLE
+  `student`
+ADD
+  CONSTRAINT `student_subdepartment_id_foreign` FOREIGN KEY(`subdepartment_id`) REFERENCES `subdepartment`(`id`)
   ON UPDATE CASCADE ON DELETE CASCADE;
-  
-ALTER TABLE 
-  `lesson_content` 
-ADD 
+
+ALTER TABLE
+  `lesson_content`
+ADD
   CONSTRAINT `lesson_content_lesson_id_foreign` FOREIGN KEY(`lesson_id`) REFERENCES `lesson`(`id`) ON UPDATE CASCADE ON DELETE CASCADE;
-  
-ALTER TABLE `attendance` 
-ADD 
+
+ALTER TABLE `attendance`
+ADD
   CONSTRAINT `attendance_student_id_foreign` FOREIGN KEY (`student_id`) REFERENCES `student`(`student_id`) ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE 
-  attendance 
-ADD 
+ALTER TABLE
+  attendance
+ADD
   CONSTRAINT `attendance_lesson_id_foreign` FOREIGN KEY (`lesson_id`) REFERENCES `lesson`(`id`) ON UPDATE CASCADE ON DELETE CASCADE;
 
 -- VIEW
 
 
-CREATE VIEW attendance_view AS 
+CREATE VIEW attendance_view AS
 SELECT 	student.name,
 	attendance.lesson_id,
 	lesson.date,
 	attendance.student_id,
-	attendance.success, 
+	attendance.success,
 	lesson.topic,
 	lesson.duration,
 	lesson.teacher,
 	subdepartment.name AS subdepartment
-FROM attendance 
-LEFT JOIN student 
+FROM attendance
+LEFT JOIN student
 	ON attendance.student_id=student.student_id
-LEFT JOIN subdepartment 
+LEFT JOIN subdepartment
 	ON subdepartment.id=student.subdepartment_id
-LEFT JOIN lesson 
-	ON lesson.id=attendance.lesson_id;	
+LEFT JOIN lesson
+	ON lesson.id=attendance.lesson_id;
 
 
-	
 
-CREATE VIEW Materials_view AS 
+
+CREATE VIEW Materials_view AS
 SELECT lesson_content.lesson_id,
 	lesson.date,
 	lesson.topic,
@@ -1284,9 +1303,9 @@ LEFT JOIN lesson ON lesson_content.lesson_id=lesson.id;
                  USE DEP_13;
 
 CREATE TABLE `lesson`(
-  `id` MEDIUMINT UNSIGNED PRIMARY KEY AUTO_INCREMENT, 
+  `id` MEDIUMINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
   `topic` VARCHAR(250) NOT NULL,
-  `duration` DECIMAL(5, 2) NOT NULL, 
+  `duration` DECIMAL(5, 2) NOT NULL,
   `date` DATE NOT NULL,
   `teacher` VARCHAR(100) NOT NULL,
   `people_planned` SMALLINT NOT NULL,
@@ -1296,86 +1315,86 @@ CREATE TABLE `lesson`(
   INDEX `idx_teacher` (`teacher`),
   INDEX `idx_topic` (`topic`)
 );
-  
+
 CREATE TABLE `subdepartment`(
-  `id` SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT, 
+  `id` SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
   `name` VARCHAR(100) NOT NULL UNIQUE
 );
 
  CREATE TABLE `lesson_content`(
-  `file` MEDIUMBLOB,  
+  `file` MEDIUMBLOB,
   `lesson_id` MEDIUMINT UNSIGNED NOT NULL,
    file_name VARCHAR(120) PRIMARY KEY
 );
-ALTER TABLE 
-  `lesson_content` 
-ADD 
-  INDEX `lesson_content_lesson_id_index`(`lesson_id`); 
-  
-  
+ALTER TABLE
+  `lesson_content`
+ADD
+  INDEX `lesson_content_lesson_id_index`(`lesson_id`);
+
+
 CREATE TABLE `student`(
-  `student_id` CHAR(5) PRIMARY KEY, 
+  `student_id` CHAR(5) PRIMARY KEY,
   `subdepartment_id` SMALLINT UNSIGNED NOT NULL,
   `name` VARCHAR(100) NOT NULL
 );
-ALTER TABLE 
-  `student` 
-ADD 
+ALTER TABLE
+  `student`
+ADD
   INDEX `student_name_index`(`name`);
-  
+
 CREATE TABLE `attendance`(
-  `lesson_id` MEDIUMINT UNSIGNED, 
-  `student_id` CHAR(5), 
+  `lesson_id` MEDIUMINT UNSIGNED,
+  `student_id` CHAR(5),
   `success` BIT(1) NOT NULL,
-   PRIMARY KEY `lesson_id_student_id_PRIMARY_KEY`(`lesson_id`, `student_id`) 
+   PRIMARY KEY `lesson_id_student_id_PRIMARY_KEY`(`lesson_id`, `student_id`)
 );
 
 
-ALTER TABLE 
-  `student` 
-ADD 
-  CONSTRAINT `student_subdepartment_id_foreign` FOREIGN KEY(`subdepartment_id`) REFERENCES `subdepartment`(`id`) 
+ALTER TABLE
+  `student`
+ADD
+  CONSTRAINT `student_subdepartment_id_foreign` FOREIGN KEY(`subdepartment_id`) REFERENCES `subdepartment`(`id`)
   ON UPDATE CASCADE ON DELETE CASCADE;
-  
-ALTER TABLE 
-  `lesson_content` 
-ADD 
+
+ALTER TABLE
+  `lesson_content`
+ADD
   CONSTRAINT `lesson_content_lesson_id_foreign` FOREIGN KEY(`lesson_id`) REFERENCES `lesson`(`id`) ON UPDATE CASCADE ON DELETE CASCADE;
-  
-ALTER TABLE `attendance` 
-ADD 
+
+ALTER TABLE `attendance`
+ADD
   CONSTRAINT `attendance_student_id_foreign` FOREIGN KEY (`student_id`) REFERENCES `student`(`student_id`) ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE 
-  attendance 
-ADD 
+ALTER TABLE
+  attendance
+ADD
   CONSTRAINT `attendance_lesson_id_foreign` FOREIGN KEY (`lesson_id`) REFERENCES `lesson`(`id`) ON UPDATE CASCADE ON DELETE CASCADE;
 
 -- VIEW
 
 
-CREATE VIEW attendance_view AS 
+CREATE VIEW attendance_view AS
 SELECT 	student.name,
 	attendance.lesson_id,
 	lesson.date,
 	attendance.student_id,
-	attendance.success, 
+	attendance.success,
 	lesson.topic,
 	lesson.duration,
 	lesson.teacher,
 	subdepartment.name AS subdepartment
-FROM attendance 
-LEFT JOIN student 
+FROM attendance
+LEFT JOIN student
 	ON attendance.student_id=student.student_id
-LEFT JOIN subdepartment 
+LEFT JOIN subdepartment
 	ON subdepartment.id=student.subdepartment_id
-LEFT JOIN lesson 
-	ON lesson.id=attendance.lesson_id;	
+LEFT JOIN lesson
+	ON lesson.id=attendance.lesson_id;
 
 
-	
 
-CREATE VIEW Materials_view AS 
+
+CREATE VIEW Materials_view AS
 SELECT lesson_content.lesson_id,
 	lesson.date,
 	lesson.topic,
@@ -1389,9 +1408,9 @@ LEFT JOIN lesson ON lesson_content.lesson_id=lesson.id;
      CREATE DATABASE DEP_14;
                  USE DEP_14;
 CREATE TABLE `lesson`(
-  `id` MEDIUMINT UNSIGNED PRIMARY KEY AUTO_INCREMENT, 
+  `id` MEDIUMINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
   `topic` VARCHAR(250) NOT NULL,
-  `duration` DECIMAL(5, 2) NOT NULL, 
+  `duration` DECIMAL(5, 2) NOT NULL,
   `date` DATE NOT NULL,
   `teacher` VARCHAR(100) NOT NULL,
   `people_planned` SMALLINT NOT NULL,
@@ -1401,86 +1420,86 @@ CREATE TABLE `lesson`(
   INDEX `idx_teacher` (`teacher`),
   INDEX `idx_topic` (`topic`)
 );
-  
+
 CREATE TABLE `subdepartment`(
-  `id` SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT, 
+  `id` SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
   `name` VARCHAR(100) NOT NULL UNIQUE
 );
 
  CREATE TABLE `lesson_content`(
-  `file` MEDIUMBLOB,  
+  `file` MEDIUMBLOB,
   `lesson_id` MEDIUMINT UNSIGNED NOT NULL,
    file_name VARCHAR(120) PRIMARY KEY
 );
-ALTER TABLE 
-  `lesson_content` 
-ADD 
-  INDEX `lesson_content_lesson_id_index`(`lesson_id`); 
-  
-  
+ALTER TABLE
+  `lesson_content`
+ADD
+  INDEX `lesson_content_lesson_id_index`(`lesson_id`);
+
+
 CREATE TABLE `student`(
-  `student_id` CHAR(5) PRIMARY KEY, 
+  `student_id` CHAR(5) PRIMARY KEY,
   `subdepartment_id` SMALLINT UNSIGNED NOT NULL,
   `name` VARCHAR(100) NOT NULL
 );
-ALTER TABLE 
-  `student` 
-ADD 
+ALTER TABLE
+  `student`
+ADD
   INDEX `student_name_index`(`name`);
-  
+
 CREATE TABLE `attendance`(
-  `lesson_id` MEDIUMINT UNSIGNED, 
-  `student_id` CHAR(5), 
+  `lesson_id` MEDIUMINT UNSIGNED,
+  `student_id` CHAR(5),
   `success` BIT(1) NOT NULL,
-   PRIMARY KEY `lesson_id_student_id_PRIMARY_KEY`(`lesson_id`, `student_id`) 
+   PRIMARY KEY `lesson_id_student_id_PRIMARY_KEY`(`lesson_id`, `student_id`)
 );
 
 
-ALTER TABLE 
-  `student` 
-ADD 
-  CONSTRAINT `student_subdepartment_id_foreign` FOREIGN KEY(`subdepartment_id`) REFERENCES `subdepartment`(`id`) 
+ALTER TABLE
+  `student`
+ADD
+  CONSTRAINT `student_subdepartment_id_foreign` FOREIGN KEY(`subdepartment_id`) REFERENCES `subdepartment`(`id`)
   ON UPDATE CASCADE ON DELETE CASCADE;
-  
-ALTER TABLE 
-  `lesson_content` 
-ADD 
+
+ALTER TABLE
+  `lesson_content`
+ADD
   CONSTRAINT `lesson_content_lesson_id_foreign` FOREIGN KEY(`lesson_id`) REFERENCES `lesson`(`id`) ON UPDATE CASCADE ON DELETE CASCADE;
-  
-ALTER TABLE `attendance` 
-ADD 
+
+ALTER TABLE `attendance`
+ADD
   CONSTRAINT `attendance_student_id_foreign` FOREIGN KEY (`student_id`) REFERENCES `student`(`student_id`) ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE 
-  attendance 
-ADD 
+ALTER TABLE
+  attendance
+ADD
   CONSTRAINT `attendance_lesson_id_foreign` FOREIGN KEY (`lesson_id`) REFERENCES `lesson`(`id`) ON UPDATE CASCADE ON DELETE CASCADE;
 
 -- VIEW
 
 
-CREATE VIEW attendance_view AS 
+CREATE VIEW attendance_view AS
 SELECT 	student.name,
 	attendance.lesson_id,
 	lesson.date,
 	attendance.student_id,
-	attendance.success, 
+	attendance.success,
 	lesson.topic,
 	lesson.duration,
 	lesson.teacher,
 	subdepartment.name AS subdepartment
-FROM attendance 
-LEFT JOIN student 
+FROM attendance
+LEFT JOIN student
 	ON attendance.student_id=student.student_id
-LEFT JOIN subdepartment 
+LEFT JOIN subdepartment
 	ON subdepartment.id=student.subdepartment_id
-LEFT JOIN lesson 
-	ON lesson.id=attendance.lesson_id;	
+LEFT JOIN lesson
+	ON lesson.id=attendance.lesson_id;
 
 
-	
 
-CREATE VIEW Materials_view AS 
+
+CREATE VIEW Materials_view AS
 SELECT lesson_content.lesson_id,
 	lesson.date,
 	lesson.topic,
@@ -1495,9 +1514,9 @@ LEFT JOIN lesson ON lesson_content.lesson_id=lesson.id;
                  USE DEP_15;
 
 CREATE TABLE `lesson`(
-  `id` MEDIUMINT UNSIGNED PRIMARY KEY AUTO_INCREMENT, 
+  `id` MEDIUMINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
   `topic` VARCHAR(250) NOT NULL,
-  `duration` DECIMAL(5, 2) NOT NULL, 
+  `duration` DECIMAL(5, 2) NOT NULL,
   `date` DATE NOT NULL,
   `teacher` VARCHAR(100) NOT NULL,
   `people_planned` SMALLINT NOT NULL,
@@ -1507,86 +1526,86 @@ CREATE TABLE `lesson`(
   INDEX `idx_teacher` (`teacher`),
   INDEX `idx_topic` (`topic`)
 );
-  
+
 CREATE TABLE `subdepartment`(
-  `id` SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT, 
+  `id` SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
   `name` VARCHAR(100) NOT NULL UNIQUE
 );
 
  CREATE TABLE `lesson_content`(
-  `file` MEDIUMBLOB,  
+  `file` MEDIUMBLOB,
   `lesson_id` MEDIUMINT UNSIGNED NOT NULL,
    file_name VARCHAR(120) PRIMARY KEY
 );
-ALTER TABLE 
-  `lesson_content` 
-ADD 
-  INDEX `lesson_content_lesson_id_index`(`lesson_id`); 
-  
-  
+ALTER TABLE
+  `lesson_content`
+ADD
+  INDEX `lesson_content_lesson_id_index`(`lesson_id`);
+
+
 CREATE TABLE `student`(
-  `student_id` CHAR(5) PRIMARY KEY, 
+  `student_id` CHAR(5) PRIMARY KEY,
   `subdepartment_id` SMALLINT UNSIGNED NOT NULL,
   `name` VARCHAR(100) NOT NULL
 );
-ALTER TABLE 
-  `student` 
-ADD 
+ALTER TABLE
+  `student`
+ADD
   INDEX `student_name_index`(`name`);
-  
+
 CREATE TABLE `attendance`(
-  `lesson_id` MEDIUMINT UNSIGNED, 
-  `student_id` CHAR(5), 
+  `lesson_id` MEDIUMINT UNSIGNED,
+  `student_id` CHAR(5),
   `success` BIT(1) NOT NULL,
-   PRIMARY KEY `lesson_id_student_id_PRIMARY_KEY`(`lesson_id`, `student_id`) 
+   PRIMARY KEY `lesson_id_student_id_PRIMARY_KEY`(`lesson_id`, `student_id`)
 );
 
 
-ALTER TABLE 
-  `student` 
-ADD 
-  CONSTRAINT `student_subdepartment_id_foreign` FOREIGN KEY(`subdepartment_id`) REFERENCES `subdepartment`(`id`) 
+ALTER TABLE
+  `student`
+ADD
+  CONSTRAINT `student_subdepartment_id_foreign` FOREIGN KEY(`subdepartment_id`) REFERENCES `subdepartment`(`id`)
   ON UPDATE CASCADE ON DELETE CASCADE;
-  
-ALTER TABLE 
-  `lesson_content` 
-ADD 
+
+ALTER TABLE
+  `lesson_content`
+ADD
   CONSTRAINT `lesson_content_lesson_id_foreign` FOREIGN KEY(`lesson_id`) REFERENCES `lesson`(`id`) ON UPDATE CASCADE ON DELETE CASCADE;
-  
-ALTER TABLE `attendance` 
-ADD 
+
+ALTER TABLE `attendance`
+ADD
   CONSTRAINT `attendance_student_id_foreign` FOREIGN KEY (`student_id`) REFERENCES `student`(`student_id`) ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE 
-  attendance 
-ADD 
+ALTER TABLE
+  attendance
+ADD
   CONSTRAINT `attendance_lesson_id_foreign` FOREIGN KEY (`lesson_id`) REFERENCES `lesson`(`id`) ON UPDATE CASCADE ON DELETE CASCADE;
 
 -- VIEW
 
 
-CREATE VIEW attendance_view AS 
+CREATE VIEW attendance_view AS
 SELECT 	student.name,
 	attendance.lesson_id,
 	lesson.date,
 	attendance.student_id,
-	attendance.success, 
+	attendance.success,
 	lesson.topic,
 	lesson.duration,
 	lesson.teacher,
 	subdepartment.name AS subdepartment
-FROM attendance 
-LEFT JOIN student 
+FROM attendance
+LEFT JOIN student
 	ON attendance.student_id=student.student_id
-LEFT JOIN subdepartment 
+LEFT JOIN subdepartment
 	ON subdepartment.id=student.subdepartment_id
-LEFT JOIN lesson 
-	ON lesson.id=attendance.lesson_id;	
+LEFT JOIN lesson
+	ON lesson.id=attendance.lesson_id;
 
 
-	
 
-CREATE VIEW Materials_view AS 
+
+CREATE VIEW Materials_view AS
 SELECT lesson_content.lesson_id,
 	lesson.date,
 	lesson.topic,
