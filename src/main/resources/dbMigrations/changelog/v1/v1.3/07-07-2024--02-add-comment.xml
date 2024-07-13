@@ -3,8 +3,10 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
-    <include file="v1/v1-cumulative-changelog.xml" relativeToChangelogFile="true"></include>
-
-
-
+    <changeSet id="1" author="ArtemShev">
+        <sqlFile path="dbMigrations/scripts/update/v1.3_AddComment.sql"/>
+        <rollback>
+            <sqlFile path="dbMigrations/scripts/rollback/V1.3_DeleteComment.sql"/>
+        </rollback>
+    </changeSet>
 </databaseChangeLog>

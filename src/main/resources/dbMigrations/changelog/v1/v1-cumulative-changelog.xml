@@ -3,6 +3,7 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <include file="v1.0/13-07-2024--01-db-creator.xml" relativeToChangelogFile="true"></include>
     <include file="v1.1/07-07-2024--01-user-accounts.xml" relativeToChangelogFile="true"></include>
     <include file="v1.2/07-07-2024--01-student-name-index.xml" relativeToChangelogFile="true"></include>
     <include file="v1.3/changelog-v1.3-cumullative.xml" relativeToChangelogFile="true"></include>

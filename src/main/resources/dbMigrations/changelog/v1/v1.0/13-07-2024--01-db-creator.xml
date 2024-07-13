@@ -1,12 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <databaseChangeLog
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
     <changeSet id="1" author="ArtemShev">
-        <sqlFile path="sql/update/v1.2_studentNameIndex.sql"/>
-        <rollback>
-            <sqlFile path="sql/rollback/V1.2_delete_studentNameIndex.sql"/>
-        </rollback>
+        <sqlFile path="dbMigrations/scripts/update/v1.0_DB_CREATOR_latest.sql"/>
     </changeSet>
 </databaseChangeLog>
