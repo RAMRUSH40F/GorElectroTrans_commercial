@@ -3,6 +3,7 @@ import { FC, MouseEvent, useEffect, useRef } from "react";
 import { Formik } from "formik";
 
 import ActionButton from "components/ActionButton";
+import CheckAccess from "components/CheckAccess";
 import Dropdown, { DropdownOption } from "components/formElements/Dropdown";
 import FormErrorMessage from "components/formElements/FormErrorMessage";
 import Input from "components/formElements/Input";
@@ -11,6 +12,8 @@ import Label from "components/formElements/Label";
 
 import { IDepartment } from "models/Department";
 import { IEmployee } from "models/Employee";
+
+import { ROLES } from "shared/auth";
 
 import { modalOpened } from "../EmployeesUploading/model";
 
@@ -175,14 +178,16 @@ const EmployeeForm: FC<Props> = ({
                                 >
                                     Сохранить
                                 </ActionButton>
-                                <ActionButton
-                                    disabled={isSubmitting || isDisabled}
-                                    onClick={moveToConfirm}
-                                    type="button"
-                                    colorType="danger"
-                                >
-                                    Удалить
-                                </ActionButton>
+                                <CheckAccess allowedRoles={[ROLES.ADMIN]}>
+                                    <ActionButton
+                                        disabled={isSubmitting || isDisabled}
+                                        onClick={moveToConfirm}
+                                        type="button"
+                                        colorType="danger"
+                                    >
+                                        Удалить
+                                    </ActionButton>
+                                </CheckAccess>
                             </>
                         ) : (
                             <>
