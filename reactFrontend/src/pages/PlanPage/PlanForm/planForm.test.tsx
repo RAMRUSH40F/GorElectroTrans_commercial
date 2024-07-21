@@ -4,8 +4,6 @@ import PlanForm from ".";
 import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { PLAN_STATUS, PLAN_STATUS_VALUE } from "models/Plan";
-
 const selectors = {
     form: () => screen.getByRole("form", { name: /рабочий план/i }),
     submitButton: () => screen.getByRole("button", { name: /добавить/i }),
@@ -132,78 +130,14 @@ describe("fields", () => {
         expect(status).not.toBeDisabled();
     });
 
-    test("should render 'comment' field when status is 'rescheduled' or 'cancelled'", async () => {
-        const { user } = setup(
-            <PlanForm isEditing={true} onSubmit={submitFn} />,
-        );
+    test("should render 'comment' field", async () => {
+        setup(<PlanForm isEditing={true} onSubmit={submitFn} />);
 
-        const status = screen.getByLabelText(/статус занятия/i);
-
-        const rescheduledStatus = screen.getByText(
-            PLAN_STATUS_VALUE[PLAN_STATUS.RESCHEDULED],
-        );
-        const cancelledStatus = screen.getByText(
-            PLAN_STATUS_VALUE[PLAN_STATUS.CANCELLED],
-        );
-
-        await act(async () => {
-            await user.click(status);
-            await user.click(rescheduledStatus);
-        });
-
-        const visibleComment = selectors.comment();
-
-        expect(visibleComment).toBeInTheDocument();
-        expect(visibleComment).not.toBeDisabled();
-
-        await act(async () => {
-            await user.click(status);
-            await user.click(cancelledStatus);
-        });
-
-        const invisibleComment = screen.queryByRole("textbox", {
+        const comment = screen.queryByRole("textbox", {
             name: /комментарий/i,
         });
 
-        expect(invisibleComment).toBeInTheDocument();
-        expect(visibleComment).not.toBeDisabled();
-    });
-
-    test("should NOT render 'comment' field when status is 'planned' or 'held'", async () => {
-        const { user } = setup(
-            <PlanForm isEditing={true} onSubmit={submitFn} />,
-        );
-
-        const status = screen.getByLabelText(/статус занятия/i);
-
-        const plannedStatus = screen.getByRole("listitem", {
-            name: (_, element) =>
-                element.textContent === PLAN_STATUS_VALUE[PLAN_STATUS.PLANNED],
-        });
-        const heldStatus = screen.getByText(
-            PLAN_STATUS_VALUE[PLAN_STATUS.HELD],
-        );
-
-        await act(async () => {
-            await user.click(status);
-            await user.click(plannedStatus);
-        });
-
-        const visibleComment = screen.queryByRole("textbox", {
-            name: /комментарий/i,
-        });
-
-        expect(visibleComment).not.toBeInTheDocument();
-
-        await act(async () => {
-            await user.click(status);
-            await user.click(heldStatus);
-        });
-
-        const invisibleComment = screen.queryByRole("textbox", {
-            name: /комментарий/i,
-        });
-
-        expect(invisibleComment).not.toBeInTheDocument();
+        expect(comment).toBeInTheDocument();
+        expect(comment).not.toBeDisabled();
     });
 });
