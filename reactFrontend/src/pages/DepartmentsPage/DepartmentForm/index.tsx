@@ -3,6 +3,7 @@ import React from "react";
 import { Formik } from "formik";
 
 import ActionButton from "components/ActionButton";
+import CheckAccess from "components/CheckAccess";
 import FormErrorMessage from "components/formElements/FormErrorMessage";
 import Input from "components/formElements/Input";
 import Label from "components/formElements/Label";
@@ -10,6 +11,8 @@ import Label from "components/formElements/Label";
 import useFocus from "hooks/useFocus";
 
 import { IDepartment, TDepartmentDto } from "models/Department";
+
+import { ROLES } from "shared/auth";
 
 import { departmentFormScheme } from "./departmentFormSchema";
 
@@ -79,14 +82,16 @@ const DepartmentForm: React.FC<Props> = ({
                                 >
                                     Сохранить
                                 </ActionButton>
-                                <ActionButton
-                                    disabled={isSubmitting || isDisabled}
-                                    onClick={moveToConfrim}
-                                    type="button"
-                                    colorType="danger"
-                                >
-                                    Удалить
-                                </ActionButton>
+                                <CheckAccess allowedRoles={[ROLES.ADMIN]}>
+                                    <ActionButton
+                                        disabled={isSubmitting || isDisabled}
+                                        onClick={moveToConfrim}
+                                        type="button"
+                                        colorType="danger"
+                                    >
+                                        Удалить
+                                    </ActionButton>
+                                </CheckAccess>
                             </>
                         ) : (
                             <ActionButton

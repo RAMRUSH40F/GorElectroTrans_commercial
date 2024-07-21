@@ -3,6 +3,7 @@ import { FC, MouseEvent, useEffect, useRef } from "react";
 import { Formik } from "formik";
 
 import ActionButton from "components/ActionButton";
+import CheckAccess from "components/CheckAccess";
 import Dropdown, { DropdownOption } from "components/formElements/Dropdown";
 import FormErrorMessage from "components/formElements/FormErrorMessage";
 import Input from "components/formElements/Input";
@@ -11,6 +12,8 @@ import Label from "components/formElements/Label";
 
 import { IDepartment } from "models/Department";
 import { IEmployee } from "models/Employee";
+
+import { ROLES } from "shared/auth";
 
 import { modalOpened } from "../EmployeesUploading/model";
 
@@ -85,6 +88,8 @@ const EmployeeForm: FC<Props> = ({
         modalOpened();
     };
 
+    console.log(isEditing);
+
     return (
         <Formik
             initialValues={initialState}
@@ -154,17 +159,22 @@ const EmployeeForm: FC<Props> = ({
                             </FormErrorMessage>
                         )}
                     </Label>
-                    <Label className={styles.label} text="Отдел">
-                        <Dropdown
-                            options={options}
-                            initialOption={values.subdepartment}
-                            onChange={(option) => {
-                                setFieldValue("subdepartment", option);
-                                clearError && clearError();
-                            }}
-                            disabled={isSubmitting || isDisabled}
-                        />
-                    </Label>
+                    <CheckAccess
+                        allowedRoles={[ROLES.ADMIN]}
+                        enabled={isEditing}
+                    >
+                        <Label className={styles.label} text="Отдел">
+                            <Dropdown
+                                options={options}
+                                initialOption={values.subdepartment}
+                                onChange={(option) => {
+                                    setFieldValue("subdepartment", option);
+                                    clearError && clearError();
+                                }}
+                                disabled={isSubmitting || isDisabled}
+                            />
+                        </Label>
+                    </CheckAccess>
                     <div className={styles.controls}>
                         {moveToConfirm && employee ? (
                             <>
@@ -175,14 +185,16 @@ const EmployeeForm: FC<Props> = ({
                                 >
                                     Сохранить
                                 </ActionButton>
-                                <ActionButton
-                                    disabled={isSubmitting || isDisabled}
-                                    onClick={moveToConfirm}
-                                    type="button"
-                                    colorType="danger"
-                                >
-                                    Удалить
-                                </ActionButton>
+                                <CheckAccess allowedRoles={[ROLES.ADMIN]}>
+                                    <ActionButton
+                                        disabled={isSubmitting || isDisabled}
+                                        onClick={moveToConfirm}
+                                        type="button"
+                                        colorType="danger"
+                                    >
+                                        Удалить
+                                    </ActionButton>
+                                </CheckAccess>
                             </>
                         ) : (
                             <>
