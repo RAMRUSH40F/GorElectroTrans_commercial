@@ -88,6 +88,8 @@ const EmployeeForm: FC<Props> = ({
         modalOpened();
     };
 
+    console.log(isEditing);
+
     return (
         <Formik
             initialValues={initialState}
@@ -157,7 +159,10 @@ const EmployeeForm: FC<Props> = ({
                             </FormErrorMessage>
                         )}
                     </Label>
-                    <CheckAccess allowedRoles={[ROLES.ADMIN]}>
+                    <CheckAccess
+                        allowedRoles={[ROLES.ADMIN]}
+                        enabled={isEditing}
+                    >
                         <Label className={styles.label} text="Отдел">
                             <Dropdown
                                 options={options}
