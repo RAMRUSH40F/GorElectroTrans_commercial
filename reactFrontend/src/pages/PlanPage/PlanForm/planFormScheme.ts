@@ -1,7 +1,9 @@
-import { PlanFormValues, StatusDropdownOption } from ".";
+import { PlanFormValues } from ".";
 import * as yup from "yup";
 
 import { PLAN_STATUS } from "models/Plan";
+
+import { StatusDropdownOption } from "./constants";
 
 export const planFormScheme = yup.object<PlanFormValues>().shape({
     topic: yup.string().required("Обязательное поле").trim(),
