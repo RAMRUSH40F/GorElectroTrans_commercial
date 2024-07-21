@@ -21,7 +21,6 @@ import static project.dataSource.DynamicDataSourceContextHolder.setCurrentDataSo
 public class SubdepartmentServiceImpl {
 
     private final SubdepartmentJpaRepository repository;
-    private final StudentServiceImpl studentServiceImpl;
 
     public @NonNull List<Subdepartment> findAll(int departmentId) {
         setCurrentDataSource("DEP_" + departmentId);
@@ -35,10 +34,8 @@ public class SubdepartmentServiceImpl {
     public boolean deleteById(int departmentId, short id) {
         try {
             setCurrentDataSource("DEP_" + departmentId);
-            if (studentServiceImpl.getStudentExistsWithSubdepartmentId(departmentId, id)) {
-                throw new IllegalArgumentException("Существует работник из этого отдела. Необходимо добавить его в другой отдел.");
-            }
             repository.deleteById(id);
+
             return true;
         } catch (EmptyResultDataAccessException e) {
             return false;
