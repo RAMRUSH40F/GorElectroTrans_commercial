@@ -157,17 +157,19 @@ const EmployeeForm: FC<Props> = ({
                             </FormErrorMessage>
                         )}
                     </Label>
-                    <Label className={styles.label} text="Отдел">
-                        <Dropdown
-                            options={options}
-                            initialOption={values.subdepartment}
-                            onChange={(option) => {
-                                setFieldValue("subdepartment", option);
-                                clearError && clearError();
-                            }}
-                            disabled={isSubmitting || isDisabled}
-                        />
-                    </Label>
+                    <CheckAccess allowedRoles={[ROLES.ADMIN]}>
+                        <Label className={styles.label} text="Отдел">
+                            <Dropdown
+                                options={options}
+                                initialOption={values.subdepartment}
+                                onChange={(option) => {
+                                    setFieldValue("subdepartment", option);
+                                    clearError && clearError();
+                                }}
+                                disabled={isSubmitting || isDisabled}
+                            />
+                        </Label>
+                    </CheckAccess>
                     <div className={styles.controls}>
                         {moveToConfirm && employee ? (
                             <>
