@@ -24,6 +24,7 @@ type SelectProps<
 > = {
     options: DropdownOption<V, L>[];
     initialOption: DropdownOption<V, L>;
+    value?: DropdownOption<V, L>;
     onChange: (option: DropdownOption<V, L>) => void;
     name?: string;
     placeholder?: string;
@@ -34,6 +35,7 @@ type SelectProps<
 const Dropdown = <V extends DropdownValue, L extends DropdownLabel>({
     initialOption,
     options,
+    value,
     placeholder,
     onChange,
     className,
@@ -52,6 +54,8 @@ const Dropdown = <V extends DropdownValue, L extends DropdownLabel>({
         setIsOpen(false);
         onChange(option);
     };
+
+    const currentValue = value?.label ?? selected;
 
     return (
         <div
@@ -74,10 +78,10 @@ const Dropdown = <V extends DropdownValue, L extends DropdownLabel>({
                 <div
                     className={cn(
                         styles.headerValue,
-                        !selected && styles.empty,
+                        !currentValue && styles.empty,
                     )}
                 >
-                    {selected ?? placeholder ?? "Выберите..."}
+                    {currentValue ?? placeholder ?? "Выберите..."}
                 </div>
                 <div className={cn(styles.icon, isOpen && styles.open)} />
             </div>
@@ -86,7 +90,7 @@ const Dropdown = <V extends DropdownValue, L extends DropdownLabel>({
                     <li
                         className={cn(
                             styles.option,
-                            option.label === selected && styles.selected,
+                            option.label === currentValue && styles.selected,
                         )}
                         key={String(option.value)}
                         onClick={() => handleSelect(option)}
