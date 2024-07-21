@@ -107,6 +107,7 @@ function Form() {
                 onSubmit={handleSubmit}
                 clearError={() => errorReset()}
                 departments={departments}
+                isEditing={false}
             />
         </>
     );
