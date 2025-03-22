@@ -7,10 +7,11 @@
 
 # Use-case and ER diagram
 ## ER
-![ER](![image](https://github.com/RAMRUSH40F/GorElectroTrans_commercial/blob/master/ER.png?raw=true))
-## USE_CASE
-![USE_CASE](![image](https://github.com/RAMRUSH40F/GorElectroTrans_commercial/tree/master/UseCase?raw=true))
-
+![ER](https://github.com/RAMRUSH40F/GorElectroTrans_commercial/blob/master/ER.png?raw=true)
+## USE_CASE_ALL
+![USE_CASES_ALL](https://github.com/RAMRUSH40F/GorElectroTrans_commercial/tree/master/UseCase?raw=true)
+## USE_CASE_STUDENT
+![USE_CASES_STUDENT](https://github.com/RAMRUSH40F/GorElectroTrans_commercial/blob/master/UseCase/student.png?raw=true)
 
 ## Стек:
 Java, Spring (Core, Boot, Data JPA, Spring AOP), React, MariaDb(MySql), JWT, Docker, Liquidbase,Maven,REST API
