@@ -1,0 +1,25 @@
+@startuml
+left to right direction
+actor "Руководитель процессов обучения в отделении СПБ ГУП 'Горэлектротранс' №1" as User
+actor "Контролирующий орган" as Control
+actor "Системный администратор" as Administrator
+
+package "Account Management" {
+    usecase "Создать учетную запись" as UC13
+    usecase "Авторизоваться под учетной записью" as UC14
+    usecase "Выключить учетную запись (в случае утечки)" as UC15
+
+    usecase "Получить доступ к данным отделения №1 и операциям над ними" as GetInfo 
+    usecase "Получить доступ ко всем операциям во всех отделениях отделах" as GetInfoAll
+    Control --> GetInfo
+    Control --> GetInfoAll
+    User --> GetInfo
+
+    Administrator --> UC13
+    Control --> UC14
+    User --> UC14
+    Administrator --> UC15
+}
+
+
+@enduml

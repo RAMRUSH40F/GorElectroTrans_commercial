@@ -1,0 +1,15 @@
+@startuml
+left to right direction
+actor "Руководитель процессов обучения в отделении СПБ ГУП 'Горэлектротранс' №1" as User
+
+package "Attendance Management" {
+    usecase "Добавить запись о посещении занятия студентов и оценку за занятие" as UC5
+    usecase "Изменить оценку пользователю" as UC6
+    usecase "Удалить запись о посещении" as UC7
+
+    User --> UC5
+    User --> UC6
+    User --> UC7
+}
+
+@enduml

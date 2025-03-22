@@ -1,0 +1,25 @@
+@startuml
+left to right direction
+actor "Руководитель процессов обучения в отделении №1" as User
+actor "Контролирующий орган" as Control
+
+package "Lesson Management" {
+
+    usecase "Внести занятия в план" as CreateLesson 
+    usecase "Внести изменения в занятие(перенести, изменить преподавателя)" as EditLesson 
+    usecase "Пометить занятие как отменненное, указав причину отмены" as MarkLessonAsCanceled
+    usecase "Удалить занятие из плана" as DeleteLesson
+
+
+    Control --> CreateLesson
+    Control --> EditLesson
+    Control --> DeleteLesson
+    User --> CreateLesson
+    User --> EditLesson
+    User --> MarkLessonAsCanceled
+}
+
+
+
+
+@enduml

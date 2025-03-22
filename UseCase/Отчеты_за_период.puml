@@ -1,0 +1,18 @@
+@startuml
+left to right direction
+actor "Руководитель процессов обучения в отделении СПБ ГУП 'Горэлектротранс' №1" as User
+actor "Контролирующий орган" as Control
+
+package "Data Export" {
+    usecase "Выгрузить данные о посещаемости за определенный период" as UC16
+    usecase "Создать отчет о проведенных занятиях с агрегированными данными по всем подразделениям" as UC17
+
+    Control --> UC16
+    User --> UC16
+    Control --> UC17
+}
+
+
+
+
+@enduml

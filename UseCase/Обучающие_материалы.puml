@@ -1,0 +1,16 @@
+@startuml
+left to right direction
+actor "Руководитель процессов обучения в отделении СПБ ГУП 'Горэлектротранс' №1" as User
+actor "Контролирующий орган" as Control
+
+package "Lesson Content Management" {
+    usecase "Добавлять конспекты к урокам в любом формате" as UC9
+    usecase "Удалять конспекты из системы занятий" as UC10
+
+    Control --> UC9
+    Control --> UC10
+    User --> UC9
+    User --> UC10
+}
+
+@enduml

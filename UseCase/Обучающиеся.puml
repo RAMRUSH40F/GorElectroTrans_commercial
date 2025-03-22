@@ -1,0 +1,22 @@
+@startuml
+left to right direction
+actor "Руководитель процессов обучения в отделении СПБ ГУП 'Горэлектротранс' №1" as User
+actor "Контролирующий орган" as Control
+
+package "Student Management" {
+    usecase "Добавить данные о студенте" as UC1
+    usecase "Изменить группу или ФИО студента" as UC2
+    usecase "Удалить студента" as UC3
+    usecase "Импортировать студентов списком из excel файла" as UC4
+
+    Control --> UC1
+    Control --> UC2
+    Control --> UC3
+
+    User --> UC1
+    User --> UC2
+    User --> UC4
+}
+
+
+@enduml
